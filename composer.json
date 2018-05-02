@@ -1,0 +1,14 @@
+{
+	"name": "fant1k4552/GameX",
+	"description": "GameX",
+	"minimum-stability": "dev",
+	"license": "proprietary",
+	"authors": [
+		{
+			"name": "fant1k4552"
+		},
+		{
+			"name": "Sonyx"
+		}
+	]
+}
