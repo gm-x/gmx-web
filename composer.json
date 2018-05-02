@@ -8,7 +8,10 @@
 			"name": "fant1k4552"
 		},
 		{
-			"name": "Sonyx"
+			"name": "s008nyx"
 		}
-	]
+	],
+	"require": {
+		"slim/slim": "3.10.0"
+	}
 }
