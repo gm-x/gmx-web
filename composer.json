@@ -17,5 +17,10 @@
 		"slim/csrf": "0.8.2",
 		"slim/twig-view": "2.3.0",
 		"illuminate/database": "~5.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"GameX\\": "src/"
+		}
 	}
 }
