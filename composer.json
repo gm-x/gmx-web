@@ -19,10 +19,9 @@
 		"illuminate/database": "~5.1",
 		"cartalyst/sentinel": "v2.0.17",
 		"illuminate/events": "v5.4.36",
-		"illuminate/http": "v5.4.36",
-		"illuminate/cookie": "v5.4.36",
-		"illuminate/session": "v5.4.36",
-		"ircmaxell/password-compat": "1.0.3"
+		"ircmaxell/password-compat": "1.0.3",
+		"bryanjhv/slim-session": "3.5.0",
+		"akrabat/rka-ip-address-middleware": "0.6"
 	},
 	"autoload": {
 		"psr-4": {

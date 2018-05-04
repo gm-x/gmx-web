@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-$capsule = new \Illuminate\Database\Capsule\Manager;
+$capsule = new \Illuminate\Database\Capsule\Manager();
 $capsule->addConnection([
     'driver' => 'mysql',
     'host' => '127.0.0.1',

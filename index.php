@@ -4,10 +4,22 @@ require __DIR__ . '/vendor/autoload.php';
 
 $app = new \Slim\App;
 
+$app->add(new \Slim\Middleware\Session([
+    'name' => 'sessid',
+    'autorefresh' => true,
+    'lifetime' => '1 hour'
+]));
+
+$app->add(new RKA\Middleware\IpAddress(true));
+
 $container = $app->getContainer();
 
 
 $container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
+
+$container['session'] = function ($c) {
+    return new \SlimSession\Helper;
+};
 
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig($container->get('root') . 'templates', [
@@ -42,6 +54,12 @@ $container['db'] = function ($container) {
     $capsule->bootEloquent();
 
     return $capsule;
+};
+
+$container['auth'] = function ($c) {
+    $c->get('db');
+    $bootsrap = new \GameX\Core\Sentinel\SentinelBootstrapper($c->get('request'), $c->get('session'));
+    return $bootsrap->createSentinel();
 };
 
 include __DIR__ . '/src/routes.php';
