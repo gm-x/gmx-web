@@ -1,0 +1,24 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+<form action="{{ path_for('register') }}" method="post">
+    <div class="row">
+        <div class="input-field col s12">
+            {{ form_label(form, 'email') }}
+            {{ form_input(form, 'email') }}
+            {{ form_error(form, 'email') }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            {{ form_label(form, 'password') }}
+            {{ form_input(form, 'password') }}
+            {{ form_error(form, 'password') }}
+        </div>
+    </div>
+    <div class="row">
+        <input type="submit" class="btn" value="Register">
+        <a href="{{ path_for('register') }}">Register</a>
+    </div>
+</form>
+{% endblock %}
