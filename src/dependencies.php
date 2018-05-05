@@ -35,3 +35,9 @@ $container['auth'] = function (\Psr\Container\ContainerInterface $container) {
     $bootsrap = new \GameX\Core\Sentinel\SentinelBootstrapper($container->get('request'), $container->get('session'));
     return $bootsrap->createSentinel();
 };
+
+$container['mail'] = function (\Psr\Container\ContainerInterface $container) {
+    $mailer = new \Tx\Mailer();
+    $config = $container['config']['mailer'];
+    return $mailer->setServer($config['host'], $config['port']);
+};

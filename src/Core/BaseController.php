@@ -82,11 +82,17 @@ abstract class BaseController {
         return $this->response;
     }
 
+
     /**
-     * @return ContainerInterface
+     * @param $container
+     * @return mixed
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function getContainer() {
-        return $this->app->getContainer();
+    public function getContainer($container = null) {
+        $ret = $this->app->getContainer();
+
+        return $container ? $ret->get((string) $container) : $ret;
     }
 
     /**
@@ -94,30 +100,37 @@ abstract class BaseController {
      * @param array $data
      * @param array $queryParams
      * @param null $status
-     * @return Response
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function redirect($path, array $data = [], array $queryParams = [], $status = null) {
         /** @var Router $router */
-        $router = $this->getContainer()->get('router');
+        $router = $this->getContainer('router');
         return $this->getResponse()->withRedirect($router->pathFor($path, $data, $queryParams), $status);
     }
+
 
     /**
      * @param $template
      * @param array $data
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function render($template, array $data = []) {
         /** @var Twig $view */
-        $view = $this->getContainer()->get('view');
+        $view = $this->getContainer('view');
         return $view->render($this->getResponse(), $template, $data);
     }
+
 
     /**
      * @param $type
      * @param $message
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function addFlashMessage($type, $message) {
-        $this->getContainer()->get('flash')->addMessage($type, $message);
+        $this->getContainer('flash')->addMessage($type, $message);
     }
 }

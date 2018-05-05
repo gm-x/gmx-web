@@ -17,5 +17,9 @@
   "twig": {
     "debug": true,
     "auto_reload": true
+  },
+  "mailer": {
+    "host": "127.0.0.1",
+    "port": "4651"
   }
 }
