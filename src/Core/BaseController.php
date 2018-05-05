@@ -33,7 +33,7 @@ abstract class BaseController {
      * @param $action
      * @return \Closure
      */
-    public function registerAction($action) {
+    public function action($action) {
         $actionName = $action . 'Action';
         $controller = $this;
         $callable = function (Request $request, Response $response, array $args) use ($controller, $actionName) {

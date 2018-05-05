@@ -4,16 +4,13 @@ require __DIR__ . '/vendor/autoload.php';
 
 $app = new \Slim\App;
 
-$app->add(new \Slim\Middleware\Session([
-    'name' => 'sessid',
-    'autorefresh' => true,
-    'lifetime' => '1 hour'
-]));
-
-$app->add(new RKA\Middleware\IpAddress(true));
-
 $container = $app->getContainer();
 
+$container['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
+
+$app->add(new \Slim\Middleware\Session($container['config']['session']));
+
+$app->add(new RKA\Middleware\IpAddress(true));
 
 $container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
 
@@ -22,13 +19,9 @@ $container['session'] = function ($c) {
 };
 
 $container['view'] = function ($container) {
-    $view = new \Slim\Views\Twig($container->get('root') . 'templates', [
+    $view = new \Slim\Views\Twig($container->get('root') . 'templates', array_merge([
         'cache' => $container->get('root') . 'cache',
-        // DEBUG
-        'debug' => true,
-        'auto_reload' => true,
-
-    ]);
+    ], $container['config']['twig']));
 
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
@@ -39,16 +32,7 @@ $container['view'] = function ($container) {
 
 $container['db'] = function ($container) {
     $capsule = new \Illuminate\Database\Capsule\Manager;
-    $capsule->addConnection([
-        'driver' => 'mysql',
-        'host' => '127.0.0.1',
-        'database' => 'test',
-        'username' => 'root',
-        'password' => '',
-        'charset'   => 'utf8',
-        'collation' => 'utf8_unicode_ci',
-        'prefix'    => '',
-    ]);
+    $capsule->addConnection($container['config']['db']);
 
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
@@ -56,9 +40,9 @@ $container['db'] = function ($container) {
     return $capsule;
 };
 
-$container['auth'] = function ($c) {
-    $c->get('db');
-    $bootsrap = new \GameX\Core\Sentinel\SentinelBootstrapper($c->get('request'), $c->get('session'));
+$container['auth'] = function ($container) {
+    $container->get('db');
+    $bootsrap = new \GameX\Core\Sentinel\SentinelBootstrapper($container->get('request'), $container->get('session'));
     return $bootsrap->createSentinel();
 };
 
