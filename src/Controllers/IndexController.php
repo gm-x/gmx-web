@@ -3,28 +3,20 @@ namespace GameX\Controllers;
 
 use \GameX\Core\BaseController;
 use \Cartalyst\Sentinel\Sentinel;
-use GameX\Core\Exceptions\ValidationException;
+use \Psr\Http\Message\RequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\FormHelper;
+use \GameX\Core\Mail\MailHelper;
+use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
 use \Exception;
-use GameX\Core\Mail\MailHelper;
 
 class IndexController extends BaseController {
-    public function indexAction(array $args) {
-        $ok = (new \Tx\Mailer())
-            ->setServer('127.0.0.1', 4651)
-//            ->setAuth('tom@server.com', 'password')
-            ->setFrom('Tom', 'tom@server.com')
-            ->addTo('Jerry', 'jerry@server.com')
-            ->setSubject('Hello')
-            ->setBody('Hi, Jerry! I <strong>love</strong> you.')
-            ->addAttachment('host', '/etc/hosts')
-            ->send();
-
+    public function indexAction(RequestInterface $request, ResponseInterface $response, array $args) {
         return $this->render('index/index.twig');
     }
 
-    public function registerAction(array $args) {
+    public function registerAction(RequestInterface $request, ResponseInterface $response, array $args) {
         $form = new FormHelper('register');
         $form
             ->addField('email', '', [
@@ -83,7 +75,7 @@ class IndexController extends BaseController {
         ]);
     }
 
-    public function loginAction() {
+    public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
         $form = new FormHelper('login');
         $form
             ->addField('email', '', [

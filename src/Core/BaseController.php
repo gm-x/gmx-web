@@ -6,14 +6,13 @@ use \Slim\App;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Slim\Router;
-use \Slim\Exception\NotFoundException;
 use Slim\Views\Twig;
 
 abstract class BaseController {
     /**
-     * @var App
+     * @var ContainerInterface
      */
-    protected $app;
+    protected $container;
 
     /**
      * @var Request
@@ -25,68 +24,27 @@ abstract class BaseController {
      */
     protected $response;
 
-    public function __construct(App $app) {
-        $this->app = $app;
+    public function __construct(ContainerInterface $container) {
+        $this->container = $container;
     }
-
-    /**
-     * @param $action
-     * @return \Closure
-     */
-    public function action($action) {
-        $actionName = $action . 'Action';
-        $controller = $this;
-        $callable = function (Request $request, Response $response, array $args) use ($controller, $actionName) {
-            $controller->setRequest($request);
-            $controller->setResponse($response);
-
-            if (method_exists($controller, 'init')) {
-                $controller->init();
-            }
-
-            if (!method_exists($controller, $actionName)) {
-                throw new NotFoundException($request, $response);
-            }
-
-            return call_user_func([$controller, $actionName], $args);
-        };
-
-        return $callable;
-    }
-
-    /**
-     * @param Request $request
-     */
-    public function setRequest(Request $request) {
-        $this->request = $request;
-    }
-
     /**
      * @return Request
      */
     public function getRequest() {
-        return $this->request;
+        return $this->container->request;
     }
-
-    /**
-     * @param Response $response
-     */
-    public function setResponse(Response $response) {
-        $this->response = $response;
-    }
-
     /**
      * @return Response
      */
     public function getResponse() {
-        return $this->response;
+        return $this->container->response;
     }
 
     /**
      * @return ContainerInterface
      */
     public function getContainer() {
-        return $this->app->getContainer();
+        return $this->container;
     }
 
     /**
@@ -119,5 +77,9 @@ abstract class BaseController {
      */
     protected function addFlashMessage($type, $message) {
         $this->getContainer()->get('flash')->addMessage($type, $message);
+    }
+
+    public static function action($controller, $action) {
+        return $controller . ':' . $action . 'Action';
     }
 }

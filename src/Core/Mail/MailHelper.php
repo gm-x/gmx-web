@@ -1,5 +1,4 @@
 <?php
-
 namespace GameX\Core\Mail;
 
 use \Tx\Mailer\SMTP;

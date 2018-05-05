@@ -1,9 +1,14 @@
 <?php
-$app->group('', function() {
-    /** @var \Slim\App $this */
-    $controller = new \GameX\Controllers\IndexController($this);
+use \GameX\Core\BaseController;
+use \GameX\Controllers\IndexController;
 
-    $this->get('/', $controller->action('index'))->setName('index');
-    $this->map(['GET', 'POST'], '/register', $controller->action('register'))->setName('register');
-    $this->get('/login', $controller->action('login'))->setName('login');
-});
+$app
+    ->get('/', BaseController::action(IndexController::class, 'index'))
+    ->setName('index');
+
+$app
+    ->map(['GET', 'POST'], '/register', BaseController::action(IndexController::class, 'register'))
+    ->setName('register');
+$app
+    ->get('/login', BaseController::action(IndexController::class, 'login'))
+    ->setName('login');
