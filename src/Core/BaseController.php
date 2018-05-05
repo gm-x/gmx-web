@@ -32,13 +32,13 @@ abstract class BaseController {
      * @return Request
      */
     public function getRequest() {
-        return $this->container->request;
+        return $this->getContainer('request');
     }
     /**
      * @return Response
      */
     public function getResponse() {
-        return $this->container->response;
+        return $this->getContainer('response');
     }
 
     /**
