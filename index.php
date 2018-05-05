@@ -18,10 +18,16 @@ $container['session'] = function ($c) {
     return new \SlimSession\Helper;
 };
 
+$container['flash'] = function () {
+    return new \Slim\Flash\Messages();
+};
+
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig($container->get('root') . 'templates', array_merge([
         'cache' => $container->get('root') . 'cache',
     ], $container['config']['twig']));
+
+    $view['flash_messages'] = $container->get('flash')->getMessages();
 
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
@@ -45,6 +51,10 @@ $container['auth'] = function ($container) {
     $container->get('db');
     $bootsrap = new \GameX\Core\Sentinel\SentinelBootstrapper($container->get('request'), $container->get('session'));
     return $bootsrap->createSentinel();
+};
+
+$container['mail'] = function ($container) {
+    return new GameX\Core\Mail\MailHelper($container['config']['mail'], $container->get('view'));
 };
 
 include __DIR__ . '/src/routes.php';

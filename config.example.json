@@ -14,6 +14,19 @@
 		"autorefresh": true,
 		"lifetime": "1 hour"
 	},
+	"mail": {
+		"from": {
+			"name": "test",
+			"email": "test@example.com"
+		},
+		"transport": {
+			"type": "smtp",
+			"host": "127.0.0.1",
+			"port": 4651,
+			"username": "test",
+			"password": "test"
+		}
+	},
 	"twig": {
 		"debug": true,
 		"auto_reload": true

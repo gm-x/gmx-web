@@ -20,6 +20,10 @@
     <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
 </ul>
 
+{% for error in flash_messages.error %}
+<p class="helper-text red-text">error</p>
+{% endfor %}
+
 {% block content %}{% endblock %}
 <script
         src="https://code.jquery.com/jquery-3.3.1.js"

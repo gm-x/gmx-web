@@ -31,7 +31,7 @@ class FormHelper {
             'type' => array_key_exists('type', $options) ? $options['type'] : 'text',
             'required' => array_key_exists('required', $options) ? (bool)$options['required'] : false,
             'title' => array_key_exists('title', $options) ? $options['title'] : ucfirst($name),
-            'description' => array_key_exists('description', $options) ? $options['description'] : null,
+            'error' => array_key_exists('error', $options) ? $options['error'] : '',
             'classes' => array_key_exists('classes', $options) ? (array)$options['classes'] : [],
             'attributes' => array_key_exists('attributes', $options) ? (array)$options['attributes'] : [],
         ];
@@ -64,9 +64,9 @@ class FormHelper {
             }
         }
         $errors = $this->validator->getErrors();
-        foreach ($errors as $key => $value) {
-            if (array_key_exists($key, $this->errors)) {
-                $this->errors[$key] = $values;
+        foreach ($errors as $key => $error) {
+            if (array_key_exists($key, $this->fields)) {
+                $this->errors[$key] = $this->fields[$key]['error'];
             }
         }
 
@@ -103,8 +103,8 @@ class FormHelper {
         return array_key_exists($name, $this->values) ? $this->values[$name] : null;
     }
 
-    public function setError($name) {
-        $this->errors[$name] = true;
+    public function setError($name, $error) {
+        $this->errors[$name] = $error;
         $this->isValid = false;
         return $this;
     }
@@ -137,8 +137,8 @@ class FormHelper {
     }
 
     public function renderError($name) {
-        return ($this->errors[$name] && $this->fields[$name]['description'] !== null)
-            ? '<span class="helper-text red-text">' . $this->fields[$name]['description'] . '</span>'
+        return ($this->errors[$name] !== null)
+            ? '<span class="helper-text red-text">' . $this->errors[$name]  . '</span>'
             : '';
     }
 

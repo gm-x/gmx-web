@@ -112,4 +112,12 @@ abstract class BaseController {
         $view = $this->getContainer()->get('view');
         return $view->render($this->getResponse(), $template, $data);
     }
+
+    /**
+     * @param $type
+     * @param $message
+     */
+    protected function addFlashMessage($type, $message) {
+        $this->getContainer()->get('flash')->addMessage($type, $message);
+    }
 }
