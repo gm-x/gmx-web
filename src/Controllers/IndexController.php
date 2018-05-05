@@ -10,9 +10,14 @@ use \Exception;
 use GameX\Core\Mail\MailHelper;
 
 class IndexController extends BaseController {
+    /**
+     * @param array $args
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     public function indexAction(array $args) {
-        $ok = (new \Tx\Mailer())
-            ->setServer('127.0.0.1', 4651)
+        $ok = $this->getContainer('mail')
 //            ->setAuth('tom@server.com', 'password')
             ->setFrom('Tom', 'tom@server.com')
             ->addTo('Jerry', 'jerry@server.com')
@@ -122,7 +127,7 @@ class IndexController extends BaseController {
         }
 
         /** @var Sentinel $auth */
-        $auth = $this->getContainer()->get('auth');
+        $auth = $this->getContainer('auth');
 
         $user = $auth->getUserRepository()->findByCredentials([
             'email' => $email
@@ -144,7 +149,7 @@ class IndexController extends BaseController {
         $activation = $auth->getActivationRepository()->create($user);
 
         /** @var MailHelper $mail */
-        $mail = $this->getContainer()->get('mail');
+        $mail = $this->getContainer('mail');
         $mail->send([
             'name' => $email,
             'email' => $email
