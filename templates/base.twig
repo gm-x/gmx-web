@@ -1,0 +1,35 @@
+<html>
+<head>
+    <title></title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper">
+        <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <a href="{{ path_for('index') }}" class="brand-logo">Logo</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="{{ path_for('login') }}">Login/Register</a></li>
+        </ul>
+    </div>
+</nav>
+<ul id="slide-out" class="sidenav">
+    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+</ul>
+
+{% block content %}{% endblock %}
+<script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.sidenav').sidenav();
+    });
+</script>
+</body>
+</html>

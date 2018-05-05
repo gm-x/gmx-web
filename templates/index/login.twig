@@ -17,14 +17,8 @@
         </div>
     </div>
     <div class="row">
-        <div class="input-field col s12">
-            {{ form_label(form, 'password_repeat') }}
-            {{ form_input(form, 'password_repeat') }}
-            {{ form_error(form, 'password_repeat') }}
-        </div>
-    </div>
-    <div class="row">
         <input type="submit" class="btn" value="Register">
+        <a href="{{ path_for('register') }}">Register</a>
     </div>
 </form>
 {% endblock %}

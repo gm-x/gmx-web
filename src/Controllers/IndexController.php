@@ -7,7 +7,7 @@ use \GameX\Core\Forms\FormHelper;
 
 class IndexController extends BaseController {
     public function indexAction(array $args) {
-        return $this->render('index.twig');
+        return $this->render('index/index.twig');
     }
 
     public function registerAction(array $args) {
@@ -40,6 +40,30 @@ class IndexController extends BaseController {
 //        $auth = $this->getContainer()->get('auth');
 
         return $this->render('index/register.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    public function loginAction() {
+        $form = new FormHelper('login');
+        $form
+            ->addField('email', '', [
+                'type' => 'email',
+                'title' => 'Email',
+                'description' => 'Must be valid email',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'email'])
+            ->addField('password', '', [
+                'type' => 'password',
+                'title' => 'Password',
+                'description' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim', 'min_length' => 6]);
+        $form->processRequest($this->getRequest());
+
+        return $this->render('index/login.twig', [
             'form' => $form,
         ]);
     }
