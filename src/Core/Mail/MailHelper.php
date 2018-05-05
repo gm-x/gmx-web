@@ -2,7 +2,6 @@
 namespace GameX\Core\Mail;
 
 use \Tx\Mailer\SMTP;
-use \GameX\Core\Mail\MailMessage;
 use \Slim\Views\Twig;
 
 class MailHelper {
