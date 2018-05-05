@@ -114,7 +114,7 @@ class IndexController extends BaseController {
         }
 
         /** @var Sentinel $auth */
-        $auth = $this->getContainer()->get('auth');
+        $auth = $this->getContainer('auth');
 
         $user = $auth->getUserRepository()->findByCredentials([
             'email' => $email
@@ -136,7 +136,7 @@ class IndexController extends BaseController {
         $activation = $auth->getActivationRepository()->create($user);
 
         /** @var MailHelper $mail */
-        $mail = $this->getContainer()->get('mail');
+        $mail = $this->getContainer('mail');
         $mail->send([
             'name' => $email,
             'email' => $email
