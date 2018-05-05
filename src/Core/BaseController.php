@@ -2,6 +2,7 @@
 namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use \Slim\App;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
@@ -40,17 +41,14 @@ abstract class BaseController {
         return $this->container->response;
     }
 
-
     /**
      * @param $container
      * @return mixed
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function getContainer($container = null) {
-        $ret = $this->app->getContainer();
-
-        return $container ? $ret->get((string) $container) : $ret;
+    public function getContainer($container) {
+        return $this->container->get($container);
     }
 
     /**
@@ -58,8 +56,7 @@ abstract class BaseController {
      * @param array $data
      * @param array $queryParams
      * @param null $status
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return ResponseInterface
      */
     protected function redirect($path, array $data = [], array $queryParams = [], $status = null) {
         /** @var Router $router */
