@@ -4,4 +4,5 @@ $app->group('', function() {
     $controller = new \GameX\Controllers\IndexController($this);
 
     $this->get('/', $controller->action('index'));
+    $this->get('/register', $controller->action('register'));
 });

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "42b0db8404dd1aa4db12448007d8172e",
+    "content-hash": "142c456fe216f6d107b5ba45d865a93e",
     "packages": [
         {
             "name": "akrabat/rka-ip-address-middleware",
@@ -1157,6 +1157,45 @@
             "time": "2018-04-03 15:59:15"
         },
         {
+            "name": "rlanvin/php-form",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rlanvin/php-form.git",
+                "reference": "d68c4fe9cc2e9191175169409d718a59ea1bff55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rlanvin/php-form/zipball/d68c4fe9cc2e9191175169409d718a59ea1bff55",
+                "reference": "d68c4fe9cc2e9191175169409d718a59ea1bff55",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4.0"
+            },
+            "suggest": {
+                "ext-intl": "Intl extension is useful for validating formatted numbers"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Form\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Lightweight form validation library for PHP",
+            "homepage": "https://github.com/rlanvin/php-form",
+            "keywords": [
+                "form",
+                "validation"
+            ],
+            "time": "2016-04-11T09:58:23+00:00"
+        },
+        {
             "name": "slim/csrf",
             "version": "0.8.2",
             "source": {
@@ -1992,6 +2031,59 @@
                 "templating"
             ],
             "time": "2018-05-02 15:04:18"
+        },
+        {
+            "name": "txthinking/mailer",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/txthinking/Mailer.git",
+                "reference": "648ca5af24227ddb4aab3410576169434e4e8127"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/txthinking/Mailer/zipball/648ca5af24227ddb4aab3410576169434e4e8127",
+                "reference": "648ca5af24227ddb4aab3410576169434e4e8127",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "erb/testing-tools": "dev-master",
+                "monolog/monolog": "~1.13",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tx\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cloud",
+                    "email": "cloud@txthinking.com",
+                    "homepage": "http://www.txthinking.com",
+                    "role": "Thinker"
+                },
+                {
+                    "name": "Matt Sowers",
+                    "email": "msowers@erblearn.org"
+                }
+            ],
+            "description": "A very lightweight PHP SMTP mail sender",
+            "homepage": "http://github.com/txthinking/Mailer",
+            "keywords": [
+                "mail",
+                "smtp"
+            ],
+            "time": "2018-01-31T10:03:26+00:00"
         }
     ],
     "packages-dev": [],
