@@ -1,8 +1,5 @@
 <?php
 
-$container = $app->getContainer();
-$container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
-
 $container['session'] = function ($c) {
     return new \SlimSession\Helper;
 };

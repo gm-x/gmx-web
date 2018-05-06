@@ -75,6 +75,16 @@ class IndexController extends BaseController {
         ]);
     }
 
+    public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
+        /** @var \Slim\Router $router */
+        $router = $this->getContainer('router');
+        $uri = (string)$request->getUri()->withPath($router->pathFor('activation', ['code' => 'test']));
+        var_dump($uri);
+        die();
+
+//        return $this->render('index/test.twig');
+    }
+
     public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
         $form = new FormHelper('login');
         $form
