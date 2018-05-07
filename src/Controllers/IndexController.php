@@ -5,7 +5,7 @@ use \GameX\Core\BaseController;
 
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Core\Forms\FormHelper;
+use \GameX\Core\Forms\Form;
 use \GameX\Core\Auth\AuthHelper;
 use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
@@ -17,34 +17,34 @@ class IndexController extends BaseController {
     }
 
     public function registerAction(RequestInterface $request, ResponseInterface $response, array $args) {
-        $form = new FormHelper('register');
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('register');
         $form
-            ->addField('email', '', [
+            ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
                 'error' => 'Must be valid email',
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'email'])
-            ->addField('password', '', [
+            ->add('password', '', [
                 'type' => 'password',
                 'title' => 'Password',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'trim', 'min_length' => 6])
-            ->addField('password_repeat', '', [
+            ->add('password_repeat', '', [
                 'type' => 'password',
                 'title' => 'Repeat Password',
                 'error' => 'Passwords does not match',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6]);
-        $form->processRequest($this->getRequest());
+            ], ['required', 'trim', 'min_length' => 6])
+            ->processRequest();
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                $form->saveValues();
                 return $this->redirect('register');
             } else {
                 try {
@@ -57,15 +57,14 @@ class IndexController extends BaseController {
                     return $this->redirect('login');
                 } catch (FormException $e) {
                     $form->setError($e->getField(), $e->getMessage());
-                    $form->saveValues();
                     return $this->redirect('register');
                 } catch (ValidationException $e) {
+                    $form->setIsValid(false);
                     $this->addFlashMessage('error', $e->getMessage());
-                    $form->saveValues();
                     return $this->redirect('register');
                 } catch (Exception $e) {
+                    $form->setIsValid(false);
                     $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
-                    $form->saveValues();
                     return $this->redirect('register');
                 }
             }
@@ -79,20 +78,20 @@ class IndexController extends BaseController {
     public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
     	$code = $args['code'];
 
-		$form = new FormHelper('activation');
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('activation');
 		$form
-			->addField('email', '', [
+			->add('email', '', [
 				'type' => 'email',
 				'title' => 'Email',
 				'error' => 'Must be valid email',
 				'required' => true,
 				'attributes' => [],
 			], ['required', 'email']);
-		$form->processRequest($this->getRequest());
+		$form->processRequest();
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
-				$form->saveValues();
 				return $this->redirect('login');
 			} else {
 				try {
@@ -101,15 +100,12 @@ class IndexController extends BaseController {
 					return $this->redirect('login');
 				} catch (FormException $e) {
 					$form->setError($e->getField(), $e->getMessage());
-					$form->saveValues();
 					return $this->redirect('activation', ['code' => $code]);
 				} catch (ValidationException $e) {
 					$this->addFlashMessage('error', $e->getMessage());
-					$form->saveValues();
 					return $this->redirect('activation', ['code' => $code]);
 				} catch (Exception $e) {
 					$this->addFlashMessage('error', 'Something wrong. Please Try again later.');
-					$form->saveValues();
 					return $this->redirect('activation', ['code' => $code]);
 				}
 			}
@@ -122,27 +118,27 @@ class IndexController extends BaseController {
     }
 
     public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
-        $form = new FormHelper('login');
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('login');
         $form
-            ->addField('email', '', [
+            ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
                 'error' => 'Must be valid email',
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'email'])
-            ->addField('password', '', [
+            ->add('password', '', [
                 'type' => 'password',
                 'title' => 'Password',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'trim', 'min_length' => 6]);
-        $form->processRequest($this->getRequest());
+        $form->processRequest();
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                $form->saveValues();
                 return $this->redirect('login');
             } else {
 

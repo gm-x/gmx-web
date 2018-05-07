@@ -48,3 +48,7 @@ $container['log'] = function (\Psr\Container\ContainerInterface $container) {
 
 	return $log;
 };
+
+$container['form'] = function (\Psr\Container\ContainerInterface $container) {
+    return new \GameX\Core\Forms\FormFactory($container);
+};
