@@ -1,11 +1,15 @@
 <?php
 
-$container['session'] = function ($c) {
-	return new \SlimSession\Helper;
+$container['session'] = function (\Psr\Container\ContainerInterface $container) {
+	return new \SlimSession\Helper();
 };
 
-$container['flash'] = function () {
-	return new \Slim\Flash\Messages();
+$container['csrf'] = function (\Psr\Container\ContainerInterface $container) {
+    return new \Slim\Csrf\Guard('csrf', $container->get('session'), null, 200, 16, true);
+};
+
+$container['flash'] = function (\Psr\Container\ContainerInterface $container) {
+	return new \Slim\Flash\Messages($container->get('session'), 'flash_messages');
 };
 
 $container['view'] = function (\Psr\Container\ContainerInterface $container) {
@@ -15,8 +19,8 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
-    $view->addExtension(new Slim\Views\TwigExtension($container->get('router'), $basePath));
-    $view->addExtension(new GameX\Core\Forms\FormExtension());
+    $view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
+    $view->addExtension(new \GameX\Core\Forms\FormExtension($container->get('csrf')));
 
     return $view;
 };

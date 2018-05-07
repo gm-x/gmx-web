@@ -2,7 +2,6 @@
 
 namespace GameX\Core\Forms;
 
-use function Form\Rule\bool;
 use \Psr\Http\Message\RequestInterface;
 use \SlimSession\Helper;
 use \Form\Validator;
@@ -72,7 +71,9 @@ class Form {
      * From destructor
      */
     public function __destruct() {
-        $this->saveValues();
+        if (!$this->isValid) {
+            $this->writeValues();
+        }
     }
 
     /**
@@ -131,6 +132,11 @@ class Form {
             }
         }
 
+        return $this;
+    }
+
+    public function saveValues() {
+        $this->writeValues();
         return $this;
     }
 
@@ -263,11 +269,7 @@ class Form {
     /**
      * Save values and errors to session
      */
-    protected function saveValues() {
-        if ($this->isValid) {
-            return;
-        }
-
+    protected function writeValues() {
         $values = [];
         foreach ($this->fields as $key => $field) {
             if (!array_key_exists($key, $this->values)) {

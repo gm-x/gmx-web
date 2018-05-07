@@ -55,17 +55,8 @@ class IndexController extends BaseController {
                         $form->getValue('password_repeat')
                     );
                     return $this->redirect('login');
-                } catch (FormException $e) {
-                    $form->setError($e->getField(), $e->getMessage());
-                    return $this->redirect('register');
-                } catch (ValidationException $e) {
-                    $form->setIsValid(false);
-                    $this->addFlashMessage('error', $e->getMessage());
-                    return $this->redirect('register');
                 } catch (Exception $e) {
-                    $form->setIsValid(false);
-                    $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
-                    return $this->redirect('register');
+                    return $this->failRedirect($e, $form, 'register');
                 }
             }
         }
@@ -152,5 +143,19 @@ class IndexController extends BaseController {
 
     protected function loginUser($email, $password) {
 //
+    }
+
+    protected function failRedirect(Exception $e, Form $form, $path, array $data = [], array $queryParams = []) {
+        if ($e instanceof FormException) {
+            $form->setError($e->getField(), $e->getMessage());
+        } elseif ($e instanceof ValidationException) {
+            $this->addFlashMessage('error', $e->getMessage());
+        } else {
+            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+        }
+
+        $form->saveValues();
+
+        return $this->redirect($path, $data,  $queryParams);
     }
 }

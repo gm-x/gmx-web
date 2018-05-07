@@ -2,6 +2,7 @@
 
 {% block content %}
 <form action="{{ path_for('register') }}" method="post">
+    {{ csrf_token() }}
     <div class="row">
         <div class="input-field col s12">
             {{ form_label(form, 'email') }}
