@@ -1,0 +1,16 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+<form action="{{ path_for('activation', {'code': code}) }}" method="post">
+    <div class="row">
+        <div class="input-field col s12">
+            {{ form_label(form, 'email') }}
+            {{ form_input(form, 'email') }}
+            {{ form_error(form, 'email') }}
+        </div>
+    </div>
+    <div class="row">
+        <input type="submit" class="btn" value="Register">
+    </div>
+</form>
+{% endblock %}

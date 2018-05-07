@@ -10,7 +10,7 @@ $app
     ->map(['GET', 'POST'], '/register', BaseController::action(IndexController::class, 'register'))
     ->setName('register');
 $app
-    ->get('/activation/{code}', BaseController::action(IndexController::class, 'activate'))
+	->map(['GET', 'POST'], '/activation/{code}', BaseController::action(IndexController::class, 'activate'))
     ->setName('activation');
 
 $app

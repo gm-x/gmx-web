@@ -77,7 +77,48 @@ class IndexController extends BaseController {
     }
 
     public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
-		//
+    	$code = $args['code'];
+
+		$form = new FormHelper('activation');
+		$form
+			->addField('email', '', [
+				'type' => 'email',
+				'title' => 'Email',
+				'error' => 'Must be valid email',
+				'required' => true,
+				'attributes' => [],
+			], ['required', 'email']);
+		$form->processRequest($this->getRequest());
+
+		if ($form->getIsSubmitted()) {
+			if (!$form->getIsValid()) {
+				$form->saveValues();
+				return $this->redirect('login');
+			} else {
+				try {
+					$authHelper = new AuthHelper($this->container);
+					$authHelper->activateUser($form->getValue('email'), $code);
+					return $this->redirect('login');
+				} catch (FormException $e) {
+					$form->setError($e->getField(), $e->getMessage());
+					$form->saveValues();
+					return $this->redirect('activation', ['code' => $code]);
+				} catch (ValidationException $e) {
+					$this->addFlashMessage('error', $e->getMessage());
+					$form->saveValues();
+					return $this->redirect('activation', ['code' => $code]);
+				} catch (Exception $e) {
+					$this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+					$form->saveValues();
+					return $this->redirect('activation', ['code' => $code]);
+				}
+			}
+		}
+
+		return $this->render('index/activation.twig', [
+			'form' => $form,
+			'code' => $code,
+		]);
     }
 
     public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {

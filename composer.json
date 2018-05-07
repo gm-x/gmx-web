@@ -23,7 +23,8 @@
 		"bryanjhv/slim-session": "3.5.0",
 		"akrabat/rka-ip-address-middleware": "0.6",
 		"rlanvin/php-form": "v2.0.1",
-		"txthinking/mailer": "v2.0.0"
+		"txthinking/mailer": "v2.0.0",
+		"monolog/monolog": "1.23.0"
 	},
 	"autoload": {
 		"psr-4": {

@@ -14,6 +14,14 @@ class AuthHelper {
 		$this->container = $container;
 	}
 
+	/**
+	 * @param $email
+	 * @param $password
+	 * @param $password_repeat
+	 * @return bool
+	 * @throws FormException
+	 * @throws ValidationException
+	 */
 	public function registerUser($email, $password, $password_repeat) {
 		if ($password !== $password_repeat) {
 			throw new FormException('password_repeat', 'Password didn\'t match');
@@ -47,14 +55,41 @@ class AuthHelper {
 		$mailBody = $mail->render('activation', [
 			'link' => $this->getActivationLink('activation', ['code' => $activation->getCode()])
 		]);
-		$mail->send([
+		return $mail->send([
 			'name' => $email,
 			'email' => $email
 		], 'Activation', $mailBody);
 	}
 
-	public function activateUser($code) {
+	public function activateUser($email, $code) {
+		/** @var Sentinel $auth */
+		$auth = $this->container->get('auth');
 
+		$user = $auth->getUserRepository()->findByCredentials([
+			'email' => $email
+		]);
+
+		if (!$user) {
+			throw new FormException('email', 'User not found');
+		}
+
+		$activation = $auth->getActivationRepository()->complete($user, $code);
+		if (!$activation) {
+			throw new ValidationException('Something wrong. Please Try again later.');
+		}
+
+		return true;
+
+//		/** @var MailHelper $mail */
+//		$mail = $this->container->get('mail');
+//
+//		$mailBody = $mail->render('activation', [
+//			'link' => $this->getActivationLink('activation', ['code' => $activation->getCode()])
+//		]);
+//		return $mail->send([
+//			'name' => $email,
+//			'email' => $email
+//		], 'Activation', $mailBody);
 	}
 
 	/**

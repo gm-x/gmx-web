@@ -38,5 +38,13 @@ $container['auth'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
-    return new \GameX\Core\Mail\MailHelper($container['config']['mail'], $container->get('view'));
+    return new \GameX\Core\Mail\MailHelper($container);
+};
+
+$container['log'] = function (\Psr\Container\ContainerInterface $container) {
+	$log = new \Monolog\Logger('name');
+	$logPath = $container['root'] . '/tmp.log';
+	$log->pushHandler(new \Monolog\Handler\StreamHandler($logPath, \Monolog\Logger::DEBUG));
+
+	return $log;
 };

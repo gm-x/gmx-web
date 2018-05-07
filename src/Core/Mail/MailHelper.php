@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Mail;
 
+use Psr\Container\ContainerInterface;
 use \Tx\Mailer\SMTP;
 use \Slim\Views\Twig;
 
@@ -20,8 +21,7 @@ class MailHelper {
      */
     protected $view;
 
-    // TODO: Get twig from container
-    public function __construct($config, Twig $view) {
+    public function __construct(ContainerInterface $container) {
         $config = array_merge([
             'from' => [
                 'name' => 'test',
@@ -30,20 +30,27 @@ class MailHelper {
             'transport' => [
                 'type' => 'mail',
             ]
-        ], (array)$config);
-        if ($config['transport']['type'] === 'smtp') {
-            $this->smtp = new SMTP();
-            $this->smtp->setServer($config['transport']['host'], $config['transport']['port']);
-            if (!empty($config['transport']['username']) && !empty($config['transport']['password'])) {
-                $this->smtp->setAuth($config['transport']['username'], $config['transport']['password']);
-            }
-        }
+        ], (array)$container['config']['mail']);
+
 
         $this->from = $config['from'];
-        $this->view = $view;
+        $this->view = $container->get('view');
+		if ($config['transport']['type'] === 'smtp') {
+			$this->smtp = new SMTP($container->get('log'));
+			$this->smtp->setServer($config['transport']['host'], $config['transport']['port']);
+			if (!empty($config['transport']['username']) && !empty($config['transport']['password'])) {
+				$this->smtp->setAuth($config['transport']['username'], $config['transport']['password']);
+			}
+		}
     }
 
-    // TODO: setters instead of arguments
+	/**
+	 * @param $to
+	 * @param $subject
+	 * @param $body
+	 * @param array $attachments
+	 * @return bool
+	 */
     public function send($to, $subject, $body, array $attachments = []) {
         $message = new MailMessage();
 
@@ -67,7 +74,7 @@ class MailHelper {
     }
 
     protected function sendMail(MailMessage $message) {
-    	throw new \Exception('Disable mail function');
+    	return false;
 //        return mail(
 //            $message->getFromEmail(),
 //            $message->getSubject(),
