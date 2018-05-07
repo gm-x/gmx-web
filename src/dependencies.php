@@ -1,7 +1,11 @@
 <?php
 
 $container['session'] = function ($c) {
-    return new \SlimSession\Helper;
+	return new \SlimSession\Helper;
+};
+
+$container['flash'] = function () {
+	return new \Slim\Flash\Messages();
 };
 
 $container['view'] = function (\Psr\Container\ContainerInterface $container) {
@@ -29,12 +33,10 @@ $container['db'] = function (\Psr\Container\ContainerInterface $container) {
 
 $container['auth'] = function (\Psr\Container\ContainerInterface $container) {
     $container->get('db');
-    $bootsrap = new \GameX\Core\Sentinel\SentinelBootstrapper($container->get('request'), $container->get('session'));
+    $bootsrap = new \GameX\Core\Auth\SentinelBootstrapper($container->get('request'), $container->get('session'));
     return $bootsrap->createSentinel();
 };
 
 $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
-    $mailer = new \Tx\Mailer();
-    $config = $container['config']['mailer'];
-    return $mailer->setServer($config['host'], $config['port']);
+    return new \GameX\Core\Mail\MailHelper($container['config']['mail'], $container->get('view'));
 };

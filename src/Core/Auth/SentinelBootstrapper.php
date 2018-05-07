@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Core\Sentinel;
+namespace GameX\Core\Auth;
 
 use Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
 use Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
@@ -9,7 +9,6 @@ use Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository;
 use Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
 use Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
 use Cartalyst\Sentinel\Sentinel;
-use Cartalyst\Sentinel\Sessions\NativeSession;
 use Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository;
 use Cartalyst\Sentinel\Users\IlluminateUserRepository;
 use Illuminate\Events\Dispatcher;

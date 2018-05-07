@@ -30,7 +30,7 @@ class MailHelper {
             'transport' => [
                 'type' => 'mail',
             ]
-        ], $config);
+        ], (array)$config);
         if ($config['transport']['type'] === 'smtp') {
             $this->smtp = new SMTP();
             $this->smtp->setServer($config['transport']['host'], $config['transport']['port']);
@@ -67,11 +67,12 @@ class MailHelper {
     }
 
     protected function sendMail(MailMessage $message) {
-        return mail(
-            $message->getFromEmail(),
-            $message->getSubject(),
-            $message->getBodyForMail(),
-            $message->getHeadersForMail()
-        );
+    	throw new \Exception('Disable mail function');
+//        return mail(
+//            $message->getFromEmail(),
+//            $message->getSubject(),
+//            $message->getBodyForMail(),
+//            $message->getHeadersForMail()
+//        );
     }
 }

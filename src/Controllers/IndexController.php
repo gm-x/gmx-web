@@ -2,11 +2,11 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseController;
-use \Cartalyst\Sentinel\Sentinel;
+
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\FormHelper;
-use \GameX\Core\Mail\MailHelper;
+use \GameX\Core\Auth\AuthHelper;
 use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
 use \Exception;
@@ -48,7 +48,8 @@ class IndexController extends BaseController {
                 return $this->redirect('register');
             } else {
                 try {
-                    $this->registerUser(
+                	$authHelper = new AuthHelper($this->container);
+					$authHelper->registerUser(
                         $form->getValue('email'),
                         $form->getValue('password'),
                         $form->getValue('password_repeat')
@@ -76,13 +77,7 @@ class IndexController extends BaseController {
     }
 
     public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
-        /** @var \Slim\Router $router */
-        $router = $this->getContainer('router');
-        $uri = (string)$request->getUri()->withPath($router->pathFor('activation', ['code' => 'test']));
-        var_dump($uri);
-        die();
-
-//        return $this->render('index/test.twig');
+		//
     }
 
     public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
@@ -116,41 +111,6 @@ class IndexController extends BaseController {
         return $this->render('index/login.twig', [
             'form' => $form,
         ]);
-    }
-
-    protected function registerUser($email, $password, $password_repeat) {
-        if ($password !== $password_repeat) {
-            throw new FormException('password_repeat', 'Password didn\'t match');
-        }
-
-        /** @var Sentinel $auth */
-        $auth = $this->getContainer('auth');
-
-        $user = $auth->getUserRepository()->findByCredentials([
-            'email' => $email
-        ]);
-
-        if ($user) {
-            throw new FormException('email', 'User already exists');
-        }
-
-        $user = $auth->register([
-            'email'  => $email,
-            'password' => $password,
-        ]);
-
-        if (!$user) {
-            throw new ValidationException('Something wrong. Please Try again later.');
-        }
-
-        $activation = $auth->getActivationRepository()->create($user);
-
-        /** @var MailHelper $mail */
-        $mail = $this->getContainer('mail');
-        $mail->send([
-            'name' => $email,
-            'email' => $email
-        ], 'Activation', 'Your code is ' . $activation->getCode());
     }
 
     protected function loginUser($email, $password) {
