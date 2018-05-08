@@ -123,6 +123,12 @@ class AuthHelper {
 		return $this->auth->logout();
 	}
 
+    /**
+     * @param $email
+     * @return bool
+     * @throws FormException
+     * @throws ValidationException
+     */
 	public function resetPassword($email) {
 		$user = $this->auth->getUserRepository()->findByCredentials([
 			'email' => $email
@@ -144,9 +150,31 @@ class AuthHelper {
 		}
 
 		return $this->sendEmail($email, 'Reset Password', 'reset_password', [
-			'link' => $this->getLink('complete_reset', ['code' => $reminder->getCode()])
+			'link' => $this->getLink('reset_password_complete', ['code' => $reminder->code])
 		]);
 	}
+
+    public function resetPasswordComplete($email, $password, $password_repeat, $code) {
+        if ($password !== $password_repeat) {
+            throw new FormException('password_repeat', 'Password didn\'t match');
+        }
+
+        $user = $this->auth->getUserRepository()->findByCredentials([
+            'email' => $email
+        ]);
+
+        if (!$user) {
+            throw new FormException('email', 'User not found');
+        }
+
+        $reminderRepository = $this->auth->getReminderRepository();
+        if (!$reminderRepository->exists($user)) {
+            throw new ValidationException('Bad code');
+        }
+
+        /** @var EloquentReminder $reminder */
+        return $reminderRepository->complete($user, $code, $password);
+    }
 
 	/**
 	 * @param $name

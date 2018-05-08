@@ -167,8 +167,7 @@ class UserController extends BaseController {
 					);
 					return $this->redirect('index');
 				} catch (Exception $e) {
-					var_dump($e);
-					die();
+					$this->failRedirect($e, $form, 'reset_password');
 					return $this->failRedirect($e, $form, 'reset_password');
 				}
 			}
@@ -178,6 +177,60 @@ class UserController extends BaseController {
 			'form' => $form
 		]);
 	}
+
+	public function resetPasswordCompleteAction(RequestInterface $request, ResponseInterface $response, array $args) {
+        $code = $args['code'];
+
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('reset_password_complete');
+        $form
+            ->add('email', '', [
+                'type' => 'email',
+                'title' => 'Email',
+                'error' => 'Must be valid email',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'email'])
+            ->add('password', '', [
+                'type' => 'password',
+                'title' => 'Password',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim', 'min_length' => 6])
+            ->add('password_repeat', '', [
+                'type' => 'password',
+                'title' => 'Repeat Password',
+                'error' => 'Passwords does not match',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim', 'min_length' => 6])
+            ->processRequest();
+
+        if ($form->getIsSubmitted()) {
+            if (!$form->getIsValid()) {
+                return $this->redirect('reset_password_complete', ['code' => $code]);
+            } else {
+                try {
+                    $authHelper = new AuthHelper($this->container);
+                    $authHelper->resetPasswordComplete(
+                        $form->getValue('email'),
+                        $form->getValue('password'),
+                        $form->getValue('password_repeat'),
+                        $code
+                    );
+                    return $this->redirect('login');
+                } catch (Exception $e) {
+                    return $this->failRedirect($e, $form, 'reset_password_complete', ['code' => $code]);
+                }
+            }
+        }
+
+        return $this->render('user/reset_password_complete.twig', [
+            'form' => $form,
+            'code' => $code,
+        ]);
+    }
 
     protected function failRedirect(Exception $e, Form $form, $path, array $data = [], array $queryParams = []) {
         if ($e instanceof FormException) {

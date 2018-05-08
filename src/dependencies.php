@@ -10,7 +10,8 @@ $container['session'] = function (\Psr\Container\ContainerInterface $container) 
 //};
 
 $container['flash'] = function (\Psr\Container\ContainerInterface $container) {
-	return new \Slim\Flash\Messages($container->get('session'), 'flash_messages');
+	return new \GameX\Core\FlashMessages($container->get('session'), 'flash_messages');
+//	return new \Slim\Flash\Messages($container->get('session'), 'flash_messages');
 };
 
 $container['view'] = function (\Psr\Container\ContainerInterface $container) {

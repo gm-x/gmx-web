@@ -24,5 +24,9 @@ $app
     ->setName('reset_password');
 
 $app
+    ->map(['GET', 'POST'], '/reset_password/{code}', BaseController::action(UserController::class, 'resetPasswordComplete'))
+    ->setName('reset_password_complete');
+
+$app
 	->get('/logout', BaseController::action(UserController::class, 'logout'))
     ->setName('logout');
