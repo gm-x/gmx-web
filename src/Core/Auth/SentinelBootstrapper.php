@@ -119,7 +119,7 @@ class SentinelBootstrapper
     /**
      * Creates a session.
      *
-     * @return \Cartalyst\Sentinel\Sessions\NativeSession
+     * @return Session
      */
     protected function createSession()
     {

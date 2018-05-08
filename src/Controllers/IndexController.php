@@ -83,21 +83,14 @@ class IndexController extends BaseController {
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
-				return $this->redirect('login');
+				return $this->redirect('activation', ['code' => $code]);
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
-					$authHelper->activateUser($form->getValue('email'), $code);
+					$user = $authHelper->activateUser($form->getValue('email'), $code);
 					return $this->redirect('login');
-				} catch (FormException $e) {
-					$form->setError($e->getField(), $e->getMessage());
-					return $this->redirect('activation', ['code' => $code]);
-				} catch (ValidationException $e) {
-					$this->addFlashMessage('error', $e->getMessage());
-					return $this->redirect('activation', ['code' => $code]);
 				} catch (Exception $e) {
-					$this->addFlashMessage('error', 'Something wrong. Please Try again later.');
-					return $this->redirect('activation', ['code' => $code]);
+					return $this->failRedirect($e, $form, 'activation', ['code' => $code]);
 				}
 			}
 		}
@@ -128,21 +121,26 @@ class IndexController extends BaseController {
             ], ['required', 'trim', 'min_length' => 6]);
         $form->processRequest();
 
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirect('login');
-            } else {
+		if ($form->getIsSubmitted()) {
+			if (!$form->getIsValid()) {
+				return $this->redirect('login');
+			} else {
+				try {
+					$authHelper = new AuthHelper($this->container);
+					$authHelper->loginUser(
+						$form->getValue('email'),
+						$form->getValue('password')
+					);
+					return $this->redirect('index');
+				} catch (Exception $e) {
+					return $this->failRedirect($e, $form, 'login');
+				}
+			}
+		}
 
-            }
-        }
-
-        return $this->render('index/login.twig', [
-            'form' => $form,
-        ]);
-    }
-
-    protected function loginUser($email, $password) {
-//
+		return $this->render('index/login.twig', [
+			'form' => $form,
+		]);
     }
 
     protected function failRedirect(Exception $e, Form $form, $path, array $data = [], array $queryParams = []) {

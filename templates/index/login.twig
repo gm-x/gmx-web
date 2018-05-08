@@ -1,7 +1,7 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-<form action="{{ path_for('register') }}" method="post">
+<form action="{{ path_for('login') }}" method="post">
     <div class="row">
         <div class="input-field col s12">
             {{ form_label(form, 'email') }}
@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="row">
-        <input type="submit" class="btn" value="Register">
+        <input type="submit" class="btn" value="Login">
         <a href="{{ path_for('register') }}">Register</a>
     </div>
 </form>

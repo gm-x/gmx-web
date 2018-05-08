@@ -6,12 +6,23 @@ use \GameX\Core\Mail\MailHelper;
 use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
 use Psr\Container\ContainerInterface;
+use SlimSession\Helper;
 
 class AuthHelper {
+
+	/**
+	 * @var ContainerInterface
+	 */
 	protected $container;
+
+	/**
+	 * @var Sentinel
+	 */
+	protected $auth;
 
 	public function __construct(ContainerInterface $container) {
 		$this->container = $container;
+		$this->auth = $container->get('auth');
 	}
 
 	/**
@@ -27,10 +38,7 @@ class AuthHelper {
 			throw new FormException('password_repeat', 'Password didn\'t match');
 		}
 
-		/** @var Sentinel $auth */
-		$auth = $this->container->get('auth');
-
-		$user = $auth->getUserRepository()->findByCredentials([
+		$user = $this->auth->getUserRepository()->findByCredentials([
 			'email' => $email
 		]);
 
@@ -38,7 +46,7 @@ class AuthHelper {
 			throw new FormException('email', 'User already exists');
 		}
 
-		$user = $auth->register([
+		$user = $this->auth->register([
 			'email'  => $email,
 			'password' => $password,
 		]);
@@ -47,7 +55,7 @@ class AuthHelper {
 			throw new ValidationException('Something wrong. Please Try again later.');
 		}
 
-		$activation = $auth->getActivationRepository()->create($user);
+		$activation = $this->auth->getActivationRepository()->create($user);
 
 		/** @var MailHelper $mail */
 		$mail = $this->container->get('mail');
@@ -62,10 +70,7 @@ class AuthHelper {
 	}
 
 	public function activateUser($email, $code) {
-		/** @var Sentinel $auth */
-		$auth = $this->container->get('auth');
-
-		$user = $auth->getUserRepository()->findByCredentials([
+		$user = $this->auth->getUserRepository()->findByCredentials([
 			'email' => $email
 		]);
 
@@ -73,12 +78,12 @@ class AuthHelper {
 			throw new FormException('email', 'User not found');
 		}
 
-		$activation = $auth->getActivationRepository()->complete($user, $code);
+		$activation = $this->auth->getActivationRepository()->complete($user, $code);
 		if (!$activation) {
 			throw new ValidationException('Something wrong. Please Try again later.');
 		}
 
-		return true;
+		return $user;
 
 //		/** @var MailHelper $mail */
 //		$mail = $this->container->get('mail');
@@ -90,6 +95,19 @@ class AuthHelper {
 //			'name' => $email,
 //			'email' => $email
 //		], 'Activation', $mailBody);
+	}
+
+	public function loginUser($email, $password) {
+		$user =  $this->auth->authenticate([
+			'email' => $email,
+			'password' => $password
+		]);
+
+		if (!$user) {
+			throw new ValidationException('Bad email or password');
+		}
+
+		return $user;
 	}
 
 	/**

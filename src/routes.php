@@ -14,5 +14,5 @@ $app
     ->setName('activation');
 
 $app
-    ->get('/login', BaseController::action(IndexController::class, 'login'))
+	->map(['GET', 'POST'], '/login', BaseController::action(IndexController::class, 'login'))
     ->setName('login');
