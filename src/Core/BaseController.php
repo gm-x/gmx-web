@@ -3,10 +3,8 @@ namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use \Slim\App;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
-use \Slim\Router;
 use Slim\Views\Twig;
 
 abstract class BaseController {
@@ -25,20 +23,12 @@ abstract class BaseController {
      */
     protected $response;
 
+	/**
+	 * BaseController constructor.
+	 * @param ContainerInterface $container
+	 */
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
-    }
-    /**
-     * @return Request
-     */
-    public function getRequest() {
-        return $this->getContainer('request');
-    }
-    /**
-     * @return Response
-     */
-    public function getResponse() {
-        return $this->getContainer('response');
     }
 
     /**
@@ -59,14 +49,15 @@ abstract class BaseController {
      * @return ResponseInterface
      */
     protected function redirect($path, array $data = [], array $queryParams = [], $status = null) {
-        /** @var Router $router */
-        $router = $this->getContainer('router');
-        return $this->getResponse()->withRedirect($router->pathFor($path, $data, $queryParams), $status);
+        return $this->getContainer('response')->withRedirect(
+			$this->getContainer('router')->pathFor($path, $data, $queryParams),
+			$status
+		);
     }
 
 
     /**
-     * @param $template
+     * @param string $template
      * @param array $data
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -75,13 +66,13 @@ abstract class BaseController {
     protected function render($template, array $data = []) {
         /** @var Twig $view */
         $view = $this->getContainer('view');
-        return $view->render($this->getResponse(), $template, $data);
+        return $view->render($this->getContainer('response'), $template, $data);
     }
 
 
     /**
-     * @param $type
-     * @param $message
+     * @param string $type
+     * @param string $message
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -89,6 +80,11 @@ abstract class BaseController {
         $this->getContainer('flash')->addMessage($type, $message);
     }
 
+	/**
+	 * @param string $controller
+	 * @param string $action
+	 * @return string
+	 */
     public static function action($controller, $action) {
         return $controller . ':' . $action . 'Action';
     }

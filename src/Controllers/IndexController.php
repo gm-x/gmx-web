@@ -2,7 +2,6 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseController;
-
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
