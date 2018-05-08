@@ -2,6 +2,7 @@
 
 {% block content %}
 <form action="{{ path_for('register') }}" method="post">
+    {{ csrf_token() }}
     <div class="row">
         <div class="input-field col s12">
             {{ form_label(form, 'email') }}
@@ -25,6 +26,7 @@
     </div>
     <div class="row">
         <input type="submit" class="btn" value="Register">
+        <a href="{{ path_for('login') }}">Login</a>
     </div>
 </form>
 {% endblock %}

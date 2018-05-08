@@ -1,9 +1,8 @@
 <?php
-
 namespace GameX\Core\Mail;
 
+use Psr\Container\ContainerInterface;
 use \Tx\Mailer\SMTP;
-use \GameX\Core\Mail\MailMessage;
 use \Slim\Views\Twig;
 
 class MailHelper {
@@ -22,7 +21,7 @@ class MailHelper {
      */
     protected $view;
 
-    public function __construct($config, Twig $view) {
+    public function __construct(ContainerInterface $container) {
         $config = array_merge([
             'from' => [
                 'name' => 'test',
@@ -31,24 +30,32 @@ class MailHelper {
             'transport' => [
                 'type' => 'mail',
             ]
-        ], $config);
-        if ($config['transport']['type'] === 'smtp') {
-            $this->smtp = new SMTP();
-            $this->smtp->setServer($config['transport']['host'], $config['transport']['port']);
-            if (!empty($config['transport']['username']) && !empty($config['transport']['password'])) {
-                $this->smtp->setAuth($config['transport']['username'], $config['transport']['password']);
-            }
-        }
+        ], (array)$container['config']['mail']);
+
 
         $this->from = $config['from'];
-        $this->view = $view;
+        $this->view = $container->get('view');
+		if ($config['transport']['type'] === 'smtp') {
+			$this->smtp = new SMTP($container->get('log'));
+			$this->smtp->setServer($config['transport']['host'], $config['transport']['port']);
+			if (!empty($config['transport']['username']) && !empty($config['transport']['password'])) {
+				$this->smtp->setAuth($config['transport']['username'], $config['transport']['password']);
+			}
+		}
     }
 
+	/**
+	 * @param $to
+	 * @param $subject
+	 * @param $body
+	 * @param array $attachments
+	 * @return bool
+	 */
     public function send($to, $subject, $body, array $attachments = []) {
         $message = new MailMessage();
 
         $message
-            ->setFrom($this->from['name'], $this->from['name'])
+            ->setFrom($this->from['name'], $this->from['email'])
             ->addTo($to['name'], $to['email'])
             ->setSubject($subject)
             ->setBody($body);
@@ -63,15 +70,16 @@ class MailHelper {
     }
 
     public function render($template, array $data = []) {
-        return $this->view->fetch('email/' . $template, $data);
+        return $this->view->fetch('email/' . $template . '.twig', $data);
     }
 
     protected function sendMail(MailMessage $message) {
-        return mail(
-            $message->getFromEmail(),
-            $message->getSubject(),
-            $message->getBodyForMail(),
-            $message->getHeadersForMail()
-        );
+    	return false;
+//        return mail(
+//            $message->getFromEmail(),
+//            $message->getSubject(),
+//            $message->getBodyForMail(),
+//            $message->getHeadersForMail()
+//        );
     }
 }

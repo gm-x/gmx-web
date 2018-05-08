@@ -2,83 +2,60 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseController;
-use \Cartalyst\Sentinel\Sentinel;
+use \Psr\Http\Message\RequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Forms\Form;
+use \GameX\Core\Auth\AuthHelper;
 use GameX\Core\Exceptions\ValidationException;
-use \GameX\Core\Forms\FormHelper;
 use \GameX\Core\Exceptions\FormException;
 use \Exception;
-use GameX\Core\Mail\MailHelper;
 
 class IndexController extends BaseController {
-    /**
-     * @param array $args
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function indexAction(array $args) {
-        $ok = $this->getContainer('mail')
-//            ->setAuth('tom@server.com', 'password')
-            ->setFrom('Tom', 'tom@server.com')
-            ->addTo('Jerry', 'jerry@server.com')
-            ->setSubject('Hello')
-            ->setBody('Hi, Jerry! I <strong>love</strong> you.')
-            ->addAttachment('host', '/etc/hosts')
-            ->send();
-
+    public function indexAction(RequestInterface $request, ResponseInterface $response, array $args) {
         return $this->render('index/index.twig');
     }
 
-    public function registerAction(array $args) {
-        $form = new FormHelper('register');
+    public function registerAction(RequestInterface $request, ResponseInterface $response, array $args) {
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('register');
         $form
-            ->addField('email', '', [
+            ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
                 'error' => 'Must be valid email',
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'email'])
-            ->addField('password', '', [
+            ->add('password', '', [
                 'type' => 'password',
                 'title' => 'Password',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'trim', 'min_length' => 6])
-            ->addField('password_repeat', '', [
+            ->add('password_repeat', '', [
                 'type' => 'password',
                 'title' => 'Repeat Password',
                 'error' => 'Passwords does not match',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6]);
-        $form->processRequest($this->getRequest());
+            ], ['required', 'trim', 'min_length' => 6])
+            ->processRequest();
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                $form->saveValues();
                 return $this->redirect('register');
             } else {
                 try {
-                    $this->registerUser(
+                	$authHelper = new AuthHelper($this->container);
+					$authHelper->registerUser(
                         $form->getValue('email'),
                         $form->getValue('password'),
                         $form->getValue('password_repeat')
                     );
                     return $this->redirect('login');
-                } catch (FormException $e) {
-                    $form->setError($e->getField(), $e->getMessage());
-                    $form->saveValues();
-                    return $this->redirect('register');
-                } catch (ValidationException $e) {
-                    $this->addFlashMessage('error', $e->getMessage());
-                    $form->saveValues();
-                    return $this->redirect('register');
                 } catch (Exception $e) {
-                    $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
-                    $form->saveValues();
-                    return $this->redirect('register');
+                    return $this->failRedirect($e, $form, 'register');
                 }
             }
         }
@@ -88,75 +65,94 @@ class IndexController extends BaseController {
         ]);
     }
 
-    public function loginAction() {
-        $form = new FormHelper('login');
+    public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
+    	$code = $args['code'];
+
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('activation');
+		$form
+			->add('email', '', [
+				'type' => 'email',
+				'title' => 'Email',
+				'error' => 'Must be valid email',
+				'required' => true,
+				'attributes' => [],
+			], ['required', 'email']);
+		$form->processRequest();
+
+		if ($form->getIsSubmitted()) {
+			if (!$form->getIsValid()) {
+				return $this->redirect('activation', ['code' => $code]);
+			} else {
+				try {
+					$authHelper = new AuthHelper($this->container);
+					$user = $authHelper->activateUser($form->getValue('email'), $code);
+					return $this->redirect('login');
+				} catch (Exception $e) {
+					return $this->failRedirect($e, $form, 'activation', ['code' => $code]);
+				}
+			}
+		}
+
+		return $this->render('index/activation.twig', [
+			'form' => $form,
+			'code' => $code,
+		]);
+    }
+
+    public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('login');
         $form
-            ->addField('email', '', [
+            ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
                 'error' => 'Must be valid email',
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'email'])
-            ->addField('password', '', [
+            ->add('password', '', [
                 'type' => 'password',
                 'title' => 'Password',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'trim', 'min_length' => 6]);
-        $form->processRequest($this->getRequest());
+        $form->processRequest();
 
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                $form->saveValues();
-                return $this->redirect('login');
-            } else {
+		if ($form->getIsSubmitted()) {
+			if (!$form->getIsValid()) {
+				return $this->redirect('login');
+			} else {
+				try {
+					$authHelper = new AuthHelper($this->container);
+					$authHelper->loginUser(
+						$form->getValue('email'),
+						$form->getValue('password')
+					);
+					return $this->redirect('index');
+				} catch (Exception $e) {
+					return $this->failRedirect($e, $form, 'login');
+				}
+			}
+		}
 
-            }
-        }
-
-        return $this->render('index/login.twig', [
-            'form' => $form,
-        ]);
+		return $this->render('index/login.twig', [
+			'form' => $form,
+		]);
     }
 
-    protected function registerUser($email, $password, $password_repeat) {
-        if ($password !== $password_repeat) {
-            throw new FormException('password_repeat', 'Password didn\'t match');
+    protected function failRedirect(Exception $e, Form $form, $path, array $data = [], array $queryParams = []) {
+        if ($e instanceof FormException) {
+            $form->setError($e->getField(), $e->getMessage());
+        } elseif ($e instanceof ValidationException) {
+            $this->addFlashMessage('error', $e->getMessage());
+        } else {
+            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
         }
 
-        /** @var Sentinel $auth */
-        $auth = $this->getContainer('auth');
+        $form->saveValues();
 
-        $user = $auth->getUserRepository()->findByCredentials([
-            'email' => $email
-        ]);
-
-        if ($user) {
-            throw new FormException('email', 'User already exists');
-        }
-
-        $user = $auth->register([
-            'email'  => $email,
-            'password' => $password,
-        ]);
-
-        if (!$user) {
-            throw new ValidationException('Something wrong. Please Try again later.');
-        }
-
-        $activation = $auth->getActivationRepository()->create($user);
-
-        /** @var MailHelper $mail */
-        $mail = $this->getContainer('mail');
-        $mail->send([
-            'name' => $email,
-            'email' => $email
-        ], 'Activation', 'Your code is ' . $activation->getCode());
-    }
-
-    protected function loginUser($email, $password) {
-//
+        return $this->redirect($path, $data,  $queryParams);
     }
 }
