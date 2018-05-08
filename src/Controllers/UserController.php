@@ -62,6 +62,7 @@ class UserController extends BaseController {
     }
 
     public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
+    	$code = $args['code'];
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('activation');
 		$form
