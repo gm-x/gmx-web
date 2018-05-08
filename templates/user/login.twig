@@ -1,8 +1,7 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-<form action="{{ path_for('register') }}" method="post">
-    {{ csrf_token() }}
+<form action="{{ path_for('login') }}" method="post">
     <div class="row">
         <div class="input-field col s12">
             {{ form_label(form, 'email') }}
@@ -18,15 +17,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="input-field col s12">
-            {{ form_label(form, 'password_repeat') }}
-            {{ form_input(form, 'password_repeat') }}
-            {{ form_error(form, 'password_repeat') }}
-        </div>
-    </div>
-    <div class="row">
-        <input type="submit" class="btn" value="Register">
-        <a href="{{ path_for('login') }}">Login</a>
+        <input type="submit" class="btn" value="Login">
+
+        <a href="{{ path_for('reset_password') }}" class="btn red">Reset password</a>
+        <a href="{{ path_for('register') }}" class="btn blue">Register</a>
     </div>
 </form>
 {% endblock %}
