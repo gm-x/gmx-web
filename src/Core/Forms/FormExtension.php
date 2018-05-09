@@ -9,19 +9,16 @@ use \Twig_Environment;
 use \Twig_Extension_InitRuntimeInterface;
 
 class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntimeInterface {
-// TODO: Fix problems with CSRF. Temporally disabled
 //    /**
 //     * @var Guard
 //     */
 //    protected $csrf;
-
 
     /**
      * @var Twig_Environment
      */
     protected $environment;
 
-// TODO: Fix problems with CSRF. Temporally disabled
 //    /**
 //     * FormExtension constructor.
 //     * @param Guard $csrf
@@ -63,8 +60,7 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
     }
 
     public function renderCSRFToken() {
-    	return '';
-    	// TODO: Fix problems with CSRF. Temporally disabled
+        return '';
 //        return sprintf(
 //            '<input type="hidden" name="%s" value="%s"><input type="hidden" name="%s" value="%s">',
 //            $this->csrf->getTokenNameKey(), $this->csrf->getTokenName(),

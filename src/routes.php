@@ -3,8 +3,12 @@ use \GameX\Core\BaseController;
 use \GameX\Controllers\IndexController;
 use \GameX\Controllers\UserController;
 
+//$app
+//    ->get('/', BaseController::action(IndexController::class, 'index'))
+//    ->setName('index');
+
 $app
-    ->get('/', BaseController::action(IndexController::class, 'index'))
+    ->map(['GET', 'POST'], '/', BaseController::action(IndexController::class, 'index'))
     ->setName('index');
 
 $app
