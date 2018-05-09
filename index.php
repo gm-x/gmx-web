@@ -2,7 +2,15 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+$config = [
+    'settings' => [
+        'determineRouteBeforeAppMiddleware' => true,
+        'displayErrorDetails' => true,
+    ],
+];
+
 $config['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
+
 $app = new \Slim\App($config);
 
 $container = $app->getContainer();

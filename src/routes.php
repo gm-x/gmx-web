@@ -9,7 +9,8 @@ use \GameX\Controllers\UserController;
 
 $app
     ->map(['GET', 'POST'], '/', BaseController::action(IndexController::class, 'index'))
-    ->setName('index');
+    ->setName('index')
+    ->setArgument('permission', 'index.view');
 
 $app
     ->map(['GET', 'POST'], '/register', BaseController::action(UserController::class, 'register'))

@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Auth;
 
+use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Sentinel;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -14,10 +15,10 @@ class AuthMiddleware {
 
 	/**
 	 * AuthMiddleware constructor.
-	 * @param Sentinel $auth
+	 * @param ContainerInterface $container
 	 */
-	public function __construct(Sentinel $auth) {
-		$this->auth = $auth;
+	public function __construct(ContainerInterface $container) {
+		$this->auth = $container->get('auth');
 	}
 
 	/**
@@ -27,8 +28,16 @@ class AuthMiddleware {
 	 * @return mixed
 	 */
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
-		$user = $this->auth->getUser();
-		$request = $request->withAttribute('user', $user);
+	    /** @var \Slim\Route $route */
+	    $route = $request->getAttribute('route');
+        $permission = $route->getArgument('permission');
+        if ($permission === null) {
+            return $next($request, $response);
+        }
+        $user = $this->auth->getUser();
+        if ($user && !$user->hasAccess($permission)) {
+            return $next($request, $response);
+        }
 		return $next($request, $response);
 	}
 }
