@@ -9,20 +9,20 @@ use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
 class AuthHelper {
-
-	/**
-	 * @var ContainerInterface
-	 */
-	protected $container;
-
+    
 	/**
 	 * @var Sentinel
 	 */
 	protected $auth;
 
+    /**
+     * @var MailHelper
+     */
+	protected $mail;
+
 	public function __construct(ContainerInterface $container) {
-		$this->container = $container;
-		$this->auth = $container->get('auth');
+		$this->auth = $container->get('auth')->getRoleRepository();
+		$this->mail = $container->get('mail');
 	}
 
 	/**
@@ -84,17 +84,6 @@ class AuthHelper {
 		}
 
 		return $user;
-
-//		/** @var MailHelper $mail */
-//		$mail = $this->container->get('mail');
-//
-//		$mailBody = $mail->render('activation', [
-//			'link' => $this->getActivationLink('activation', ['code' => $activation->getCode()])
-//		]);
-//		return $mail->send([
-//			'name' => $email,
-//			'email' => $email
-//		], 'Activation', $mailBody);
 	}
 
 	/**
@@ -201,11 +190,8 @@ class AuthHelper {
 	 * @return bool
 	 */
 	protected function sendEmail($email, $title, $template, array $data = []) {
-		/** @var MailHelper $mail */
-		$mail = $this->container->get('mail');
-
-		$mailBody = $mail->render($template, $data);
-		return $mail->send([
+		$mailBody = $this->mail->render($template, $data);
+		return $this->mail->send([
 			'name' => $email,
 			'email' => $email
 		], $title, $mailBody);
