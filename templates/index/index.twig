@@ -1,10 +1,5 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-<form action="{{ path_for('index') }}" method="post">
-    {{ csrf_token() }}
-    <div class="row">
-        <input type="submit" class="btn" value="TEST">
-    </div>
-</form>
+<h1>Hello World</h1>
 {% endblock %}
