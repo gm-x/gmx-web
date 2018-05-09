@@ -4,7 +4,7 @@ namespace GameX\Core\Forms;
 
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\RequestInterface;
-use \SlimSession\Helper;
+use \GameX\Core\Session\Session;
 
 class FormFactory {
     /**
@@ -13,7 +13,7 @@ class FormFactory {
     protected $request;
 
     /**
-     * @var Helper
+     * @var Session
      */
     protected $session;
 

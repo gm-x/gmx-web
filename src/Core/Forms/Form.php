@@ -2,18 +2,18 @@
 
 namespace GameX\Core\Forms;
 
-use \Psr\Http\Message\RequestInterface;
-use \SlimSession\Helper;
+use \Psr\Http\Message\ServerRequestInterface;
 use \Form\Validator;
+use \GameX\Core\Session\Session;
 
 class Form {
     /**
-     * @var RequestInterface
+     * @var ServerRequestInterface
      */
     protected $request;
 
     /**
-     * @var Helper
+     * @var Session
      */
     protected $session;
 
@@ -54,11 +54,11 @@ class Form {
 
     /**
      * Form constructor.
-     * @param RequestInterface $request
-     * @param Helper $session
+     * @param ServerRequestInterface $request
+     * @param Session $session
      * @param $name
      */
-    public function __construct(RequestInterface $request, Helper $session, $name) {
+    public function __construct(ServerRequestInterface $request, Session $session, $name) {
         $this->request = $request;
         $this->session = $session;
         $this->name = $name;
