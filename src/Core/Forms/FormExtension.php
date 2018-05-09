@@ -1,32 +1,16 @@
 <?php
 namespace GameX\Core\Forms;
 
-use \Slim\Csrf\Guard;
-use Twig\Environment;
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 use \Twig_Environment;
 use \Twig_Extension_InitRuntimeInterface;
 
-class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntimeInterface{
-    /**
-     * @var Guard
-     */
-    protected $csrf;
-
-
+class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntimeInterface {
     /**
      * @var Twig_Environment
      */
     protected $environment;
-
-    /**
-     * FormExtension constructor.
-     * @param Guard $csrf
-     */
-    public function __construct(Guard $csrf) {
-        $this->csrf = $csrf;
-    }
 
     /**
      * @param Twig_Environment $environment
@@ -37,11 +21,6 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 
     public function getFunctions() {
         return [
-            new Twig_SimpleFunction(
-                'csrf_token',
-                [$this, 'renderCSRFToken'],
-                ['is_safe' => ['html']]
-            ),
             new Twig_SimpleFunction(
                 'form_input',
                 [$this, 'renderInput'],
@@ -58,14 +37,6 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
                 ['is_safe' => ['html']]
             ),
         ];
-    }
-
-    public function renderCSRFToken() {
-        return sprintf(
-            '<input type="hidden" name="%s" value="%s"><input type="hidden" name="%s" value="%s">',
-            $this->csrf->getTokenNameKey(), $this->csrf->getTokenName(),
-            $this->csrf->getTokenValueKey(), $this->csrf->getTokenValue()
-        );
     }
 
     public function renderInput(Form $form, $name) {

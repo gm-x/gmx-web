@@ -15,17 +15,17 @@ use Illuminate\Events\Dispatcher;
 use InvalidArgumentException;
 use \Slim\Http\Request;
 use Cartalyst\Sentinel\Native\ConfigRepository;
-use SlimSession\Helper;
+use \GameX\Core\Auth\Session as SentinelSession;
+use \GameX\Core\Session\Session;
 
-class SentinelBootstrapper
-{
+class SentinelBootstrapper {
     /**
      * @var Request
      */
     protected $request;
 
     /**
-     * @var Helper
+     * @var Session
      */
     protected $session;
 
@@ -47,13 +47,12 @@ class SentinelBootstrapper
      * Constructor.
      *
      * @param Request $request
-     * @param Helper $session
+     * @param Session $session
      */
-    public function __construct(Request $request, Helper $session) {
+    public function __construct(Request $request, Session $session) {
         $this->request = $request;
         $this->session = $session;
         $this->config = new ConfigRepository(__DIR__ . '/config.php');
-//        var_dump($this->config['persistences']['model']); die();
     }
 
     /**
@@ -119,11 +118,11 @@ class SentinelBootstrapper
     /**
      * Creates a session.
      *
-     * @return Session
+     * @return SentinelSession
      */
     protected function createSession()
     {
-        return new Session($this->session, $this->config['session']);
+        return new SentinelSession($this->session, $this->config['session']);
     }
 
     /**
