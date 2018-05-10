@@ -43,11 +43,14 @@ function composerInstall() {
 	require_once($tempDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
 
 	dirname($baseDir);
+//	https://getcomposer.org/doc/03-cli.md#composer-vendor-dir
 	putenv('COMPOSER_HOME=' . $tempDir . '/vendor/bin/composer');
+	putenv('COMPOSER_VENDOR_DIR=' . $baseDir . '/vendor');
+	putenv('COMPOSER_BIN_DIR=' . $baseDir . '/vendor/bin');
 
 	$input = new \Symfony\Component\Console\Input\ArrayInput(['command' => 'install']);
 	$output = new \Symfony\Component\Console\Output\NullOutput();
 	$application = new \Composer\Console\Application();
-	$application->setAutoExit(true);
+	$application->setAutoExit(false);
 	$application->run($input, $output);
 }
