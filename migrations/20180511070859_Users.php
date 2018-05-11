@@ -14,7 +14,7 @@ class Users extends Migration {
 				$table->increments('id');
 				$table->string('email', 255)->unique();
 				$table->string('password', 255);
-				$table->text('permissions');
+				$table->text('permissions')->nullable();
 				$table->timestamp('last_login')->nullable();
 				$table->timestamps();
 			});

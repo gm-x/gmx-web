@@ -13,7 +13,7 @@ class Activations extends Migration {
 				$table->increments('id');
 				$table->unsignedInteger('user_id');
 				$table->string('code', 255);
-				$table->tinyInteger('completed');
+				$table->tinyInteger('completed')->default('0');
 				$table->timestamp('completed_at')->nullable();
 				$table->timestamps();
 			});
