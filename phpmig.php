@@ -17,20 +17,11 @@ $container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migratio
 //     glob('migrations_2/*.php')
 // );
 
-$container['config'] = [
-    'driver' => 'mysql',
-    'host' => '127.0.0.1',
-    'database' => 'test',
-    'username' => 'root',
-    'password' => '',
-    'charset' => 'utf8',
-    'collation' => 'utf8_unicode_ci',
-    'prefix' => ''
-];
+$container['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
 
 $container['db'] = function ($c) {
     $capsule = new Capsule();
-    $capsule->addConnection($c['config']);
+    $capsule->addConnection($c['config']['db']);
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 
