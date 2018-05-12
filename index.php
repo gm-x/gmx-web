@@ -1,4 +1,14 @@
 <?php
+$array = [];
+
+function pushArray($key, $value) {
+    global $array;
+
+    if(count($array) >= 2) {
+        $array = array_slice($array, 0, 1);
+    }
+    $array[$key] = $value;
+}
 
 require __DIR__ . '/vendor/autoload.php';
 
