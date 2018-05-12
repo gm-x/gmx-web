@@ -75,6 +75,15 @@ abstract class BaseController {
 		);
     }
 
+    /**
+     * @param string $path
+     * @param null $status
+     * @return ResponseInterface
+     */
+    protected function redirectTo($path, $status = null) {
+        return $this->getContainer('response')->withRedirect($path, $status);
+    }
+
 
     /**
      * @param string $template
@@ -100,7 +109,7 @@ abstract class BaseController {
         $this->getContainer('flash')->addMessage($type, $message);
     }
 
-    protected function failRedirect(Exception $e, Form $form, $path, array $data = [], array $queryParams = []) {
+    protected function failRedirect(Exception $e, Form $form) {
         if ($e instanceof FormException) {
             $form->setError($e->getField(), $e->getMessage());
         } elseif ($e instanceof ValidationException) {
@@ -115,7 +124,7 @@ abstract class BaseController {
         $logger = $this->getContainer('log');
         $logger->error((string) $e);
 
-        return $this->redirect($path, $data,  $queryParams);
+        return $this->redirectTo($form->getAction());
     }
 
 	/**

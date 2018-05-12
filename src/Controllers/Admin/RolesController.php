@@ -48,7 +48,7 @@ class RolesController extends BaseController {
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                return $this->redirect('admin_roles_create');
+                return $this->redirectTo($form->getAction());
             } else {
                 try {
                     $roleHelper = new RoleHelper($this->container);
@@ -58,7 +58,7 @@ class RolesController extends BaseController {
                     );
                     return $this->redirect('admin_roles_list');
                 } catch (Exception $e) {
-                    return $this->failRedirect($e, $form, 'admin_roles_create');
+                    return $this->failRedirect($e, $form);
                 }
             }
         }
@@ -94,7 +94,7 @@ class RolesController extends BaseController {
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                return $this->redirect('admin_roles_create');
+                return $this->redirectTo($form->getAction());
             } else {
                 try {
                     $role->name = $form->getValue('name');
@@ -102,7 +102,7 @@ class RolesController extends BaseController {
                     $role->save();
                     return $this->redirect('admin_roles_list');
                 } catch (Exception $e) {
-                    return $this->failRedirect($e, $form, 'admin_roles_create');
+                    return $this->failRedirect($e, $form);
                 }
             }
         }
@@ -110,5 +110,22 @@ class RolesController extends BaseController {
         return $this->render('admin/roles/form.twig', [
             'form' => $form,
         ]);
+    }
+
+    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
+        /** @var RoleInterface $role */
+        $role = $this->roleRepository->findById($args['role']);
+
+        try {
+            $role->delete();
+        } catch (Exception $e) {
+            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+            /** @var \Monolog\Logger $logger */
+            $logger = $this->getContainer('log');
+            $logger->error((string) $e);
+
+            return $this->redirect('admin_roles_list');
+        }
     }
 }

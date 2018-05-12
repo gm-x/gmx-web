@@ -18,6 +18,9 @@
             <a href="{{ path_for('admin_roles_edit', {'role': role.id}) }}" class="btn btn-small btn-floating">
                 <i class="material-icons">edit</i>
             </a>
+            <a href="{{ path_for('admin_roles_delete', {'role': role.id}) }}" class="btn btn-small btn-floating">
+                <i class="material-icons">delete</i>
+            </a>
         </td>
     </tr>
     {% endfor %}
