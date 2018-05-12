@@ -53,6 +53,11 @@ class Form {
     protected $errors = [];
 
     /**
+     * @var string
+     */
+    protected $action;
+
+    /**
      * Form constructor.
      * @param ServerRequestInterface $request
      * @param Session $session
@@ -74,6 +79,22 @@ class Form {
         if (!$this->isValid) {
             $this->writeValues();
         }
+    }
+
+    /**
+     * @param string $action
+     * @return $this
+     */
+    public function setAction($action) {
+        $this->action = (string) $action;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction() {
+        return $this->action;
     }
 
     /**

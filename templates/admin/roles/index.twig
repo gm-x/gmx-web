@@ -1,0 +1,27 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for role in roles %}
+    <tr>
+        <td>{{ role.name }}</td>
+        <td>{{ role.slug }}</td>
+        <td>
+            <a href="{{ path_for('admin_roles_edit', {'role': role.id}) }}" class="btn btn-small btn-floating">
+                <i class="material-icons">edit</i>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<a href="{{ path_for('admin_roles_create') }}" class="btn">Create</a>
+{% endblock %}

@@ -6,8 +6,6 @@ use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Auth\AuthHelper;
-use GameX\Core\Exceptions\ValidationException;
-use \GameX\Core\Exceptions\FormException;
 use \Exception;
 
 class UserController extends BaseController {
@@ -230,19 +228,5 @@ class UserController extends BaseController {
             'form' => $form,
             'code' => $code,
         ]);
-    }
-
-    protected function failRedirect(Exception $e, Form $form, $path, array $data = [], array $queryParams = []) {
-        if ($e instanceof FormException) {
-            $form->setError($e->getField(), $e->getMessage());
-        } elseif ($e instanceof ValidationException) {
-            $this->addFlashMessage('error', $e->getMessage());
-        } else {
-            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
-        }
-
-        $form->saveValues();
-
-        return $this->redirect($path, $data,  $queryParams);
     }
 }

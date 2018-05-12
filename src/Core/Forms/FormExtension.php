@@ -36,6 +36,10 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
                 [$this, 'renderError'],
                 ['is_safe' => ['html']]
             ),
+            new Twig_SimpleFunction(
+                'form_action',
+                [$this, 'renderAction']
+            ),
         ];
     }
 
@@ -76,6 +80,10 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
         return ($error !== null)
             ? '<span class="helper-text red-text">' . $this->getSafe($error)  . '</span>'
             : '';
+    }
+
+    public function renderAction(Form $form) {
+        return $form->getAction();
     }
 
     protected function getSafeData(Form $form, $name, $key) {

@@ -33,6 +33,7 @@ class RoleHelper {
         $this->roleRepository->createModel()->create([
             'name' => $name,
             'slug' => $slug,
+            'permissions' => []
         ]);
     }
 

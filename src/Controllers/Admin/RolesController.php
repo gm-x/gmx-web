@@ -1,0 +1,116 @@
+<?php
+namespace GameX\Controllers\Admin;
+
+use \Cartalyst\Sentinel\Roles\RoleInterface;
+use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
+use \GameX\Core\Auth\RoleHelper;
+use \GameX\Core\BaseController;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Forms\Form;
+use \Exception;
+
+class RolesController extends BaseController {
+
+    /** @var  RoleRepositoryInterface */
+    protected $roleRepository;
+
+    public function init() {
+        $this->roleRepository = $this->getContainer('auth')->getRoleRepository();
+    }
+
+    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        return $this->render('admin/roles/index.twig', [
+            'roles' => $this->roleRepository->get()
+        ]);
+    }
+
+    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('role_create');
+        $form
+            ->setAction($this->pathFor('admin_roles_create'))
+            ->add('name', '', [
+                'type' => 'text',
+                'title' => 'Name',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim'])
+            ->add('slug', '', [
+                'type' => 'text',
+                'title' => 'Slug',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim'])
+            ->processRequest();
+
+        if ($form->getIsSubmitted()) {
+            if (!$form->getIsValid()) {
+                return $this->redirect('admin_roles_create');
+            } else {
+                try {
+                    $roleHelper = new RoleHelper($this->container);
+                    $roleHelper->createRole(
+                        $form->getValue('name'),
+                        $form->getValue('slug')
+                    );
+                    return $this->redirect('admin_roles_list');
+                } catch (Exception $e) {
+                    return $this->failRedirect($e, $form, 'admin_roles_create');
+                }
+            }
+        }
+
+        return $this->render('admin/roles/form.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        /** @var RoleInterface $role */
+        $role = $this->roleRepository->findById($args['role']);
+
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('role_edit');
+        $form
+            ->setAction($this->pathFor('admin_roles_edit', ['role' => $role->getRoleId()]))
+            ->add('name', $role->name, [
+                'type' => 'text',
+                'title' => 'Name',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim'])
+            ->add('slug', $role->slug, [
+                'type' => 'text',
+                'title' => 'Slug',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim'])
+            ->processRequest();
+
+        if ($form->getIsSubmitted()) {
+            if (!$form->getIsValid()) {
+                return $this->redirect('admin_roles_create');
+            } else {
+                try {
+                    $roleHelper = new RoleHelper($this->container);
+                    $roleHelper->createRole(
+                        $form->getValue('name'),
+                        $form->getValue('slug')
+                    );
+                    return $this->redirect('admin_roles_list');
+                } catch (Exception $e) {
+                    return $this->failRedirect($e, $form, 'admin_roles_create');
+                }
+            }
+        }
+
+        return $this->render('admin/roles/form.twig', [
+            'form' => $form,
+        ]);
+    }
+}

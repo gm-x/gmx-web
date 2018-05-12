@@ -2,6 +2,8 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\IndexController;
 use \GameX\Controllers\UserController;
+use \GameX\Controllers\Admin\UsersController;
+use \GameX\Controllers\Admin\RolesController;
 
 //$app
 //    ->get('/', BaseController::action(IndexController::class, 'index'))
@@ -35,3 +37,20 @@ $app
 $app
 	->get('/logout', BaseController::action(UserController::class, 'logout'))
     ->setName('logout');
+
+
+$app->group('/admin', function () {
+    /** @var \Slim\App $this */
+    $this->get('/users', BaseController::action(UsersController::class, 'index'));
+    $this
+        ->get('/roles', BaseController::action(RolesController::class, 'index'))
+        ->setName('admin_roles_list');
+
+    $this
+        ->map(['GET', 'POST'], '/roles/create', BaseController::action(RolesController::class, 'create'))
+        ->setName('admin_roles_create');
+
+    $this
+        ->map(['GET', 'POST'], '/roles/edit/{role}', BaseController::action(RolesController::class, 'edit'))
+        ->setName('admin_roles_edit');
+});
