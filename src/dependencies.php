@@ -1,10 +1,14 @@
 <?php
+$container['session'] = function (\Psr\Container\ContainerInterface $container) {
+    return new GameX\Core\Session\Session();
+};
 
-$container = $app->getContainer();
-$container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
+$container['flash'] = function (\Psr\Container\ContainerInterface $container) {
+    return new \GameX\Core\FlashMessages($container->get('session'), 'flash_messages');
+};
 
-$container['session'] = function ($c) {
-    return new \SlimSession\Helper;
+$container['csrf'] = function (\Psr\Container\ContainerInterface $container) {
+    return new \GameX\Core\CSRF\Token($container->get('session'));
 };
 
 $container['view'] = function (\Psr\Container\ContainerInterface $container) {
@@ -14,8 +18,9 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
-    $view->addExtension(new Slim\Views\TwigExtension($container->get('router'), $basePath));
-    $view->addExtension(new GameX\Core\Forms\FormExtension());
+    $view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
+    $view->addExtension(new \GameX\Core\Forms\FormExtension());
+    $view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
 
     return $view;
 };
@@ -32,12 +37,22 @@ $container['db'] = function (\Psr\Container\ContainerInterface $container) {
 
 $container['auth'] = function (\Psr\Container\ContainerInterface $container) {
     $container->get('db');
-    $bootsrap = new \GameX\Core\Sentinel\SentinelBootstrapper($container->get('request'), $container->get('session'));
+    $bootsrap = new \GameX\Core\Auth\SentinelBootstrapper($container->get('request'), $container->get('session'));
     return $bootsrap->createSentinel();
 };
 
 $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
-    $mailer = new \Tx\Mailer();
-    $config = $container['config']['mailer'];
-    return $mailer->setServer($config['host'], $config['port']);
+    return new \GameX\Core\Mail\MailHelper($container);
+};
+
+$container['log'] = function (\Psr\Container\ContainerInterface $container) {
+	$log = new \Monolog\Logger('name');
+	$logPath = $container['root'] . '/tmp.log';
+	$log->pushHandler(new \Monolog\Handler\StreamHandler($logPath, \Monolog\Logger::DEBUG));
+
+	return $log;
+};
+
+$container['form'] = function (\Psr\Container\ContainerInterface $container) {
+    return new \GameX\Core\Forms\FormFactory($container);
 };

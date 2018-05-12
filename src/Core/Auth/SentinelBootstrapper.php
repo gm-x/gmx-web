@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Core\Sentinel;
+namespace GameX\Core\Auth;
 
 use Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
 use Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
@@ -9,24 +9,23 @@ use Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository;
 use Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
 use Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
 use Cartalyst\Sentinel\Sentinel;
-use Cartalyst\Sentinel\Sessions\NativeSession;
 use Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository;
 use Cartalyst\Sentinel\Users\IlluminateUserRepository;
 use Illuminate\Events\Dispatcher;
 use InvalidArgumentException;
 use \Slim\Http\Request;
 use Cartalyst\Sentinel\Native\ConfigRepository;
-use SlimSession\Helper;
+use \GameX\Core\Auth\Session as SentinelSession;
+use \GameX\Core\Session\Session;
 
-class SentinelBootstrapper
-{
+class SentinelBootstrapper {
     /**
      * @var Request
      */
     protected $request;
 
     /**
-     * @var Helper
+     * @var Session
      */
     protected $session;
 
@@ -48,13 +47,12 @@ class SentinelBootstrapper
      * Constructor.
      *
      * @param Request $request
-     * @param Helper $session
+     * @param Session $session
      */
-    public function __construct(Request $request, Helper $session) {
+    public function __construct(Request $request, Session $session) {
         $this->request = $request;
         $this->session = $session;
         $this->config = new ConfigRepository(__DIR__ . '/config.php');
-//        var_dump($this->config['persistences']['model']); die();
     }
 
     /**
@@ -120,11 +118,11 @@ class SentinelBootstrapper
     /**
      * Creates a session.
      *
-     * @return \Cartalyst\Sentinel\Sessions\NativeSession
+     * @return SentinelSession
      */
     protected function createSession()
     {
-        return new Session($this->session, $this->config['session']);
+        return new SentinelSession($this->session, $this->config['session']);
     }
 
     /**

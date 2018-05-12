@@ -2,7 +2,8 @@
   "db": {
     "driver": "mysql",
     "host": "127.0.0.1",
-    "database": "test",
+    "port": 3307,
+    "database": "gamex",
     "username": "root",
     "password": "",
     "charset": "utf8",
@@ -18,8 +19,17 @@
     "debug": true,
     "auto_reload": true
   },
-  "mailer": {
-    "host": "127.0.0.1",
-    "port": "4651"
+  "mail": {
+    "from": {
+      "name": "test",
+      "email": "test@example.com"
+    },
+    "transport": {
+      "type": "smtp",
+      "host": "127.0.0.1",
+      "port": 4651,
+      "username": "test",
+      "password": "test"
+    }
   }
 }

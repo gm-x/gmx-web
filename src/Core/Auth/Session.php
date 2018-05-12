@@ -1,9 +1,9 @@
 <?php
 
-namespace GameX\Core\Sentinel;
+namespace GameX\Core\Auth;
 
 use Cartalyst\Sentinel\Sessions\SessionInterface;
-use SlimSession\Helper;
+use \GameX\Core\Session\Session as SessionHelper;
 
 class Session implements SessionInterface {
 
@@ -15,11 +15,11 @@ class Session implements SessionInterface {
     protected $key = 'cartalyst_sentinel';
 
     /**
-     * @var Helper
+     * @var SessionHelper
      */
     protected $session;
 
-    public function __construct(Helper $session, $key = null) {
+    public function __construct(SessionHelper $session, $key = null) {
         $this->session = $session;
         if ($key !== null) {
             $this->key = $key;
