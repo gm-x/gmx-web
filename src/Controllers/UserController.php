@@ -51,8 +51,6 @@ class UserController extends BaseController {
                     );
                     return $this->redirect('login');
                 } catch (Exception $e) {
-                	var_dump($e);
-                	die();
                     return $this->failRedirect($e, $form, 'register');
                 }
             }
