@@ -97,11 +97,9 @@ class RolesController extends BaseController {
                 return $this->redirect('admin_roles_create');
             } else {
                 try {
-                    $roleHelper = new RoleHelper($this->container);
-                    $roleHelper->createRole(
-                        $form->getValue('name'),
-                        $form->getValue('slug')
-                    );
+                    $role->name = $form->getValue('name');
+                    $role->slug = $form->getValue('slug');
+                    $role->save();
                     return $this->redirect('admin_roles_list');
                 } catch (Exception $e) {
                     return $this->failRedirect($e, $form, 'admin_roles_create');
