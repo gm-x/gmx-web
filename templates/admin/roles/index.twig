@@ -18,9 +18,10 @@
             <a href="{{ path_for('admin_roles_edit', {'role': role.id}) }}" class="btn btn-small btn-floating">
                 <i class="material-icons">edit</i>
             </a>
-            <a href="{{ path_for('admin_roles_delete', {'role': role.id}) }}" class="btn btn-small btn-floating">
-                <i class="material-icons">delete</i>
-            </a>
+            <form action="{{ path_for('admin_roles_delete', {'role': role.id}) }}" method="post" style="display: inline-block">
+                {{ csrf_token() }}
+                <button type="submit" class="btn btn-small btn-floating"><i class="material-icons">delete</i></button>
+            </form>
         </td>
     </tr>
     {% endfor %}

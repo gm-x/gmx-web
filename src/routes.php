@@ -55,6 +55,6 @@ $app->group('/admin', function () {
         ->setName('admin_roles_edit');
 
     $this
-        ->get('/roles/delete/{role}', BaseController::action(RolesController::class, 'delete'))
+        ->post('/roles/delete/{role}', BaseController::action(RolesController::class, 'delete'))
         ->setName('admin_roles_delete');
 });

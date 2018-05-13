@@ -124,8 +124,8 @@ class RolesController extends BaseController {
             /** @var \Monolog\Logger $logger */
             $logger = $this->getContainer('log');
             $logger->error((string) $e);
-
-            return $this->redirect('admin_roles_list');
         }
+
+        return $this->redirect('admin_roles_list');
     }
 }
