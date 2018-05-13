@@ -9,6 +9,11 @@ use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
 class AuthHelper {
+
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
     
 	/**
 	 * @var Sentinel
@@ -21,8 +26,9 @@ class AuthHelper {
 	protected $mail;
 
 	public function __construct(ContainerInterface $container) {
-		$this->auth = $container->get('auth')->getRoleRepository();
-		$this->mail = $container->get('mail');
+        $this->container = $container;
+        $this->auth = $container->get('auth');
+        $this->mail = $container->get('mail');
 	}
 
 	/**
@@ -38,11 +44,11 @@ class AuthHelper {
 			throw new FormException('password_repeat', 'Password didn\'t match');
 		}
 
-		$user = $this->auth->getUserRepository()->findByCredentials([
+        $user = $this->auth->getUserRepository()->findByCredentials([
 			'email' => $email
 		]);
 
-		if ($user) {
+        if ($user) {
 			throw new FormException('email', 'User already exists');
 		}
 

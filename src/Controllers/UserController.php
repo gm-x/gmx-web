@@ -13,6 +13,7 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('register');
         $form
+            ->setAction($this->pathFor('register'))
             ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
@@ -38,7 +39,7 @@ class UserController extends BaseController {
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                return $this->redirect('register');
+                return $this->redirectTo($form->getAction());
             } else {
                 try {
                 	$authHelper = new AuthHelper($this->container);
@@ -49,7 +50,7 @@ class UserController extends BaseController {
                     );
                     return $this->redirect('login');
                 } catch (Exception $e) {
-                    return $this->failRedirect($e, $form, 'register');
+                    return $this->failRedirect($e, $form);
                 }
             }
         }
@@ -64,6 +65,7 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('activation');
 		$form
+            ->setAction($this->pathFor('activation', ['code' => $code]))
 			->add('email', '', [
 				'type' => 'email',
 				'title' => 'Email',
@@ -75,21 +77,20 @@ class UserController extends BaseController {
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
-				return $this->redirect('activation', ['code' => $code]);
+				return $this->redirectTo($form->getAction());
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
 					$authHelper->activateUser($form->getValue('email'), $code);
 					return $this->redirect('login');
 				} catch (Exception $e) {
-					return $this->failRedirect($e, $form, 'activation', ['code' => $code]);
+					return $this->failRedirect($e, $form);
 				}
 			}
 		}
 
 		return $this->render('user/activation.twig', [
 			'form' => $form,
-			'code' => $code,
 		]);
     }
 
@@ -97,6 +98,7 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('login');
         $form
+            ->setAction($this->pathFor('login'))
             ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
@@ -115,7 +117,7 @@ class UserController extends BaseController {
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
-				return $this->redirect('login');
+				return $this->redirectTo($form->getAction());
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
@@ -125,7 +127,7 @@ class UserController extends BaseController {
 					);
 					return $this->redirect('index');
 				} catch (Exception $e) {
-					return $this->failRedirect($e, $form, 'login');
+					return $this->failRedirect($e, $form);
 				}
 			}
 		}
@@ -145,6 +147,7 @@ class UserController extends BaseController {
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('reset_password');
 		$form
+            ->setAction($this->pathFor('reset_password'))
 			->add('email', '', [
 				'type' => 'email',
 				'title' => 'Email',
@@ -156,7 +159,7 @@ class UserController extends BaseController {
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
-				return $this->redirect('reset_password');
+                return $this->redirectTo($form->getAction());
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
@@ -165,8 +168,7 @@ class UserController extends BaseController {
 					);
 					return $this->redirect('index');
 				} catch (Exception $e) {
-					$this->failRedirect($e, $form, 'reset_password');
-					return $this->failRedirect($e, $form, 'reset_password');
+					return $this->failRedirect($e, $form);
 				}
 			}
 		}
@@ -182,6 +184,7 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('reset_password_complete');
         $form
+            ->setAction($this->pathFor('reset_password_complete', ['code' => $code]))
             ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
@@ -207,7 +210,7 @@ class UserController extends BaseController {
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                return $this->redirect('reset_password_complete', ['code' => $code]);
+                return $this->redirectTo($form->getAction());
             } else {
                 try {
                     $authHelper = new AuthHelper($this->container);
@@ -219,14 +222,13 @@ class UserController extends BaseController {
                     );
                     return $this->redirect('login');
                 } catch (Exception $e) {
-                    return $this->failRedirect($e, $form, 'reset_password_complete', ['code' => $code]);
+                    return $this->failRedirect($e, $form);
                 }
             }
         }
 
         return $this->render('user/reset_password_complete.twig', [
             'form' => $form,
-            'code' => $code,
         ]);
     }
 }
