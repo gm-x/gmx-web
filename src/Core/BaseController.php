@@ -55,7 +55,6 @@ abstract class BaseController {
 		);
     }
 
-
     /**
      * @param string $template
      * @param array $data
