@@ -1,0 +1,25 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+<table>
+    <thead>
+    <tr>
+        <th>Email</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.email }}</td>
+        <td>
+            {#<a href="{{ path_for('admin_roles_users', {'role': role.id}) }}" class="btn btn-small btn-floating">#}
+                {#<i class="material-icons">format_list_bulleted</i>#}
+            {#</a>#}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ render_pagination(pagination) }}
+{% endblock %}

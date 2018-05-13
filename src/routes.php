@@ -40,21 +40,39 @@ $app
 
 
 $app->group('/admin', function () {
-    /** @var \Slim\App $this */
-    $this->get('/users', BaseController::action(UsersController::class, 'index'));
-    $this
-        ->get('/roles', BaseController::action(RolesController::class, 'index'))
-        ->setName('admin_roles_list');
+    $this->group('/users', function () {
+        /** @var \Slim\App $this */
+        $this
+            ->get('/', BaseController::action(UsersController::class, 'index'))
+            ->setName('admin_users_index');
 
-    $this
-        ->map(['GET', 'POST'], '/roles/create', BaseController::action(RolesController::class, 'create'))
-        ->setName('admin_roles_create');
+        /** @var \Slim\App $this */
+        $this
+            ->get('/edit/{user}', BaseController::action(UsersController::class, 'edit'))
+            ->setName('admin_users_edit');
+    });
 
-    $this
-        ->map(['GET', 'POST'], '/roles/edit/{role}', BaseController::action(RolesController::class, 'edit'))
-        ->setName('admin_roles_edit');
 
-    $this
-        ->post('/roles/delete/{role}', BaseController::action(RolesController::class, 'delete'))
-        ->setName('admin_roles_delete');
+    $this->group('/roles', function () {
+        /** @var \Slim\App $this */
+        $this
+            ->get('/', BaseController::action(RolesController::class, 'index'))
+            ->setName('admin_roles_list');
+
+        $this
+            ->map(['GET', 'POST'], '/create', BaseController::action(RolesController::class, 'create'))
+            ->setName('admin_roles_create');
+
+        $this
+            ->map(['GET', 'POST'], '/edit/{role}', BaseController::action(RolesController::class, 'edit'))
+            ->setName('admin_roles_edit');
+
+        $this
+            ->post('/delete/{role}', BaseController::action(RolesController::class, 'delete'))
+            ->setName('admin_roles_delete');
+
+        $this
+            ->get('/users/{role}', BaseController::action(RolesController::class, 'users'))
+            ->setName('admin_roles_users');
+    });
 });

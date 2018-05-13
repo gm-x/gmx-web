@@ -21,6 +21,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
     $view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
     $view->addExtension(new \GameX\Core\Forms\FormExtension());
     $view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
+    $view->addExtension(new \GameX\Core\Pagination\Extention());
 
     return $view;
 };

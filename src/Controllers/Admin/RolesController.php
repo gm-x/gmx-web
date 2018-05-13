@@ -5,6 +5,7 @@ use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Core\Auth\RoleHelper;
 use \GameX\Core\BaseController;
+use GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
@@ -112,8 +113,7 @@ class RolesController extends BaseController {
         ]);
     }
 
-    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
-    {
+    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         /** @var RoleInterface $role */
         $role = $this->roleRepository->findById($args['role']);
 
@@ -127,5 +127,19 @@ class RolesController extends BaseController {
         }
 
         return $this->redirect('admin_roles_list');
+    }
+
+    public function usersAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+
+        /** @var RoleInterface $role */
+        $role = $this->roleRepository->findById($args['role']);
+
+        $pagination = new Pagination($role->users()->get(), $request);
+        $users = $pagination->getCollection();
+
+        return $this->render('admin/roles/users.twig', [
+            'users' => $users,
+            'pagination' => $pagination,
+        ]);
     }
 }

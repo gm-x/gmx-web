@@ -19,6 +19,9 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
         $this->environment = $environment;
     }
 
+    /**
+     * @return array
+     */
     public function getFunctions() {
         return [
             new Twig_SimpleFunction(
