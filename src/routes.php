@@ -44,11 +44,11 @@ $app->group('/admin', function () {
         /** @var \Slim\App $this */
         $this
             ->get('/', BaseController::action(UsersController::class, 'index'))
-            ->setName('admin_users_index');
+            ->setName('admin_users_list');
 
         /** @var \Slim\App $this */
         $this
-            ->get('/edit/{user}', BaseController::action(UsersController::class, 'edit'))
+			->map(['GET', 'POST'], '/edit/{user}', BaseController::action(UsersController::class, 'edit'))
             ->setName('admin_users_edit');
     });
 

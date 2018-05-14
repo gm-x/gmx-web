@@ -1,10 +1,11 @@
 <?php
 namespace GameX\Core\Auth;
 
+use Cartalyst\Sentinel\Users\UserInterface;
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Users\UserRepositoryInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
-use GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class RoleHelper {
 
@@ -39,7 +40,7 @@ class RoleHelper {
 
     /**
      * @param string $role
-     * @param string $user
+     * @param UserInterface|string|int $user
      */
     public function assignUser($role, $user) {
         $this
@@ -50,7 +51,7 @@ class RoleHelper {
 
     /**
      * @param string $role
-     * @param string $user
+     * @param UserInterface|string|int $user
      */
     public function removeUser($role, $user) {
         $this
@@ -85,15 +86,18 @@ class RoleHelper {
     }
 
     /**
-     * @param $user
-     * @return \Cartalyst\Sentinel\Users\UserInterface
+     * @param UserInterface|string|int $user
+     * @return UserInterface
      * @throws ValidationException
      */
     protected function getUser($user) {
-        $user = $this->userRepository->findById($user);
-        if (!$user) {
-            throw new ValidationException('User not found');
-        }
+    	if (!($user instanceof UserInterface)) {
+			$user = $this->userRepository->findById((int)$user);
+			if (!$user) {
+				throw new ValidationException('User not found');
+			}
+		}
+
         return $user;
     }
 }

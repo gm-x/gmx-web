@@ -5,7 +5,7 @@ use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Core\Auth\RoleHelper;
 use \GameX\Core\BaseController;
-use GameX\Core\Pagination\Pagination;
+use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
@@ -28,7 +28,7 @@ class RolesController extends BaseController {
 
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('role_create');
+        $form = $this->getContainer('form')->createForm('admin_roles_create');
         $form
             ->setAction($this->pathFor('admin_roles_create'))
             ->add('name', '', [
@@ -74,7 +74,7 @@ class RolesController extends BaseController {
         $role = $this->roleRepository->findById($args['role']);
 
         /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('role_edit');
+        $form = $this->getContainer('form')->createForm('admin_roles_edit');
         $form
             ->setAction($this->pathFor('admin_roles_edit', ['role' => $role->getRoleId()]))
             ->add('name', $role->name, [
