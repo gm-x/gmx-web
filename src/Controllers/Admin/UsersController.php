@@ -8,7 +8,7 @@ use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Auth\RoleHelper;
+use \GameX\Core\Auth\Helpers\RoleHelper;
 use \Exception;
 
 class UsersController extends BaseController {

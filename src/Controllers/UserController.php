@@ -5,7 +5,7 @@ use \GameX\Core\BaseController;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Auth\AuthHelper;
+use \GameX\Core\Auth\Helpers\AuthHelper;
 use \Exception;
 
 class UserController extends BaseController {
