@@ -18,6 +18,9 @@
             <a href="{{ path_for('admin_roles_users', {'role': role.id}) }}" class="btn btn-small btn-floating">
                 <i class="material-icons">format_list_bulleted</i>
             </a>
+            <a href="{{ path_for('admin_roles_permissions', {'role': role.id}) }}" class="btn btn-small btn-floating">
+                <i class="material-icons">apps</i>
+            </a>
             <a href="{{ path_for('admin_roles_edit', {'role': role.id}) }}" class="btn btn-small btn-floating">
                 <i class="material-icons">edit</i>
             </a>

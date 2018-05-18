@@ -144,4 +144,32 @@ class RolesController extends BaseController {
             'pagination' => $pagination,
         ]);
     }
+
+    public function permissionsAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        /** @var RoleInterface $role */
+        $role = $this->roleRepository->findById($args['role']);
+
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('admin_roles_edit');
+        $form
+            ->setAction($this->pathFor('admin_roles_permissions', ['role' => $role->getRoleId()]))
+            ->processRequest();
+
+        if ($form->getIsSubmitted()) {
+            if (!$form->getIsValid()) {
+                return $this->redirectTo($form->getAction());
+            } else {
+                try {
+//
+                    return $this->redirect('admin_roles_list');
+                } catch (Exception $e) {
+                    return $this->failRedirect($e, $form);
+                }
+            }
+        }
+
+        return $this->render('admin/roles/permissions.twig', [
+            'form' => $form
+        ]);
+    }
 }

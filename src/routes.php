@@ -74,5 +74,9 @@ $app->group('/admin', function () {
         $this
             ->get('/users/{role}', BaseController::action(RolesController::class, 'users'))
             ->setName('admin_roles_users');
+
+        $this
+            ->map(['GET', 'POST'], '/permissions/{role}', BaseController::action(RolesController::class, 'permissions'))
+            ->setName('admin_roles_permissions');
     });
 });
