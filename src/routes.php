@@ -74,7 +74,5 @@ $app->group('/admin', function () {
         $this
             ->get('/users/{role}', BaseController::action(RolesController::class, 'users'))
             ->setName('admin_roles_users');
-
-        $this->get('/test', BaseController::action(RolesController::class, 'test'));
     });
 });
