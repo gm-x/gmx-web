@@ -43,21 +43,10 @@ class RoleHelper {
      * @param UserInterface|string|int $user
      */
     public function assignUser($role, $user) {
-        $this
-            ->getRole($role)
-            ->users()
-            ->attach($this->getUser($user));
-    }
-
-    /**
-     * @param string $role
-     * @param UserInterface|string|int $user
-     */
-    public function removeUser($role, $user) {
-        $this
-            ->getRole($role)
-            ->users()
-            ->detach($this->getUser($user));
+        return $this->getUser($user)
+            ->role()
+            ->associate($this->getRole($role))
+            ->save();
     }
 
     /**

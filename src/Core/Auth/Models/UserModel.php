@@ -9,6 +9,7 @@ use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
 use \Cartalyst\Sentinel\Permissions\PermissibleInterface;
 use \Cartalyst\Sentinel\Permissions\PermissibleTrait;
+use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class UserModel
@@ -21,6 +22,7 @@ use \Cartalyst\Sentinel\Permissions\PermissibleTrait;
  * @property \DateTime $last_login
  * @property \DateTime $created_at
  * @property \DateTime $update_at
+ * @property RoleModel $role
  */
 class UserModel extends Model implements UserInterface, PersistableInterface, PermissibleInterface {
 
@@ -129,10 +131,10 @@ class UserModel extends Model implements UserInterface, PersistableInterface, Pe
 	}
 
 	/**
-	 * @return RoleModel
+	 * @return BelongsTo
 	 */
 	public function role() {
-		return $this->belongsTo(SentinelBootstrapper::ROLE_MODEL)->first();
+		return $this->belongsTo(SentinelBootstrapper::ROLE_MODEL);
 	}
 
 	/**
