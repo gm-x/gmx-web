@@ -3,14 +3,13 @@ namespace GameX\Controllers\Admin;
 
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
-use GameX\Core\Auth\Models\RoleModel;
-use GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Auth\Helpers\RoleHelper;
 use \GameX\Core\BaseController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
+use \Slim\Exception\NotFoundException;
 use \Exception;
 
 class RolesController extends BaseController {
@@ -72,8 +71,7 @@ class RolesController extends BaseController {
     }
 
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        /** @var RoleInterface $role */
-        $role = $this->roleRepository->findById($args['role']);
+        $role = $this->getRole($request, $response, $args);
 
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_roles_edit');
@@ -116,8 +114,7 @@ class RolesController extends BaseController {
     }
 
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        /** @var RoleInterface $role */
-        $role = $this->roleRepository->findById($args['role']);
+        $role = $this->getRole($request, $response, $args);
 
         try {
             $role->delete();
@@ -132,9 +129,7 @@ class RolesController extends BaseController {
     }
 
     public function usersAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-
-        /** @var RoleInterface $role */
-        $role = $this->roleRepository->findById($args['role']);
+        $role = $this->getRole($request, $response, $args);
 
         $pagination = new Pagination($role->users()->get(), $request);
         $users = $pagination->getCollection();
@@ -146,13 +141,19 @@ class RolesController extends BaseController {
     }
 
     public function permissionsAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        /** @var RoleInterface $role */
-        $role = $this->roleRepository->findById($args['role']);
+        $role = $this->getRole($request, $response, $args);
 
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_roles_edit');
         $form
             ->setAction($this->pathFor('admin_roles_permissions', ['role' => $role->getRoleId()]))
+            ->add('test[]', '', [
+                'type' => 'checkbox',
+                'title' => 'Test',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim'])
             ->processRequest();
 
         if ($form->getIsSubmitted()) {
@@ -171,5 +172,21 @@ class RolesController extends BaseController {
         return $this->render('admin/roles/permissions.twig', [
             'form' => $form
         ]);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return RoleInterface
+     * @throws NotFoundException
+     */
+    protected function getRole(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+        $role = $this->roleRepository->findById($args['role']);
+        if (!$role) {
+            throw new NotFoundException($request, $response);
+        }
+
+        return $role;
     }
 }
