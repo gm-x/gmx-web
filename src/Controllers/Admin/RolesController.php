@@ -3,6 +3,8 @@ namespace GameX\Controllers\Admin;
 
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
+use GameX\Core\Auth\Models\RoleModel;
+use GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Auth\RoleHelper;
 use \GameX\Core\BaseController;
 use \GameX\Core\Pagination\Pagination;
@@ -142,4 +144,21 @@ class RolesController extends BaseController {
             'pagination' => $pagination,
         ]);
     }
+
+    public function testAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+		/** @var RoleModel $role */
+		$role = $this->roleRepository->findById(1);
+//		var_dump($role->getUsers());
+
+		/** @var \Cartalyst\Sentinel\Users\UserRepositoryInterface $usersRepository */
+		$usersRepository = $this->getContainer('auth')->getUserRepository();
+
+		/** @var UserModel $user */
+		$user = $usersRepository->findById(1);
+//		$user->role()->associate($role);
+//		$user->save();
+
+		var_dump($user->role()->value('name'));
+    	die();
+	}
 }

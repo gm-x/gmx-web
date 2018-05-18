@@ -19,6 +19,10 @@ use \GameX\Core\Auth\Session as SentinelSession;
 use \GameX\Core\Session\Session;
 
 class SentinelBootstrapper {
+
+	const USER_MODEL = '\GameX\Core\Auth\Models\UserModel';
+	const ROLE_MODEL = '\GameX\Core\Auth\Models\RoleModel';
+
     /**
      * @var Request
      */
@@ -144,21 +148,17 @@ class SentinelBootstrapper {
     {
         $hasher = $this->createHasher();
 
-        $model = $this->config['users']['model'];
-
-        $roles = $this->config['roles']['model'];
-
         $persistences = $this->config['persistences']['model'];
 
-        if (class_exists($roles) && method_exists($roles, 'setUsersModel')) {
-            forward_static_call_array([$roles, 'setUsersModel'], [$model]);
+        if (class_exists(self::ROLE_MODEL) && method_exists(self::ROLE_MODEL, 'setUsersModel')) {
+            forward_static_call_array([self::ROLE_MODEL, 'setUsersModel'], [self::USER_MODEL]);
         }
 
         if (class_exists($persistences) && method_exists($persistences, 'setUsersModel')) {
-            forward_static_call_array([$persistences, 'setUsersModel'], [$model]);
+            forward_static_call_array([$persistences, 'setUsersModel'], [self::USER_MODEL]);
         }
 
-        return new IlluminateUserRepository($hasher, $this->getEventDispatcher(), $model);
+        return new IlluminateUserRepository($hasher, $this->getEventDispatcher(), self::USER_MODEL);
     }
 
     /**
@@ -178,15 +178,11 @@ class SentinelBootstrapper {
      */
     protected function createRoles()
     {
-        $model = $this->config['roles']['model'];
-
-        $users = $this->config['users']['model'];
-
-        if (class_exists($users) && method_exists($users, 'setRolesModel')) {
-            forward_static_call_array([$users, 'setRolesModel'], [$model]);
+        if (class_exists(self::USER_MODEL) && method_exists(self::USER_MODEL, 'setRolesModel')) {
+            forward_static_call_array([self::USER_MODEL, 'setRolesModel'], [self::ROLE_MODEL]);
         }
 
-        return new IlluminateRoleRepository($model);
+        return new IlluminateRoleRepository(self::ROLE_MODEL);
     }
 
     /**
