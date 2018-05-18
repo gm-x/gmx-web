@@ -36,7 +36,7 @@ class MailHelper {
         $this->from = $config['from'];
         $this->view = $container->get('view');
 		if ($config['transport']['type'] === 'smtp') {
-			$this->smtp = new SMTP($container->get('log'));
+			$this->smtp = new SMTP();
 			$this->smtp->setServer($config['transport']['host'], $config['transport']['port']);
 			if (!empty($config['transport']['username']) && !empty($config['transport']['password'])) {
 				$this->smtp->setAuth($config['transport']['username'], $config['transport']['password']);
