@@ -1,6 +1,7 @@
 <?php
-namespace GameX\Core\Auth;
+namespace GameX\Core\Auth\Helpers;
 
+use Cartalyst\Sentinel\Users\UserInterface;
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;

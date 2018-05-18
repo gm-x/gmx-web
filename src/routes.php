@@ -43,7 +43,7 @@ $app->group('/admin', function () {
     $this->group('/users', function () {
         /** @var \Slim\App $this */
         $this
-            ->get('/', BaseController::action(UsersController::class, 'index'))
+            ->get('', BaseController::action(UsersController::class, 'index'))
             ->setName('admin_users_list');
 
         /** @var \Slim\App $this */
@@ -56,7 +56,7 @@ $app->group('/admin', function () {
     $this->group('/roles', function () {
         /** @var \Slim\App $this */
         $this
-            ->get('/', BaseController::action(RolesController::class, 'index'))
+            ->get('', BaseController::action(RolesController::class, 'index'))
             ->setName('admin_roles_list');
 
         $this

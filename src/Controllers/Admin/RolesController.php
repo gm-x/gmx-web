@@ -3,7 +3,9 @@ namespace GameX\Controllers\Admin;
 
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
-use \GameX\Core\Auth\RoleHelper;
+use GameX\Core\Auth\Models\RoleModel;
+use GameX\Core\Auth\Models\UserModel;
+use \GameX\Core\Auth\Helpers\RoleHelper;
 use \GameX\Core\BaseController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
