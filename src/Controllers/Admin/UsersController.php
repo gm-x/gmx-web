@@ -36,7 +36,7 @@ class UsersController extends BaseController {
 		/** @var RoleModel[] $roles */
 		$rolesCollection = $this->getContainer('auth')->getRoleRepository()->all();
 
-		$roles = ['' => 'Choose role'];
+		$roles = [];
 		foreach ($rolesCollection as $role) {
 			$roles[$role->slug] = $role->name;
 		}
