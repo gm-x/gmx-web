@@ -158,7 +158,7 @@ class RolesController extends BaseController {
 //		$user->role()->associate($role);
 //		$user->save();
 
-		var_dump($user->role()->value('name'));
+		var_dump($user->hasAccess('test.view'));
     	die();
 	}
 }
