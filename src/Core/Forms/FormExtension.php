@@ -69,7 +69,7 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
     public function renderError(Form $form, $name) {
         $error = $form->getError($name);
         return ($error !== null)
-            ? '<span class="helper-text red-text">' . $this->getSafe($error)  . '</span>'
+            ? '<span class="invalid-feedback">' . $this->getSafe($error)  . '</span>'
             : '';
     }
 
@@ -127,8 +127,9 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 
 	protected function getInputClasses(Form $form, $name) {
 		$classes = $form->getFieldData($name, 'classes');
+		$classes[] = 'form-control';
 		if ($form->getError($name)) {
-			$classes[] = 'invalid';
+			$classes[] = 'is-invalid';
 		}
 
 		return $classes;

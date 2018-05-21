@@ -3,24 +3,14 @@
 {% block content %}
     <form action="{{ form_action(form) }}" method="post">
         {{ csrf_token() }}
-        <div class="row">
-            <div class="input-field col s12">
-                {#{{ form_label(form, 'role') }}#}
-                {{ form_input(form, 'role') }}
-                {{ form_error(form, 'role') }}
-            </div>
+        <div class="form-group">
+            {{ form_label(form, 'role') }}
+            {{ form_input(form, 'role') }}
+            {{ form_error(form, 'role') }}
         </div>
-        <div class="row">
-            <input type="submit" class="btn" value="Update">
-            <a href="{{ path_for('admin_users_list') }}" class="btn red">Cancel</a>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Update">
+            <a href="{{ path_for('admin_users_list') }}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
-{% endblock %}
-
-{% block javascript %}
-<script>
-	$(document).ready(function(){
-		$('select').formSelect();
-	});
-</script>
 {% endblock %}

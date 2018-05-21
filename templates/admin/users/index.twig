@@ -1,7 +1,7 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-    <table>
+    <table class="table table-hover">
         <thead>
         <tr>
             <th>Email</th>
@@ -13,8 +13,8 @@
             <tr>
                 <td>{{ user.email }}</td>
                 <td>
-                    <a href="{{ path_for('admin_users_edit', {'user': user.id}) }}" class="btn btn-small btn-floating">
-                        <i class="material-icons">format_list_bulleted</i>
+                    <a href="{{ path_for('admin_users_edit', {'user': user.id}) }}" class="btn btn-sm">
+                        <span class="oi oi-pencil"></span>
                     </a>
                 </td>
             </tr>

@@ -6,7 +6,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\UriInterface;
 
 class Pagination {
-    const COUNT_PER_PAGE = 1;
+    const COUNT_PER_PAGE = 10;
 
     /**
      * @var UriInterface
