@@ -13,13 +13,13 @@ class TwigExtention extends Twig_Extension {
     public function getFunctions() {
         return [
             new Twig_SimpleFunction(
-                'has_access',
+                'role_has_access',
                 [$this, 'hasAccess']
             ),
         ];
     }
 
-    public function hasAccess(RoleInterface $role, $permission) {
+    public function roleHasAccess(RoleInterface $role, $permission) {
         return $role->hasAccess($permission);
     }
 }

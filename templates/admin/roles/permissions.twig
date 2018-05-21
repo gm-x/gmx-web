@@ -12,7 +12,7 @@
                         name="permissions[{{ permission }}]"
                         value="1"
                         id="permission_{{ permission }}"
-                        {% if has_access(role, permission) %}checked{% endif %}
+                        {% if role_has_access(role, permission) %}checked{% endif %}
                 />
                 <label class="custom-control-label" for="permission_{{ permission }}">{{ title }}</label>
             </div>
