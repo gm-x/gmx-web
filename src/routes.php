@@ -5,14 +5,9 @@ use \GameX\Controllers\UserController;
 use \GameX\Controllers\Admin\UsersController;
 use \GameX\Controllers\Admin\RolesController;
 
-//$app
-//    ->get('/', BaseController::action(IndexController::class, 'index'))
-//    ->setName('index');
-
 $app
-    ->map(['GET', 'POST'], '/', BaseController::action(IndexController::class, 'index'))
-    ->setName('index')
-    ->setArgument('permission', 'index.view');
+    ->get('/', BaseController::action(IndexController::class, 'index'))
+    ->setName('index');
 
 $app
     ->map(['GET', 'POST'], '/register', BaseController::action(UserController::class, 'register'))
@@ -44,12 +39,14 @@ $app->group('/admin', function () {
         /** @var \Slim\App $this */
         $this
             ->get('', BaseController::action(UsersController::class, 'index'))
-            ->setName('admin_users_list');
+            ->setName('admin_users_list')
+            ->setArgument('permission', 'admin.users');
 
         /** @var \Slim\App $this */
         $this
 			->map(['GET', 'POST'], '/edit/{user}', BaseController::action(UsersController::class, 'edit'))
-            ->setName('admin_users_edit');
+            ->setName('admin_users_edit')
+            ->setArgument('permission', 'admin.user.role');
     });
 
 
@@ -57,26 +54,32 @@ $app->group('/admin', function () {
         /** @var \Slim\App $this */
         $this
             ->get('', BaseController::action(RolesController::class, 'index'))
-            ->setName('admin_roles_list');
+            ->setName('admin_roles_list')
+            ->setArgument('permission', 'admin.roles');
 
         $this
             ->map(['GET', 'POST'], '/create', BaseController::action(RolesController::class, 'create'))
-            ->setName('admin_roles_create');
+            ->setName('admin_roles_create')
+            ->setArgument('permission', 'admin.roles');
 
         $this
             ->map(['GET', 'POST'], '/edit/{role}', BaseController::action(RolesController::class, 'edit'))
-            ->setName('admin_roles_edit');
+            ->setName('admin_roles_edit')
+            ->setArgument('permission', 'admin.roles');
 
         $this
             ->post('/delete/{role}', BaseController::action(RolesController::class, 'delete'))
-            ->setName('admin_roles_delete');
+            ->setName('admin_roles_delete')
+            ->setArgument('permission', 'admin.roles');
 
         $this
             ->get('/users/{role}', BaseController::action(RolesController::class, 'users'))
-            ->setName('admin_roles_users');
+            ->setName('admin_roles_users')
+            ->setArgument('permission', 'admin.roles');
 
         $this
             ->map(['GET', 'POST'], '/permissions/{role}', BaseController::action(RolesController::class, 'permissions'))
-            ->setName('admin_roles_permissions');
+            ->setName('admin_roles_permissions')
+            ->setArgument('permission', 'admin.roles');
     });
 });
