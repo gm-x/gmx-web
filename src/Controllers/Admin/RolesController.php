@@ -5,6 +5,7 @@ use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Core\Auth\Helpers\RoleHelper;
 use \GameX\Core\BaseController;
+use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -13,6 +14,12 @@ use \Slim\Exception\NotFoundException;
 use \Exception;
 
 class RolesController extends BaseController {
+    const PERMISSIONS = [
+        'index' => 'Index',
+        'admin.users' => 'Admin Users CRUD',
+        'admin.roles' => 'Admin Roles CRUD',
+        'admin.user.role' => 'Admin User Set Role',
+    ];
 
     /** @var  RoleRepositoryInterface */
     protected $roleRepository;
@@ -143,34 +150,25 @@ class RolesController extends BaseController {
     public function permissionsAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
 
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_roles_edit');
-        $form
-            ->setAction($this->pathFor('admin_roles_permissions', ['role' => $role->getRoleId()]))
-            ->add('test[]', '', [
-                'type' => 'checkbox',
-                'title' => 'Test',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim'])
-            ->processRequest();
-
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-//
-                    return $this->redirect('admin_roles_list');
-                } catch (Exception $e) {
-                    return $this->failRedirect($e, $form);
+        if ($request->isPost()) {
+            try {
+                $data = $request->getParsedBody();
+                if (!array_key_exists('permissions', $data) || !is_array($data['permissions'])) {
+                    throw new ValidationException('Bad values');
                 }
+                $permissions = filter_var_array($data['permissions'], FILTER_VALIDATE_BOOLEAN, false);
+                $role->permissions = $permissions;
+                $role->save();
+                return $this->redirect('admin_roles_list');
+            } catch (Exception $e) {
+                var_dump($e); die();
+//                return $this->failRedirect($e, $form);
             }
         }
 
         return $this->render('admin/roles/permissions.twig', [
-            'form' => $form
+            'role' => $role,
+            'permissions' => self::PERMISSIONS
         ]);
     }
 

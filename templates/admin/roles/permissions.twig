@@ -1,18 +1,26 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-    <form action="{{ form_action(form) }}" method="post">
+    <form action="{{ path_for('admin_roles_permissions', {'role': role.id}) }}" method="post">
         {{ csrf_token() }}
-        <div class="row">
-            <div class="input-field col s12">
-                {{ form_label(form, 'test') }}
-                {{ form_input(form, 'test') }}
-                {{ form_error(form, 'test') }}
+        <div class="form-group">
+        {% for permission, title in permissions %}
+            <div class="custom-control custom-checkbox">
+                <input
+                        type="checkbox"
+                        class="custom-control-input"
+                        name="permissions[{{ permission }}]"
+                        value="1"
+                        id="permission_{{ permission }}"
+                        {% if has_access(role, permission) %}checked{% endif %}
+                />
+                <label class="custom-control-label" for="permission_{{ permission }}">{{ title }}</label>
             </div>
+        {% endfor %}
         </div>
-        <div class="row">
-            <input type="submit" class="btn" value="Create">
-            <a href="{{ path_for('admin_roles_list') }}" class="btn red">Cancel</a>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Save">
+            <a href="{{ path_for('admin_roles_list') }}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 {% endblock %}
