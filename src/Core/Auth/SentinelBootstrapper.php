@@ -1,24 +1,29 @@
 <?php
 namespace GameX\Core\Auth;
 
-use Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
-use Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
-use Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint;
-use Cartalyst\Sentinel\Hashing\NativeHasher;
-use Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository;
-use Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
-use Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
-use Cartalyst\Sentinel\Sentinel;
-use Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository;
-use Cartalyst\Sentinel\Users\IlluminateUserRepository;
-use Illuminate\Events\Dispatcher;
-use InvalidArgumentException;
+use \Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
+use \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
+use \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint;
+use \Cartalyst\Sentinel\Hashing\NativeHasher;
+use \Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository;
+use \Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
+use \Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
+use \Cartalyst\Sentinel\Sentinel;
+use \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository;
+use \Cartalyst\Sentinel\Users\IlluminateUserRepository;
+use \GameX\Core\Auth\Repository\UsersRepository;
+use \Illuminate\Events\Dispatcher;
+use \InvalidArgumentException;
 use \Slim\Http\Request;
-use Cartalyst\Sentinel\Native\ConfigRepository;
+use \Cartalyst\Sentinel\Native\ConfigRepository;
 use \GameX\Core\Auth\Session as SentinelSession;
 use \GameX\Core\Session\Session;
 
 class SentinelBootstrapper {
+
+	const USER_MODEL = '\GameX\Core\Auth\Models\UserModel';
+	const ROLE_MODEL = '\GameX\Core\Auth\Models\RoleModel';
+
     /**
      * @var Request
      */
@@ -60,8 +65,7 @@ class SentinelBootstrapper {
      *
      * @return \Cartalyst\Sentinel\Sentinel
      */
-    public function createSentinel()
-    {
+    public function createSentinel() {
         $persistence = $this->createPersistence();
         $users       = $this->createUsers();
         $roles       = $this->createRoles();
@@ -102,8 +106,7 @@ class SentinelBootstrapper {
      *
      * @return \Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository
      */
-    protected function createPersistence()
-    {
+    protected function createPersistence() {
         $session = $this->createSession();
 
         $cookie = $this->createCookie();
@@ -120,8 +123,7 @@ class SentinelBootstrapper {
      *
      * @return SentinelSession
      */
-    protected function createSession()
-    {
+    protected function createSession() {
         return new SentinelSession($this->session, $this->config['session']);
     }
 
@@ -130,35 +132,23 @@ class SentinelBootstrapper {
      *
      * @return Cookie
      */
-    protected function createCookie()
-    {
+    protected function createCookie() {
         return new Cookie($this->request, $this->config['cookie']);
     }
 
     /**
      * Creates a user repository.
      *
-     * @return \Cartalyst\Sentinel\Users\IlluminateUserRepository
+     * @return UsersRepository
      */
-    protected function createUsers()
-    {
-        $hasher = $this->createHasher();
-
-        $model = $this->config['users']['model'];
-
-        $roles = $this->config['roles']['model'];
-
+    protected function createUsers() {
         $persistences = $this->config['persistences']['model'];
 
-        if (class_exists($roles) && method_exists($roles, 'setUsersModel')) {
-            forward_static_call_array([$roles, 'setUsersModel'], [$model]);
-        }
-
         if (class_exists($persistences) && method_exists($persistences, 'setUsersModel')) {
-            forward_static_call_array([$persistences, 'setUsersModel'], [$model]);
+            forward_static_call_array([$persistences, 'setUsersModel'], [self::USER_MODEL]);
         }
 
-        return new IlluminateUserRepository($hasher, $this->getEventDispatcher(), $model);
+        return new UsersRepository($this->createHasher(), $this->getEventDispatcher(), self::USER_MODEL);
     }
 
     /**
@@ -166,8 +156,7 @@ class SentinelBootstrapper {
      *
      * @return \Cartalyst\Sentinel\Hashing\NativeHasher
      */
-    protected function createHasher()
-    {
+    protected function createHasher() {
         return new NativeHasher;
     }
 
@@ -176,17 +165,8 @@ class SentinelBootstrapper {
      *
      * @return \Cartalyst\Sentinel\Roles\IlluminateRoleRepository
      */
-    protected function createRoles()
-    {
-        $model = $this->config['roles']['model'];
-
-        $users = $this->config['users']['model'];
-
-        if (class_exists($users) && method_exists($users, 'setRolesModel')) {
-            forward_static_call_array([$users, 'setRolesModel'], [$model]);
-        }
-
-        return new IlluminateRoleRepository($model);
+    protected function createRoles() {
+        return new IlluminateRoleRepository(self::ROLE_MODEL);
     }
 
     /**
@@ -194,8 +174,7 @@ class SentinelBootstrapper {
      *
      * @return \Cartalyst\Sentinel\Activations\IlluminateActivationRepository
      */
-    protected function createActivations()
-    {
+    protected function createActivations() {
         $model = $this->config['activations']['model'];
 
         $expires = $this->config['activations']['expires'];
@@ -208,8 +187,7 @@ class SentinelBootstrapper {
      *
      * @return string
      */
-    protected function getIpAddress()
-    {
+    protected function getIpAddress() {
         return $this->request->getAttribute('ip_address');
     }
 
@@ -219,8 +197,7 @@ class SentinelBootstrapper {
      * @param  \Cartalyst\Sentinel\Activations\IlluminateActivationRepository  $activations
      * @return \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint
      */
-    protected function createActivationCheckpoint(IlluminateActivationRepository $activations)
-    {
+    protected function createActivationCheckpoint(IlluminateActivationRepository $activations) {
         return new ActivationCheckpoint($activations);
     }
 
@@ -233,8 +210,7 @@ class SentinelBootstrapper {
      * @return array
      * @throws \InvalidArgumentException
      */
-    protected function createCheckpoints(IlluminateActivationRepository $activations, IlluminateThrottleRepository $throttle, $ipAddress)
-    {
+    protected function createCheckpoints(IlluminateActivationRepository $activations, IlluminateThrottleRepository $throttle, $ipAddress) {
         $activeCheckpoints = $this->config['checkpoints'];
 
         $activation = $this->createActivationCheckpoint($activations);
@@ -261,8 +237,7 @@ class SentinelBootstrapper {
      * @param  string  $ipAddress
      * @return \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint
      */
-    protected function createThrottleCheckpoint(IlluminateThrottleRepository $throtte, $ipAddress)
-    {
+    protected function createThrottleCheckpoint(IlluminateThrottleRepository $throtte, $ipAddress) {
         return new ThrottleCheckpoint($throtte, $ipAddress);
     }
 
@@ -271,8 +246,7 @@ class SentinelBootstrapper {
      *
      * @return \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository
      */
-    protected function createThrottling()
-    {
+    protected function createThrottling() {
         $model = $this->config['throttling']['model'];
 
         foreach (['global', 'ip', 'user'] as $type) {
@@ -297,8 +271,7 @@ class SentinelBootstrapper {
      *
      * @return \Illuminate\Contracts\Events\Dispatcher
      */
-    protected function getEventDispatcher()
-    {
+    protected function getEventDispatcher() {
         if (! $this->dispatcher) {
             $this->dispatcher = new Dispatcher;
         }
@@ -312,8 +285,7 @@ class SentinelBootstrapper {
      * @param  \Cartalyst\Sentinel\Users\IlluminateUserRepository  $users
      * @return \Cartalyst\Sentinel\Reminders\IlluminateReminderRepository
      */
-    protected function createReminders(IlluminateUserRepository $users)
-    {
+    protected function createReminders(IlluminateUserRepository $users) {
         $model = $this->config['reminders']['model'];
 
         $expires = $this->config['reminders']['expires'];

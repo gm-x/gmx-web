@@ -1,0 +1,25 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+    <form action="{{ form_action(form) }}" method="post">
+        {{ csrf_token() }}
+        <div class="row">
+            <div class="input-field col s12">
+                {{ form_label(form, 'name') }}
+                {{ form_input(form, 'name') }}
+                {{ form_error(form, 'name') }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                {{ form_label(form, 'slug') }}
+                {{ form_input(form, 'slug') }}
+                {{ form_error(form, 'slug') }}
+            </div>
+        </div>
+        <div class="row">
+            <input type="submit" class="btn" value="Create">
+            <a href="{{ path_for('admin_roles_list') }}" class="btn red">Cancel</a>
+        </div>
+    </form>
+{% endblock %}

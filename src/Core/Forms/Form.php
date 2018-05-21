@@ -53,6 +53,11 @@ class Form {
     protected $errors = [];
 
     /**
+     * @var string
+     */
+    protected $action;
+
+    /**
      * Form constructor.
      * @param ServerRequestInterface $request
      * @param Session $session
@@ -77,6 +82,22 @@ class Form {
     }
 
     /**
+     * @param string $action
+     * @return $this
+     */
+    public function setAction($action) {
+        $this->action = (string) $action;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction() {
+        return $this->action;
+    }
+
+    /**
      * @param $name
      * @param string $value
      * @param array $options
@@ -93,6 +114,7 @@ class Form {
             'error' => array_key_exists('error', $options) ? (string)$options['error'] : '',
             'classes' => array_key_exists('classes', $options) ? (array)$options['classes'] : [],
             'attributes' => array_key_exists('attributes', $options) ? (array)$options['attributes'] : [],
+			'values' => array_key_exists('values', $options) ? (array)$options['values'] : [],
         ];
         if (!array_key_exists($name, $this->values)) {
             $this->values[$name] = $value;
@@ -127,7 +149,7 @@ class Form {
         }
         $errors = $this->validator->getErrors();
         foreach ($errors as $key => $error) {
-            if (array_key_exists($key, $this->fields)) {
+            if ($this->checkExistsField($key)) {
                 $this->errors[$key] = $this->fields[$key]['error'];
             }
         }
@@ -220,13 +242,29 @@ class Form {
         return $this;
     }
 
+	/**
+	 * @param $name
+	 * @return string|null
+	 */
+    public function getType($name) {
+    	return $this->checkExistsField($name)
+			? $this->fields[$name]['type']
+			: null;
+	}
+
+	public function getFieldValues($name) {
+    	return $this->checkExistsField($name)
+			? $this->fields[$name]['values']
+			: [];
+	}
+
     /**
      * @param $name
      * @param $key
      * @return mixed|null
      */
     public function getFieldData($name, $key) {
-        if (!array_key_exists($name, $this->fields)) {
+        if (!$this->checkExistsField($name)) {
             return null;
         }
 
@@ -236,6 +274,10 @@ class Form {
 
         return $this->fields[$name][$key];
     }
+
+    protected function checkExistsField($name) {
+		return array_key_exists($name, $this->fields);
+	}
 
     /**
      * @param $name
