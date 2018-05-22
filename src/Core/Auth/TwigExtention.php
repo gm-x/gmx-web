@@ -14,7 +14,7 @@ class TwigExtention extends Twig_Extension {
         return [
             new Twig_SimpleFunction(
                 'role_has_access',
-                [$this, 'hasAccess']
+                [$this, 'roleHasAccess']
             ),
         ];
     }
