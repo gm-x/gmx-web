@@ -9,9 +9,8 @@ return function () {
         ->setName('admin_users_list')
         ->setArgument('permission', 'admin.users');
 
-    /** @var \Slim\App $this */
     $this
-        ->map(['GET', 'POST'], '/edit/{user}', BaseController::action(UsersController::class, 'edit'))
+        ->map(['GET', 'POST'], '/{user}/edit', BaseController::action(UsersController::class, 'edit'))
         ->setName('admin_users_edit')
         ->setArgument('permission', 'admin.user.role');
 };
