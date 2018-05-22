@@ -102,8 +102,13 @@ $app->group('/admin', function () {
 			->setArgument('permission', 'admin.servers');
 
 		$this
-			->map(['GET', 'POST'], '/edit/{server}', BaseController::action(ServersController::class, 'create'))
-			->setName('admin_servers_list')
+			->map(['GET', 'POST'], '/edit/{server}', BaseController::action(ServersController::class, 'edit'))
+			->setName('admin_servers_edit')
 			->setArgument('permission', 'admin.servers');
+
+        $this
+            ->post('/delete/{server}', BaseController::action(ServersController::class, 'delete'))
+            ->setName('admin_servers_delete')
+            ->setArgument('permission', 'admin.servers');
 	});
 });

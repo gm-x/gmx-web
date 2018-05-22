@@ -128,16 +128,24 @@ class Form {
     }
 
     /**
+     * @param ServerRequestInterface|null $request
      * @return $this
      */
-    public function processRequest() {
-        if (!$this->request->isPost()) {
+    public function processRequest(ServerRequestInterface $request = null) {
+        if ($request === null) {
+            $request = $this->request;
+        }
+
+        if (!$request->isPost()) {
             return $this;
         }
-        $body = $this->request->getParsedBody();
-        $values = array_key_exists($this->name, $body) && is_array($body[$this->name])
-            ? $body[$this->name]
-            : [];
+
+        $body = $request->getParsedBody();
+        if (!array_key_exists($this->name, $body) || !is_array($body[$this->name])) {
+            return $this;
+        }
+
+        $values = $body[$this->name];
 
         $this->isSubmitted = true;
         $this->isValid = $this->validator->validate($values);

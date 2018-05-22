@@ -39,8 +39,8 @@ $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
 
 $container['log'] = function (\Psr\Container\ContainerInterface $container) {
 	$log = new \Monolog\Logger('name');
-	$logPath = $container['root'] . '/tmp.log';
-	$log->pushHandler(new \Monolog\Handler\StreamHandler($logPath, \Monolog\Logger::DEBUG));
+	$logPath = $container['root'] . '/logs/log.log';
+	$log->pushHandler(new \Monolog\Handler\RotatingFileHandler($logPath, 10, \Monolog\Logger::DEBUG));
 
 	return $log;
 };

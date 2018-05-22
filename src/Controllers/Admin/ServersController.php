@@ -27,41 +27,18 @@ class ServersController extends BaseController {
     }
 
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-		/** @var Form $form */
-		$form = $this->getContainer('form')->createForm('admin_servers_create');
-		$form
-			->setAction($this->pathFor('admin_servers_create'))
-			->add('name', '', [
-				'type' => 'text',
-				'title' => 'Name',
-				'error' => 'Required',
-				'required' => true,
-				'attributes' => [],
-			], ['required', 'trim'])
-			->add('ip', '', [
-				'type' => 'text',
-				'title' => 'IP',
-				'error' => 'Required',
-				'required' => true,
-				'attributes' => [],
-			], ['required', 'trim'])
-			->add('port', '', [
-				'type' => 'number',
-				'title' => 'Port',
-				'error' => 'Required',
-				'required' => true,
-				'attributes' => [],
-			], ['required', 'trim'])
-			->processRequest();
-
+        $server = $this->getServer($request, $response, $args);
+        $form = $this
+            ->getForm($server)
+            ->setAction((string)$request->getUri())
+            ->processRequest($request);
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
 				return $this->redirectTo($form->getAction());
 			} else {
 				try {
-					$model = new Server();
-					$model->fill($form->getValues());
-					$model->save();
+                    $server->fill($form->getValues());
+                    $server->save();
 					return $this->redirect('admin_servers_list');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);
@@ -71,39 +48,16 @@ class ServersController extends BaseController {
 
 		return $this->render('admin/servers/form.twig', [
 			'form' => $form,
+            'create' => true,
 		]);
 	}
 
 	public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$server = $this->getServer($request, $response, $args);
-
-		/** @var Form $form */
-		$form = $this->getContainer('form')->createForm('admin_servers_list');
-		$form
-			->setAction($this->pathFor('admin_servers_edit', ['role' => $server->id]))
-			->add('name', '', [
-				'type' => 'text',
-				'title' => 'Name',
-				'error' => 'Required',
-				'required' => true,
-				'attributes' => [],
-			], ['required', 'trim'])
-			->add('ip', '', [
-				'type' => 'text',
-				'title' => 'IP',
-				'error' => 'Required',
-				'required' => true,
-				'attributes' => [],
-			], ['required', 'trim'])
-			->add('port', '', [
-				'type' => 'number',
-				'title' => 'Port',
-				'error' => 'Required',
-				'required' => true,
-				'attributes' => [],
-			], ['required', 'trim'])
-			->processRequest();
-
+        $form = $this
+            ->getForm($server)
+            ->setAction((string)$request->getUri())
+            ->processRequest($request);
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
 				return $this->redirectTo($form->getAction());
@@ -118,16 +72,17 @@ class ServersController extends BaseController {
 			}
 		}
 
-		return $this->render('admin/roles/form.twig', [
+		return $this->render('admin/servers/form.twig', [
 			'form' => $form,
+            'create' => false,
 		]);
 	}
 
 	public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-//		$role = $this->getRole($request, $response, $args);
+        $server = $this->getServer($request, $response, $args);
 
 		try {
-//			$role->delete();
+			$server->delete();
 		} catch (Exception $e) {
 			$this->addFlashMessage('error', 'Something wrong. Please Try again later.');
 			/** @var \Monolog\Logger $logger */
@@ -135,7 +90,7 @@ class ServersController extends BaseController {
 			$logger->error((string) $e);
 		}
 
-		return $this->redirect('admin_roles_list');
+		return $this->redirect('admin_servers_list');
 	}
 
 	/**
@@ -146,6 +101,10 @@ class ServersController extends BaseController {
 	 * @throws NotFoundException
 	 */
 	protected function getServer(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+	    if (!array_key_exists('server', $args)) {
+	        return new Server();
+        }
+
 		$server = Server::find($args['server']);
 		if (!$server) {
 			throw new NotFoundException($request, $response);
@@ -153,4 +112,33 @@ class ServersController extends BaseController {
 
 		return $server;
 	}
+
+	protected function getForm(Server $server) {
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('admin_server');
+        $form
+            ->add('name', $server->name, [
+                'type' => 'text',
+                'title' => 'Name',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim'])
+            ->add('ip', $server->ip, [
+                'type' => 'text',
+                'title' => 'IP',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim'])
+            ->add('port', $server->port, [
+                'type' => 'number',
+                'title' => 'Port',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim']);
+
+        return $form;
+    }
 }

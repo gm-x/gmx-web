@@ -15,14 +15,20 @@
 				<td>{{ server.name }}</td>
 				<td>{{ server.ip }}:{{ server.port }}</td>
 				<td>
-					<a href="{{ path_for('admin_users_edit', {'user': user.id}) }}" class="btn btn-sm">
+					<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="btn btn-sm">
 						<span class="oi oi-pencil"></span>
 					</a>
+					<form action="{{ path_for('admin_servers_delete', {'server': server.id}) }}" method="post" style="display: inline-block">
+                        {{ csrf_token() }}
+						<button type="submit" class="btn btn-sm">
+							<span class="oi oi-delete"></span>
+						</button>
+					</form>
 				</td>
 			</tr>
 		{% endfor %}
 		</tbody>
 	</table>
 	{{ render_pagination(pagination) }}
-	<a href="{{ path_for('admin_servers_create') }}" class="btn btn-primary">Create</a>
+	<a href="{{ path_for('admin_servers_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
 {% endblock %}
