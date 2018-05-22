@@ -10,6 +10,10 @@ use \Exception;
 
 class UserController extends BaseController {
     public function registerAction(RequestInterface $request, ResponseInterface $response, array $args) {
+        $identical_password_validator = function($confirmation, $form) {
+            return $form->password === $confirmation;
+        };
+
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('register');
         $form
@@ -34,8 +38,8 @@ class UserController extends BaseController {
                 'error' => 'Passwords does not match',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6])
-            ->processRequest();
+            ], ['required', 'trim', 'min_length' => 6, 'identical' => $identical_password_validator])
+            ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {

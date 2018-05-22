@@ -123,21 +123,27 @@ class ServersController extends BaseController {
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim'])
+            ], ['required', 'trim', 'min_length' => 1])
             ->add('ip', $server->ip, [
                 'type' => 'text',
                 'title' => 'IP',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim'])
+            ], ['required', 'ipv4'])
             ->add('port', $server->port, [
                 'type' => 'number',
                 'title' => 'Port',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim']);
+            ], ['required', 'integer', 'between' => [1024, 65535]]);
+
+        if (!$server->exists) {
+            $form->addRules('port', ['exists' => function ($port, \Form\Validator $form) {
+                return !Server::where(['ip' => $form->getValue('ip'), 'port' => $port])->exists();
+            }]);
+        }
 
         return $form;
     }

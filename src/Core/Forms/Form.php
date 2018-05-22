@@ -250,6 +250,25 @@ class Form {
         return $this;
     }
 
+    /**
+     * @return Validator
+     */
+    public function getValidator() {
+        return $this->validator;
+    }
+
+    /**
+     * @param string $field
+     * @param array $rules
+     * @return $this
+     */
+    public function addRules($field, array $rules) {
+        $this->validator->addRules([
+            $field => $rules
+        ]);
+        return $this;
+    }
+
 	/**
 	 * @param $name
 	 * @return string|null

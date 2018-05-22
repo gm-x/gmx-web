@@ -41,10 +41,6 @@ class AuthHelper {
 	 * @throws ValidationException
 	 */
 	public function registerUser($email, $password, $password_repeat) {
-		if ($password !== $password_repeat) {
-			throw new FormException('password_repeat', 'Password didn\'t match');
-		}
-
         $user = $this->auth->getUserRepository()->findByCredentials([
 			'email' => $email
 		]);
