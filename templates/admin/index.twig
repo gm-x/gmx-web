@@ -1,0 +1,6 @@
+{% extends 'admin/admin.twig' %}
+
+{% block content %}
+	<a href="{{ path_for('admin_users_list') }}">Users</a>
+	<a href="{{ path_for('admin_roles_list') }}">Roles</a>
+{% endblock %}

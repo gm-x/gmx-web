@@ -65,3 +65,5 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 
 	return $view;
 };
+
+\GameX\Core\BaseModel::setContainer($container);

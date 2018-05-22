@@ -4,6 +4,7 @@ use \GameX\Controllers\IndexController;
 use \GameX\Controllers\UserController;
 use \GameX\Controllers\Admin\UsersController;
 use \GameX\Controllers\Admin\RolesController;
+use \GameX\Controllers\Admin\ServersController;
 
 $app
     ->get('/', BaseController::action(IndexController::class, 'index'))
@@ -35,6 +36,11 @@ $app
 
 
 $app->group('/admin', function () {
+	$this
+		->get('', BaseController::action(\GameX\Controllers\Admin\AdminController::class, 'index'))
+		->setName('admin_index')
+		->setArgument('permission', 'admin.*');
+
     $this->group('/users', function () {
         /** @var \Slim\App $this */
         $this
@@ -82,4 +88,17 @@ $app->group('/admin', function () {
             ->setName('admin_roles_permissions')
             ->setArgument('permission', 'admin.roles');
     });
+
+    $this->group('/servers', function () {
+		/** @var \Slim\App $this */
+		$this
+			->get('', BaseController::action(ServersController::class, 'index'))
+			->setName('admin_servers_list')
+			->setArgument('permission', 'admin.servers');
+
+		$this
+			->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))
+			->setName('admin_servers_create')
+			->setArgument('permission', 'admin.servers');
+	});
 });

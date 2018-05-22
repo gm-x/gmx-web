@@ -12,10 +12,12 @@ class Servers extends Migration {
         $this->getSchema()
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('name', 256);
+                $table->string('name', 255);
                 $table->string('ip', 32);
                 $table->integer('port');
                 $table->string('rcon', 128)->nullable();
+                $table->unsignedTinyInteger('active')->default('0');
+                $table->string('token', 255)->nullable();
                 $table->timestamps();
             });
     }

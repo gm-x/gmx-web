@@ -1,0 +1,28 @@
+{% extends 'admin/admin.twig' %}
+
+{% block content %}
+	<table class="table table-hover">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Address</th>
+			<th>&nbsp;</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for server in servers %}
+			<tr>
+				<td>{{ server.name }}</td>
+				<td>{{ server.ip }}:{{ server.port }}</td>
+				<td>
+					<a href="{{ path_for('admin_users_edit', {'user': user.id}) }}" class="btn btn-sm">
+						<span class="oi oi-pencil"></span>
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	{{ render_pagination(pagination) }}
+	<a href="{{ path_for('admin_servers_create') }}" class="btn btn-primary">Create</a>
+{% endblock %}
