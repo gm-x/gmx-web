@@ -4,6 +4,7 @@
 	},
 	"Auth": {
 		"login_reg_link": "Login/Register",
-		"logout_link": "Logout"
+		"logout_link": "Logout",
+		"login_btn": "Login"
 	}
 }

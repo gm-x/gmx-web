@@ -4,6 +4,7 @@
 	},
 	"Auth": {
 		"login_reg_link": "Войти/Зарегистрироватся",
-		"logout_link": "Выйти"
+		"logout_link": "Выйти",
+		"login_btn": "Войти"
 	}
 }

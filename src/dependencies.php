@@ -17,23 +17,6 @@ $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
 	return $i18n;
 };
 
-$container['view'] = function (\Psr\Container\ContainerInterface $container) {
-    $view = new \Slim\Views\Twig($container->get('root') . 'templates', array_merge([
-        'cache' => $container->get('root') . 'cache',
-    ], $container['config']['twig']));
-
-    // Instantiate and add Slim specific extension
-    $basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
-    $view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
-    $view->addExtension(new \GameX\Core\Forms\FormExtension());
-    $view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
-    $view->addExtension(new \GameX\Core\Pagination\Extention());
-    $view->addExtension(new \GameX\Core\Auth\TwigExtention());
-    $view->addExtension(new \GameX\Core\Lang\ViewExtention($container->get('lang')));
-
-    return $view;
-};
-
 $container['db'] = function (\Psr\Container\ContainerInterface $container) {
     $capsule = new \Illuminate\Database\Capsule\Manager;
     $capsule->addConnection($container['config']['db']);
@@ -64,4 +47,21 @@ $container['log'] = function (\Psr\Container\ContainerInterface $container) {
 
 $container['form'] = function (\Psr\Container\ContainerInterface $container) {
     return new \GameX\Core\Forms\FormFactory($container);
+};
+
+$container['view'] = function (\Psr\Container\ContainerInterface $container) {
+	$view = new \Slim\Views\Twig($container->get('root') . 'templates', array_merge([
+		'cache' => $container->get('root') . 'cache',
+	], $container['config']['twig']));
+
+	// Instantiate and add Slim specific extension
+	$basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
+	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
+	$view->addExtension(new \GameX\Core\Forms\FormExtension());
+	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
+	$view->addExtension(new \GameX\Core\Pagination\Extention());
+	$view->addExtension(new \GameX\Core\Auth\ViewExtention($container->get('auth')));
+	$view->addExtension(new \GameX\Core\Lang\ViewExtention($container->get('lang')));
+
+	return $view;
 };
