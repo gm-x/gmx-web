@@ -8,6 +8,8 @@ use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Exception\NotFoundException;
+use \GameX\Core\Forms\Form;
+use \GameX\Core\AccessFlags\Helper;
 use \Exception;
 
 class PrivilegesGroupsController extends BaseController {
@@ -47,9 +49,10 @@ class PrivilegesGroupsController extends BaseController {
             } else {
                 try {
                     $group->server_id = $server->id;
-                    $group->fill($form->getValues());
+                    $group->title = $form->getValue('title');
+                    $group->flags = Helper::readFlags($form->getValue('flags'));
                     $group->save();
-                    return $this->redirect('admin_servers_list');
+                    return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
                 } catch (Exception $e) {
                     return $this->failRedirect($e, $form);
                 }
@@ -61,6 +64,63 @@ class PrivilegesGroupsController extends BaseController {
             'form' => $form,
             'create' => true,
         ]);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        $server = $this->getServer($request, $response, $args);
+        $group = $this->getGroup($request, $response, $args);
+        $form = $this
+            ->getForm($group)
+            ->setAction((string)$request->getUri())
+            ->processRequest($request);
+        if ($form->getIsSubmitted()) {
+            if (!$form->getIsValid()) {
+                return $this->redirectTo($form->getAction());
+            } else {
+                try {
+                    $group->title = $form->getValue('title');
+                    $group->flags = Helper::readFlags($form->getValue('flags'));
+                    $server->save();
+                    return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
+                } catch (Exception $e) {
+                    return $this->failRedirect($e, $form);
+                }
+            }
+        }
+
+        return $this->render('admin/servers/groups/form.twig', [
+            'server' => $server,
+            'form' => $form,
+            'create' => false,
+        ]);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        $server = $this->getServer($request, $response, $args);
+        $group = $this->getGroup($request, $response, $args);
+
+        try {
+            $group->delete();
+        } catch (Exception $e) {
+            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+            /** @var \Monolog\Logger $logger */
+            $logger = $this->getContainer('log');
+            $logger->error((string) $e);
+        }
+
+        return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
     }
 
 	/**
@@ -118,15 +178,13 @@ class PrivilegesGroupsController extends BaseController {
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'trim', 'min_length' => 1])
-            ->add('flags', $group->flags, [
-                'type' => 'number',
+            ->add('flags', Helper::getFlags($group->flags), [
+                'type' => 'text',
                 'title' => 'Flags',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'integer']);
-
-        
+            ], ['required', 'trim']);
 
         return $form;
     }

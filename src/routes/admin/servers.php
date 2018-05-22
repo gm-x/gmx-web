@@ -35,5 +35,13 @@ return function () {
         $this
             ->map(['GET', 'POST'], '/create', BaseController::action(PrivilegesGroupsController::class, 'create'))
             ->setName('admin_servers_groups_create');
+
+        $this
+            ->map(['GET', 'POST'], '/{group}/edit', BaseController::action(PrivilegesGroupsController::class, 'edit'))
+            ->setName('admin_servers_groups_edit');
+
+        $this
+            ->post('/{group}/delete', BaseController::action(PrivilegesGroupsController::class, 'delete'))
+            ->setName('admin_servers_groups_delete');
     });
 };

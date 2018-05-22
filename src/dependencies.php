@@ -62,6 +62,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	$view->addExtension(new \GameX\Core\Pagination\Extention());
 	$view->addExtension(new \GameX\Core\Auth\ViewExtention($container->get('auth')));
 	$view->addExtension(new \GameX\Core\Lang\ViewExtention($container->get('lang')));
+	$view->addExtension(new \GameX\Core\AccessFlags\ViewExtension());
 
 	return $view;
 };

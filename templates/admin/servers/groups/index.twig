@@ -13,12 +13,12 @@
 		{% for group in groups %}
 			<tr>
 				<td>{{ group.title }}</td>
-				<td>{{ group.flags }}</td>
+				<td>{{ get_flags(group.flags) }}</td>
 				<td>
-					<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="btn btn-sm">
+					<a href="{{ path_for('admin_servers_groups_edit', {'server': server.id, 'group': group.id}) }}" class="btn btn-sm">
 						<span class="oi oi-pencil"></span>
 					</a>
-					<form action="{{ path_for('admin_servers_delete', {'server': server.id}) }}" method="post" style="display: inline-block">
+					<form action="{{ path_for('admin_servers_groups_delete', {'server': server.id, 'group': group.id}) }}" method="post" style="display: inline-block">
                         {{ csrf_token() }}
 						<button type="submit" class="btn btn-sm">
 							<span class="oi oi-delete"></span>
