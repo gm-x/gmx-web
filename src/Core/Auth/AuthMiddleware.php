@@ -30,6 +30,9 @@ class AuthMiddleware {
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
 	    /** @var \Slim\Route $route */
 	    $route = $request->getAttribute('route');
+	    if ($route === null) {
+			return $next($request, $response);
+		}
         $permission = $route->getArgument('permission');
         if ($permission === null) {
             return $next($request, $response);

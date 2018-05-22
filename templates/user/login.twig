@@ -14,7 +14,7 @@
         {{ form_error(form, 'password') }}
     </div>
     <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="Login">
+        <input type="submit" class="btn btn-primary" value="{{ trans('Auth', 'login_btn') }}">
 
         <a href="{{ path_for('reset_password') }}" class="btn btn-warning">Reset password</a>
         <a href="{{ path_for('register') }}" class="btn btn-success">Register</a>

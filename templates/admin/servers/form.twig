@@ -1,0 +1,30 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+    <form action="{{ form_action(form) }}" method="post">
+        {{ csrf_token() }}
+        <div class="form-group">
+            {{ form_label(form, 'name') }}
+            {{ form_input(form, 'name') }}
+            {{ form_error(form, 'name') }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form, 'ip') }}
+            {{ form_input(form, 'ip') }}
+            {{ form_error(form, 'ip') }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form, 'port') }}
+            {{ form_input(form, 'port') }}
+            {{ form_error(form, 'port') }}
+        </div>
+        <div class="form-group">
+            {% if create %}
+                <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'create') }}">
+            {% else %}
+                <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'update') }}">
+            {% endif %}
+            <a href="{{ path_for('admin_servers_list') }}" class="btn btn-secondary">{{ trans('buttons', 'cancel') }}</a>
+        </div>
+    </form>
+{% endblock %}

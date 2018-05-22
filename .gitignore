@@ -1,5 +1,7 @@
 vendor/
 cache/
 !cache/.gitkeep
+logs/
+!logs/.gitkeep
 config.json
 .idea/
