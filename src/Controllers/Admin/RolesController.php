@@ -161,8 +161,12 @@ class RolesController extends BaseController {
                 $role->save();
                 return $this->redirect('admin_roles_list');
             } catch (Exception $e) {
-                var_dump($e); die();
-//                return $this->failRedirect($e, $form);
+                $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+                /** @var \Monolog\Logger $logger */
+                $logger = $this->getContainer('log');
+                $logger->error((string) $e);
+
+                return $this->redirect('admin_roles_permissions', ['role' => $role->getRoleId()]);
             }
         }
 
