@@ -1,0 +1,9 @@
+{
+	"Generic" : {
+		"title": "GameX Title"
+	},
+	"Auth": {
+		"login_reg_link": "Войти/Зарегистрироватся",
+		"logout_link": "Выйти"
+	}
+}

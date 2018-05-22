@@ -48,8 +48,8 @@
 
                         <h6 class="dropdown-header">Username</h6>
                         <a class="dropdown-item" href="#">Settings</a>
-                        <a class="dropdown-item" href="{{ path_for('login') }}">Login/Register</a>
-                        <a class="dropdown-item" href="{{ path_for('logout') }}">Logout</a>
+                        <a class="dropdown-item" href="{{ path_for('login') }}">{{ trans('Auth', 'login_reg_link') }}</a>
+                        <a class="dropdown-item" href="{{ path_for('logout') }}">{{ trans('Auth', 'logout_link') }}</a>
                     </div>
                 </li>
             </ul>

@@ -40,6 +40,8 @@ class ViewExtention extends Twig_Extension {
 	 * @return string
 	 */
 	public function translate($section, $key, array $args = null) {
-		return $this->i18n->format($section, $key, $args);
+		return $args !== null
+			? $this->i18n->format($section, $key, $args)
+			: $this->i18n->get($section, $key);
 	}
 }

@@ -12,7 +12,7 @@ $container['csrf'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
-	$i18n = new \GameX\Core\Lang\I18n($container->get('session'), new \GameX\Core\Lang\LangProvider(), 'en');
+	$i18n = new \GameX\Core\Lang\I18n($container->get('session'), new \GameX\Core\Lang\LangProvider(), 'ru');
 	$i18n->setPath($container['root'] . 'langs');
 	return $i18n;
 };
