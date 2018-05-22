@@ -17,6 +17,6 @@ $container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
 
 include __DIR__ . '/src/dependencies.php';
 include __DIR__ . '/src/middlewares.php';
-include __DIR__ . '/src/routes.php';
+include __DIR__ . '/src/routes/index.php';
 
 $app->run();
