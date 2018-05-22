@@ -44,7 +44,7 @@ class UsersController extends BaseController {
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('admin_users_edit');
 		$form
-			->setAction($this->pathFor('admin_users_edit', ['user' => $user->id]))
+			->setAction((string)$request->getUri())
 			->add('role', $user->role->name, [
 				'type' => 'select',
 				'title' => 'Role',
@@ -52,7 +52,7 @@ class UsersController extends BaseController {
 				'required' => true,
 				'values' => $roles,
 			], ['required', 'trim', 'min_length' => 1])
-			->processRequest();
+			->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {

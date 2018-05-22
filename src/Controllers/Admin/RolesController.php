@@ -39,7 +39,7 @@ class RolesController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_roles_create');
         $form
-            ->setAction($this->pathFor('admin_roles_create'))
+            ->setAction((string)$request->getUri())
             ->add('name', '', [
                 'type' => 'text',
                 'title' => 'Name',
@@ -54,7 +54,7 @@ class RolesController extends BaseController {
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'trim'])
-            ->processRequest();
+            ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
@@ -84,7 +84,7 @@ class RolesController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_roles_edit');
         $form
-            ->setAction($this->pathFor('admin_roles_edit', ['role' => $role->getRoleId()]))
+            ->setAction((string)$request->getUri())
             ->add('name', $role->name, [
                 'type' => 'text',
                 'title' => 'Name',
@@ -99,7 +99,7 @@ class RolesController extends BaseController {
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'trim'])
-            ->processRequest();
+            ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {

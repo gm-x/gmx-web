@@ -8,11 +8,6 @@ use \GameX\Core\Session\Session;
 
 class Form {
     /**
-     * @var ServerRequestInterface
-     */
-    protected $request;
-
-    /**
      * @var Session
      */
     protected $session;
@@ -63,8 +58,7 @@ class Form {
      * @param Session $session
      * @param $name
      */
-    public function __construct(ServerRequestInterface $request, Session $session, $name) {
-        $this->request = $request;
+    public function __construct(Session $session, $name) {
         $this->session = $session;
         $this->name = $name;
         $this->validator = new Validator();
@@ -131,11 +125,7 @@ class Form {
      * @param ServerRequestInterface|null $request
      * @return $this
      */
-    public function processRequest(ServerRequestInterface $request = null) {
-        if ($request === null) {
-            $request = $this->request;
-        }
-
+    public function processRequest(ServerRequestInterface $request) {
         if (!$request->isPost()) {
             return $this;
         }

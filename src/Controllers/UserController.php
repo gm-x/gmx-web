@@ -17,7 +17,7 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('register');
         $form
-            ->setAction($this->pathFor('register'))
+            ->setAction((string)$request->getUri())
             ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
@@ -69,15 +69,15 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('activation');
 		$form
-            ->setAction($this->pathFor('activation', ['code' => $code]))
+            ->setAction((string)$request->getUri())
 			->add('email', '', [
 				'type' => 'email',
 				'title' => 'Email',
 				'error' => 'Must be valid email',
 				'required' => true,
 				'attributes' => [],
-			], ['required', 'email']);
-		$form->processRequest();
+			], ['required', 'email'])
+            ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
@@ -102,7 +102,7 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('login');
         $form
-            ->setAction($this->pathFor('login'))
+            ->setAction((string)$request->getUri())
             ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
@@ -116,8 +116,14 @@ class UserController extends BaseController {
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6]);
-        $form->processRequest();
+            ], ['required', 'trim', 'min_length' => 6])
+            ->add('remember_me', true, [
+                'type' => 'checkbox',
+                'title' => 'Remember Me',
+                'required' => false,
+                'attributes' => [],
+            ], ['bool'])
+            ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
@@ -127,7 +133,8 @@ class UserController extends BaseController {
 					$authHelper = new AuthHelper($this->container);
 					$authHelper->loginUser(
 						$form->getValue('email'),
-						$form->getValue('password')
+						$form->getValue('password'),
+                        $form->getValue('remember_me')
 					);
 					return $this->redirect('index');
 				} catch (Exception $e) {
@@ -151,15 +158,15 @@ class UserController extends BaseController {
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('reset_password');
 		$form
-            ->setAction($this->pathFor('reset_password'))
+            ->setAction((string)$request->getUri())
 			->add('email', '', [
 				'type' => 'email',
 				'title' => 'Email',
 				'error' => 'Must be valid email',
 				'required' => true,
 				'attributes' => [],
-			], ['required', 'email']);
-		$form->processRequest();
+			], ['required', 'email'])
+            ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
@@ -188,7 +195,7 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('reset_password_complete');
         $form
-            ->setAction($this->pathFor('reset_password_complete', ['code' => $code]))
+            ->setAction((string)$request->getUri())
             ->add('email', '', [
                 'type' => 'email',
                 'title' => 'Email',
@@ -210,7 +217,7 @@ class UserController extends BaseController {
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'trim', 'min_length' => 6])
-            ->processRequest();
+            ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {

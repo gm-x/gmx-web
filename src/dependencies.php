@@ -57,7 +57,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	// Instantiate and add Slim specific extension
 	$basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
 	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
-	$view->addExtension(new \GameX\Core\Forms\FormExtension());
+	$view->addExtension(new \GameX\Core\Forms\ViewExtension());
 	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
 	$view->addExtension(new \GameX\Core\Pagination\Extention());
 	$view->addExtension(new \GameX\Core\Auth\ViewExtention($container->get('auth')));

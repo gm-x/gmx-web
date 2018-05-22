@@ -6,7 +6,7 @@ use \Twig_SimpleFunction;
 use \Twig_Environment;
 use \Twig_Extension_InitRuntimeInterface;
 
-class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntimeInterface {
+class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntimeInterface {
     /**
      * @var Twig_Environment
      */
@@ -52,6 +52,10 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 				return $this->getSelectHTML($form, $name);
 			} break;
 
+            case 'checkbox': {
+                return $this->getCheckboxHTML($form, $name);
+            } break;
+
 			default: {
 				return $this->getInputHTML($form, $name);
 			}
@@ -88,7 +92,7 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 
     protected function getInputHTML(Form $form, $name) {
 		return sprintf(
-			'<input type="%s" id="%s" name="%s" class="%s" value="%s" %s %s />',
+			'<input type="%s" id="%s" name="%s" class="form-control %s" value="%s" %s %s />',
 			$this->getSafeData($form, $name, 'type'),
 			$this->getSafeData($form, $name, 'id'),
 			$this->getSafeData($form, $name, 'name'),
@@ -99,9 +103,22 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 		);
 	}
 
+
+    protected function getCheckboxHTML(Form $form, $name) {
+		return sprintf(
+			'<input type="checkbox" id="%s" name="%s" value="1" class="custom-control-input %s" %s %s %s />',
+			$this->getSafeData($form, $name, 'id'),
+			$this->getSafeData($form, $name, 'name'),
+			$this->getSafe(implode(' ', $this->getInputClasses($form, $name))),
+            $form->getValue($name) ? 'checked' : '',
+			$form->getFieldData($name, 'required') ? 'required' : '',
+			implode(' ', $this->getInputAttributes($form, $name))
+		);
+	}
+
 	protected function getSelectHTML(Form $form, $name) {
 		$result = sprintf(
-			'<select id="%s" name="%s" class="%s" %s %s >',
+			'<select id="%s" name="%s" class="form-control %s" %s %s >',
 			$this->getSafeData($form, $name, 'id'),
 			$this->getSafeData($form, $name, 'name'),
 			$this->getSafe(implode(' ', $this->getInputClasses($form, $name))),
@@ -127,7 +144,6 @@ class FormExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 
 	protected function getInputClasses(Form $form, $name) {
 		$classes = $form->getFieldData($name, 'classes');
-		$classes[] = 'form-control';
 		if ($form->getError($name)) {
 			$classes[] = 'is-invalid';
 		}
