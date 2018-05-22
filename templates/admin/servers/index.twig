@@ -18,6 +18,9 @@
 					<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="btn btn-sm">
 						<span class="oi oi-pencil"></span>
 					</a>
+					<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="btn btn-sm">
+						<span class="oi oi-grid-two-up"></span>
+					</a>
 					<form action="{{ path_for('admin_servers_delete', {'server': server.id}) }}" method="post" style="display: inline-block">
                         {{ csrf_token() }}
 						<button type="submit" class="btn btn-sm">

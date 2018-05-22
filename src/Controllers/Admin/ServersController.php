@@ -26,6 +26,12 @@ class ServersController extends BaseController {
 		]);
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
         $form = $this
@@ -52,6 +58,12 @@ class ServersController extends BaseController {
 		]);
 	}
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
 	public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$server = $this->getServer($request, $response, $args);
         $form = $this
@@ -78,6 +90,12 @@ class ServersController extends BaseController {
 		]);
 	}
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
 	public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
 
@@ -113,6 +131,10 @@ class ServersController extends BaseController {
 		return $server;
 	}
 
+    /**
+     * @param Server $server
+     * @return Form
+     */
 	protected function getForm(Server $server) {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server');
