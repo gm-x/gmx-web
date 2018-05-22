@@ -100,5 +100,10 @@ $app->group('/admin', function () {
 			->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))
 			->setName('admin_servers_create')
 			->setArgument('permission', 'admin.servers');
+
+		$this
+			->map(['GET', 'POST'], '/edit/{server}', BaseController::action(ServersController::class, 'create'))
+			->setName('admin_servers_list')
+			->setArgument('permission', 'admin.servers');
 	});
 });
