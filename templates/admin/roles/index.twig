@@ -1,7 +1,7 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-<table>
+<table class="table table-hover">
     <thead>
     <tr>
         <th>Name</th>
@@ -15,15 +15,20 @@
         <td>{{ role.name }}</td>
         <td>{{ role.slug }}</td>
         <td>
-            <a href="{{ path_for('admin_roles_users', {'role': role.id}) }}" class="btn btn-small btn-floating">
-                <i class="material-icons">format_list_bulleted</i>
+            <a href="{{ path_for('admin_roles_users', {'role': role.id}) }}" class="btn btn-sm">
+                <span class="oi oi-people"></span>
             </a>
-            <a href="{{ path_for('admin_roles_edit', {'role': role.id}) }}" class="btn btn-small btn-floating">
-                <i class="material-icons">edit</i>
+            <a href="{{ path_for('admin_roles_permissions', {'role': role.id}) }}" class="btn btn-sm">
+                <span class="oi oi-flash"></span>
+            </a>
+            <a href="{{ path_for('admin_roles_edit', {'role': role.id}) }}" class="btn btn-sm">
+                <span class="oi oi-pencil"></span>
             </a>
             <form action="{{ path_for('admin_roles_delete', {'role': role.id}) }}" method="post" style="display: inline-block">
                 {{ csrf_token() }}
-                <button type="submit" class="btn btn-small btn-floating"><i class="material-icons">delete</i></button>
+                <button type="submit" class="btn btn-sm">
+                    <span class="oi oi-delete"></span>
+                </button>
             </form>
         </td>
     </tr>

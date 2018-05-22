@@ -3,7 +3,6 @@ namespace GameX\Core\Auth\Models;
 
 use \Illuminate\Database\Eloquent\Model;
 use \GameX\Core\Auth\SentinelBootstrapper;
-use \Cartalyst\Sentinel\Permissions\StrictPermissions;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
@@ -163,6 +162,6 @@ class UserModel extends Model implements UserInterface, PersistableInterface, Pe
 	 * @return \Cartalyst\Sentinel\Permissions\PermissionsInterface
 	 */
 	protected function createPermissions() {
-		return new StrictPermissions(null, $this->role()->permissions);
+		return new Permissions(null, $this->role->permissions);
 	}
 }

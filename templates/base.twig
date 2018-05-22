@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="/favicon.ico">
     <title>Title</title>
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/offcanvas.css" rel="stylesheet">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/offcanvas.css" rel="stylesheet">
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe" crossorigin="anonymous"></script>
+    <link href="/assets/css/open-iconic-bootstrap.css" rel="stylesheet">
 </head>
 
 <body class="bg-light">
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand mr-auto mr-lg-5" href="#"><img src="assets/images/gxlogo-xs.png"></a>
+        <a class="navbar-brand mr-auto mr-lg-5" href="#"><img src="/assets/images/gxlogo-xs.png"></a>
         <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -87,11 +88,12 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="assets/js/jquery-slim.min.js"><\/script>')</script>
-<script src="assets/js/popper.min.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/holder.min.js"></script>
-<script src="assets/js/offcanvas.js"></script>
+<script>window.jQuery || document.write('<script src="/assets/js/jquery-slim.min.js"><\/script>')</script>
+{#<script src="/assets/js/popper.min.js"></script>#}
+<script src="/assets/js/bootstrap.min.js"></script>
+{#<script src="/assets/js/holder.min.js"></script>#}
+<script src="/assets/js/offcanvas.js"></script>
+{% block javascript %}{% endblock %}
 </body>
 </html>
 

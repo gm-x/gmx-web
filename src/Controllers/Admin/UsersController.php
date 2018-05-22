@@ -1,15 +1,16 @@
 <?php
 namespace GameX\Controllers\Admin;
 
+use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Users\UserRepositoryInterface;
 use \GameX\Core\Auth\Models\RoleModel;
-use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\BaseController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Auth\Helpers\RoleHelper;
+use \Slim\Exception\NotFoundException;
 use \Exception;
 
 class UsersController extends BaseController {
@@ -30,8 +31,7 @@ class UsersController extends BaseController {
     }
 
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-		/** @var UserModel $role */
-		$user = $this->userRepository->findById($args['user']);
+		$user = $this->getUser($request, $response, $args);
 
 		/** @var RoleModel[] $roles */
 		$rolesCollection = $this->getContainer('auth')->getRoleRepository()->all();
@@ -74,5 +74,21 @@ class UsersController extends BaseController {
 		return $this->render('admin/users/form.twig', [
 			'form' => $form,
 		]);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return UserInterface
+     * @throws NotFoundException
+     */
+    protected function getUser(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+        $user = $this->userRepository->findById($args['user']);
+        if (!$user) {
+            throw new NotFoundException($request, $response);
+        }
+
+        return $user;
     }
 }

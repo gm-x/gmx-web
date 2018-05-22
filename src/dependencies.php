@@ -22,6 +22,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
     $view->addExtension(new \GameX\Core\Forms\FormExtension());
     $view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
     $view->addExtension(new \GameX\Core\Pagination\Extention());
+    $view->addExtension(new \GameX\Core\Auth\TwigExtention());
 
     return $view;
 };

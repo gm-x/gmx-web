@@ -35,7 +35,7 @@ class AuthMiddleware {
             return $next($request, $response);
         }
         $user = $this->auth->getUser();
-        if ($user && !$user->hasAccess($permission)) {
+        if (!$user || !$user->hasAccess($permission)) {
             $response->withStatus(403)->getBody()->write('Access denied');
             return $response;
         }
