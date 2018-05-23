@@ -95,11 +95,11 @@ class AuthHelper {
 	 * @return bool|\Cartalyst\Sentinel\Users\UserInterface
 	 * @throws ValidationException
 	 */
-	public function loginUser($email, $password) {
+	public function loginUser($email, $password, $remember) {
 		$user =  $this->auth->authenticate([
 			'email' => $email,
 			'password' => $password
-		]);
+		], (bool)$remember);
 
 		if (!$user) {
 			throw new ValidationException('Bad email or password');

@@ -4,7 +4,7 @@ namespace GameX\Core\Auth\Models;
 use \Cartalyst\Sentinel\Permissions\PermissionsInterface;
 use \Cartalyst\Sentinel\Permissions\PermissionsTrait;
 
-class Permissions implements PermissionsInterface {
+class PermissionsModel implements PermissionsInterface {
 
 	use PermissionsTrait;
 

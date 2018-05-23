@@ -63,9 +63,16 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntime
     }
 
     public function renderLabel(Form $form, $name) {
+    	if ($form->getType($name) === 'checkbox') {
+    		$class = 'custom-control-label';
+		} else {
+    		$class = '';
+		}
+
         return sprintf(
-            '<label for="%s">%s</label>',
-            $this->getSafeData($form, $name, 'id'),
+            '<label for="%s" class="%s">%s</label>',
+			$this->getSafeId($form, $name),
+			$class,
             $this->getSafeData($form, $name, 'title')
         );
     }
@@ -81,20 +88,11 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntime
         return $form->getAction();
     }
 
-    protected function getSafeData(Form $form, $name, $key) {
-        $value = $form->getFieldData($name, $key);
-        return $value !== null ? $this->getSafe($value) : '';
-    }
-
-    protected function getSafe($value) {
-        return twig_escape_filter($this->environment, $value, 'html_attr');
-    }
-
     protected function getInputHTML(Form $form, $name) {
 		return sprintf(
 			'<input type="%s" id="%s" name="%s" class="form-control %s" value="%s" %s %s />',
 			$this->getSafeData($form, $name, 'type'),
-			$this->getSafeData($form, $name, 'id'),
+			$this->getSafeId($form, $name),
 			$this->getSafeData($form, $name, 'name'),
 			$this->getSafe(implode(' ', $this->getInputClasses($form, $name))),
 			$this->getSafe($form->getValue($name)),
@@ -107,7 +105,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntime
     protected function getCheckboxHTML(Form $form, $name) {
 		return sprintf(
 			'<input type="checkbox" id="%s" name="%s" value="1" class="custom-control-input %s" %s %s %s />',
-			$this->getSafeData($form, $name, 'id'),
+			$this->getSafeId($form, $name),
 			$this->getSafeData($form, $name, 'name'),
 			$this->getSafe(implode(' ', $this->getInputClasses($form, $name))),
             $form->getValue($name) ? 'checked' : '',
@@ -119,7 +117,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 	protected function getSelectHTML(Form $form, $name) {
 		$result = sprintf(
 			'<select id="%s" name="%s" class="form-control %s" %s %s >',
-			$this->getSafeData($form, $name, 'id'),
+			$this->getSafeId($form, $name),
 			$this->getSafeData($form, $name, 'name'),
 			$this->getSafe(implode(' ', $this->getInputClasses($form, $name))),
 			$form->getFieldData($name, 'required') ? ' required' : '',
@@ -159,5 +157,50 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @param Form $form
+	 * @param string $name
+	 * @param string $key
+	 * @return string
+	 */
+	protected function getSafeData(Form $form, $name, $key) {
+		$value = $form->getFieldData($name, $key);
+		return $value !== null ? $this->getSafe($value) : '';
+	}
+
+	/**
+	 * @param string $value
+	 * @return string
+	 */
+	protected function getSafe($value) {
+		return twig_escape_filter($this->environment, $value, 'html_attr');
+	}
+
+	protected function getSafeId(Form $form, $name) {
+		$value = $form->getFieldData($name, 'id');
+		if ($value === null) {
+			return '';
+		}
+
+		$value = strtolower(htmlentities($value));
+		$value = str_replace(get_html_translation_table(), '-', $value);
+		$value = str_replace(' ', '-', $value);
+		$value = preg_replace('/[-]+/i', '-', $value);
+
+		return $this->getSafe($value);
+	}
+
+	/**
+	 * @param string $text
+	 * @return string
+	 */
+	protected function replaceAll($text) {
+		$text = strtolower(htmlentities($text));
+		$text = str_replace(get_html_translation_table(), "-", $text);
+		$text = str_replace(" ", "-", $text);
+		$text = preg_replace("/[-]+/i", "-", $text);
+		return $text;
 	}
 }
