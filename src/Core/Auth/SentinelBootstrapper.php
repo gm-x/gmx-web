@@ -135,12 +135,6 @@ class SentinelBootstrapper {
      * @return UsersRepository
      */
     protected function createUsers() {
-        $persistences = $this->config['persistences']['model'];
-
-        if (class_exists($persistences) && method_exists($persistences, 'setUsersModel')) {
-            forward_static_call_array([$persistences, 'setUsersModel'], [UserModel::class]);
-        }
-
         return new UsersRepository($this->createHasher(), $this->getEventDispatcher(), UserModel::class);
     }
 

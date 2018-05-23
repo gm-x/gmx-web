@@ -13,6 +13,7 @@ use \GameX\Core\BaseModel;
  * @property boolean $is_steam
  * @property string $auth_type
  * @property string $password
+ * @property Privilege $privilege
  */
 class Player extends BaseModel {
 
@@ -38,6 +39,13 @@ class Player extends BaseModel {
 	 * @var array
 	 */
 	protected $fillable = ['steamid', 'nick', 'is_steam', 'auth_type', 'password'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+	public function privilege() {
+        return $this->hasOne(Privilege::class, 'player_id', 'id');
+    }
 
 	/**
 	 * @param $value

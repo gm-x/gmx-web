@@ -11,7 +11,7 @@ use \GameX\Core\BaseModel;
  * @property string $name
  * @property string $ip
  * @property integer $port
- * @property PrivilegesGroups[] $groups
+ * @property Group[] $groups
  */
 class Server extends BaseModel {
 
@@ -37,6 +37,6 @@ class Server extends BaseModel {
      */
     public function groups()
     {
-        return $this->hasMany(PrivilegesGroups::class, 'server_id');
+        return $this->hasMany(Group::class, 'server_id');
     }
 }

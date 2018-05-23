@@ -4,6 +4,7 @@ namespace GameX\Controllers\Admin;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Core\Auth\Helpers\RoleHelper;
+use GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\BaseController;
 use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Pagination\Pagination;
@@ -38,24 +39,8 @@ class RolesController extends BaseController {
     }
 
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_roles_create');
-        $form
+        $form = $this->getForm(new RoleModel())
             ->setAction((string)$request->getUri())
-            ->add('name', '', [
-                'type' => 'text',
-                'title' => 'Name',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim'])
-            ->add('slug', '', [
-                'type' => 'text',
-                'title' => 'Slug',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim'])
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
@@ -77,30 +62,15 @@ class RolesController extends BaseController {
 
         return $this->render('admin/roles/form.twig', [
             'form' => $form,
+            'create' => true,
         ]);
     }
 
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
 
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_roles_edit');
-        $form
+        $form = $this->getForm($role)
             ->setAction((string)$request->getUri())
-            ->add('name', $role->name, [
-                'type' => 'text',
-                'title' => 'Name',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim'])
-            ->add('slug', $role->slug, [
-                'type' => 'text',
-                'title' => 'Slug',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim'])
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
@@ -108,8 +78,7 @@ class RolesController extends BaseController {
                 return $this->redirectTo($form->getAction());
             } else {
                 try {
-                    $role->name = $form->getValue('name');
-                    $role->slug = $form->getValue('slug');
+                    $role->fill($form->getValues());
                     $role->save();
                     return $this->redirect('admin_roles_list');
                 } catch (Exception $e) {
@@ -120,6 +89,7 @@ class RolesController extends BaseController {
 
         return $this->render('admin/roles/form.twig', [
             'form' => $form,
+            'create' => false,
         ]);
     }
 
@@ -193,5 +163,31 @@ class RolesController extends BaseController {
         }
 
         return $role;
+    }
+
+    /**
+     * @param RoleModel $role
+     * @return Form
+     */
+    protected function getForm(RoleModel $role) {
+        /** @var Form $form */
+        $form = $this->getContainer('form')->createForm('admin_role');
+        $form
+            ->add('name', $role->name, [
+                'type' => 'text',
+                'title' => 'Name',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim'])
+            ->add('slug', $role->slug, [
+                'type' => 'text',
+                'title' => 'Slug',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'trim']);
+
+        return $form;
     }
 }
