@@ -59,9 +59,9 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
 	$view->addExtension(new \GameX\Core\Forms\ViewExtension());
 	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
-	$view->addExtension(new \GameX\Core\Pagination\Extention());
-	$view->addExtension(new \GameX\Core\Auth\ViewExtention($container->get('auth')));
-	$view->addExtension(new \GameX\Core\Lang\ViewExtention($container->get('lang')));
+	$view->addExtension(new \GameX\Core\Pagination\ViewExtension());
+	$view->addExtension(new \GameX\Core\Auth\ViewExtension($container->get('auth')));
+	$view->addExtension(new \GameX\Core\Lang\ViewExtension($container->get('lang')));
 	$view->addExtension(new \GameX\Core\AccessFlags\ViewExtension());
 
 	return $view;

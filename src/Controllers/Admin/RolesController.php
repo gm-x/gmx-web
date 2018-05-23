@@ -20,6 +20,7 @@ class RolesController extends BaseController {
         'admin.roles' => 'Admin Roles CRUD',
         'admin.servers' => 'Admin Servers CRUD',
         'admin.user.role' => 'Admin User Set Role',
+        'admin.players' => 'Admin Players Role',
 		'admin.servers.groups' => 'Admin Privileges Groups CRUD',
     ];
 

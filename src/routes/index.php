@@ -18,4 +18,5 @@ $app->group('/admin', function () {
     $this->group('/users', include  $root . 'users.php');
     $this->group('/roles', include $root . 'roles.php');
     $this->group('/servers', include $root . 'servers.php');
+    $this->group('/players', include $root . 'players.php');
 });

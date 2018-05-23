@@ -5,7 +5,7 @@ use \Twig_Extension;
 use \Twig_SimpleFunction;
 //use \o80\i18n\I18N;
 
-class ViewExtention extends Twig_Extension {
+class ViewExtension extends Twig_Extension {
 
 	/**
 	 * @var I18N

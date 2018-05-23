@@ -11,7 +11,7 @@ class Players extends Migration {
 	$this->getSchema()
 		->create($this->getTableName(), function (Blueprint $table) {
 			$table->increments('id');
-			$table->string('steamid', 26);
+			$table->string('steamid', 26)->unique();
 			$table->string('nick', 32)->default('');
 			$table->unsignedTinyInteger('is_steam')->default('0');
 			$table->enum('auth_type', [
@@ -21,6 +21,7 @@ class Players extends Migration {
 				'steamid_hash',
 				'nick_hash',
 			])->default('steamid');
+			$table->string('password', 255)->nullable();
 			$table->timestamps();
 		});
 }
