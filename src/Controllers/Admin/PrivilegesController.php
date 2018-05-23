@@ -6,6 +6,7 @@ use \GameX\Models\Privilege;
 use \GameX\Models\Group;
 use \GameX\Core\BaseController;
 use \GameX\Core\Pagination\Pagination;
+use GameX\Models\Server;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Exception\NotFoundException;
@@ -38,10 +39,10 @@ class PrivilegesController extends BaseController {
      * @return ResponseInterface
      */
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args);
+        $player = $this->getPlayer($request, $response, $args);
+        $privilege = $this->getPrivilege($request, $response, $args);
         $form = $this
-            ->getForm($group)
+            ->getForm($privilege)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
         if ($form->getIsSubmitted()) {
@@ -49,21 +50,24 @@ class PrivilegesController extends BaseController {
                 return $this->redirectTo($form->getAction());
             } else {
                 try {
-                    $group->server_id = $server->id;
-                    $group->title = $form->getValue('title');
-                    $group->flags = Helper::readFlags($form->getValue('flags'));
-                    $group->save();
-                    return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
+                    $privilege->player_id = $player->id;
+                    $privilege->group_id = $form->getValue('group');
+                    $privilege->prefix = $form->getValue('prefix');
+                    $privilege->expired_at = \DateTime::createFromFormat('Y-m-d', $form->getValue('expired'));
+                    $privilege->active = (bool)$form->getValue('active') ? 1 : 0;
+                    $privilege->save();
+                    return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
                 } catch (Exception $e) {
                     return $this->failRedirect($e, $form);
                 }
             }
         }
 
-        return $this->render('admin/servers/groups/form.twig', [
-            'server' => $server,
+        return $this->render('admin/players/privileges/form.twig', [
+            'player' => $player,
             'form' => $form,
             'create' => true,
+            'servers' => $this->getServers()
         ]);
     }
 
@@ -124,6 +128,26 @@ class PrivilegesController extends BaseController {
         return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
     }
 
+    public function groupsAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        if (!array_key_exists('server', $_GET)) {
+            throw new NotFoundException($request, $response);
+        }
+        $server = Server::find($_GET['server']);
+        if (!$server) {
+            throw new NotFoundException($request, $response);
+        }
+
+        $groups = [];
+        /** @var Group $group */
+        foreach ($server->groups as $group) {
+            $groups[$group->id] =$group->title;
+        }
+
+        return $response->withJson([
+            'groups' => $groups,
+        ]);
+    }
+
 	/**
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
@@ -169,25 +193,43 @@ class PrivilegesController extends BaseController {
      * @return Form
      */
     protected function getForm(Privilege $privilege) {
-        
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server_group');
         $form
             ->add('group', $privilege->group_id, [
                 'type' => 'select',
-                'title' => 'Name',
+                'id' => 'input_player_group',
+                'title' => 'Group',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 1])
-            ->add('flags', Helper::getFlags($group->flags), [
+            ], ['required', 'integer'])
+            ->add('prefix', $privilege->prefix, [
                 'type' => 'text',
-                'title' => 'Flags',
+                'title' => 'Prefix',
+                'error' => '',
+                'required' => false,
+                'attributes' => [],
+            ], ['trim'])
+            ->add('expired', $privilege->expired_at, [
+                'type' => 'date',
+                'title' => 'Expired',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim']);
+            ], ['required', 'date'])
+            ->add('active', $privilege->active, [
+                'type' => 'checkbox',
+                'title' => 'Active',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+            ], ['required', 'bool']);
 
         return $form;
+    }
+
+    protected function getServers() {
+        return Server::all();
     }
 }

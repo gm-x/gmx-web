@@ -1,0 +1,69 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+    <form action="{{ form_action(form) }}" method="post">
+        {{ csrf_token() }}
+        <div class="form-group">
+            <label for="input_admin_server" class="">Group</label>
+            <select id="input_admin_server" class="form-control">
+                {% for server in servers %}
+                    <option selected>Choose server</option>
+                    <option value="{{ server.id }}">{{ server.name }}</option>
+                {% endfor %}
+            </select>
+            <span class="invalid-feedback"></span>
+        </div>
+        <div class="form-group">
+            {{ form_label(form, 'group') }}
+            {{ form_input(form, 'group') }}
+            {{ form_error(form, 'group') }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form, 'prefix') }}
+            {{ form_input(form, 'prefix') }}
+            {{ form_error(form, 'prefix') }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form, 'expired') }}
+            {{ form_input(form, 'expired') }}
+            {{ form_error(form, 'expired') }}
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                {{ form_input(form, 'active') }}
+                {{ form_label(form, 'active') }}
+            </div>
+        </div>
+        <div class="form-group">
+			{% if create %}
+                <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'create') }}">
+			{% else %}
+                <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'update') }}">
+			{% endif %}
+            <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="btn btn-secondary">
+                {{ trans('buttons', 'cancel') }}
+            </a>
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(document).ready(function () {
+    var groupSelect = $('#input_player_group');
+    $('#input_admin_server').on('change', function () {
+        var server = $(this).val();
+        if (server === '') {
+            return;
+        }
+        $.get('/admin/players/1/privileges/groups', {server: server})
+            .done(function(data) {
+                groupSelect.empty();
+                $.each(data.groups, function (id, title) {
+                    $('<option/>').val(id).html(title).appendTo(groupSelect);
+                });
+            });
+    });
+});
+</script>
+{% endblock %}
