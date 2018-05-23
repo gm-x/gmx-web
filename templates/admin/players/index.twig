@@ -19,6 +19,9 @@
                 <td>{{ player.steamid }}</td>
                 <td>{{ player.nick }}</td>
                 <td>
+                    <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="btn btn-sm">
+                        <span class="oi oi-people"></span>
+                    </a>
                     <a href="{{ path_for('admin_players_edit', {'player': player.id}) }}" class="btn btn-sm">
                         <span class="oi oi-pencil"></span>
                     </a>

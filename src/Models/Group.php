@@ -37,7 +37,7 @@ class Group extends BaseModel {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
 	public function server() {
-	    return $this->belongsTo(Server::class, 'id', 'server_id');
+	    return $this->belongsTo(Server::class, 'server_id', 'id');
     }
 
     /**

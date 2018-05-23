@@ -38,13 +38,13 @@ class Privilege extends BaseModel {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
 	public function group() {
-	    return $this->belongsTo(Group::class, 'id', 'group_id');
+	    return $this->belongsTo(Group::class, 'group_id', 'id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function player() {
-	    return $this->hasOne(Player::class, 'id', 'player_id');
+	    return $this->belongsTo(Player::class, 'player_id', 'id');
     }
 }
