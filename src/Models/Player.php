@@ -43,6 +43,6 @@ class Player extends BaseModel {
 	 * @param $value
 	 */
 	public function setPasswordAttribute($value) {
-		$this->attributes['password'] = md5($value);
+		$this->attributes['password'] = !empty($value) ? md5($value) : null;
 	}
 }

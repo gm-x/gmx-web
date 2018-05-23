@@ -39,6 +39,7 @@ class PlayersController extends BaseController {
 			->getForm($player)
 			->setAction((string)$request->getUri())
 			->processRequest($request);
+
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
 				return $this->redirectTo($form->getAction());
@@ -71,6 +72,7 @@ class PlayersController extends BaseController {
 			->getForm($player)
 			->setAction((string)$request->getUri())
 			->processRequest($request);
+
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
 				return $this->redirectTo($form->getAction());
@@ -80,8 +82,6 @@ class PlayersController extends BaseController {
 					$player->save();
 					return $this->redirect('admin_players_list');
 				} catch (Exception $e) {
-					var_dump($e);
-					die(__FILE__.':'.__LINE__);
 					return $this->failRedirect($e, $form);
 				}
 			}
@@ -166,7 +166,7 @@ class PlayersController extends BaseController {
 				'error' => 'Required for pass or hash',
 				'required' => false,
 				'attributes' => [],
-			], ['trim', 'check' => $checkPasswordRequired]);
+			], ['check' => $checkPasswordRequired]);
 
 		if (!$player->exists) {
 			$form->addRules('steamid', ['exists' => function ($steamid, Validator $validator) {
