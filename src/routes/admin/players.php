@@ -43,7 +43,7 @@ return function () {
             ->setArgument('permission', 'admin.players.privileges');
 
         $this
-            ->post('/{privileged}/delete', BaseController::action(PrivilegesController::class, 'delete'))
+            ->post('/{privilege}/delete', BaseController::action(PrivilegesController::class, 'delete'))
             ->setName('admin_players_privileges_delete')
             ->setArgument('permission', 'admin.players.privileges');
 

@@ -45,6 +45,7 @@ class PrivilegesController extends BaseController {
             ->getForm($privilege)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
                 return $this->redirectTo($form->getAction());
@@ -78,31 +79,35 @@ class PrivilegesController extends BaseController {
      * @return ResponseInterface
      */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args);
+        $player = $this->getPlayer($request, $response, $args);
+        $privilege = $this->getPrivilege($request, $response, $args);
         $form = $this
-            ->getForm($group)
+            ->getForm($privilege)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
                 return $this->redirectTo($form->getAction());
             } else {
                 try {
-                    $group->title = $form->getValue('title');
-                    $group->flags = Helper::readFlags($form->getValue('flags'));
-                    $server->save();
-                    return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
+                    $privilege->group_id = $form->getValue('group');
+                    $privilege->prefix = $form->getValue('prefix');
+                    $privilege->expired_at = \DateTime::createFromFormat('Y-m-d', $form->getValue('expired'));
+                    $privilege->active = (bool)$form->getValue('active') ? 1 : 0;
+                    $privilege->save();
+                    return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
                 } catch (Exception $e) {
                     return $this->failRedirect($e, $form);
                 }
             }
         }
 
-        return $this->render('admin/servers/groups/form.twig', [
-            'server' => $server,
+        return $this->render('admin/players/privileges/form.twig', [
+            'player' => $player,
             'form' => $form,
             'create' => false,
+            'servers' => $this->getServers()
         ]);
     }
 
@@ -218,7 +223,7 @@ class PrivilegesController extends BaseController {
                 'required' => true,
                 'attributes' => [],
             ], ['required', 'date'])
-            ->add('active', $privilege->active, [
+            ->add('active', $privilege->active ? true : false, [
                 'type' => 'checkbox',
                 'title' => 'Active',
                 'error' => 'Required',

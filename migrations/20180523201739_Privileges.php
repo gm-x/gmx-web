@@ -10,9 +10,10 @@ class Privileges extends Migration {
     public function up() {
         $this->getSchema()
             ->create($this->getTableName(), function (Blueprint $table) {
+                $table->increments('id');
                 $table->unsignedInteger('player_id')->references('id')->on('players');
                 $table->unsignedInteger('group_id')->references('id')->on('groups');
-                $table->string('prefix', 255);
+                $table->string('prefix', 255)->nullable();
                 $table->timestamp('expired_at');
                 $table->unsignedTinyInteger('active');
                 $table->timestamps();
