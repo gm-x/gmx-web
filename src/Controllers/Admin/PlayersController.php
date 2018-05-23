@@ -20,10 +20,16 @@ class PlayersController extends BaseController {
 	 * @return ResponseInterface
 	 */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        $pagination = new Pagination(Player::get(), $request);
+    	$filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
+    	$players = $filter === null
+			? Player::get()
+			: Player::filterCollection($filter)->get();
+
+        $pagination = new Pagination($players, $request);
         return $this->render('admin/players/index.twig', [
             'players' => $pagination->getCollection(),
             'pagination' => $pagination,
+			'filter' => $filter
         ]);
     }
 
@@ -91,6 +97,27 @@ class PlayersController extends BaseController {
 			'form' => $form,
 			'create' => false,
 		]);
+	}
+
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
+	public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+		$player = $this->getPlayer($request, $response, $args);
+
+		try {
+			$player->delete();
+		} catch (Exception $e) {
+			$this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+			/** @var \Monolog\Logger $logger */
+			$logger = $this->getContainer('log');
+			$logger->error((string) $e);
+		}
+
+		return $this->redirect('admin_players_list');
 	}
 
     /**

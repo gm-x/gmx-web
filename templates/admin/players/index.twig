@@ -1,6 +1,10 @@
 {% extends 'base.twig' %}
 
 {% block content %}
+    <form action="{{ path_for('admin_players_list') }}" method="get">
+        <input type="text" name="filter" value="{{ filter }}">
+        <button type="submit"><span class="oi oi-magnifying-glass"></span></button>
+    </form>
     <table class="table table-hover">
         <thead>
         <tr>
@@ -18,6 +22,12 @@
                     <a href="{{ path_for('admin_players_edit', {'player': player.id}) }}" class="btn btn-sm">
                         <span class="oi oi-pencil"></span>
                     </a>
+                    <form action="{{ path_for('admin_players_delete', {'player': player.id}) }}" method="post" style="display: inline-block">
+						{{ csrf_token() }}
+                        <button type="submit" class="btn btn-sm">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </form>
                 </td>
             </tr>
         {% endfor %}

@@ -18,4 +18,9 @@ return function () {
         ->map(['GET', 'POST'], '/{player}/edit', BaseController::action(PlayersController::class, 'edit'))
         ->setName('admin_players_edit')
         ->setArgument('permission', 'admin.players');
+
+	$this
+		->post('/{player}/delete', BaseController::action(PlayersController::class, 'delete'))
+		->setName('admin_players_delete')
+		->setArgument('permission', 'admin.players');
 };

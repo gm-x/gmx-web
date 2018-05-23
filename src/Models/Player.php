@@ -45,4 +45,8 @@ class Player extends BaseModel {
 	public function setPasswordAttribute($value) {
 		$this->attributes['password'] = !empty($value) ? md5($value) : null;
 	}
+
+	public static function filterCollection($filter) {
+		return self::where('steamid', 'LIKE', '%' . $filter . '%')->orWhere('nick', 'LIKE', '%' . $filter . '%');
+	}
 }
