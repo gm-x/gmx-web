@@ -4,7 +4,7 @@ namespace GameX\Controllers\Admin;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Users\UserRepositoryInterface;
 use \GameX\Core\Auth\Models\RoleModel;
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseAdminController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -13,7 +13,14 @@ use \GameX\Core\Auth\Helpers\RoleHelper;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
-class UsersController extends BaseController {
+class UsersController extends BaseAdminController {
+
+	/**
+	 * @return string
+	 */
+	protected function getActiveAdminMenu() {
+		return 'admin_users_list';
+	}
 
     /** @var  UserRepositoryInterface */
     protected $userRepository;

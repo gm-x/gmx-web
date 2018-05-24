@@ -1,7 +1,7 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseAdminController;
 use \GameX\Models\Player;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -11,7 +11,11 @@ use \GameX\Core\Forms\Form;
 use \Form\Validator;
 use \Exception;
 
-class PlayersController extends BaseController {
+class PlayersController extends BaseAdminController {
+
+	protected function getActiveAdminMenu() {
+		return 'admin_players_list';
+	}
 
 	/**
 	 * @param ServerRequestInterface $request

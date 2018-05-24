@@ -3,13 +3,13 @@
 {% block nav_scroller %}
 	<div class="nav-scroller bg-white box-shadow">
 		<nav class="nav nav-underline">
-			<a class="nav-link active" href="{{ path_for('index') }}">Main</a>
-			<a class="nav-link" href="#">
-				Friends
-				<span class="badge badge-pill bg-light align-text-bottom">27</span>
-			</a>
-			<a class="nav-link" href="#">Explore</a>
-			<a class="nav-link" href="#">Suggestions</a>
+			{#<a class="nav-link active" href="{{ path_for('index') }}">Main</a>#}
+			{% for item in adminMenu %}
+				{% if has_access(item.permission) %}
+					{% set isActive = adminMenu.getActiveRoute() == item.route %}
+					<a class="nav-link {{ isActive ? 'active' : '' }}" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
+				{% endif %}
+			{% endfor %}
 		</nav>
 	</div>
 {% endblock %}

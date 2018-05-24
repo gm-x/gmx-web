@@ -63,11 +63,13 @@ class ViewExtension extends Twig_Extension {
 	}
 
 	/**
-	 * @param string $permission
+	 * @param string|null $permission
 	 * @return bool
 	 */
     public function hasAccess($permission) {
-    	return $this->auth->hasAccess($permission);
+    	return $permission !== null
+			? $this->auth->hasAccess($permission)
+			: true;
 	}
 
 	/**

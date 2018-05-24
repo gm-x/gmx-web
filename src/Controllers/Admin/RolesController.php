@@ -5,7 +5,7 @@ use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Core\Auth\Helpers\RoleHelper;
 use GameX\Core\Auth\Models\RoleModel;
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseAdminController;
 use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
@@ -14,7 +14,7 @@ use \GameX\Core\Forms\Form;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
-class RolesController extends BaseController {
+class RolesController extends BaseAdminController {
     const PERMISSIONS = [
         'index' => 'Index',
         'admin.users' => 'Admin Users CRUD',
@@ -29,7 +29,14 @@ class RolesController extends BaseController {
     /** @var  RoleRepositoryInterface */
     protected $roleRepository;
 
-    public function init() {
+	/**
+	 * @return string
+	 */
+	protected function getActiveAdminMenu() {
+		return 'admin_roles_list';
+	}
+
+	public function init() {
         $this->roleRepository = $this->getContainer('auth')->getRoleRepository();
     }
 
