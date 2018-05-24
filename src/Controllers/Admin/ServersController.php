@@ -38,6 +38,7 @@ class ServersController extends BaseController {
             ->getForm($server)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
 				return $this->redirectTo($form->getAction());
@@ -70,6 +71,7 @@ class ServersController extends BaseController {
             ->getForm($server)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
 				return $this->redirectTo($form->getAction());

@@ -43,6 +43,7 @@ class GroupsController extends BaseController {
             ->getForm($group)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
                 return $this->redirectTo($form->getAction());
@@ -79,6 +80,7 @@ class GroupsController extends BaseController {
             ->getForm($group)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
                 return $this->redirectTo($form->getAction());
