@@ -4,14 +4,9 @@
     <form action="{{ form_action(form) }}" method="post">
         {{ csrf_token() }}
         <div class="form-group">
-            <label for="input_admin_server" class="">Group</label>
-            <select id="input_admin_server" class="form-control">
-                {% for server in servers %}
-                    <option selected>Choose server</option>
-                    <option value="{{ server.id }}">{{ server.name }}</option>
-                {% endfor %}
-            </select>
-            <span class="invalid-feedback"></span>
+			{{ form_label(form, 'server') }}
+			{{ form_input(form, 'server') }}
+			{{ form_error(form, 'server') }}
         </div>
         <div class="form-group">
             {{ form_label(form, 'group') }}

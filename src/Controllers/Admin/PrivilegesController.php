@@ -11,7 +11,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\AccessFlags\Helper;
 use \Exception;
 
 class PrivilegesController extends BaseController {
@@ -68,7 +67,7 @@ class PrivilegesController extends BaseController {
             'player' => $player,
             'form' => $form,
             'create' => true,
-            'servers' => $this->getServers()
+            'servers' => $this->getServers(),
         ]);
     }
 
@@ -107,7 +106,7 @@ class PrivilegesController extends BaseController {
             'player' => $player,
             'form' => $form,
             'create' => false,
-            'servers' => $this->getServers()
+            'servers' => $this->getServers(),
         ]);
     }
 
@@ -118,11 +117,11 @@ class PrivilegesController extends BaseController {
      * @return ResponseInterface
      */
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args);
+		$player = $this->getPlayer($request, $response, $args);
+		$privilege = $this->getPrivilege($request, $response, $args);
 
         try {
-            $group->delete();
+			$privilege->delete();
         } catch (Exception $e) {
             $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
             /** @var \Monolog\Logger $logger */
@@ -130,9 +129,16 @@ class PrivilegesController extends BaseController {
             $logger->error((string) $e);
         }
 
-        return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
+		return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
     }
 
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return \Slim\Http\Response
+	 * @throws NotFoundException
+	 */
     public function groupsAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         if (!array_key_exists('server', $_GET)) {
             throw new NotFoundException($request, $response);
@@ -142,14 +148,8 @@ class PrivilegesController extends BaseController {
             throw new NotFoundException($request, $response);
         }
 
-        $groups = [];
-        /** @var Group $group */
-        foreach ($server->groups as $group) {
-            $groups[$group->id] =$group->title;
-        }
-
         return $response->withJson([
-            'groups' => $groups,
+            'groups' => $this->getGroups($server),
         ]);
     }
 
@@ -198,16 +198,30 @@ class PrivilegesController extends BaseController {
      * @return Form
      */
     protected function getForm(Privilege $privilege) {
+    	$server = $privilege->exists
+			? $privilege->group->server
+			: Server::first();
+
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server_group');
         $form
-            ->add('group', $privilege->group_id, [
+            ->add('server', $server->id, [
+                'type' => 'select',
+                'id' => 'input_admin_server',
+                'title' => 'Server',
+                'error' => 'Required',
+                'required' => true,
+                'attributes' => [],
+				'values' => $this->getServers()
+            ], ['required', 'integer'])
+			->add('group', $privilege->group_id, [
                 'type' => 'select',
                 'id' => 'input_player_group',
                 'title' => 'Group',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
+				'values' => $this->getGroups($server)
             ], ['required', 'integer'])
             ->add('prefix', $privilege->prefix, [
                 'type' => 'text',
@@ -234,7 +248,27 @@ class PrivilegesController extends BaseController {
         return $form;
     }
 
+	/**
+	 * @return array
+	 */
     protected function getServers() {
-        return Server::all();
+    	$servers = [];
+    	/** @var Server $server */
+		foreach (Server::all() as $server) {
+    		$servers[$server->id] = $server->name;
+		}
+		return $servers;
     }
+
+	/**
+	 * @param Server $server
+	 * @return array
+	 */
+    protected function getGroups(Server $server) {
+    	$groups = [];
+    	foreach ($server->groups as $group) {
+    		$groups[$group->id] = $group->title;
+		}
+		return $groups;
+	}
 }
