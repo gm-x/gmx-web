@@ -14,7 +14,7 @@ abstract class BaseAdminController extends BaseController {
 	 */
 	public function __construct(ContainerInterface $container) {
 		parent::__construct($container);
-		$this->initAdminMenu($container->get('view'), $container->get('menu'));
+		$this->initAdminMenu($container->get('view'));
 	}
 
 	/**
@@ -22,9 +22,11 @@ abstract class BaseAdminController extends BaseController {
 	 */
 	abstract protected function getActiveAdminMenu();
 
-	private function initAdminMenu(Twig $view, Menu $menu) {
+	private function initAdminMenu(Twig $view) {
 		/** @var \o80\i18n\I18N $lang */
 		$lang = $this->getContainer('lang');
+
+		$menu = new Menu();
 
 		$menu->setActiveRoute($this->getActiveAdminMenu());
 

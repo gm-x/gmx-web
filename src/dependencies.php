@@ -67,8 +67,4 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	return $view;
 };
 
-$container['menu'] = function (\Psr\Container\ContainerInterface $container) {
-	return new \GameX\Core\Menu\Menu();
-};
-
 \GameX\Core\BaseModel::setContainer($container);
