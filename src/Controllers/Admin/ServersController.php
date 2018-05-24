@@ -2,7 +2,7 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Models\Server;
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseAdminController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -10,7 +10,14 @@ use \GameX\Core\Forms\Form;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
-class ServersController extends BaseController {
+class ServersController extends BaseAdminController {
+
+	/**
+	 * @return string
+	 */
+	protected function getActiveAdminMenu() {
+		return 'admin_servers_list';
+	}
 
 	/**
 	 * @param ServerRequestInterface $request

@@ -12,5 +12,11 @@
 		"update": "Update",
 		"cancel": "Cancel",
 		"save": "Save"
+	},
+	"adminMenu": {
+		"users": "Users",
+		"roles": "Roles",
+		"servers": "Servers",
+		"players": "Players"
 	}
 }

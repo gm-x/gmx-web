@@ -3,7 +3,7 @@ namespace GameX\Controllers\Admin;
 
 use \GameX\Models\Server;
 use \GameX\Models\Group;
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseAdminController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -12,7 +12,14 @@ use \GameX\Core\Forms\Form;
 use \GameX\Core\AccessFlags\Helper;
 use \Exception;
 
-class GroupsController extends BaseController {
+class GroupsController extends BaseAdminController {
+
+	/**
+	 * @return string
+	 */
+	protected function getActiveAdminMenu() {
+		return 'admin_servers_list';
+	}
 
 	/**
 	 * @param ServerRequestInterface $request

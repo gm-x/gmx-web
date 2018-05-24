@@ -4,7 +4,7 @@ namespace GameX\Controllers\Admin;
 use \GameX\Models\Player;
 use \GameX\Models\Privilege;
 use \GameX\Models\Group;
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseAdminController;
 use \GameX\Core\Pagination\Pagination;
 use GameX\Models\Server;
 use \Psr\Http\Message\ServerRequestInterface;
@@ -13,7 +13,14 @@ use \Slim\Exception\NotFoundException;
 use \GameX\Core\Forms\Form;
 use \Exception;
 
-class PrivilegesController extends BaseController {
+class PrivilegesController extends BaseAdminController {
+
+	/**
+	 * @return string
+	 */
+	protected function getActiveAdminMenu() {
+		return 'admin_players_list';
+	}
 
 	/**
 	 * @param ServerRequestInterface $request
