@@ -19,8 +19,10 @@
         {% endfor %}
         </div>
         <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="Save">
-            <a href="{{ path_for('admin_roles_list') }}" class="btn btn-secondary">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'save') }}">
+            <a href="{{ path_for('admin_roles_list') }}" class="btn btn-secondary">
+				{{ trans('buttons', 'cancel') }}
+            </a>
         </div>
     </form>
 {% endblock %}

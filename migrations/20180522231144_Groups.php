@@ -2,7 +2,7 @@
 use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
-class PrivilegesGroups extends Migration {
+class Groups extends Migration {
 
     /**
      * Do the migration
@@ -11,7 +11,7 @@ class PrivilegesGroups extends Migration {
         $this->getSchema()
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedInteger('server_id');
+                $table->unsignedInteger('server_id')->references('id')->on('servers');
                 $table->string('title', 255);
                 $table->unsignedInteger('flags');
                 $table->timestamps();
@@ -29,6 +29,6 @@ class PrivilegesGroups extends Migration {
      * @return string
      */
     private function getTableName() {
-        return 'privileges_groups';
+        return 'groups';
     }
 }

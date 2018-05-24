@@ -2,7 +2,7 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Models\Server;
-use \GameX\Models\PrivilegesGroups;
+use \GameX\Models\Group;
 use \GameX\Core\BaseController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
@@ -12,7 +12,7 @@ use \GameX\Core\Forms\Form;
 use \GameX\Core\AccessFlags\Helper;
 use \Exception;
 
-class PrivilegesGroupsController extends BaseController {
+class GroupsController extends BaseController {
 
 	/**
 	 * @param ServerRequestInterface $request
@@ -43,6 +43,7 @@ class PrivilegesGroupsController extends BaseController {
             ->getForm($group)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
                 return $this->redirectTo($form->getAction());
@@ -79,6 +80,7 @@ class PrivilegesGroupsController extends BaseController {
             ->getForm($group)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
                 return $this->redirectTo($form->getAction());
@@ -147,15 +149,15 @@ class PrivilegesGroupsController extends BaseController {
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
-     * @return PrivilegesGroups
+     * @return Group
      * @throws NotFoundException
      */
 	protected function getGroup(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         if (!array_key_exists('group', $args)) {
-            return new PrivilegesGroups();
+            return new Group();
         }
 
-        $group = PrivilegesGroups::find($args['group']);
+        $group = Group::find($args['group']);
         if (!$group) {
             throw new NotFoundException($request, $response);
         }
@@ -164,10 +166,10 @@ class PrivilegesGroupsController extends BaseController {
     }
 
     /**
-     * @param PrivilegesGroups $group
+     * @param Group $group
      * @return Form
      */
-    protected function getForm(PrivilegesGroups $group) {
+    protected function getForm(Group $group) {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server_group');
         $form

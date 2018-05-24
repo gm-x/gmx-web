@@ -4,7 +4,7 @@ namespace GameX\Core\Pagination;
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 
-class Extention extends Twig_Extension {
+class ViewExtension extends Twig_Extension {
     /**
      * @return array
      */
@@ -19,6 +19,9 @@ class Extention extends Twig_Extension {
     }
 
     public function render(Pagination $pagination) {
+        if ($pagination->getPagesCount() <= 1) {
+            return '';
+        }
         ob_start();
         ?>
         <nav>

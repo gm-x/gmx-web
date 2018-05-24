@@ -54,7 +54,6 @@ class Form {
 
     /**
      * Form constructor.
-     * @param ServerRequestInterface $request
      * @param Session $session
      * @param $name
      */
@@ -309,7 +308,7 @@ class Form {
      * @return string
      */
     protected function generateFieldId($name) {
-        return 'input' . ucfirst($this->name) . ucfirst($name);
+        return 'input-' . ucfirst($this->name) . '-' . ucfirst($name);
     }
 
     /**

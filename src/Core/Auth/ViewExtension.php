@@ -6,7 +6,7 @@ use \Twig_SimpleFunction;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 
-class ViewExtention extends Twig_Extension {
+class ViewExtension extends Twig_Extension {
 
 	/**
 	 * @var Sentinel

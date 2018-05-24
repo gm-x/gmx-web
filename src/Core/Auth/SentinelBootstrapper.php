@@ -1,16 +1,21 @@
 <?php
 namespace GameX\Core\Auth;
 
+use \Cartalyst\Sentinel\Activations\EloquentActivation;
 use \Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
 use \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
 use \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint;
 use \Cartalyst\Sentinel\Hashing\NativeHasher;
 use \Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository;
+use \Cartalyst\Sentinel\Reminders\EloquentReminder;
 use \Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
 use \Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository;
 use \Cartalyst\Sentinel\Users\IlluminateUserRepository;
+use \GameX\Core\Auth\Models\PersistenceModel;
+use \GameX\Core\Auth\Models\RoleModel;
+use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Auth\Repository\UsersRepository;
 use \Illuminate\Events\Dispatcher;
 use \InvalidArgumentException;
@@ -20,10 +25,6 @@ use \GameX\Core\Auth\Session as SentinelSession;
 use \GameX\Core\Session\Session;
 
 class SentinelBootstrapper {
-
-	const USER_MODEL = '\GameX\Core\Auth\Models\UserModel';
-	const ROLE_MODEL = '\GameX\Core\Auth\Models\RoleModel';
-
     /**
      * @var Request
      */
@@ -107,15 +108,7 @@ class SentinelBootstrapper {
      * @return \Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository
      */
     protected function createPersistence() {
-        $session = $this->createSession();
-
-        $cookie = $this->createCookie();
-
-        $model = $this->config['persistences']['model'];
-
-        $single = $this->config['persistences']['single'];
-
-        return new IlluminatePersistenceRepository($session, $cookie, $model, $single);
+        return new IlluminatePersistenceRepository($this->createSession(), $this->createCookie(), PersistenceModel::class, false);
     }
 
     /**
@@ -124,7 +117,7 @@ class SentinelBootstrapper {
      * @return SentinelSession
      */
     protected function createSession() {
-        return new SentinelSession($this->session, $this->config['session']);
+        return new SentinelSession($this->session, 'auth_data');
     }
 
     /**
@@ -133,7 +126,7 @@ class SentinelBootstrapper {
      * @return Cookie
      */
     protected function createCookie() {
-        return new Cookie($this->request, $this->config['cookie']);
+        return new Cookie($this->request, 'persistence_key');
     }
 
     /**
@@ -142,13 +135,7 @@ class SentinelBootstrapper {
      * @return UsersRepository
      */
     protected function createUsers() {
-        $persistences = $this->config['persistences']['model'];
-
-        if (class_exists($persistences) && method_exists($persistences, 'setUsersModel')) {
-            forward_static_call_array([$persistences, 'setUsersModel'], [self::USER_MODEL]);
-        }
-
-        return new UsersRepository($this->createHasher(), $this->getEventDispatcher(), self::USER_MODEL);
+        return new UsersRepository($this->createHasher(), $this->getEventDispatcher(), UserModel::class);
     }
 
     /**
@@ -166,7 +153,7 @@ class SentinelBootstrapper {
      * @return \Cartalyst\Sentinel\Roles\IlluminateRoleRepository
      */
     protected function createRoles() {
-        return new IlluminateRoleRepository(self::ROLE_MODEL);
+        return new IlluminateRoleRepository(RoleModel::class);
     }
 
     /**
@@ -175,11 +162,7 @@ class SentinelBootstrapper {
      * @return \Cartalyst\Sentinel\Activations\IlluminateActivationRepository
      */
     protected function createActivations() {
-        $model = $this->config['activations']['model'];
-
-        $expires = $this->config['activations']['expires'];
-
-        return new IlluminateActivationRepository($model, $expires);
+        return new IlluminateActivationRepository(EloquentActivation::class, 259200);
     }
 
     /**
@@ -286,10 +269,6 @@ class SentinelBootstrapper {
      * @return \Cartalyst\Sentinel\Reminders\IlluminateReminderRepository
      */
     protected function createReminders(IlluminateUserRepository $users) {
-        $model = $this->config['reminders']['model'];
-
-        $expires = $this->config['reminders']['expires'];
-
-        return new IlluminateReminderRepository($users, $model, $expires);
+        return new IlluminateReminderRepository($users, EloquentReminder::class, 14400);
     }
 }

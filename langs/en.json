@@ -10,6 +10,7 @@
 	"buttons": {
 		"create": "Create",
 		"update": "Update",
-		"cancel": "Cancel"
+		"cancel": "Cancel",
+		"save": "Save"
 	}
 }

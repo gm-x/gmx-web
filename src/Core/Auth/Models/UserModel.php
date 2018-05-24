@@ -1,8 +1,7 @@
 <?php
 namespace GameX\Core\Auth\Models;
 
-use \Illuminate\Database\Eloquent\Model;
-use \GameX\Core\Auth\SentinelBootstrapper;
+use \GameX\Core\BaseModel;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
@@ -23,7 +22,7 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \DateTime $update_at
  * @property RoleModel $role
  */
-class UserModel extends Model implements UserInterface, PersistableInterface, PermissibleInterface {
+class UserModel extends BaseModel implements UserInterface, PersistableInterface, PermissibleInterface {
 
 	use PermissibleTrait;
 
@@ -133,7 +132,7 @@ class UserModel extends Model implements UserInterface, PersistableInterface, Pe
 	 * @return BelongsTo
 	 */
 	public function role() {
-		return $this->belongsTo(SentinelBootstrapper::ROLE_MODEL);
+		return $this->belongsTo(RoleModel::class);
 	}
 
 	/**
@@ -162,6 +161,6 @@ class UserModel extends Model implements UserInterface, PersistableInterface, Pe
 	 * @return \Cartalyst\Sentinel\Permissions\PermissionsInterface
 	 */
 	protected function createPermissions() {
-		return new Permissions(null, $this->role->permissions);
+		return new PermissionsModel(null, $this->role->permissions);
 	}
 }

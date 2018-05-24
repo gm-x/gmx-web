@@ -19,7 +19,7 @@ class ServersController extends BaseController {
 	 * @return ResponseInterface
 	 */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-		$pagination = new Pagination(Server::all(), $request);
+		$pagination = new Pagination(Server::get(), $request);
 		return $this->render('admin/servers/index.twig', [
 			'servers' => $pagination->getCollection(),
 			'pagination' => $pagination,
@@ -38,6 +38,7 @@ class ServersController extends BaseController {
             ->getForm($server)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
 				return $this->redirectTo($form->getAction());
@@ -70,6 +71,7 @@ class ServersController extends BaseController {
             ->getForm($server)
             ->setAction((string)$request->getUri())
             ->processRequest($request);
+
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
 				return $this->redirectTo($form->getAction());

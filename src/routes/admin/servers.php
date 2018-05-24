@@ -1,7 +1,7 @@
 <?php
 use \GameX\Core\BaseController;
 use \GameX\Controllers\Admin\ServersController;
-use \GameX\Controllers\Admin\PrivilegesGroupsController;
+use \GameX\Controllers\Admin\GroupsController;
 
 return function () {
     /** @var \Slim\App $this */
@@ -28,20 +28,23 @@ return function () {
     $this->group('/{server}/groups', function () {
         /** @var \Slim\App $this */
         $this
-            ->get('', BaseController::action(PrivilegesGroupsController::class, 'index'))
-            ->setName('admin_servers_groups_list');
-//            ->setArgument('permission', 'admin.servers.groups');
+            ->get('', BaseController::action(GroupsController::class, 'index'))
+            ->setName('admin_servers_groups_list')
+            ->setArgument('permission', 'admin.servers.groups');
 
         $this
-            ->map(['GET', 'POST'], '/create', BaseController::action(PrivilegesGroupsController::class, 'create'))
-            ->setName('admin_servers_groups_create');
+            ->map(['GET', 'POST'], '/create', BaseController::action(GroupsController::class, 'create'))
+            ->setName('admin_servers_groups_create')
+			->setArgument('permission', 'admin.servers.groups');
 
         $this
-            ->map(['GET', 'POST'], '/{group}/edit', BaseController::action(PrivilegesGroupsController::class, 'edit'))
-            ->setName('admin_servers_groups_edit');
+            ->map(['GET', 'POST'], '/{group}/edit', BaseController::action(GroupsController::class, 'edit'))
+            ->setName('admin_servers_groups_edit')
+			->setArgument('permission', 'admin.servers.groups');
 
         $this
-            ->post('/{group}/delete', BaseController::action(PrivilegesGroupsController::class, 'delete'))
-            ->setName('admin_servers_groups_delete');
+            ->post('/{group}/delete', BaseController::action(GroupsController::class, 'delete'))
+            ->setName('admin_servers_groups_delete')
+			->setArgument('permission', 'admin.servers.groups');
     });
 };

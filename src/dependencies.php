@@ -39,7 +39,7 @@ $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
 
 $container['log'] = function (\Psr\Container\ContainerInterface $container) {
 	$log = new \Monolog\Logger('name');
-	$logPath = $container['root'] . '/logs/log.log';
+	$logPath = $container['root'] . 'runtime' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'log.log';
 	$log->pushHandler(new \Monolog\Handler\RotatingFileHandler($logPath, 10, \Monolog\Logger::DEBUG));
 
 	return $log;
@@ -51,7 +51,7 @@ $container['form'] = function (\Psr\Container\ContainerInterface $container) {
 
 $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	$view = new \Slim\Views\Twig($container->get('root') . 'templates', array_merge([
-		'cache' => $container->get('root') . 'cache',
+		'cache' => $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache',
 	], $container['config']['twig']));
 
 	// Instantiate and add Slim specific extension
@@ -59,9 +59,9 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
 	$view->addExtension(new \GameX\Core\Forms\ViewExtension());
 	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
-	$view->addExtension(new \GameX\Core\Pagination\Extention());
-	$view->addExtension(new \GameX\Core\Auth\ViewExtention($container->get('auth')));
-	$view->addExtension(new \GameX\Core\Lang\ViewExtention($container->get('lang')));
+	$view->addExtension(new \GameX\Core\Pagination\ViewExtension());
+	$view->addExtension(new \GameX\Core\Auth\ViewExtension($container->get('auth')));
+	$view->addExtension(new \GameX\Core\Lang\ViewExtension($container->get('lang')));
 	$view->addExtension(new \GameX\Core\AccessFlags\ViewExtension());
 
 	return $view;

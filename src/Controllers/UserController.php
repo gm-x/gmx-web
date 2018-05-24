@@ -134,7 +134,7 @@ class UserController extends BaseController {
 					$authHelper->loginUser(
 						$form->getValue('email'),
 						$form->getValue('password'),
-                        $form->getValue('remember_me')
+						(bool)$form->getValue('remember_me')
 					);
 					return $this->redirect('index');
 				} catch (Exception $e) {
