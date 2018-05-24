@@ -202,6 +202,12 @@ class PrivilegesController extends BaseController {
 			? $privilege->group->server
 			: Server::first();
 
+    	$expired = new \DateTime($privilege->expired_at);
+
+    	$exists = function ($group) {
+    		return Group::where('id', '=', $group)->exists();
+		};
+
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server_group');
         $form
@@ -222,7 +228,7 @@ class PrivilegesController extends BaseController {
                 'required' => true,
                 'attributes' => [],
 				'values' => $this->getGroups($server)
-            ], ['required', 'integer'])
+            ], ['required', 'integer', 'exists' => $exists])
             ->add('prefix', $privilege->prefix, [
                 'type' => 'text',
                 'title' => 'Prefix',
@@ -230,7 +236,7 @@ class PrivilegesController extends BaseController {
                 'required' => false,
                 'attributes' => [],
             ], ['trim'])
-            ->add('expired', $privilege->expired_at, [
+            ->add('expired', $expired->format('Y-m-d'), [
                 'type' => 'date',
                 'title' => 'Expired',
                 'error' => 'Required',
