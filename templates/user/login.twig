@@ -1,24 +1,13 @@
 {% extends 'base.twig' %}
 
+{% import 'forms.twig' as forms %}
+
 {% block content %}
-<form action="{{ form_action(form) }}" method="post">
+<form action="{{ form.getAction() }}" method="post">
     {{ csrf_token() }}
-    <div class="form-group">
-        {{ form_label(form, 'email') }}
-        {{ form_input(form, 'email') }}
-        {{ form_error(form, 'email') }}
-    </div>
-    <div class="form-group">
-        {{ form_label(form, 'password') }}
-        {{ form_input(form, 'password') }}
-        {{ form_error(form, 'password') }}
-    </div>
-    <div class="form-group">
-        <div class="custom-control custom-checkbox">
-            {{ form_input(form, 'remember_me') }}
-            {{ form_label(form, 'remember_me') }}
-        </div>
-    </div>
+    {{ forms.element_input(form.email) }}
+    {{ forms.element_input(form.password) }}
+    {{ forms.element_checkbox(form.remember_me) }}
     <div class="form-group">
         <input type="submit" class="btn btn-primary" value="{{ trans('Auth', 'login_btn') }}">
 

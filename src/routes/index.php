@@ -20,3 +20,8 @@ $app->group('/admin', function () {
     $this->group('/servers', include $root . 'servers.php');
     $this->group('/players', include $root . 'players.php');
 });
+
+$app->group('/api', function () {
+    $root = __DIR__ . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR;
+    $this->group('/privileges', include  $root . 'privileges.php');
+});

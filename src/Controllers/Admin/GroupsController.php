@@ -9,7 +9,8 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\AccessFlags\Helper;
+use \GameX\Core\Forms\Elements\FormInputText;
+use \GameX\Core\Forms\Elements\FormInputFlags;
 use \Exception;
 
 class GroupsController extends BaseAdminController {
@@ -57,11 +58,12 @@ class GroupsController extends BaseAdminController {
             } else {
                 try {
                     $group->server_id = $server->id;
-                    $group->title = $form->getValue('title');
-                    $group->flags = Helper::readFlags($form->getValue('flags'));
+                    $group->title = $form->get('title')->getValue();
+                    $group->flags = $form->get('flags')->getFlagsInt();
                     $group->save();
                     return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
                 } catch (Exception $e) {
+                	var_dump($e); die();
                     return $this->failRedirect($e, $form);
                 }
             }
@@ -93,9 +95,9 @@ class GroupsController extends BaseAdminController {
                 return $this->redirectTo($form->getAction());
             } else {
                 try {
-                    $group->title = $form->getValue('title');
-                    $group->flags = Helper::readFlags($form->getValue('flags'));
-                    $server->save();
+                    $group->title = $form->get('title')->getValue();
+                    $group->flags = $form->get('flags')->getFlagsInt();
+					$group->save();
                     return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
                 } catch (Exception $e) {
                     return $this->failRedirect($e, $form);
@@ -180,20 +182,20 @@ class GroupsController extends BaseAdminController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server_group');
         $form
-            ->add('title', $group->title, [
-                'type' => 'text',
-                'title' => 'Name',
+            ->add(new FormInputText('title', $group->title, [
+                'title' => 'Title',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 1])
-            ->add('flags', Helper::getFlags($group->flags), [
-                'type' => 'text',
+            ]))
+            ->add(new FormInputFlags('flags', $group->flags, [
                 'title' => 'Flags',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim']);
+            ]))
+            ->setRules('title', ['required', 'trim', 'min_length' => 1])
+            ->setRules('flags', ['required', 'trim', 'min_length' => 1]);
 
         return $form;
     }

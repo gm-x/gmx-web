@@ -1,13 +1,11 @@
 {% extends 'base.twig' %}
 
+{% import 'forms.twig' as forms %}
+
 {% block content %}
-<form action="{{ form_action(form) }}" method="post">
+<form action="{{ form.getAction }}" method="post">
 	{{ csrf_token() }}
-    <div class="form-group">
-        {{ form_label(form, 'email') }}
-        {{ form_input(form, 'email') }}
-        {{ form_error(form, 'email') }}
-    </div>
+	{{ forms.element_input(form.email) }}
     <div class="form-group">
         <input type="submit" class="btn btn-primary" value="Activate">
     </div>

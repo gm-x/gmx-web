@@ -8,6 +8,9 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Pagination\Pagination;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Forms\Form;
+use \GameX\Core\Forms\Elements\FormInputPassword;
+use \GameX\Core\Forms\Elements\FormInputText;
+use \GameX\Core\Forms\Elements\FormSelect;
 use \Form\Validator;
 use \Exception;
 
@@ -149,7 +152,6 @@ class PlayersController extends BaseAdminController {
 	 * @return Form
 	 */
     protected function getForm(Player $player) {
-
     	$checkPasswordRequired = function ($password, Validator $validator) {
 			return $validator->getValue('auth_type') !== Player::AUTH_TYPE_STEAM  && empty($password) ? false : true;
 		};
@@ -157,47 +159,44 @@ class PlayersController extends BaseAdminController {
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('admin_player');
 		$form
-			->add('steamid', $player->steamid, [
-				'type' => 'text',
+			->add(new FormInputText('steamid', $player->steamid, [
 				'title' => 'Steam ID',
 				'error' => 'Valid STEAM ID',
 				'required' => true,
-				'attributes' => [],
-			], ['required', 'trim', 'min_length' => 1, 'regexp' => '/^(?:STEAM|VALVE)_\d:\d:\d+$/'])
-			->add('nick', $player->nick, [
-				'type' => 'text',
+			]))
+			->add(new FormInputText('nick', $player->nick, [
 				'title' => 'Nickname',
 				'error' => 'Required',
 				'required' => true,
-				'attributes' => [],
-			], ['required', 'trim', 'min_length' => 1])
-			->add('auth_type', $player->auth_type, [
-				'type' => 'select',
+			]))
+			->add(new FormSelect('auth_type', $player->auth_type, [
 				'title' => 'Auth Type',
 				'error' => 'Required',
 				'required' => true,
-				'attributes' => [],
-				'values' => [
+				'empty_option' => 'Choose auth type',
+				'options' => [
 					Player::AUTH_TYPE_STEAM => 'Steam ID',
 					Player::AUTH_TYPE_STEAM_AND_PASS => 'Steam ID + pass',
 					Player::AUTH_TYPE_NICK_AND_PASS => 'Nick + pass',
 					Player::AUTH_TYPE_STEAM_AND_HASH => 'Steam ID + hash',
 					Player::AUTH_TYPE_NICK_AND_HASH => 'Nick + hash',
 				]
-			], ['required', 'trim', 'min_length' => 1, 'in' => [
+			]))
+			->add(new FormInputPassword('password', '', [
+				'title' => 'Password',
+				'error' => 'Required for pass or hash',
+				'required' => false,
+			]))
+			->setRules('steamid', ['required', 'trim', 'min_length' => 1, 'regexp' => '/^(?:STEAM|VALVE)_\d:\d:\d+$/'])
+			->setRules('nick', ['required', 'trim', 'min_length' => 1])
+			->setRules('auth_type', ['required', 'trim', 'min_length' => 1, 'in' => [
 				Player::AUTH_TYPE_STEAM ,
 				Player::AUTH_TYPE_STEAM_AND_PASS,
 				Player::AUTH_TYPE_NICK_AND_PASS,
 				Player::AUTH_TYPE_STEAM_AND_HASH,
 				Player::AUTH_TYPE_NICK_AND_HASH,
 			]])
-			->add('password', '', [
-				'type' => 'text',
-				'title' => 'Password',
-				'error' => 'Required for pass or hash',
-				'required' => false,
-				'attributes' => [],
-			], ['check' => $checkPasswordRequired]);
+			->setRules('password', ['check' => $checkPasswordRequired]);
 
 		if (!$player->exists) {
 			$form->addRules('steamid', ['exists' => function ($steamid, Validator $validator) {

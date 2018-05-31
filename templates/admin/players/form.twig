@@ -1,35 +1,21 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'forms.twig' as forms %}
+
 {% block content %}
-    <form action="{{ form_action(form) }}" method="post">
+    <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
-        <div class="form-group">
-            {{ form_label(form, 'steamid') }}
-            {{ form_input(form, 'steamid') }}
-            {{ form_error(form, 'steamid') }}
-        </div>
-        <div class="form-group">
-            {{ form_label(form, 'nick') }}
-            {{ form_input(form, 'nick') }}
-            {{ form_error(form, 'nick') }}
-        </div>
-        <div class="form-group">
-            {{ form_label(form, 'auth_type') }}
-            {{ form_input(form, 'auth_type') }}
-            {{ form_error(form, 'auth_type') }}
-        </div>
-        <div class="form-group">
-            {{ form_label(form, 'password') }}
-            {{ form_input(form, 'password') }}
-            {{ form_error(form, 'password') }}
-        </div>
+		{{ forms.element_input(form.steamid) }}
+		{{ forms.element_input(form.nick) }}
+		{{ forms.element_select(form.auth_type) }}
+		{{ forms.element_input(form.password) }}
         <div class="form-group">
 			{% if create %}
-                <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'create') }}">
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
 			{% else %}
-                <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'update') }}">
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
 			{% endif %}
-            <a href="{{ path_for('admin_players_list') }}" class="btn btn-secondary">{{ trans('buttons', 'cancel') }}</a>
+            <a href="{{ path_for('admin_players_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
         </div>
     </form>
 {% endblock %}

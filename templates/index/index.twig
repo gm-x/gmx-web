@@ -2,13 +2,4 @@
 
 {% block content %}
 <h1>Hello World</h1>
-	<ul>
-		{% for item in menu %}
-			{% if has_access(item.permission) %}
-				<li>
-					<a href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
-				</li>
-			{% endif %}
-		{% endfor %}
-	</ul>
 {% endblock %}

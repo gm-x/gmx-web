@@ -12,7 +12,7 @@ use \GameX\Core\BaseModel;
  * @property string $title
  * @property integer $flags
  * @property Server $server
- * @property Server $players
+ * @property Privilege[] $players
  */
 class Group extends BaseModel {
 

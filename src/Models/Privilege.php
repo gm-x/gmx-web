@@ -47,4 +47,14 @@ class Privilege extends BaseModel {
     public function player() {
 	    return $this->belongsTo(Player::class, 'player_id', 'id');
     }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+//    public function getPrefixAttribute($value) {
+//        return $value === null
+//            ? $this->group->title
+//            : $value;
+//    }
 }

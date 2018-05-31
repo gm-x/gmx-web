@@ -147,10 +147,6 @@ class AuthHelper {
 	}
 
     public function resetPasswordComplete($email, $password, $password_repeat, $code) {
-        if ($password !== $password_repeat) {
-            throw new FormException('password_repeat', 'Password didn\'t match');
-        }
-
         $user = $this->auth->getUserRepository()->findByCredentials([
             'email' => $email
         ]);

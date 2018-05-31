@@ -68,7 +68,7 @@ class Token {
         $this->inputName = (string) $inputName;
         $this->inputToken = (string) $inputToken;
         $this->maxTokens = (int) $maxTokens;
-        $this->tokens = $session->get($sessionKey);
+        $this->tokens = $session->get($sessionKey, []);
     }
 
     /**

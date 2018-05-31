@@ -5,8 +5,10 @@ namespace GameX\Core\Forms;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Form\Validator;
 use \GameX\Core\Session\Session;
+use \ArrayAccess;
+use \Exception;
 
-class Form {
+class Form implements ArrayAccess {
     /**
      * @var Session
      */
@@ -53,6 +55,11 @@ class Form {
     protected $action;
 
     /**
+     * @var FormElement[]
+     */
+    protected $elements = [];
+
+    /**
      * Form constructor.
      * @param Session $session
      * @param $name
@@ -91,33 +98,44 @@ class Form {
     }
 
     /**
-     * @param $name
-     * @param string $value
-     * @param array $options
-     * @param array $rules
+     * @param FormElement $element
      * @return $this
      */
-    public function add($name, $value = '', array $options = [], array $rules = []) {
-        $this->fields[$name] = [
-            'id' => array_key_exists('id', $options) ? (string)$options['id'] : $this->generateFieldId($name),
-            'name' => array_key_exists('name', $options) ? (string)$options['name'] : $this->generateFieldName($name),
-            'type' => array_key_exists('type', $options) ? (string)$options['type'] : 'text',
-            'required' => array_key_exists('required', $options) ? (bool)$options['required'] : false,
-            'title' => array_key_exists('title', $options) ? (string)$options['title'] : ucfirst($name),
-            'error' => array_key_exists('error', $options) ? (string)$options['error'] : '',
-            'classes' => array_key_exists('classes', $options) ? (array)$options['classes'] : [],
-            'attributes' => array_key_exists('attributes', $options) ? (array)$options['attributes'] : [],
-			'values' => array_key_exists('values', $options) ? (array)$options['values'] : [],
-        ];
-        if (!array_key_exists($name, $this->values)) {
-            $this->values[$name] = $value;
+    public function add(FormElement $element) {
+        $this->elements[$element->getName()] = $element;
+
+        if (array_key_exists($element->getName(), $this->values)) {
+            $element->setValue($this->values[$element->getName()]);
         }
-        if (!array_key_exists($name, $this->errors)) {
-            $this->errors[$name] = false;
+
+        if (array_key_exists($element->getName(), $this->errors)) {
+            $element->setHasError(true)->setError($this->errors[$element->getName()]);
         }
-        $this->validator->setRules($name, $rules);
+
+        $element->setFormName($this->name);
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return FormElement
+     * @throws Exception
+     */
+    public function get($name) {
+        if (!$this->exists($name)) {
+            throw new Exception('Element not found');
+        }
+
+        return $this->elements[$name];
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function exists($name) {
+        return array_key_exists($name, $this->elements);
     }
 
     /**
@@ -140,14 +158,14 @@ class Form {
         $this->isValid = $this->validator->validate($values);
         $values = $this->validator->getValues();
         foreach ($values as $key => $value) {
-            if (array_key_exists($key, $this->values)) {
-                $this->values[$key] = $value;
+            if (array_key_exists($key, $this->elements)) {
+                $this->elements[$key]->setValue($value);
             }
         }
         $errors = $this->validator->getErrors();
         foreach ($errors as $key => $error) {
-            if ($this->checkExistsField($key)) {
-                $this->errors[$key] = $this->fields[$key]['error'];
+            if ($this->exists($key)) {
+                $this->get($key)->setHasError(true);
             }
         }
 
@@ -174,15 +192,6 @@ class Form {
     }
 
     /**
-     * @param $isValid
-     * @return $this
-     */
-    public function setIsValid($isValid) {
-        $this->isValid = (bool)$isValid;
-        return $this;
-    }
-
-    /**
      * @return string[]
      */
     public function getValues() {
@@ -194,38 +203,7 @@ class Form {
      * @return string|null
      */
     public function getValue($name) {
-        return array_key_exists($name, $this->values)
-            ? $this->values[$name]
-            : null;
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     */
-    public function setValue($name, $value) {
-        if (array_key_exists($name, $this->values)) {
-            $this->values[$name] = $value;
-        }
-        return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getErrors() {
-        return $this->errors;
-    }
-
-    /**
-     * @param $name
-     * @return string|null
-     */
-    public function getError($name) {
-        return array_key_exists($name, $this->errors)
-            ? $this->errors[$name]
-            : null;
+        return $this->get($name)->getValue();
     }
 
     /**
@@ -234,7 +212,10 @@ class Form {
      * @return $this
      */
     public function setError($name, $error) {
-        $this->errors[$name] = $error;
+        $this
+            ->get($name)
+            ->setHasError(true)
+            ->setError($error);
         $this->isValid = false;
         return $this;
     }
@@ -244,6 +225,16 @@ class Form {
      */
     public function getValidator() {
         return $this->validator;
+    }
+
+    /**
+     * @param string $name
+     * @param array $rules
+     * @return $this;
+     */
+    public function setRules($name, array $rules) {
+        $this->validator->setRules($name, $rules);
+        return $this;
     }
 
     /**
@@ -258,58 +249,16 @@ class Form {
         return $this;
     }
 
-	/**
-	 * @param $name
-	 * @return string|null
-	 */
-    public function getType($name) {
-    	return $this->checkExistsField($name)
-			? $this->fields[$name]['type']
-			: null;
-	}
-
-	public function getFieldValues($name) {
-    	return $this->checkExistsField($name)
-			? $this->fields[$name]['values']
-			: [];
-	}
-
-    /**
-     * @param $name
-     * @param $key
-     * @return mixed|null
-     */
-    public function getFieldData($name, $key) {
-        if (!$this->checkExistsField($name)) {
-            return null;
-        }
-
-        if (!array_key_exists($key, $this->fields[$name])) {
-            return null;
-        }
-
-        return $this->fields[$name][$key];
+    public function offsetExists($name) {
+        return $this->exists($name);
     }
 
-    protected function checkExistsField($name) {
-		return array_key_exists($name, $this->fields);
-	}
-
-    /**
-     * @param $name
-     * @return string
-     */
-    protected function generateFieldName($name) {
-        return sprintf('%s[%s]', $this->name, $name);
+    public function offsetGet($name) {
+        return $this->get($name);
     }
 
-    /**
-     * @param $name
-     * @return string
-     */
-    protected function generateFieldId($name) {
-        return 'input-' . ucfirst($this->name) . '-' . ucfirst($name);
-    }
+    public function offsetSet($name, $value) {}
+    public function offsetUnset($name) {}
 
     /**
      * Load values and errors from session
@@ -328,23 +277,20 @@ class Form {
      * Save values and errors to session
      */
     protected function writeValues() {
-        $values = [];
-        foreach ($this->fields as $key => $field) {
-            if (!array_key_exists($key, $this->values)) {
-                continue;
+        $values = []; $errors = [];
+        foreach ($this->elements as $element) {
+            if ($element->getType() != 'password') {
+                $values[$element->getName()] = $element->getValue();
             }
-
-            if ($field['type'] == 'password') {
-                continue;
+            if ($element->getHasError()) {
+                $errors[$element->getName()] = $element->getError();
             }
-
-            $values[$key] = $this->values[$key];
         }
-
-        $this->session->set($this->getSessionKey(), [
-            'values' => $values,
-            'errors' => $this->errors,
-        ]);
+		$key = $this->getSessionKey();
+        $this->session->set($key, [
+        	'values' => $values,
+        	'errors' => $errors,
+		]);
     }
 
     protected function getSessionKey() {

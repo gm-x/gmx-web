@@ -5,6 +5,7 @@ use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Users\UserRepositoryInterface;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\BaseAdminController;
+use \GameX\Core\Forms\Elements\FormSelect;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -52,13 +53,14 @@ class UsersController extends BaseAdminController {
 		$form = $this->getContainer('form')->createForm('admin_users_edit');
 		$form
 			->setAction((string)$request->getUri())
-			->add('role', $user->role->name, [
-				'type' => 'select',
+			->add(new FormSelect('role', $user->role->slug, [
 				'title' => 'Role',
 				'error' => 'Required',
 				'required' => true,
-				'values' => $roles,
-			], ['required', 'trim', 'min_length' => 1])
+				'options' => $roles,
+				'empty_option' => 'Choose role'
+			]))
+			->setRules('role', ['required', 'trim', 'in' => array_keys($roles)])
 			->processRequest($request);
 
 		if ($form->getIsSubmitted()) {

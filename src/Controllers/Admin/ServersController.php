@@ -7,6 +7,8 @@ use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
+use \GameX\Core\Forms\Elements\FormInputText;
+use \GameX\Core\Forms\Elements\FormInputNumber;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -148,27 +150,27 @@ class ServersController extends BaseAdminController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server');
         $form
-            ->add('name', $server->name, [
-                'type' => 'text',
+            ->add(new FormInputText('name', $server->name, [
                 'title' => 'Name',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 1])
-            ->add('ip', $server->ip, [
-                'type' => 'text',
+            ]))
+            ->add(new FormInputText('ip', $server->ip, [
                 'title' => 'IP',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'ipv4'])
-            ->add('port', $server->port, [
-                'type' => 'number',
+            ]))
+            ->add(new FormInputNumber('port', $server->port, [
                 'title' => 'Port',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'integer', 'between' => [1024, 65535]]);
+            ]))
+			->setRules('name', ['required', 'trim', 'min_length' => 1])
+			->setRules('ip', ['required', 'ipv4'])
+			->setRules('port', ['required', 'integer', 'between' => [1024, 65535]]);
 
         if (!$server->exists) {
             $form->addRules('port', ['exists' => function ($port, \Form\Validator $form) {

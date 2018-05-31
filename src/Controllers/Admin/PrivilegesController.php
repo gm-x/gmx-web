@@ -1,9 +1,12 @@
 <?php
 namespace GameX\Controllers\Admin;
 
+use GameX\Core\Forms\Elements\FormInputCheckbox;
+use GameX\Core\Forms\Elements\FormInputDate;
+use GameX\Core\Forms\Elements\FormInputText;
+use GameX\Core\Forms\Elements\FormSelect;
 use \GameX\Models\Player;
 use \GameX\Models\Privilege;
-use \GameX\Models\Group;
 use \GameX\Core\BaseAdminController;
 use \GameX\Core\Pagination\Pagination;
 use GameX\Models\Server;
@@ -58,10 +61,10 @@ class PrivilegesController extends BaseAdminController {
             } else {
                 try {
                     $privilege->player_id = $player->id;
-                    $privilege->group_id = $form->getValue('group');
-                    $privilege->prefix = $form->getValue('prefix');
-                    $privilege->expired_at = \DateTime::createFromFormat('Y-m-d', $form->getValue('expired'));
-                    $privilege->active = (bool)$form->getValue('active') ? 1 : 0;
+					$privilege->group_id = $form->get('group')->getValue();
+					$privilege->prefix = $form->get('prefix')->getValue();
+					$privilege->expired_at = $form->get('expired')->getDate();
+					$privilege->active = $form->get('active')->getValue() ? 1 : 0;
                     $privilege->save();
                     return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
                 } catch (Exception $e) {
@@ -97,10 +100,10 @@ class PrivilegesController extends BaseAdminController {
                 return $this->redirectTo($form->getAction());
             } else {
                 try {
-                    $privilege->group_id = $form->getValue('group');
-                    $privilege->prefix = $form->getValue('prefix');
-                    $privilege->expired_at = \DateTime::createFromFormat('Y-m-d', $form->getValue('expired'));
-                    $privilege->active = (bool)$form->getValue('active') ? 1 : 0;
+                    $privilege->group_id = $form->get('group')->getValue();
+                    $privilege->prefix = $form->get('prefix')->getValue();
+                    $privilege->expired_at = $form->get('expired')->getDate();
+                    $privilege->active = $form->get('active')->getValue() ? 1 : 0;
                     $privilege->save();
                     return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
                 } catch (Exception $e) {
@@ -192,7 +195,7 @@ class PrivilegesController extends BaseAdminController {
             return new Privilege();
         }
 
-        $privilege = Privilege::find($args['privilege']);
+        $privilege = Privilege::with('group')->find($args['privilege']);
         if (!$privilege) {
             throw new NotFoundException($request, $response);
         }
@@ -209,54 +212,47 @@ class PrivilegesController extends BaseAdminController {
 			? $privilege->group->server
 			: Server::first();
 
-    	$expired = new \DateTime($privilege->expired_at);
-
-    	$exists = function ($group) {
-    		return Group::where('id', '=', $group)->exists();
-		};
+    	$servers = $this->getServers();
+    	$groups = $this->getGroups($server);
 
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server_group');
         $form
-            ->add('server', $server->id, [
-                'type' => 'select',
+            ->add(new FormSelect('server', $server->id, [
                 'id' => 'input_admin_server',
                 'title' => 'Server',
                 'error' => 'Required',
                 'required' => true,
-                'attributes' => [],
-				'values' => $this->getServers()
-            ], ['required', 'integer'])
-			->add('group', $privilege->group_id, [
-                'type' => 'select',
+				'empty_option' => 'Choose server',
+				'options' => $servers,
+            ]))
+			->add(new FormSelect('group', $privilege->group_id, [
                 'id' => 'input_player_group',
                 'title' => 'Group',
                 'error' => 'Required',
                 'required' => true,
-                'attributes' => [],
-				'values' => $this->getGroups($server)
-            ], ['required', 'integer', 'exists' => $exists])
-            ->add('prefix', $privilege->prefix, [
-                'type' => 'text',
+				'empty_option' => 'Choose group',
+				'options' => $groups
+            ]))
+            ->add(new FormInputText('prefix', $privilege->prefix, [
                 'title' => 'Prefix',
                 'error' => '',
                 'required' => false,
-                'attributes' => [],
-            ], ['trim'])
-            ->add('expired', $expired->format('Y-m-d'), [
-                'type' => 'date',
+            ]))
+            ->add(new FormInputDate('expired', $privilege->expired_at, [
                 'title' => 'Expired',
                 'error' => 'Required',
                 'required' => true,
-                'attributes' => [],
-            ], ['required', 'date'])
-            ->add('active', $privilege->active ? true : false, [
-                'type' => 'checkbox',
+            ]))
+            ->add(new FormInputCheckbox('active', $privilege->active ? true : false, [
                 'title' => 'Active',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'bool']);
+                'required' => false,
+            ]))
+			->setRules('server', ['required', 'integer', 'in' => array_keys($servers)])
+			->setRules('group', ['required', 'integer', 'in' => array_keys($groups)])
+			->setRules('prefix', ['trim'])
+			->setRules('expired', ['required', 'date'])
+			->setRules('active', ['bool']);
 
         return $form;
     }

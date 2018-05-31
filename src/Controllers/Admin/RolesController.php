@@ -4,14 +4,15 @@ namespace GameX\Controllers\Admin;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Core\Auth\Helpers\RoleHelper;
-use GameX\Core\Auth\Models\RoleModel;
+use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\BaseAdminController;
-use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
+use \GameX\Core\Forms\Elements\FormInputText;
 use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 
 class RolesController extends BaseAdminController {
@@ -181,20 +182,20 @@ class RolesController extends BaseAdminController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_role');
         $form
-            ->add('name', $role->name, [
-                'type' => 'text',
+            ->add(new FormInputText('name', $role->name, [
                 'title' => 'Name',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim'])
-            ->add('slug', $role->slug, [
-                'type' => 'text',
+            ]))
+            ->add(new FormInputText('slug', $role->slug, [
                 'title' => 'Slug',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
-            ], ['required', 'trim']);
+            ]))
+			->setRules('name', ['required', 'trim', 'min_length' => 1])
+			->setRules('slug', ['required', 'trim', 'min_length' => 1]);
 
         return $form;
     }

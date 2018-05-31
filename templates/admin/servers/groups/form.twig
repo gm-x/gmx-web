@@ -1,25 +1,19 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'forms.twig' as forms %}
+
 {% block content %}
-    <form action="{{ form_action(form) }}" method="post">
+    <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
-        <div class="form-group">
-            {{ form_label(form, 'title') }}
-            {{ form_input(form, 'title') }}
-            {{ form_error(form, 'title') }}
-        </div>
-        <div class="form-group">
-            {{ form_label(form, 'flags') }}
-            {{ form_input(form, 'flags') }}
-            {{ form_error(form, 'flags') }}
-        </div>
+        {{ forms.element_input(form.title) }}
+        {{ forms.element_input(form.flags) }}
         <div class="form-group">
             {% if create %}
-                <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'create') }}">
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
             {% else %}
-                <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'update') }}">
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
             {% endif %}
-            <a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="btn btn-secondary">
+            <a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="btn btn-secondary hvr-grow">
                 {{ trans('buttons', 'cancel') }}
             </a>
         </div>

@@ -24,6 +24,8 @@ $container['db'] = function (\Psr\Container\ContainerInterface $container) {
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 
+    $capsule->getConnection()->enableQueryLog();
+
     return $capsule;
 };
 
@@ -46,7 +48,7 @@ $container['log'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['form'] = function (\Psr\Container\ContainerInterface $container) {
-    return new \GameX\Core\Forms\FormFactory($container);
+    return new \GameX\Core\Forms\FormFactory($container->get('session'));
 };
 
 $container['view'] = function (\Psr\Container\ContainerInterface $container) {
@@ -57,12 +59,14 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	// Instantiate and add Slim specific extension
 	$basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
 	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
-	$view->addExtension(new \GameX\Core\Forms\ViewExtension());
 	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
 	$view->addExtension(new \GameX\Core\Pagination\ViewExtension());
 	$view->addExtension(new \GameX\Core\Auth\ViewExtension($container->get('auth')));
 	$view->addExtension(new \GameX\Core\Lang\ViewExtension($container->get('lang')));
 	$view->addExtension(new \GameX\Core\AccessFlags\ViewExtension());
+	$view->addExtension(new \GameX\Core\Twig_Dump());
+
+	$view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
 
 	return $view;
 };
