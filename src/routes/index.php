@@ -25,11 +25,16 @@ $app->group('/api', function () {
     $root = __DIR__ . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR;
     $this->group('/privileges', include  $root . 'privileges.php');
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
-	if (!preg_match('/Bearer\s+(?P<token>.+)$/i', $request->getHeaderLine('Authorization'), $matches)) {
+	if (!preg_match('/Basic\s+(?P<token>.+)$/i', $request->getHeaderLine('Authorization'), $matches)) {
 		throw new \Slim\Exception\SlimException($request, $response);
 	}
 	$config = $container->get('config');
-	$data = \Firebase\JWT\JWT::decode($matches['token'], $config['secret'], ['HS256', 'HS512']);
+	$token = base64_decode($matches['token']);
+	if ($token === false) {
+        throw new \Slim\Exception\SlimException($request, $response);
+    }
+    $token = trim($token, ':');
+	$data = \Firebase\JWT\JWT::decode($token, $config['secret'], ['HS512']);
 	if (empty($data->server_id)) {
 		throw new \Slim\Exception\SlimException($request, $response);
 	}

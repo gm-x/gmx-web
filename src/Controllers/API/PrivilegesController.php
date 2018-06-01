@@ -9,9 +9,13 @@ use \GameX\Models\Privilege;
 
 class PrivilegesController extends BaseApiController {
     public function indexAction(Request $request, Response $response, array $args) {
+
+        // TODO: Filter by expired at and active
         $privileges = [];
         /** @var Group $group */
-        $groups = Group::with('players')->where('server_id', '=', $request->getAttribute('server_id'))->get();
+        $groups = Group::with('players')
+            ->where('server_id', '=', $request->getAttribute('server_id'))
+            ->get();
         foreach ($groups as $group) {
         	/** @var Privilege $privilege */
 			foreach ($group->players as $privilege) {
@@ -20,7 +24,7 @@ class PrivilegesController extends BaseApiController {
                     'steamid' => $player->steamid,
                     'nick' => $player->nick,
                     'auth_type' => $player->auth_type,
-					'password' => $player->password,
+					'password' => $player->password ?: '',
                     'prefix' => $privilege->prefix ?: $group->title,
 					'group' => $group->id,
 					'flags' => $group->flags,
