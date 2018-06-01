@@ -9,13 +9,16 @@ $container = new \Slim\Container([
 	'root' => __DIR__ . DIRECTORY_SEPARATOR
 ]);
 
-$container['errorHandler'] = function ($c) {
+$errorHandler = function ($c) {
 	return function ($request, $response, $exception) use ($c) {
 		return $c['response']->withStatus(500)
 			->withHeader('Content-Type', 'text/html')
 			->write('Something went wrong!');
 	};
 };
+
+$container['errorHandler'] = $errorHandler;
+$container['phpErrorHandler'] = $errorHandler;
 
 $container['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
 

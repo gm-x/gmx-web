@@ -1,19 +1,20 @@
 <?php
 namespace GameX\Controllers\Admin;
 
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\BaseAdminController;
+use \GameX\Models\Player;
+use \GameX\Models\Privilege;
+use \GameX\Models\Server;
+use \GameX\Models\Group;
+use \GameX\Core\Pagination\Pagination;
+use \GameX\Core\Forms\Form;
 use GameX\Core\Forms\Elements\FormInputCheckbox;
 use GameX\Core\Forms\Elements\FormInputDate;
 use GameX\Core\Forms\Elements\FormInputText;
 use GameX\Core\Forms\Elements\FormSelect;
-use \GameX\Models\Player;
-use \GameX\Models\Privilege;
-use \GameX\Core\BaseAdminController;
-use \GameX\Core\Pagination\Pagination;
-use GameX\Models\Server;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
 use \Slim\Exception\NotFoundException;
-use \GameX\Core\Forms\Form;
 use \Exception;
 
 class PrivilegesController extends BaseAdminController {
@@ -215,7 +216,11 @@ class PrivilegesController extends BaseAdminController {
     	$servers = $this->getServers();
     	$groups = $this->getGroups($server);
 
-        /** @var Form $form */
+		$exists = function ($group) {
+			return Group::where('id', '=', $group)->exists();
+		};
+
+		/** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server_group');
         $form
             ->add(new FormSelect('server', $server->id, [
@@ -249,7 +254,7 @@ class PrivilegesController extends BaseAdminController {
                 'required' => false,
             ]))
 			->setRules('server', ['required', 'integer', 'in' => array_keys($servers)])
-			->setRules('group', ['required', 'integer', 'in' => array_keys($groups)])
+			->setRules('group', ['required', 'integer', 'exists' => $exists])
 			->setRules('prefix', ['trim'])
 			->setRules('expired', ['required', 'date'])
 			->setRules('active', ['bool']);
