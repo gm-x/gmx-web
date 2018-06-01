@@ -24,7 +24,9 @@
 		"paragonie/random_compat": "^2.0",
 		"davedevelopment/phpmig": "^1.2@dev",
 		"akrabat/ip-address-middleware": "^0.6.0",
-		"o80/i18n": "0.4"
+		"o80/i18n": "0.4",
+		"tedivm/stash": "v0.14.2",
+		"firebase/php-jwt": "v5.0.0"
 	},
 	"autoload": {
 		"psr-4": {

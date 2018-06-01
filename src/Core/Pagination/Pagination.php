@@ -2,11 +2,11 @@
 namespace GameX\Core\Pagination;
 
 use \Illuminate\Database\Eloquent\Collection;
-use \Psr\Http\Message\ServerRequestInterface;
+use \Slim\Http\Request;
 use \Psr\Http\Message\UriInterface;
 
 class Pagination {
-    const COUNT_PER_PAGE = 10;
+    const COUNT_PER_PAGE = 1;
 
     /**
      * @var UriInterface
@@ -20,12 +20,10 @@ class Pagination {
 
     protected $collection;
 
-    public function __construct(Collection $collection, ServerRequestInterface $request) {
+    public function __construct(Collection $collection, Request $request) {
         $this->uri = $request->getUri();
         $this->count = $collection->count();
-        $this->page = array_key_exists('page', $_GET)
-            ? (int) $_GET['page'] - 1
-            : 0;
+        $this->page = ($request->getQueryParam('page') ?: 1) - 1;
 
         $this->collection = $collection->forPage($this->page, self::COUNT_PER_PAGE);
 

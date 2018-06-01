@@ -51,6 +51,16 @@ abstract class BaseController {
         return $this->container->get($container);
     }
 
+	/**
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+    public function getConfig($key, $default = null) {
+    	$config = $this->getContainer('config');
+    	return array_key_exists($key, $config) ? $config[$key] : $default;
+	}
+
     /**
      * @param string $path
      * @param array $data
