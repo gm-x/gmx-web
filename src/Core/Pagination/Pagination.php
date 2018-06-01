@@ -6,7 +6,7 @@ use \Slim\Http\Request;
 use \Psr\Http\Message\UriInterface;
 
 class Pagination {
-    const COUNT_PER_PAGE = 1;
+    const COUNT_PER_PAGE = 50;
 
     /**
      * @var UriInterface
