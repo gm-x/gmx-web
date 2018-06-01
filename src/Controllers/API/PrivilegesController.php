@@ -30,8 +30,8 @@ class PrivilegesController extends BaseApiController {
         }
 
         return $response->withJson([
-           'success' => true,
-            'privileges' => $privileges,
+			'success' => true,
+			'privileges' => $privileges,
         ]);
     }
 }
