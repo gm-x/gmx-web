@@ -6,7 +6,7 @@ use \Slim\Http\Request;
 use \Psr\Http\Message\UriInterface;
 
 class Pagination {
-    const COUNT_PER_PAGE = 10;
+    const COUNT_PER_PAGE = 1;
 
     /**
      * @var UriInterface
@@ -70,7 +70,7 @@ class Pagination {
 
     public function getPageUrl($page) {
         parse_str($this->uri->getQuery(), $query);
-        if ($page !== 1) {
+        if ($page != 1) {
             $query['page'] = $page;
         } elseif (array_key_exists('page', $query)) {
             unset($query['page']);
