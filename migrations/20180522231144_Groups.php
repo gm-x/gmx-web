@@ -14,6 +14,7 @@ class Groups extends Migration {
                 $table->unsignedInteger('server_id')->references('id')->on('servers');
                 $table->string('title', 255);
                 $table->unsignedInteger('flags');
+                $table->unsignedTinyInteger('priority')->default('0');
                 $table->timestamps();
             });
     }

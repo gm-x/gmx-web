@@ -22,6 +22,7 @@ class Players extends Migration {
 				'nick_hash',
 			])->default('steamid');
 			$table->string('password', 255)->nullable();
+			$table->unsignedInteger('access')->default('0');
 			$table->timestamps();
 		});
 }

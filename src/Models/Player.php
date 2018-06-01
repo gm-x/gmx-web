@@ -13,6 +13,7 @@ use \GameX\Core\BaseModel;
  * @property boolean $is_steam
  * @property string $auth_type
  * @property string $password
+ * @property integer $access
  * @property Privilege[] $privileges
  */
 class Player extends BaseModel {
@@ -38,7 +39,7 @@ class Player extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['steamid', 'nick', 'is_steam', 'auth_type', 'password'];
+	protected $fillable = ['steamid', 'nick', 'is_steam', 'auth_type', 'password', 'access'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

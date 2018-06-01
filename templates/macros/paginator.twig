@@ -10,7 +10,7 @@
 			</li>
 			<li class="page-item"><a class="page-link" href="{{ pagination.getPageUrl(1) }}">&nbsp;1&nbsp;</a></li>
 		{% endif %}
-		{% for page in pagination.getStartPage()..pagination.getEndPage() %}
+		{% for page in pagination.getStartPage()..pagination.getEndPage() - 1 %}
 		<li class="page-item {{ page == pagination.getPage() ? 'active' : '' }}">
 			<a class="page-link" href="{{ pagination.getPageUrl(page + 1) }}">{{ page + 1 }}</a>
 		</li>
