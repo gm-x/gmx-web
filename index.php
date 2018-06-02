@@ -11,6 +11,7 @@ $container = new \Slim\Container([
 
 $errorHandler = function ($c) {
 	return function ($request, $response, $exception) use ($c) {
+	    $c['log']->error((string)$exception);
 		return $c['response']->withStatus(500)
 			->withHeader('Content-Type', 'text/html')
 			->write('Something went wrong!');

@@ -24,6 +24,9 @@ class Player extends BaseModel {
 	const AUTH_TYPE_STEAM_AND_HASH = 'steamid_hash';
 	const AUTH_TYPE_NICK_AND_HASH = 'nick_hash';
 
+    const ACCESS_RESERVE_NICK = 1;
+    const ACCESS_BLOCK_CHANGE_NICK = 2;
+
 	/**
 	 * The table associated with the model.
 	 *
@@ -55,7 +58,20 @@ class Player extends BaseModel {
 		$this->attributes['password'] = !empty($value) ? md5($value) : null;
 	}
 
+    /**
+     * @param int $access
+     * @return bool
+     */
+    public function hasAccess($access) {
+        return ($this->access & $access) === $access;
+    }
+
+    /**
+     * @param string $filter
+     * @return Player
+     */
 	public static function filterCollection($filter) {
-		return self::where('steamid', 'LIKE', '%' . $filter . '%')->orWhere('nick', 'LIKE', '%' . $filter . '%');
+		return self::where('steamid', 'LIKE', '%' . $filter . '%')
+            ->orWhere('nick', 'LIKE', '%' . $filter . '%');
 	}
 }

@@ -44,18 +44,22 @@
             </form>
             <ul class="navbar-nav mr-0">
                 <li class="nav-item dropdown mx-3">
-                    <a class="nav-link" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                    <a class="nav-link" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="oi oi-ellipses"></span>
+                    </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
 
                         {% if not is_user() %}
-                            <a class="dropdown-item" href="{{ path_for('login') }}">{{ trans('Auth', 'login_reg_link') }}</a>
+                            <a class="dropdown-item" href="{{ path_for('login') }}">
+                                {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
+                            </a>
                         {% else %}
                             <h6 class="dropdown-header">{{ get_user_name() }}</h6>
                             {% if has_access('admin.*') %}
                                 <a class="dropdown-item" href="{{ path_for('admin_index') }}">Admin</a>
                             {% endif %}
                             <a class="dropdown-item" href="#">Settings</a>
-                            <a class="dropdown-item" href="{{ path_for('logout') }}">{{ trans('Auth', 'logout_link') }}</a>
+                            <a class="dropdown-item" href="{{ path_for('logout') }}">{{ trans('buttons', 'logout') }}</a>
                         {% endif %}
                     </div>
                 </li>
@@ -83,8 +87,6 @@
     {% for error in flash_messages.error %}
         <div class="alert alert-danger" role="alert">{{ error }}</div>
     {% endfor %}
-
-
 
     {% block content %}{% endblock %}
     </div>

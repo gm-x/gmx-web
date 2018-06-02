@@ -22,17 +22,17 @@ class UserController extends BaseController {
         $form
             ->setAction((string)$request->getUri())
 			->add(new FormInputEmail('email', '', [
-				'title' => 'Email',
+				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
 				'required' => true,
 			]))
             ->add(new FormInputPassword('password', '', [
-                'title' => 'Password',
-                'error' => 'Required',
+                'title' => $this->getTranslate('inputs', 'password'),
+                'error' => $this->getTranslate('labels', 'required'),
                 'required' => true,
 			]))
             ->add(new FormInputPassword('password_repeat', '', [
-                'title' => 'Repeat Password',
+                'title' => $this->getTranslate('inputs', 'password_repeat'),
                 'error' => 'Passwords does not match',
                 'required' => true,
             ]))
@@ -71,7 +71,7 @@ class UserController extends BaseController {
 		$form
             ->setAction((string)$request->getUri())
 			->add(new FormInputEmail('email', '', [
-				'title' => 'Email',
+				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
 				'required' => true,
 			]))
@@ -103,17 +103,17 @@ class UserController extends BaseController {
         $form
 			->setAction((string)$request->getUri())
 			->add(new FormInputEmail('email', '', [
-				'title' => 'Email',
+				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
 				'required' => true,
 			]))
 			->add(new FormInputPassword('password', '', [
-				'title' => 'Password',
-				'error' => 'Required',
+				'title' => $this->getTranslate('inputs', 'password'),
+				'error' => $this->getTranslate('labels', 'required'),
 				'required' => true,
 			]))
 			->add(new FormInputCheckbox('remember_me', true, [
-				'title' => 'Remember Me',
+				'title' => $this->getTranslate('inputs', 'remember_me'),
 				'required' => false,
 			]))
 			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
@@ -157,7 +157,7 @@ class UserController extends BaseController {
 		$form
             ->setAction((string)$request->getUri())
 			->add(new FormInputEmail('email', '', [
-				'title' => 'Email',
+				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
 				'required' => true,
 			]))
@@ -197,17 +197,17 @@ class UserController extends BaseController {
         $form
             ->setAction((string)$request->getUri())
 			->add(new FormInputEmail('email', '', [
-				'title' => 'Email',
+				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
 				'required' => true,
 			]))
 			->add(new FormInputPassword('password', '', [
-				'title' => 'Password',
-				'error' => 'Required',
+				'title' => $this->getTranslate('inputs', 'password'),
+				'error' => $this->getTranslate('labels', 'required'),
 				'required' => true,
 			]))
 			->add(new FormInputPassword('password_repeat', '', [
-				'title' => 'Repeat Password',
+				'title' => $this->getTranslate('inputs', 'password_repeat'),
 				'error' => 'Passwords does not match',
 				'required' => true,
 			]))

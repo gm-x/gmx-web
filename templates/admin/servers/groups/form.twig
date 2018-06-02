@@ -7,6 +7,7 @@
         {{ csrf_token() }}
         {{ forms.element_input(form.title) }}
         {{ forms.element_input(form.flags) }}
+        {{ forms.element_input(form.priority) }}
         <div class="form-group">
             {% if create %}
                 <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
