@@ -1,19 +1,29 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-$config = [
-    'settings' => [
-        'determineRouteBeforeAppMiddleware' => true,
-        'displayErrorDetails' => true,
-    ],
-];
+$container = new \Slim\Container([
+	'settings' => [
+		'determineRouteBeforeAppMiddleware' => true,
+		'displayErrorDetails' => true,
+	],
+	'root' => __DIR__ . DIRECTORY_SEPARATOR
+]);
 
-$config['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
+$errorHandler = function ($c) {
+	return function ($request, $response, $exception) use ($c) {
+	    $c['log']->error((string)$exception);
+		return $c['response']->withStatus(500)
+			->withHeader('Content-Type', 'text/html')
+			->write('Something went wrong!');
+	};
+};
 
-$app = new \Slim\App($config);
+$container['errorHandler'] = $errorHandler;
+$container['phpErrorHandler'] = $errorHandler;
 
-$container = $app->getContainer();
-$container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
+$container['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
+
+$app = new \Slim\App($container);
 
 include __DIR__ . '/src/dependencies.php';
 include __DIR__ . '/src/middlewares.php';

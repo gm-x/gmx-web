@@ -2,6 +2,7 @@
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
+use \DateTime;
 
 /**
  * Class Group
@@ -47,6 +48,13 @@ class Privilege extends BaseModel {
     public function player() {
 	    return $this->belongsTo(Player::class, 'player_id', 'id');
     }
+
+	/**
+	 * @return DateTime
+	 */
+    public function expired() {
+    	return new DateTime($this->expired_at);
+	}
 
     /**
      * @param string $value

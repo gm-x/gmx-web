@@ -6,6 +6,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Slim\Views\Twig;
+use \GameX\Core\Lang\I18n;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
@@ -26,6 +27,11 @@ abstract class BaseController {
      * @var Response
      */
     protected $response;
+
+    /**
+     * @var I18n|null
+     */
+    protected $translate = null;
 
 	/**
 	 * BaseController constructor.
@@ -49,6 +55,25 @@ abstract class BaseController {
      */
     public function getContainer($container) {
         return $this->container->get($container);
+    }
+
+	/**
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+    public function getConfig($key, $default = null) {
+    	$config = $this->getContainer('config');
+    	return array_key_exists($key, $config) ? $config[$key] : $default;
+	}
+
+	public function getTranslate($section, $key, array $args = null) {
+        if ($this->translate === null) {
+            $this->translate = $this->getContainer('lang');
+        }
+        return $args !== null
+            ? $this->translate->format($section, $key, $args)
+            : $this->translate->get($section, $key);
     }
 
     /**

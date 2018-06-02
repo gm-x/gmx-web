@@ -11,6 +11,7 @@ use \GameX\Core\BaseModel;
  * @property string $name
  * @property string $ip
  * @property integer $port
+ * @property string $token
  * @property Group[] $groups
  */
 class Server extends BaseModel {
@@ -30,7 +31,7 @@ class Server extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['name', 'ip', 'port'];
+	protected $fillable = ['name', 'ip', 'port', 'token'];
 
     /**
      * Get the comments for the blog post.

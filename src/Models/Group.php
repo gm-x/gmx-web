@@ -11,6 +11,7 @@ use \GameX\Core\BaseModel;
  * @property integer $server_id
  * @property string $title
  * @property integer $flags
+ * @property integer $priority
  * @property Server $server
  * @property Privilege[] $players
  */
@@ -31,7 +32,7 @@ class Group extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['server_id', 'title', 'flags'];
+	protected $fillable = ['server_id', 'title', 'flags', 'priority'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

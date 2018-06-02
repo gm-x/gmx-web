@@ -11,6 +11,14 @@ $container['csrf'] = function (\Psr\Container\ContainerInterface $container) {
     return new \GameX\Core\CSRF\Token($container->get('session'));
 };
 
+$container['cache'] = function (\Psr\Container\ContainerInterface $container) {
+	$driver = new \Stash\Driver\FileSystem([
+		'path' => $container['root'] . 'runtime' . DIRECTORY_SEPARATOR . 'cache',
+		'encoder' => 'Serializer'
+	]);
+	return new \Stash\Pool($driver);
+};
+
 $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
 	$i18n = new \GameX\Core\Lang\I18n($container->get('session'), new \GameX\Core\Lang\LangProvider(), 'ru');
 	$i18n->setPath($container['root'] . 'langs');

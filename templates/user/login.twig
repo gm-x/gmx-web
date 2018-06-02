@@ -1,6 +1,6 @@
 {% extends 'base.twig' %}
 
-{% import 'forms.twig' as forms %}
+{% import 'macros/forms.twig' as forms %}
 
 {% block content %}
 <form action="{{ form.getAction() }}" method="post">
@@ -9,10 +9,10 @@
     {{ forms.element_input(form.password) }}
     {{ forms.element_checkbox(form.remember_me) }}
     <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="{{ trans('Auth', 'login_btn') }}">
+        <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'login') }}">
 
-        <a href="{{ path_for('reset_password') }}" class="btn btn-warning">Reset password</a>
-        <a href="{{ path_for('register') }}" class="btn btn-success">Register</a>
+        <a href="{{ path_for('reset_password') }}" class="btn btn-warning">{{ trans('buttons', 'reset_password') }}</a>
+        <a href="{{ path_for('register') }}" class="btn btn-success">{{ trans('buttons', 'register') }}</a>
     </div>
 </form>
 {% endblock %}

@@ -11,6 +11,7 @@ use \Slim\Exception\NotFoundException;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\FormInputText;
 use \GameX\Core\Forms\Elements\FormInputFlags;
+use \GameX\Core\Forms\Elements\FormInputNumber;
 use \Exception;
 
 class GroupsController extends BaseAdminController {
@@ -60,6 +61,7 @@ class GroupsController extends BaseAdminController {
                     $group->server_id = $server->id;
                     $group->title = $form->get('title')->getValue();
                     $group->flags = $form->get('flags')->getFlagsInt();
+                    $group->priority = $form->get('priority')->getValue();
                     $group->save();
                     return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
                 } catch (Exception $e) {
@@ -97,6 +99,7 @@ class GroupsController extends BaseAdminController {
                 try {
                     $group->title = $form->get('title')->getValue();
                     $group->flags = $form->get('flags')->getFlagsInt();
+                    $group->priority = $form->get('priority')->getValue();
 					$group->save();
                     return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
                 } catch (Exception $e) {
@@ -186,16 +189,19 @@ class GroupsController extends BaseAdminController {
                 'title' => 'Title',
                 'error' => 'Required',
                 'required' => true,
-                'attributes' => [],
             ]))
             ->add(new FormInputFlags('flags', $group->flags, [
                 'title' => 'Flags',
                 'error' => 'Required',
                 'required' => true,
-                'attributes' => [],
+            ]))
+            ->add(new FormInputNumber('priority', $group->priority, [
+                'title' => 'Priority',
+                'required' => false,
             ]))
             ->setRules('title', ['required', 'trim', 'min_length' => 1])
-            ->setRules('flags', ['required', 'trim', 'min_length' => 1]);
+            ->setRules('flags', ['required', 'trim', 'min_length' => 1])
+            ->setRules('priority', ['integer', 'min' => 0]);
 
         return $form;
     }

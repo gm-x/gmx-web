@@ -1,5 +1,4 @@
 <?php
-
 namespace GameX\Core\CSRF;
 
 use \Psr\Http\Message\ServerRequestInterface;

@@ -11,6 +11,7 @@ use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\FormInputPassword;
 use \GameX\Core\Forms\Elements\FormInputText;
 use \GameX\Core\Forms\Elements\FormSelect;
+use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \Form\Validator;
 use \Exception;
 
@@ -58,7 +59,7 @@ class PlayersController extends BaseAdminController {
 				return $this->redirectTo($form->getAction());
 			} else {
 				try {
-					$player->fill($form->getValues());
+					$this->fillPlayer($player, $form);
 					$player->save();
 					return $this->redirect('admin_players_list');
 				} catch (Exception $e) {
@@ -91,7 +92,7 @@ class PlayersController extends BaseAdminController {
 				return $this->redirectTo($form->getAction());
 			} else {
 				try {
-					$player->fill($form->getValues());
+                    $this->fillPlayer($player, $form);
 					$player->save();
 					return $this->redirect('admin_players_list');
 				} catch (Exception $e) {
@@ -147,6 +148,28 @@ class PlayersController extends BaseAdminController {
 		return $player;
     }
 
+    /**
+     * @param Player $player
+     * @param Form $form
+     */
+    protected function fillPlayer(Player $player, Form $form) {
+        $player->steamid = $form->getValue('steamid');
+        $player->nick = $form->getValue('nick');
+        $authType = $form->getValue('auth_type');
+        $player->auth_type = $authType;
+        if ($authType == Player::AUTH_TYPE_STEAM_AND_PASS || $authType == Player::AUTH_TYPE_NICK_AND_PASS) {
+            $player->password = md5($form->getValue('password'));
+        }
+        $access = 0;
+        if ($form->getValue('access_reserve_nick')) {
+            $access |= Player::ACCESS_RESERVE_NICK;
+        }
+        if ($form->getValue('access_block_change_nick')) {
+            $access |= Player::ACCESS_BLOCK_CHANGE_NICK;
+        }
+        $player->access = $access;
+    }
+
 	/**
 	 * @param Player $player
 	 * @return Form
@@ -184,7 +207,14 @@ class PlayersController extends BaseAdminController {
 			]))
 			->add(new FormInputPassword('password', '', [
 				'title' => 'Password',
-				'error' => 'Required for pass or hash',
+				'required' => false,
+			]))
+			->add(new FormInputCheckbox('access_reserve_nick', $player->hasAccess(Player::ACCESS_RESERVE_NICK), [
+				'title' => 'Reserve nickname',
+				'required' => false,
+			]))
+			->add(new FormInputCheckbox('access_block_change_nick', $player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK), [
+				'title' => 'Block change nick',
 				'required' => false,
 			]))
 			->setRules('steamid', ['required', 'trim', 'min_length' => 1, 'regexp' => '/^(?:STEAM|VALVE)_\d:\d:\d+$/'])
@@ -196,7 +226,9 @@ class PlayersController extends BaseAdminController {
 				Player::AUTH_TYPE_STEAM_AND_HASH,
 				Player::AUTH_TYPE_NICK_AND_HASH,
 			]])
-			->setRules('password', ['check' => $checkPasswordRequired]);
+            ->setRules('password', ['check' => $checkPasswordRequired])
+            ->setRules('access_reserve_nick', ['bool'])
+            ->setRules('access_block_change_nick', ['bool']);
 
 		if (!$player->exists) {
 			$form->addRules('steamid', ['exists' => function ($steamid, Validator $validator) {

@@ -1,5 +1,7 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/paginator.twig' as paginator %}
+
 {% block content %}
     <form action="{{ path_for('admin_players_list') }}" method="get">
         <input type="text" name="filter" value="{{ filter }}">
@@ -36,6 +38,6 @@
         {% endfor %}
         </tbody>
     </table>
-    {{ render_pagination(pagination) }}
+	{{ paginator.render(pagination) }}
     <a href="{{ path_for('admin_players_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
 {% endblock %}

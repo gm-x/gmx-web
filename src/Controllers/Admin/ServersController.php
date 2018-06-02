@@ -6,6 +6,7 @@ use \GameX\Core\BaseAdminController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Firebase\JWT\JWT;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\FormInputText;
 use \GameX\Core\Forms\Elements\FormInputNumber;
@@ -55,6 +56,10 @@ class ServersController extends BaseAdminController {
 				try {
                     $server->fill($form->getValues());
                     $server->save();
+					$server->token = JWT::encode([
+						'server_id' => $server->id
+					], $this->getConfig('secret'), 'HS512');
+					$server->save();
 					return $this->redirect('admin_servers_list');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);

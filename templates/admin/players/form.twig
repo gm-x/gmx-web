@@ -1,6 +1,6 @@
 {% extends 'admin/admin.twig' %}
 
-{% import 'forms.twig' as forms %}
+{% import 'macros/forms.twig' as forms %}
 
 {% block content %}
     <form action="{{ form.getAction() }}" method="post">
@@ -9,6 +9,8 @@
 		{{ forms.element_input(form.nick) }}
 		{{ forms.element_select(form.auth_type) }}
 		{{ forms.element_input(form.password) }}
+		{{ forms.element_checkbox(form.access_reserve_nick) }}
+		{{ forms.element_checkbox(form.access_block_change_nick) }}
         <div class="form-group">
 			{% if create %}
                 <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">

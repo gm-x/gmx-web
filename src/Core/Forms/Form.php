@@ -195,7 +195,11 @@ class Form implements ArrayAccess {
      * @return string[]
      */
     public function getValues() {
-        return $this->values;
+    	$values = [];
+    	foreach ($this->elements as $element) {
+    		$values[$element->getName()] = $element->getValue();
+		}
+        return $values;
     }
 
     /**

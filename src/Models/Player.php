@@ -13,6 +13,7 @@ use \GameX\Core\BaseModel;
  * @property boolean $is_steam
  * @property string $auth_type
  * @property string $password
+ * @property integer $access
  * @property Privilege[] $privileges
  */
 class Player extends BaseModel {
@@ -22,6 +23,9 @@ class Player extends BaseModel {
 	const AUTH_TYPE_NICK_AND_PASS = 'nick_pass';
 	const AUTH_TYPE_STEAM_AND_HASH = 'steamid_hash';
 	const AUTH_TYPE_NICK_AND_HASH = 'nick_hash';
+
+    const ACCESS_RESERVE_NICK = 1;
+    const ACCESS_BLOCK_CHANGE_NICK = 2;
 
 	/**
 	 * The table associated with the model.
@@ -38,7 +42,7 @@ class Player extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['steamid', 'nick', 'is_steam', 'auth_type', 'password'];
+	protected $fillable = ['steamid', 'nick', 'is_steam', 'auth_type', 'password', 'access'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -54,7 +58,20 @@ class Player extends BaseModel {
 		$this->attributes['password'] = !empty($value) ? md5($value) : null;
 	}
 
+    /**
+     * @param int $access
+     * @return bool
+     */
+    public function hasAccess($access) {
+        return ($this->access & $access) === $access;
+    }
+
+    /**
+     * @param string $filter
+     * @return Player
+     */
 	public static function filterCollection($filter) {
-		return self::where('steamid', 'LIKE', '%' . $filter . '%')->orWhere('nick', 'LIKE', '%' . $filter . '%');
+		return self::where('steamid', 'LIKE', '%' . $filter . '%')
+            ->orWhere('nick', 'LIKE', '%' . $filter . '%');
 	}
 }

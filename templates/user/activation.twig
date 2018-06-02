@@ -1,13 +1,13 @@
 {% extends 'base.twig' %}
 
-{% import 'forms.twig' as forms %}
+{% import 'macros/forms.twig' as forms %}
 
 {% block content %}
-<form action="{{ form.getAction }}" method="post">
+<form action="{{ form.getAction() }}" method="post">
 	{{ csrf_token() }}
 	{{ forms.element_input(form.email) }}
     <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="Activate">
+        <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'activate') }}">
     </div>
 </form>
 {% endblock %}

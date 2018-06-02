@@ -51,7 +51,7 @@ class Cookie implements CookieInterface {
      */
     public function get() {
         $cookie = $this->request->getCookieParam($this->options['name']);
-        if ($cookie) {
+        if ($cookie !== null) {
             return json_decode($cookie);
         }
     }
