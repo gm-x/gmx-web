@@ -4,6 +4,7 @@ namespace GameX\Controllers\API;
 use \GameX\Core\BaseApiController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
+use \Carbon\Carbon;
 use \GameX\Models\Group;
 use \GameX\Models\Privilege;
 
@@ -13,9 +14,15 @@ class PrivilegesController extends BaseApiController {
         // TODO: Filter by expired at and active
         $privileges = [];
         /** @var Group $group */
-        $groups = Group::with('players')
+        $groups = Group::whereHas('players', function ($query) {
+            $query
+                ->where('active', '=', '1')
+                ->where('expired_at', '>=', Carbon::today()->toDateString());
+        })
             ->where('server_id', '=', $request->getAttribute('server_id'))
             ->get();
+
+
         foreach ($groups as $group) {
         	/** @var Privilege $privilege */
 			foreach ($group->players as $privilege) {
@@ -30,6 +37,8 @@ class PrivilegesController extends BaseApiController {
                     'prefix' => $privilege->prefix ?: $group->title,
 					'flags' => $group->flags,
 					'expired' => $privilege->expired()->getTimestamp(),
+                    'priority' => $group->priority,
+                    'access' => $player->access,
                 ];
             }
         }
