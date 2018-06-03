@@ -21,12 +21,13 @@ class PrivilegesController extends BaseApiController {
 			foreach ($group->players as $privilege) {
 				$player = $privilege->player;
                 $privileges[] = [
+                    'player_id' => $player->id,
+                    'group_id' => $group->id,
                     'steamid' => $player->steamid,
                     'nick' => $player->nick,
                     'auth_type' => $player->auth_type,
-					'password' => $player->password ?: '',
+                    'password' => $player->password ?: '',
                     'prefix' => $privilege->prefix ?: $group->title,
-					'group' => $group->id,
 					'flags' => $group->flags,
 					'expired' => $privilege->expired()->getTimestamp(),
                 ];

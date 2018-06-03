@@ -5,6 +5,7 @@ use \GameX\Core\BaseController;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \GameX\Core\Forms\Elements\FormInputEmail;
 use \GameX\Core\Forms\Elements\FormInputPassword;
+use GameX\Core\Jobs\JobHelper;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
@@ -46,14 +47,27 @@ class UserController extends BaseController {
                 return $this->redirectTo($form->getAction());
             } else {
                 try {
+                    /** @var \Illuminate\Database\Connection $connection */
+                    $connection = $this->getContainer('db')->getConnection();
+                    $connection->beginTransaction();
                 	$authHelper = new AuthHelper($this->container);
-					$authHelper->registerUser(
+                    $activationCode = $authHelper->registerUser(
                         $form->getValue('email'),
                         $form->getValue('password'),
                         $form->getValue('password_repeat')
                     );
+					JobHelper::createTask('sendmail', [
+					    'type' => 'activation',
+                        'email' => $form->getValue('email'),
+                        'title' => 'Activation',
+                        'params' => [
+                            'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
+                        ],
+                    ]);
+					$connection->commit();
                     return $this->redirect('login');
                 } catch (Exception $e) {
+                    $connection->rollBack();
                     return $this->failRedirect($e, $form);
                 }
             }
@@ -170,9 +184,17 @@ class UserController extends BaseController {
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
-					$authHelper->resetPassword(
+                    $reminderCode = $authHelper->resetPassword(
 						$form->getValue('email')
 					);
+                    JobHelper::createTask('sendmail', [
+                        'type' => 'reset_password',
+                        'email' => $form->getValue('email'),
+                        'title' => 'Reset Password',
+                        'params' => [
+                            'link' => $this->pathFor('reset_password_complete', ['code' => $reminderCode], [], true)
+                        ],
+                    ]);
 					return $this->redirect('index');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);

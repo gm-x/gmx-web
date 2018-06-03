@@ -58,11 +58,7 @@ class AuthHelper {
 			throw new ValidationException('Something wrong. Please Try again later.');
 		}
 
-		$activation = $this->auth->getActivationRepository()->create($user);
-
-		return $this->sendEmail($email, 'Activation', 'activation', [
-			'link' => $this->getLink('activation', ['code' => $activation->getCode()])
-		]);
+		return $this->auth->getActivationRepository()->create($user)->getCode();
 	}
 
 	/**
@@ -141,9 +137,7 @@ class AuthHelper {
 			throw new ValidationException('Something wrong. Please Try again later.');
 		}
 
-		return $this->sendEmail($email, 'Reset Password', 'reset_password', [
-			'link' => $this->getLink('reset_password_complete', ['code' => $reminder->code])
-		]);
+		return $reminder->code;
 	}
 
     public function resetPasswordComplete($email, $password, $password_repeat, $code) {
@@ -179,20 +173,5 @@ class AuthHelper {
 		return (string)$request
 			->getUri()
 			->withPath($router->pathFor($name, $data));
-	}
-
-	/**
-	 * @param string $email
-	 * @param string $title
-	 * @param string $template
-	 * @param array $data
-	 * @return bool
-	 */
-	protected function sendEmail($email, $title, $template, array $data = []) {
-		$mailBody = $this->mail->render($template, $data);
-		return $this->mail->send([
-			'name' => $email,
-			'email' => $email
-		], $title, $mailBody);
 	}
 }
