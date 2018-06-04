@@ -39,4 +39,13 @@ class JobHelper {
         $task->save();
         return $task;
     }
+
+    public static function failTask(Task $task) {
+		$task->retries++;
+		if ($task->max_retries > 0 && $task->retries >= $task->max_retries) {
+			self::markTask($task, Task::STATUS_FAILED);
+		} else {
+			self::markTask($task, Task::STATUS_WAITING);
+		}
+	}
 }

@@ -3,6 +3,7 @@ namespace GameX\Controllers\Cron;
 
 use \GameX\Core\BaseCronController;
 use \GameX\Models\Task;
+use \GameX\Core\Jobs\JobResult;
 
 class SendMailController extends BaseCronController {
     public function run(Task $task) {
@@ -13,6 +14,6 @@ class SendMailController extends BaseCronController {
             'name' => $task->data['email'],
             'email' => $task->data['email']
         ], $task->data['title'], $mailBody);
-        return true;
+        return new JobResult(true);
     }
 }

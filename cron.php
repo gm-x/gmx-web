@@ -13,6 +13,7 @@ use \GameX\Models\Task;
 BaseCronController::setContainer($container);
 
 BaseCronController::registerKey('sendmail', \GameX\Controllers\Cron\SendMailController::class);
+BaseCronController::registerKey('monitoring', \GameX\Controllers\Cron\MonitoringlController::class);
 
 $task = JobHelper::getTask();
 if ($task === null) {
@@ -21,13 +22,22 @@ if ($task === null) {
 
 JobHelper::markTask($task, Task::STATUS_IN_PROGRESS);
 try {
-    BaseCronController::execute($task->key, $task);
-    JobHelper::markTask($task, Task::STATUS_DONE);
+    $result = BaseCronController::execute($task->key, $task);
+    if ($result->getStatus()) {
+    	if ($result->getNextTimeExecute() === null) {
+			JobHelper::markTask($task, Task::STATUS_DONE);
+		} else {
+    		$task->execute_at = $result->getNextTimeExecute()->getTimestamp();
+    		JobHelper::markTask($task, Task::STATUS_WAITING);
+		}
+	} else {
+		$task->retries++;
+		if ($task->retries >= $task->max_retries) {
+			JobHelper::markTask($task, Task::STATUS_FAILED);
+		} else {
+			JobHelper::markTask($task, Task::STATUS_WAITING);
+		}
+	}
 } catch (Exception $e) {
-    $task->retries++;
-    if ($task->retries >= $task->max_retries) {
-        JobHelper::markTask($task, Task::STATUS_FAILED);
-    } else {
-        JobHelper::markTask($task, Task::STATUS_WAITING);
-    }
+    JobHelper::failTask($task);
 }

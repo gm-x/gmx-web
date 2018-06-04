@@ -4,6 +4,7 @@ namespace GameX\Core;
 use \Psr\Container\ContainerInterface;
 use \GameX\Core\Lang\I18n;
 use \GameX\Models\Task;
+use \GameX\Core\Jobs\JobResult;
 
 abstract class BaseCronController {
 
@@ -55,7 +56,7 @@ abstract class BaseCronController {
 
     /**
      * @param Task $task
-     * @return bool
+     * @return JobResult
      */
     abstract public function run(Task $task);
 
@@ -87,6 +88,7 @@ abstract class BaseCronController {
     /**
      * @param string $key
      * @param Task $task
+	 * @return JobResult
      */
     public static function execute($key, Task $task) {
         if (!array_key_exists($key, self::$keys)) {
@@ -98,6 +100,6 @@ abstract class BaseCronController {
             return;
         }
         $controller = new $controller();
-        $controller->run($task);
+        return $controller->run($task);
     }
 }
