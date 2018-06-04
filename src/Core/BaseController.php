@@ -80,10 +80,18 @@ abstract class BaseController {
      * @param string $path
      * @param array $data
      * @param array $queryParams
+     * @param bool $external
      * @return string
      */
-    public function pathFor($path, array $data = [], array $queryParams = []) {
-        return $this->getContainer('router')->pathFor($path, $data, $queryParams);
+    public function pathFor($path, array $data = [], array $queryParams = [], $external = false) {
+        $link = $this->getContainer('router')->pathFor($path, $data, $queryParams);
+        if (!$external) {
+            return $link;
+        }
+
+        return (string)$this->getContainer('request')
+            ->getUri()
+            ->withPath($link);
     }
 
     /**

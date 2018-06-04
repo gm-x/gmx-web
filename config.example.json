@@ -31,5 +31,6 @@
       "username": "test",
       "password": "test"
     }
-  }
+  },
+  "secret": "secret_key"
 }
