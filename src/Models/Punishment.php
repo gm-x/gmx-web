@@ -13,10 +13,16 @@ use \GameX\Core\BaseModel;
  * @property string $reason
  * @property integer $type
  * @property string $expired_at
+ * @property string $status
  * @property Player $player
  * @property Player $punisher
  */
 class Punishment extends BaseModel {
+
+	const STATUS_NONE = 'none';
+	const STATUS_PUNISHED = 'punished';
+	const STATUS_EXPIRED = 'expired';
+	const STATUS_AMNESTIED = 'amnestied';
 
 	/**
 	 * The table associated with the model.

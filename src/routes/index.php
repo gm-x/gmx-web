@@ -12,7 +12,7 @@ $app
 
 $app
 	->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))
-	->setName('index');
+	->setName('punishments');
 
 include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
 
