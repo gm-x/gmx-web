@@ -2,9 +2,9 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseController;
-use GameX\Models\Server;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Models\Server;
 
 class IndexController extends BaseController {
     public function indexAction(RequestInterface $request, ResponseInterface $response, array $args) {

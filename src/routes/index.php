@@ -1,16 +1,24 @@
 <?php
 use \GameX\Core\BaseController;
 use \GameX\Controllers\IndexController;
+use \GameX\Controllers\PunishmentsController;
+use \GameX\Controllers\API\PrivilegesController;
+use \GameX\Controllers\API\PlayersController;
+use \GameX\Controllers\Admin\AdminController;
 
 $app
     ->get('/', BaseController::action(IndexController::class, 'index'))
     ->setName('index');
 
+$app
+	->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))
+	->setName('index');
+
 include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
 
 $app->group('/admin', function () {
     $this
-        ->get('', BaseController::action(\GameX\Controllers\Admin\AdminController::class, 'index'))
+        ->get('', BaseController::action(AdminController::class, 'index'))
         ->setName('admin_index')
         ->setArgument('permission', 'admin.*');
 
@@ -22,8 +30,8 @@ $app->group('/admin', function () {
 });
 
 $app->group('/api', function () {
-    $root = __DIR__ . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR;
-    $this->group('/privileges', include  $root . 'privileges.php');
+    $this->get('/privileges', BaseController::action(PrivilegesController::class, 'index'));
+    $this->get('/players', BaseController::action(PlayersController::class, 'index'));
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
 	if (!preg_match('/Basic\s+(?P<token>.+)$/i', $request->getHeaderLine('Authorization'), $matches)) {
 		throw new \Slim\Exception\SlimException($request, $response);

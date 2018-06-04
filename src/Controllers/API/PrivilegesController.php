@@ -10,8 +10,6 @@ use \GameX\Models\Privilege;
 
 class PrivilegesController extends BaseApiController {
     public function indexAction(Request $request, Response $response, array $args) {
-
-        // TODO: Filter by expired at and active
         $privileges = [];
         /** @var Group $group */
         $groups = Group::whereHas('players', function ($query) {
