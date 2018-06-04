@@ -2,16 +2,9 @@
 
 namespace GameX\Core\Forms;
 
-use \Psr\Container\ContainerInterface;
-use \Psr\Http\Message\RequestInterface;
 use \GameX\Core\Session\Session;
 
 class FormFactory {
-    /**
-     * @var RequestInterface
-     */
-    protected $request;
-
     /**
      * @var Session
      */
@@ -24,11 +17,10 @@ class FormFactory {
 
     /**
      * FormFactory constructor.
-     * @param ContainerInterface $container
+     * @param Session $session
      */
-    public function __construct(ContainerInterface $container) {
-        $this->request = $container->get('request');
-        $this->session = $container->get('session');
+    public function __construct(Session $session) {
+        $this->session = $session;
     }
 
     /**
@@ -37,7 +29,7 @@ class FormFactory {
      */
     public function createForm($name) {
         if (!isset($this->forms[$name])) {
-            $this->forms[$name] = new Form($this->request, $this->session, $name);
+            $this->forms[$name] = new Form($this->session, $name);
         }
 
         return $this->forms[$name];

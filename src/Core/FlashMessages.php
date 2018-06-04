@@ -2,11 +2,10 @@
 
 namespace GameX\Core;
 
-use \SlimSession\Helper;
 use \GameX\Core\Session\Session;
+use \ArrayAccess;
 
-class FlashMessages
-{
+class FlashMessages implements ArrayAccess {
     /**
      * @var Session
      */
@@ -72,4 +71,31 @@ class FlashMessages
     public function hasMessage($key) {
         return array_key_exists($key, $this->fromPrevious);
     }
+
+	/**
+	 * @param string $key
+	 * @return bool
+	 */
+	public function offsetExists($key) {
+		return $this->hasMessage($key);
+	}
+
+	/**
+	 * @param string $key
+	 * @return array
+	 */
+	public function offsetGet($key) {
+		return $this->getMessage($key);
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $value
+	 * @return $this
+	 */
+	public function offsetSet($key, $value) {
+		$this->addMessage($key, $value);
+	}
+
+	public function offsetUnset($key) {}
 }

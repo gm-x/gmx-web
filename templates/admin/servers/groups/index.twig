@@ -1,0 +1,41 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/paginator.twig' as paginator %}
+
+{% block content %}
+	<table class="table table-hover">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Flags</th>
+			<th>&nbsp;</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for group in groups %}
+			<tr>
+				<td>{{ group.title }}</td>
+				<td>{{ get_flags(group.flags) }}</td>
+				<td>
+					<a href="{{ path_for('admin_servers_groups_edit', {'server': server.id, 'group': group.id}) }}" class="btn btn-sm">
+						<span class="oi oi-pencil"></span>
+					</a>
+					<form action="{{ path_for('admin_servers_groups_delete', {'server': server.id, 'group': group.id}) }}" method="post" style="display: inline-block">
+                        {{ csrf_token() }}
+						<button type="submit" class="btn btn-sm">
+							<span class="oi oi-delete"></span>
+						</button>
+					</form>
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	{{ paginator.render(pagination) }}
+	<a href="{{ path_for('admin_servers_groups_create', {'server': server.id}) }}" class="btn btn-primary">
+		{{ trans('buttons', 'create') }}
+	</a>
+	<a href="{{ path_for('admin_servers_list', {'server': server.id}) }}" class="btn btn-secondary">
+		{{ trans('buttons', 'cancel') }}
+	</a>
+{% endblock %}

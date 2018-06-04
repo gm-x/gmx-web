@@ -1,27 +1,18 @@
 {% extends 'base.twig' %}
 
-{% block content %}
-<form action="{{ path_for('login') }}" method="post">
-    {{ csrf_token() }}
-    <div class="row">
-        <div class="input-field col s12">
-            {{ form_label(form, 'email') }}
-            {{ form_input(form, 'email') }}
-            {{ form_error(form, 'email') }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="input-field col s12">
-            {{ form_label(form, 'password') }}
-            {{ form_input(form, 'password') }}
-            {{ form_error(form, 'password') }}
-        </div>
-    </div>
-    <div class="row">
-        <input type="submit" class="btn" value="Login">
+{% import 'macros/forms.twig' as forms %}
 
-        <a href="{{ path_for('reset_password') }}" class="btn red">Reset password</a>
-        <a href="{{ path_for('register') }}" class="btn blue">Register</a>
+{% block content %}
+<form action="{{ form.getAction() }}" method="post">
+    {{ csrf_token() }}
+    {{ forms.element_input(form.email) }}
+    {{ forms.element_input(form.password) }}
+    {{ forms.element_checkbox(form.remember_me) }}
+    <div class="form-group">
+        <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'login') }}">
+
+        <a href="{{ path_for('reset_password') }}" class="btn btn-warning">{{ trans('buttons', 'reset_password') }}</a>
+        <a href="{{ path_for('register') }}" class="btn btn-success">{{ trans('buttons', 'register') }}</a>
     </div>
 </form>
 {% endblock %}

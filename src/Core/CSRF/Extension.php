@@ -36,9 +36,11 @@ class Extension extends Twig_Extension {
      */
     public function renderCSRFToken() {
         return sprintf(
-            '<input type="hidden" name="%s" value="%s">',
-            $this->token->getInputKey(),
-            $this->token->generateToken()
+            '<input type="hidden" name="%s" value="%s"><input type="hidden" name="%s" value="%s">',
+            $this->token->getNameKey(),
+            $this->token->getName(),
+            $this->token->getTokenKey(),
+            $this->token->getToken()
         );
     }
 }

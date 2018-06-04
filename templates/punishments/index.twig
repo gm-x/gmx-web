@@ -1,0 +1,30 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+	<table class="table">
+		<thead>
+		<tr>
+			<th>Player</th>
+			<th>Punisher</th>
+			<th>Type</th>
+			<th>Reason</th>
+			<th>Expired at</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for punishments in punishment %}
+			<tr>
+				<td>{{ punishment.player.nick }}</td>
+				<td>{{ punishment.punisher.nick }}</td>
+				<td>{{ punishment.type }}</td>
+				<td>{{ punishment.reason }}</td>
+				{% if punishment.expired_at == null %}
+					<td>Never</td>
+				{% else %}
+					<td>{{ punishment.expired_at | date('d.m.Y H:i') }}</td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

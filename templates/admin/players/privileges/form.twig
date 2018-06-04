@@ -1,0 +1,45 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+    <form action="{{ form.getAction() }}" method="post">
+        {{ csrf_token() }}
+		{{ forms.element_select(form.server) }}
+		{{ forms.element_select(form.group) }}
+		{{ forms.element_input(form.prefix) }}
+		{{ forms.element_input(form.expired) }}
+		{{ forms.element_checkbox(form.active) }}
+        <div class="form-group">
+			{% if create %}
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
+			{% else %}
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
+			{% endif %}
+            <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="btn btn-secondary hvr-grow">
+                {{ trans('buttons', 'cancel') }}
+            </a>
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(document).ready(function () {
+    var groupSelect = $('#input_player_group');
+    $('#input_admin_server').on('change', function () {
+        var server = $(this).val();
+        if (server === '') {
+            return;
+        }
+        $.get('/admin/players/1/privileges/groups', {server: server})
+            .done(function(data) {
+                groupSelect.empty();
+                $.each(data.groups, function (id, title) {
+                    $('<option/>').val(id).html(title).appendTo(groupSelect);
+                });
+            });
+    });
+});
+</script>
+{% endblock %}

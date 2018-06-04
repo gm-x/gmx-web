@@ -1,0 +1,14 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+    <form action="{{ form.getAction() }}" method="post">
+        {{ csrf_token() }}
+		{{ forms.element_select(form.role) }}
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
+            <a href="{{ path_for('admin_users_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
+        </div>
+    </form>
+{% endblock %}

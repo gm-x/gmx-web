@@ -1,0 +1,32 @@
+{
+	"Generic" : {
+		"title": "GameX Title"
+	},
+	"buttons": {
+		"create": "Create",
+		"update": "Update",
+		"cancel": "Cancel",
+		"save": "Save",
+		"login": "Login",
+		"register": "Register",
+		"logout": "Logout",
+		"reset_password": "Reset password",
+		"change_password": "Change password",
+		"activate": "Activate"
+	},
+	"inputs": {
+		"email": "Email",
+		"password": "Password",
+		"password_repeat": "Repeat password",
+		"remember_me": "Remember me"
+	},
+	"labels": {
+		"required": "Required"
+	},
+	"adminMenu": {
+		"users": "Users",
+		"roles": "Roles",
+		"servers": "Servers",
+		"players": "Players"
+	}
+}

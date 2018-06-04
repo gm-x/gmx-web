@@ -1,6 +1,7 @@
 <?php
-namespace GameX\Core\Auth;
+namespace GameX\Core\Auth\Helpers;
 
+use Cartalyst\Sentinel\Users\UserInterface;
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;
@@ -10,19 +11,25 @@ use \GameX\Core\Exceptions\ValidationException;
 
 class AuthHelper {
 
-	/**
-	 * @var ContainerInterface
-	 */
-	protected $container;
-
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+    
 	/**
 	 * @var Sentinel
 	 */
 	protected $auth;
 
+    /**
+     * @var MailHelper
+     */
+	protected $mail;
+
 	public function __construct(ContainerInterface $container) {
-		$this->container = $container;
-		$this->auth = $container->get('auth');
+        $this->container = $container;
+        $this->auth = $container->get('auth');
+        $this->mail = $container->get('mail');
 	}
 
 	/**
@@ -34,15 +41,11 @@ class AuthHelper {
 	 * @throws ValidationException
 	 */
 	public function registerUser($email, $password, $password_repeat) {
-		if ($password !== $password_repeat) {
-			throw new FormException('password_repeat', 'Password didn\'t match');
-		}
-
-		$user = $this->auth->getUserRepository()->findByCredentials([
+        $user = $this->auth->getUserRepository()->findByCredentials([
 			'email' => $email
 		]);
 
-		if ($user) {
+        if ($user) {
 			throw new FormException('email', 'User already exists');
 		}
 
@@ -55,11 +58,7 @@ class AuthHelper {
 			throw new ValidationException('Something wrong. Please Try again later.');
 		}
 
-		$activation = $this->auth->getActivationRepository()->create($user);
-
-		return $this->sendEmail($email, 'Activation', 'activation', [
-			'link' => $this->getLink('activation', ['code' => $activation->getCode()])
-		]);
+		return $this->auth->getActivationRepository()->create($user)->getCode();
 	}
 
 	/**
@@ -84,17 +83,6 @@ class AuthHelper {
 		}
 
 		return $user;
-
-//		/** @var MailHelper $mail */
-//		$mail = $this->container->get('mail');
-//
-//		$mailBody = $mail->render('activation', [
-//			'link' => $this->getActivationLink('activation', ['code' => $activation->getCode()])
-//		]);
-//		return $mail->send([
-//			'name' => $email,
-//			'email' => $email
-//		], 'Activation', $mailBody);
 	}
 
 	/**
@@ -103,11 +91,11 @@ class AuthHelper {
 	 * @return bool|\Cartalyst\Sentinel\Users\UserInterface
 	 * @throws ValidationException
 	 */
-	public function loginUser($email, $password) {
+	public function loginUser($email, $password, $remember) {
 		$user =  $this->auth->authenticate([
 			'email' => $email,
 			'password' => $password
-		]);
+		], (bool)$remember);
 
 		if (!$user) {
 			throw new ValidationException('Bad email or password');
@@ -149,16 +137,10 @@ class AuthHelper {
 			throw new ValidationException('Something wrong. Please Try again later.');
 		}
 
-		return $this->sendEmail($email, 'Reset Password', 'reset_password', [
-			'link' => $this->getLink('reset_password_complete', ['code' => $reminder->code])
-		]);
+		return $reminder->code;
 	}
 
     public function resetPasswordComplete($email, $password, $password_repeat, $code) {
-        if ($password !== $password_repeat) {
-            throw new FormException('password_repeat', 'Password didn\'t match');
-        }
-
         $user = $this->auth->getUserRepository()->findByCredentials([
             'email' => $email
         ]);
@@ -191,23 +173,5 @@ class AuthHelper {
 		return (string)$request
 			->getUri()
 			->withPath($router->pathFor($name, $data));
-	}
-
-	/**
-	 * @param string $email
-	 * @param string $title
-	 * @param string $template
-	 * @param array $data
-	 * @return bool
-	 */
-	protected function sendEmail($email, $title, $template, array $data = []) {
-		/** @var MailHelper $mail */
-		$mail = $this->container->get('mail');
-
-		$mailBody = $mail->render($template, $data);
-		return $mail->send([
-			'name' => $email,
-			'email' => $email
-		], $title, $mailBody);
 	}
 }

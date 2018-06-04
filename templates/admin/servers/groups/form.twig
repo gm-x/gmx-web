@@ -1,0 +1,22 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+    <form action="{{ form.getAction() }}" method="post">
+        {{ csrf_token() }}
+        {{ forms.element_input(form.title) }}
+        {{ forms.element_input(form.flags) }}
+        {{ forms.element_input(form.priority) }}
+        <div class="form-group">
+            {% if create %}
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
+            {% else %}
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
+            {% endif %}
+            <a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="btn btn-secondary hvr-grow">
+                {{ trans('buttons', 'cancel') }}
+            </a>
+        </div>
+    </form>
+{% endblock %}

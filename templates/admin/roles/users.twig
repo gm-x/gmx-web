@@ -1,0 +1,27 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/paginator.twig' as paginator %}
+
+{% block content %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+		{% for user in users %}
+            <tr>
+                <td>{{ user.email }}</td>
+                <td>
+                    <a href="{{ path_for('admin_users_edit', {'user': user.id}) }}" class="btn btn-sm">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                </td>
+            </tr>
+		{% endfor %}
+        </tbody>
+    </table>
+	{{ paginator.render(pagination) }}
+{% endblock %}

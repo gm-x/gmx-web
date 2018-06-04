@@ -1,0 +1,32 @@
+{
+	"Generic" : {
+		"title": "GameX Title"
+	},
+	"buttons": {
+		"create": "Создать",
+		"update": "Обновить",
+		"cancel": "Отмена",
+		"save": "Сохранить",
+		"login": "Войти",
+		"register": "Зарегистрироватся",
+		"logout": "Выйти",
+		"reset_password": "Востановить пароль",
+		"change_password": "Сменить пароль",
+		"activate": "Активировать"
+	},
+	"inputs": {
+		"email": "Email",
+		"password": "Пароль",
+		"password_repeat": "Подтверждение пароля",
+		"remember_me": "Запомнить меня"
+	},
+	"labels": {
+		"required": "Обьязательно"
+	},
+	"adminMenu": {
+		"users": "Пользователи",
+		"roles": "Роли",
+		"servers": "Сервера",
+		"players": "Игрокы"
+	}
+}

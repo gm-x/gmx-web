@@ -1,0 +1,23 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+    <form action="{{ form.getAction() }}" method="post">
+        {{ csrf_token() }}
+		{{ forms.element_input(form.steamid) }}
+		{{ forms.element_input(form.nick) }}
+		{{ forms.element_select(form.auth_type) }}
+		{{ forms.element_input(form.password) }}
+		{{ forms.element_checkbox(form.access_reserve_nick) }}
+		{{ forms.element_checkbox(form.access_block_change_nick) }}
+        <div class="form-group">
+			{% if create %}
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
+			{% else %}
+                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
+			{% endif %}
+            <a href="{{ path_for('admin_players_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
+        </div>
+    </form>
+{% endblock %}

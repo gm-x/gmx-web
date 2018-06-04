@@ -5,6 +5,9 @@ use \GameX\Core\Session\Session;
 
 class Token {
 
+    const KEY_LENGTH = 32;
+    const KEY_SPACE = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
     /**
      * @var Session
      */
@@ -18,12 +21,27 @@ class Token {
     /**
      * @var string
      */
-    protected $inputKey;
+    protected $inputName;
+
+    /**
+     * @var string
+     */
+    protected $inputToken;
+
+    /**
+     * @var int
+     */
+    protected $maxTokens;
+
+    /**
+     * @var array
+     */
+    protected $tokens;
 
     /**
      * @var string|null
      */
-    protected $oldToken = null;
+    protected $newName = null;
 
     /**
      * @var string|null
@@ -31,45 +49,98 @@ class Token {
     protected $newToken = null;
 
     /**
-     * CSRFToken constructor.
+     * Token constructor.
      * @param Session $session
      * @param string $sessionKey
-     * @param string $inputKey
+     * @param string $inputName
+     * @param string $inputToken
+     * @param int $maxTokens
      */
-    public function __construct(Session $session, $sessionKey = 'csrf_token', $inputKey = 'csrf') {
+    public function __construct(
+        Session $session,
+        $sessionKey = 'csrf',
+        $inputName = 'csrf_name',
+        $inputToken = 'csrf_token',
+        $maxTokens = 10
+    ) {
         $this->session = $session;
         $this->sessionKey = (string) $sessionKey;
-        $this->inputKey = (string) $inputKey;
+        $this->inputName = (string) $inputName;
+        $this->inputToken = (string) $inputToken;
+        $this->maxTokens = (int) $maxTokens;
+        $this->tokens = $session->get($sessionKey, []);
     }
 
     /**
-     * @return string|null
+     * @param $name
+     * @param $token
+     * @return bool
      */
-    public function getToken() {
-        if ($this->oldToken === null) {
-            $this->oldToken = $this->session->get($this->sessionKey);
-            $this->session->delete($this->sessionKey);
+    public function validateToken($name, $token) {
+        if (!$name || !$token) {
+            return false;
         }
 
-        return $this->oldToken;
+        if (!array_key_exists($name, $this->tokens)) {
+            return false;
+        }
+
+        return function_exists('hash_equals')
+            ? hash_equals($this->tokens[$name], $token)
+            : $this->tokens[$name] === $token;
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function generateToken() {
+    public function getNameKey() {
+        return $this->inputName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() {
+        if ($this->newName === null) {
+            $this->generateToken();
+        }
+
+        return $this->newName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTokenKey() {
+        return $this->inputToken;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken() {
         if ($this->newToken === null) {
-            $this->newToken = bin2hex(random_bytes(32));
-            $this->session->set($this->sessionKey, $this->newToken);
+            $this->generateToken();
         }
 
         return $this->newToken;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getInputKey() {
-        return $this->inputKey;
+    protected function generateToken() {
+        $pieces = [];
+        $max = strlen(self::KEY_SPACE) - 1;
+        for ($i = 0; $i < self::KEY_LENGTH; $i++) {
+            $pieces []= self::KEY_SPACE[random_int(0, $max)];
+        }
+        $this->newName = implode('', $pieces);
+        $this->newToken = bin2hex(random_bytes(32));
+        if(count($this->tokens) >= $this->maxTokens) {
+            $this->tokens = array_slice($this->tokens, 0, $this->maxTokens - 1);
+        }
+        $this->tokens[$this->newName] = $this->newToken;
+        $this->session->set($this->sessionKey, $this->tokens);
     }
 }

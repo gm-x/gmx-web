@@ -2,56 +2,73 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseController;
+use \GameX\Core\Forms\Elements\FormInputCheckbox;
+use \GameX\Core\Forms\Elements\FormInputEmail;
+use \GameX\Core\Forms\Elements\FormInputPassword;
+use GameX\Core\Jobs\JobHelper;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Auth\AuthHelper;
-use GameX\Core\Exceptions\ValidationException;
-use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Auth\Helpers\AuthHelper;
 use \Exception;
 
 class UserController extends BaseController {
     public function registerAction(RequestInterface $request, ResponseInterface $response, array $args) {
+        $identical_password_validator = function($confirmation, $form) {
+            return $form->password === $confirmation;
+        };
+
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('register');
         $form
-            ->add('email', '', [
-                'type' => 'email',
-                'title' => 'Email',
-                'error' => 'Must be valid email',
+            ->setAction((string)$request->getUri())
+			->add(new FormInputEmail('email', '', [
+				'title' => $this->getTranslate('inputs', 'email'),
+				'error' => 'Must be valid email',
+				'required' => true,
+			]))
+            ->add(new FormInputPassword('password', '', [
+                'title' => $this->getTranslate('inputs', 'password'),
+                'error' => $this->getTranslate('labels', 'required'),
                 'required' => true,
-                'attributes' => [],
-            ], ['required', 'email'])
-            ->add('password', '', [
-                'type' => 'password',
-                'title' => 'Password',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6])
-            ->add('password_repeat', '', [
-                'type' => 'password',
-                'title' => 'Repeat Password',
+			]))
+            ->add(new FormInputPassword('password_repeat', '', [
+                'title' => $this->getTranslate('inputs', 'password_repeat'),
                 'error' => 'Passwords does not match',
                 'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6])
-            ->processRequest();
+            ]))
+			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+			->setRules('password', ['required', 'trim', 'min_length' => 6])
+			->setRules('password_repeat', ['required', 'trim', 'min_length' => 6, 'identical' => $identical_password_validator])
+            ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                return $this->redirect('register');
+                return $this->redirectTo($form->getAction());
             } else {
                 try {
+                    /** @var \Illuminate\Database\Connection $connection */
+                    $connection = $this->getContainer('db')->getConnection();
+                    $connection->beginTransaction();
                 	$authHelper = new AuthHelper($this->container);
-					$authHelper->registerUser(
+                    $activationCode = $authHelper->registerUser(
                         $form->getValue('email'),
                         $form->getValue('password'),
                         $form->getValue('password_repeat')
                     );
+					JobHelper::createTask('sendmail', [
+					    'type' => 'activation',
+                        'email' => $form->getValue('email'),
+                        'title' => 'Activation',
+                        'params' => [
+                            'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
+                        ],
+                    ]);
+					$connection->commit();
                     return $this->redirect('login');
                 } catch (Exception $e) {
-                    return $this->failRedirect($e, $form, 'register');
+                    $connection->rollBack();
+                    return $this->failRedirect($e, $form);
                 }
             }
         }
@@ -66,32 +83,31 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('activation');
 		$form
-			->add('email', '', [
-				'type' => 'email',
-				'title' => 'Email',
+            ->setAction((string)$request->getUri())
+			->add(new FormInputEmail('email', '', [
+				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
 				'required' => true,
-				'attributes' => [],
-			], ['required', 'email']);
-		$form->processRequest();
+			]))
+			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+            ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
-				return $this->redirect('activation', ['code' => $code]);
+				return $this->redirectTo($form->getAction());
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
 					$authHelper->activateUser($form->getValue('email'), $code);
 					return $this->redirect('login');
 				} catch (Exception $e) {
-					return $this->failRedirect($e, $form, 'activation', ['code' => $code]);
+					return $this->failRedirect($e, $form);
 				}
 			}
 		}
 
 		return $this->render('user/activation.twig', [
 			'form' => $form,
-			'code' => $code,
 		]);
     }
 
@@ -99,35 +115,41 @@ class UserController extends BaseController {
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('login');
         $form
-            ->add('email', '', [
-                'type' => 'email',
-                'title' => 'Email',
-                'error' => 'Must be valid email',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'email'])
-            ->add('password', '', [
-                'type' => 'password',
-                'title' => 'Password',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6]);
-        $form->processRequest();
+			->setAction((string)$request->getUri())
+			->add(new FormInputEmail('email', '', [
+				'title' => $this->getTranslate('inputs', 'email'),
+				'error' => 'Must be valid email',
+				'required' => true,
+			]))
+			->add(new FormInputPassword('password', '', [
+				'title' => $this->getTranslate('inputs', 'password'),
+				'error' => $this->getTranslate('labels', 'required'),
+				'required' => true,
+			]))
+			->add(new FormInputCheckbox('remember_me', true, [
+				'title' => $this->getTranslate('inputs', 'remember_me'),
+				'required' => false,
+			]))
+			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+			->setRules('password', ['required', 'trim', 'min_length' => 1])
+			->setRules('remember_me', ['bool'])
+			->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
-				return $this->redirect('login');
+				$form->saveValues();
+				return $this->redirectTo($form->getAction());
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
 					$authHelper->loginUser(
 						$form->getValue('email'),
-						$form->getValue('password')
+						$form->getValue('password'),
+						(bool)$form->getValue('remember_me')
 					);
 					return $this->redirect('index');
 				} catch (Exception $e) {
-					return $this->failRedirect($e, $form, 'login');
+					return $this->failRedirect($e, $form);
 				}
 			}
 		}
@@ -147,28 +169,35 @@ class UserController extends BaseController {
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('reset_password');
 		$form
-			->add('email', '', [
-				'type' => 'email',
-				'title' => 'Email',
+            ->setAction((string)$request->getUri())
+			->add(new FormInputEmail('email', '', [
+				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
 				'required' => true,
-				'attributes' => [],
-			], ['required', 'email']);
-		$form->processRequest();
+			]))
+			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+            ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
 			if (!$form->getIsValid()) {
-				return $this->redirect('reset_password');
+                return $this->redirectTo($form->getAction());
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
-					$authHelper->resetPassword(
+                    $reminderCode = $authHelper->resetPassword(
 						$form->getValue('email')
 					);
+                    JobHelper::createTask('sendmail', [
+                        'type' => 'reset_password',
+                        'email' => $form->getValue('email'),
+                        'title' => 'Reset Password',
+                        'params' => [
+                            'link' => $this->pathFor('reset_password_complete', ['code' => $reminderCode], [], true)
+                        ],
+                    ]);
 					return $this->redirect('index');
 				} catch (Exception $e) {
-					$this->failRedirect($e, $form, 'reset_password');
-					return $this->failRedirect($e, $form, 'reset_password');
+					return $this->failRedirect($e, $form);
 				}
 			}
 		}
@@ -181,35 +210,37 @@ class UserController extends BaseController {
 	public function resetPasswordCompleteAction(RequestInterface $request, ResponseInterface $response, array $args) {
         $code = $args['code'];
 
+		$identical_password_validator = function($confirmation, $form) {
+			return $form->password === $confirmation;
+		};
+
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('reset_password_complete');
         $form
-            ->add('email', '', [
-                'type' => 'email',
-                'title' => 'Email',
-                'error' => 'Must be valid email',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'email'])
-            ->add('password', '', [
-                'type' => 'password',
-                'title' => 'Password',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6])
-            ->add('password_repeat', '', [
-                'type' => 'password',
-                'title' => 'Repeat Password',
-                'error' => 'Passwords does not match',
-                'required' => true,
-                'attributes' => [],
-            ], ['required', 'trim', 'min_length' => 6])
-            ->processRequest();
+            ->setAction((string)$request->getUri())
+			->add(new FormInputEmail('email', '', [
+				'title' => $this->getTranslate('inputs', 'email'),
+				'error' => 'Must be valid email',
+				'required' => true,
+			]))
+			->add(new FormInputPassword('password', '', [
+				'title' => $this->getTranslate('inputs', 'password'),
+				'error' => $this->getTranslate('labels', 'required'),
+				'required' => true,
+			]))
+			->add(new FormInputPassword('password_repeat', '', [
+				'title' => $this->getTranslate('inputs', 'password_repeat'),
+				'error' => 'Passwords does not match',
+				'required' => true,
+			]))
+			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+			->setRules('password', ['required', 'trim', 'min_length' => 6])
+			->setRules('password_repeat', ['required', 'trim', 'min_length' => 6, 'identical' => $identical_password_validator])
+            ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
             if (!$form->getIsValid()) {
-                return $this->redirect('reset_password_complete', ['code' => $code]);
+                return $this->redirectTo($form->getAction());
             } else {
                 try {
                     $authHelper = new AuthHelper($this->container);
@@ -221,28 +252,13 @@ class UserController extends BaseController {
                     );
                     return $this->redirect('login');
                 } catch (Exception $e) {
-                    return $this->failRedirect($e, $form, 'reset_password_complete', ['code' => $code]);
+                    return $this->failRedirect($e, $form);
                 }
             }
         }
 
         return $this->render('user/reset_password_complete.twig', [
             'form' => $form,
-            'code' => $code,
         ]);
-    }
-
-    protected function failRedirect(Exception $e, Form $form, $path, array $data = [], array $queryParams = []) {
-        if ($e instanceof FormException) {
-            $form->setError($e->getField(), $e->getMessage());
-        } elseif ($e instanceof ValidationException) {
-            $this->addFlashMessage('error', $e->getMessage());
-        } else {
-            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
-        }
-
-        $form->saveValues();
-
-        return $this->redirect($path, $data,  $queryParams);
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace GameX\Core\CSRF;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -27,38 +26,23 @@ class Middleware {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
         if (in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
             $body = $request->getParsedBody();
-            $inputKey = $this->token->getInputKey();
-            $token = (is_array($body) && array_key_exists($inputKey, $body))
-                ? $body[$inputKey]
+            $inputName = $this->token->getNameKey();
+            $inputToken = $this->token->getTokenKey();
+            $name = (is_array($body) && array_key_exists($inputName, $body))
+                ? $body[$inputName]
+                : null;
+            $token = (is_array($body) && array_key_exists($inputToken, $body))
+                ? $body[$inputToken]
                 : null;
 
 
-            if (!$this->validateToken($token)) {
+            if (!$this->token->validateToken($name, $token)) {
                 $failureCallable = $this->failure;
                 return $failureCallable($request, $response, $next);
             }
         }
 
         return $next($request, $response);
-    }
-
-    /**
-     * @param $token
-     * @return bool
-     */
-    protected function validateToken($token) {
-        if ($token === null) {
-            return false;
-        }
-
-        $expectedToken = $this->token->getToken();
-        if ($expectedToken === null) {
-            return false;
-        }
-
-        return function_exists('hash_equals')
-            ? hash_equals($expectedToken, $token)
-            : $expectedToken === $token;
     }
 
     /**
