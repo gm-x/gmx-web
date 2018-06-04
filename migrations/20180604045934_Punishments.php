@@ -4,6 +4,7 @@ use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
 class Punishments extends Migration {
+
 	/**
 	 * Do the migration
 	 */
@@ -16,6 +17,12 @@ class Punishments extends Migration {
 				$table->string('reason', 255);
 				$table->unsignedTinyInteger('type');
 				$table->timestamp('expired_at')->nullable();
+				$table->enum('status', [
+					'none',
+					'punished',
+					'expired',
+					'amnestied',
+				])->default('none');
 				$table->timestamps();
 			});
 	}
