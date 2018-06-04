@@ -2,4 +2,30 @@
 
 {% block content %}
 <h1>Hello World</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Address</th>
+				<th>Map</th>
+				<th>Players</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for server in servers %}
+				<tr>
+					<td>{{ server.name }}</td>
+					<td>{{ server.ip }}:{{ server.port }}</td>
+					{% if server.success %}
+						<td>{{ server.map }}</td>
+						<td>{{ server.players }}/{{ server.maxPlayers }}</td>
+					{% else %}
+						<td>-</td>
+						<td>-</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 {% endblock %}
