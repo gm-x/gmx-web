@@ -1,7 +1,9 @@
 <?php
 namespace GameX\Core\Menu;
 
-class Menu implements \Iterator {
+use \Iterator;
+
+class Menu implements Iterator {
 
 	/**
 	 * @var integer
@@ -49,22 +51,37 @@ class Menu implements \Iterator {
 		return $this->items;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rewind() {
 		$this->position = 0;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function current() {
 		return $this->items[$this->position];
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function key() {
 		return $this->position;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function next() {
 		++$this->position;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function valid() {
 		return isset($this->items[$this->position]);
 	}
