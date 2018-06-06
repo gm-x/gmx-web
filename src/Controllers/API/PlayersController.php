@@ -5,6 +5,7 @@ use \GameX\Core\BaseApiController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Carbon\Carbon;
+use \GameX\Models\Server;
 use \GameX\Models\Player;
 use \GameX\Models\Punishment;
 use \Slim\Exception\NotFoundException;
@@ -58,5 +59,14 @@ class PlayersController extends BaseApiController {
 
     public function punishAction(Request $request, Response $response, array $args) {
         $player = Player::find($request->getQueryParam('player_id'));
+        $adminId = $request->getQueryParam('admin_id');
+        if ($adminId != 0) {
+			$admin = Player::find($adminId);
+		}
+
+		$server = Server::find($request->getQueryParam('server_id'));
+
+        $reason = $request->getQueryParam('reason');
+        $expired_at = $request->getQueryParam('expired_at');
     }
 }

@@ -1,13 +1,13 @@
 <?php
 namespace GameX\Controllers;
 
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseMainController;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Punishment;
 
-class PunishmentsController extends BaseController {
+class PunishmentsController extends BaseMainController {
 
 	/**
 	 * @return string

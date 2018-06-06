@@ -1,11 +1,11 @@
 <?php
 namespace GameX\Modules\TestModule\Controllers;
 
-use GameX\Core\BaseController;
+use \GameX\Core\BaseMainController;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-class TestController extends BaseController {
+class TestController extends BaseMainController {
 
 	/**
 	 * @return string

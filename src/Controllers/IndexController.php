@@ -1,12 +1,12 @@
 <?php
 namespace GameX\Controllers;
 
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseMainController;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Models\Server;
 
-class IndexController extends BaseController {
+class IndexController extends BaseMainController {
 
 	/**
 	 * @return string

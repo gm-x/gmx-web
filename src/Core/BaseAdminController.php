@@ -6,7 +6,7 @@ use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
 use \GameX\Core\Menu\MenuItem;
 
-abstract class BaseAdminController extends BaseController {
+abstract class BaseAdminController extends BaseMainController {
 
 	protected function initMenu() {
 		/** @var Twig $view */

@@ -36,11 +36,6 @@ abstract class BaseController {
     protected $translate = null;
 
 	/**
-	 * @return string
-	 */
-	abstract protected function getActiveMenu();
-
-	/**
 	 * BaseController constructor.
 	 * @param ContainerInterface $container
 	 */
@@ -75,6 +70,12 @@ abstract class BaseController {
     	return array_key_exists($key, $config) ? $config[$key] : $default;
 	}
 
+	/**
+	 * @param $section
+	 * @param $key
+	 * @param array|null $args
+	 * @return string
+	 */
 	public function getTranslate($section, $key, array $args = null) {
         if ($this->translate === null) {
             $this->translate = $this->getContainer('lang');
@@ -84,113 +85,45 @@ abstract class BaseController {
             : $this->translate->get($section, $key);
     }
 
-    /**
-     * @param string $path
-     * @param array $data
-     * @param array $queryParams
-     * @param bool $external
-     * @return string
-     */
-    public function pathFor($path, array $data = [], array $queryParams = [], $external = false) {
-        $link = $this->getContainer('router')->pathFor($path, $data, $queryParams);
-        if (!$external) {
-            return $link;
-        }
+	/**
+	 * @param string $path
+	 * @param array $data
+	 * @param array $queryParams
+	 * @param bool $external
+	 * @return string
+	 */
+	public function pathFor($path, array $data = [], array $queryParams = [], $external = false) {
+		$link = $this->getContainer('router')->pathFor($path, $data, $queryParams);
+		if (!$external) {
+			return $link;
+		}
 
-        return (string)$this->getContainer('request')
-            ->getUri()
-            ->withPath($link);
-    }
+		return (string)$this->getContainer('request')
+			->getUri()
+			->withPath($link);
+	}
 
-    /**
-     * @param $path
-     * @param array $data
-     * @param array $queryParams
-     * @param null $status
-     * @return ResponseInterface
-     */
-    protected function redirect($path, array $data = [], array $queryParams = [], $status = null) {
-        return $this->getContainer('response')->withRedirect(
+	/**
+	 * @param $path
+	 * @param array $data
+	 * @param array $queryParams
+	 * @param null $status
+	 * @return ResponseInterface
+	 */
+	protected function redirect($path, array $data = [], array $queryParams = [], $status = null) {
+		return $this->getContainer('response')->withRedirect(
 			$this->pathFor($path, $data, $queryParams),
 			$status
 		);
-    }
+	}
 
-    /**
-     * @param string $path
-     * @param null $status
-     * @return ResponseInterface
-     */
-    protected function redirectTo($path, $status = null) {
-        return $this->getContainer('response')->withRedirect($path, $status);
-    }
-
-
-    /**
-     * @param string $template
-     * @param array $data
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function render($template, array $data = []) {
-        /** @var Twig $view */
-        $view = $this->getContainer('view');
-        return $view->render($this->getContainer('response'), $template, $data);
-    }
-
-
-    /**
-     * @param string $type
-     * @param string $message
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function addFlashMessage($type, $message) {
-        $this->getContainer('flash')->addMessage($type, $message);
-    }
-
-    protected function failRedirect(Exception $e, Form $form) {
-        if ($e instanceof FormException) {
-            $form->setError($e->getField(), $e->getMessage());
-        } elseif ($e instanceof ValidationException) {
-            $this->addFlashMessage('error', $e->getMessage());
-        } else {
-            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
-        }
-
-        $form->saveValues();
-
-        /** @var \Monolog\Logger $logger */
-        $logger = $this->getContainer('log');
-        $logger->error((string) $e);
-
-        return $this->redirectTo($form->getAction());
-    }
-
-	protected function initMenu() {
-		/** @var Twig $view */
-		$view = $this->getContainer('view');
-		/** @var \o80\i18n\I18N $lang */
-//		$lang = $this->getContainer('lang');
-
-		$menu = new Menu();
-
-		$menu
-			->setActiveRoute($this->getActiveMenu())
-			->add(new MenuItem('Index', 'index', [], null))
-			->add(new MenuItem('Punishments', 'punishments', [], null));
-
-		$modules = $this->getContainer('modules');
-		/** @var \GameX\Core\Module\ModuleInterface $module */
-		foreach ($modules as $module) {
-			$items = $module->getMenuItems();
-			foreach ($items as $item) {
-				$menu->add($item);
-			}
-		}
-
-		$view->getEnvironment()->addGlobal('menu', $menu);
+	/**
+	 * @param string $path
+	 * @param null $status
+	 * @return ResponseInterface
+	 */
+	protected function redirectTo($path, $status = null) {
+		return $this->getContainer('response')->withRedirect($path, $status);
 	}
 
 	/**
@@ -198,7 +131,7 @@ abstract class BaseController {
 	 * @param string $action
 	 * @return string
 	 */
-    public static function action($controller, $action) {
-        return $controller . ':' . $action . 'Action';
-    }
+	public static function action($controller, $action) {
+		return $controller . ':' . $action . 'Action';
+	}
 }
