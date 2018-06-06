@@ -3,37 +3,39 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
-	<table class="table table-hover">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>Address</th>
-			<th>&nbsp;</th>
-		</tr>
-		</thead>
-		<tbody>
-		{% for server in servers %}
-			<tr>
-				<td>{{ server.name }}</td>
-				<td>{{ server.ip }}:{{ server.port }}</td>
-				<td>
-					<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="btn btn-sm">
-						<span class="oi oi-pencil"></span>
-					</a>
-					<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="btn btn-sm">
-						<span class="oi oi-grid-two-up"></span>
-					</a>
-					<form action="{{ path_for('admin_servers_delete', {'server': server.id}) }}" method="post" style="display: inline-block">
-                        {{ csrf_token() }}
-						<button type="submit" class="btn btn-sm">
-							<span class="oi oi-delete"></span>
-						</button>
-					</form>
-				</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for server in servers %}
+				<tr>
+					<td class="text-nowrap">{{ server.name }}</td>
+					<td class="text-nowrap">{{ server.ip }}:{{ server.port }}</td>
+					<td class="text-nowrap">
+						<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="btn btn-sm">
+							<span class="oi oi-grid-two-up"></span>
+						</a>
+						<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="btn btn-sm">
+							<span class="oi oi-pencil"></span>
+						</a>
+						<form action="{{ path_for('admin_servers_delete', {'server': server.id}) }}" method="post" style="display: inline-block">
+							{{ csrf_token() }}
+							<button type="submit" class="btn btn-sm">
+								<span class="oi oi-delete"></span>
+							</button>
+						</form>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 	{{ paginator.render(pagination) }}
 	<a href="{{ path_for('admin_servers_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
 {% endblock %}

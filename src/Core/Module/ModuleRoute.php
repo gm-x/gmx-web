@@ -4,6 +4,11 @@ namespace GameX\Core\Module;
 class ModuleRoute {
 
 	/**
+	 * @var array
+	 */
+	protected $methods;
+
+	/**
 	 * @var string
 	 */
 	protected $route;
@@ -30,18 +35,27 @@ class ModuleRoute {
 
 	/**
 	 * ModuleRoute constructor.
+	 * @param array $methods
 	 * @param string $route
 	 * @param string $controller
 	 * @param string $action
 	 * @param string $name
 	 * @param string|null $permission
 	 */
-	public function __construct($route, $controller, $action, $name, $permission = null) {
+	public function __construct(array $methods, $route, $controller, $action, $name, $permission = null) {
+		$this->methods = $methods;
 		$this->route = $route;
 		$this->controller = $controller;
 		$this->action = $action;
 		$this->name = $name;
 		$this->permission = $permission;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getMethods() {
+		return $this->methods;
 	}
 
 	/**

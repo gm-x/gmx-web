@@ -26,9 +26,11 @@ class Menu implements Iterator {
 
 	/**
 	 * @param string $route
+	 * @return $this
 	 */
 	public function setActiveRoute($route) {
 		$this->active = $route;
+		return $this;
 	}
 
 	/**

@@ -13,6 +13,20 @@ use \GameX\Core\Auth\Helpers\AuthHelper;
 use \Exception;
 
 class UserController extends BaseController {
+
+	/**
+	 * @return string
+	 */
+	protected function getActiveMenu() {
+		return 'index';
+	}
+
+	/**
+	 * @param RequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
     public function registerAction(RequestInterface $request, ResponseInterface $response, array $args) {
         $identical_password_validator = function($confirmation, $form) {
             return $form->password === $confirmation;

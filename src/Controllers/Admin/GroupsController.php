@@ -19,7 +19,7 @@ class GroupsController extends BaseAdminController {
 	/**
 	 * @return string
 	 */
-	protected function getActiveAdminMenu() {
+	protected function getActiveMenu() {
 		return 'admin_servers_list';
 	}
 

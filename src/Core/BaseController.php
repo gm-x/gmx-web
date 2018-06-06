@@ -6,6 +6,8 @@ use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Slim\Views\Twig;
+use \GameX\Core\Menu\Menu;
+use \GameX\Core\Menu\MenuItem;
 use \GameX\Core\Lang\I18n;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Exceptions\ValidationException;
@@ -34,12 +36,18 @@ abstract class BaseController {
     protected $translate = null;
 
 	/**
+	 * @return string
+	 */
+	abstract protected function getActiveMenu();
+
+	/**
 	 * BaseController constructor.
 	 * @param ContainerInterface $container
 	 */
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
         $this->init();
+		$this->initMenu();
     }
 
     /**
@@ -159,6 +167,31 @@ abstract class BaseController {
 
         return $this->redirectTo($form->getAction());
     }
+
+	protected function initMenu() {
+		/** @var Twig $view */
+		$view = $this->getContainer('view');
+		/** @var \o80\i18n\I18N $lang */
+//		$lang = $this->getContainer('lang');
+
+		$menu = new Menu();
+
+		$menu
+			->setActiveRoute($this->getActiveMenu())
+			->add(new MenuItem('Index', 'index', [], null))
+			->add(new MenuItem('Punishments', 'punishments', [], null));
+
+		$modules = $this->getContainer('modules');
+		/** @var \GameX\Core\Module\ModuleInterface $module */
+		foreach ($modules as $module) {
+			$items = $module->getMenuItems();
+			foreach ($items as $item) {
+				$menu->add($item);
+			}
+		}
+
+		$view->getEnvironment()->addGlobal('menu', $menu);
+	}
 
 	/**
 	 * @param string $controller

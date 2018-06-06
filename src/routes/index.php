@@ -16,7 +16,21 @@ $app
 
 include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
 
+$modules = $app->getContainer()->get('modules');
+/** @var \GameX\Core\Module\ModuleInterface $module */
+foreach ($modules as $module) {
+	$routes = $module->getRoutes();
+	/** @var \GameX\Core\Module\ModuleRoute $route */
+	foreach ($routes as $route) {
+		$app
+			->map($route->getMethods(), $route->getRoute(), BaseController::action($route->getController(), $route->getAction()))
+			->setName($route->getName())
+			->setArgument('permission', $route->getPermission());
+	}
+}
+
 $app->group('/admin', function () {
+	/** @var \Slim\App $this */
     $this
         ->get('', BaseController::action(AdminController::class, 'index'))
         ->setName('admin_index')
@@ -27,6 +41,19 @@ $app->group('/admin', function () {
     $this->group('/roles', include $root . 'roles.php');
     $this->group('/servers', include $root . 'servers.php');
     $this->group('/players', include $root . 'players.php');
+
+	$modules = $this->getContainer()->get('modules');
+	/** @var \GameX\Core\Module\ModuleInterface $module */
+	foreach ($modules as $module) {
+		$routes = $module->getAdminRoutes();
+		/** @var \GameX\Core\Module\ModuleRoute $route */
+		foreach ($routes as $route) {
+			$this
+				->map($route->getMethods(), $route->getRoute(), BaseController::action($route->getController(), $route->getAction()))
+				->setName($route->getName())
+				->setArgument('permission', $route->getPermission());
+		}
+	}
 });
 
 $app->group('/api', function () {

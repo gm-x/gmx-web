@@ -7,6 +7,20 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Models\Server;
 
 class IndexController extends BaseController {
+
+	/**
+	 * @return string
+	 */
+	protected function getActiveMenu() {
+		return 'index';
+	}
+
+	/**
+	 * @param RequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
     public function indexAction(RequestInterface $request, ResponseInterface $response, array $args) {
     	/** @var \Stash\Pool $item$cache */
 		$cache = $this->getContainer('cache');
