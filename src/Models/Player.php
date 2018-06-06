@@ -15,6 +15,7 @@ use \GameX\Core\BaseModel;
  * @property string $password
  * @property integer $access
  * @property Privilege[] $privileges
+ * @property Punishment[] $punishments
  */
 class Player extends BaseModel {
 
@@ -49,6 +50,13 @@ class Player extends BaseModel {
      */
 	public function privileges() {
         return $this->hasMany(Privilege::class, 'player_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function punishments() {
+        return $this->hasMany(Punishment::class, 'player_id', 'id');
     }
 
 	/**

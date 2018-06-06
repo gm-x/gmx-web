@@ -1,29 +1,31 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Address</th>
-				<th>Map</th>
-				<th>Players</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for server in servers %}
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
 				<tr>
-					<td>{{ server.name }}</td>
-					<td>{{ server.ip }}:{{ server.port }}</td>
-					{% if server.success %}
-						<td>{{ server.map }}</td>
-						<td>{{ server.players }}/{{ server.maxPlayers }}</td>
-					{% else %}
-						<td>-</td>
-						<td>-</td>
-					{% endif %}
+					<th>Name</th>
+					<th>Address</th>
+					<th>Map</th>
+					<th>Players</th>
 				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{% for server in servers %}
+					<tr>
+						<td class="text-nowrap">{{ server.name }}</td>
+						<td class="text-nowrap">{{ server.ip }}:{{ server.port }}</td>
+						{% if server.success %}
+							<td>{{ server.map }}</td>
+							<td>{{ server.players }}/{{ server.maxPlayers }}</td>
+						{% else %}
+							<td>-</td>
+							<td>-</td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}

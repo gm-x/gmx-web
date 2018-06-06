@@ -22,7 +22,7 @@ class PrivilegesController extends BaseAdminController {
 	/**
 	 * @return string
 	 */
-	protected function getActiveAdminMenu() {
+	protected function getActiveMenu() {
 		return 'admin_players_list';
 	}
 

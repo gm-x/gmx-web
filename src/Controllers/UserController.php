@@ -1,7 +1,7 @@
 <?php
 namespace GameX\Controllers;
 
-use \GameX\Core\BaseController;
+use \GameX\Core\BaseMainController;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \GameX\Core\Forms\Elements\FormInputEmail;
 use \GameX\Core\Forms\Elements\FormInputPassword;
@@ -12,7 +12,21 @@ use \GameX\Core\Forms\Form;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \Exception;
 
-class UserController extends BaseController {
+class UserController extends BaseMainController {
+
+	/**
+	 * @return string
+	 */
+	protected function getActiveMenu() {
+		return 'index';
+	}
+
+	/**
+	 * @param RequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
     public function registerAction(RequestInterface $request, ResponseInterface $response, array $args) {
         $identical_password_validator = function($confirmation, $form) {
             return $form->password === $confirmation;

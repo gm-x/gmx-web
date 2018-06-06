@@ -9,6 +9,13 @@ use \GameX\Models\Group;
 use \GameX\Models\Privilege;
 
 class PrivilegesController extends BaseApiController {
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return static
+	 */
     public function indexAction(Request $request, Response $response, array $args) {
         $privileges = [];
         /** @var Group $group */

@@ -17,7 +17,7 @@ use \Exception;
 
 class PlayersController extends BaseAdminController {
 
-	protected function getActiveAdminMenu() {
+	protected function getActiveMenu() {
 		return 'admin_players_list';
 	}
 
