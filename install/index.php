@@ -24,3 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	}
 }
 
+
+
+/*
+
+STEPS
+1. Check compability
+2. Install composer
+3. Download dependencies
+4. Make config.json file
+5. Run migrations
+6. Create default roles admins/users
+7. Create admin user and assign to role
+
+ */
