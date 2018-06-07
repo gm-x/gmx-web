@@ -58,8 +58,8 @@ $app->group('/admin', function () {
 
 $app->group('/api', function () {
     $this->get('/privileges', BaseController::action(PrivilegesController::class, 'index'));
-    $this->get('/players', BaseController::action(PlayersController::class, 'index'));
-    $this->get('/Punish', BaseController::action(PlayersController::class, 'punish'));
+    $this->get('/player', BaseController::action(PlayersController::class, 'index'));
+    $this->get('/punish', BaseController::action(PlayersController::class, 'punish'));
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
 	if (!preg_match('/Basic\s+(?P<token>.+)$/i', $request->getHeaderLine('Authorization'), $matches)) {
 		throw new \Slim\Exception\SlimException($request, $response);

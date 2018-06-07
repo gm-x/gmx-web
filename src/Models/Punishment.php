@@ -2,6 +2,7 @@
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
+use \Carbon\Carbon;
 
 /**
  * Class Group
@@ -10,6 +11,7 @@ use \GameX\Core\BaseModel;
  * @property integer $id
  * @property integer $player_id
  * @property integer $punisher_id
+ * @property integer $server_id
  * @property string $reason
  * @property integer $type
  * @property string $expired_at
@@ -39,7 +41,7 @@ class Punishment extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['player_id', 'punisher_id', 'reason', 'type', 'expired_at'];
+	protected $fillable = ['player_id', 'punisher_id', 'server_id', 'reason', 'type', 'expired_at'];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -53,5 +55,23 @@ class Punishment extends BaseModel {
 	 */
 	public function punisher() {
 		return $this->belongsTo(Player::class, 'punisher_id', 'id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function server() {
+		return $this->belongsTo(Server::class, 'server_id', 'id');
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getExpiredAtAttribute($value) {
+		return Carbon::parse($value, 'UTC')->getTimestamp();
+	}
+
+	public function setExpiredAtAttribute($value) {
+		$this->attributes['expired_at'] = Carbon::createFromTimestamp($value, 'UTC')->toDateTimeString();
 	}
 }

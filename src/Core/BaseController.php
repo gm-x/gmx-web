@@ -42,7 +42,6 @@ abstract class BaseController {
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
         $this->init();
-		$this->initMenu();
     }
 
     /**
