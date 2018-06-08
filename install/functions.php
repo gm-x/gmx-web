@@ -25,9 +25,25 @@ function extractComposer($dir) {
 	return $composerPhar->extractTo($dir);
 }
 
+function rrmdir($dir) {
+	if (is_dir($dir)) {
+		$objects = scandir($dir);
+		foreach ($objects as $object) {
+			if ($object != "." && $object != "..") {
+				if (is_dir($dir."/".$object))
+					rrmdir($dir."/".$object);
+				else
+					unlink($dir."/".$object);
+			}
+		}
+		rmdir($dir);
+	}
+}
+
 function composerInstall() {
 	$tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('GameX', true) . DIRECTORY_SEPARATOR;
 	$baseDir = dirname(__DIR__);
+
 	if (!is_dir($tempDir)) {
 		if (!mkdir($tempDir, 0777, true)) {
 			throw new Exception('Can\'t create folder ' . $tempDir);
@@ -42,7 +58,7 @@ function composerInstall() {
 	}
 	require_once($tempDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
 
-	dirname($baseDir);
+	chdir($baseDir);
 //	https://getcomposer.org/doc/03-cli.md#composer-vendor-dir
 	putenv('COMPOSER_HOME=' . $tempDir . '/vendor/bin/composer');
 	putenv('COMPOSER_VENDOR_DIR=' . $baseDir . '/vendor');
@@ -53,4 +69,6 @@ function composerInstall() {
 	$application = new \Composer\Console\Application();
 	$application->setAutoExit(false);
 	$application->run($input, $output);
+
+	rrmdir($tempDir);
 }
