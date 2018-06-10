@@ -9,17 +9,26 @@ $container = new \Slim\Container([
 	'root' => __DIR__ . DIRECTORY_SEPARATOR
 ]);
 
-//$errorHandler = function ($c) {
-//	return function ($request, $response, $exception) use ($c) {
-//	    $c['log']->error((string)$exception);
-//		return $c['response']->withStatus(500)
-//			->withHeader('Content-Type', 'text/html')
-//			->write('Something went wrong!');
-//	};
-//};
-//
-//$container['errorHandler'] = $errorHandler;
-//$container['phpErrorHandler'] = $errorHandler;
+$errorHandler = function ($c) {
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $e) use ($c) {
+	    $c['log']->error((string)$e);
+
+        /** @var \Slim\Views\Twig $view */
+        $view = $c->get('view');
+	    if ($e instanceof \GameX\Core\Exceptions\NotAllowedException) {
+            return $view->render($response->withStatus(403), 'errors/403.twig');
+        } elseif ($e instanceof \Slim\Exception\NotFoundException) {
+            return $view->render($response->withStatus(404), 'errors/404.twig');
+        } elseif ($e instanceof \Slim\Exception\MethodNotAllowedException) {
+            return $view->render($response->withStatus(405), 'errors/405.twig');
+        } else {
+            return $view->render($response->withStatus(500), 'errors/500.twig');
+        }
+	};
+};
+
+$container['errorHandler'] = $errorHandler;
+$container['phpErrorHandler'] = $errorHandler;
 
 $container['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
 

@@ -8,7 +8,8 @@ use \GameX\Models\Player;
 use \GameX\Models\Punishment;
 use \Carbon\Carbon;
 use \Form\Validator;
-use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\ApiException;
+use \Exception;
 
 class PlayersController extends BaseApiController {
 
@@ -16,27 +17,32 @@ class PlayersController extends BaseApiController {
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return static
-     * @throws NotFoundException
+     * @return Response
+     * @throws ApiException
      */
-    public function indexAction(Request $request, Response $response, array $args) {
-        $steamid = $request->getQueryParam('steamid');
-        if (!$steamid || !preg_match('/^(?:STEAM|VALVE)_\d:\d:\d+$/', $steamid)) {
-            throw new NotFoundException($request, $response);
+    public function playerAction(Request $request, Response $response, array $args) {
+        $validator = new Validator([
+            'steamid' => ['required', 'trim', 'min_length' => 1, 'regexp' => '/^(?:STEAM|VALVE)_\d:\d:\d+$/'],
+            'nick' => ['required', 'trim', 'min_length' => 1],
+        ]);
+
+        if (!$validator->validate($this->getBody($request))) {
+            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
-        $player = Player::where('steamid', '=', $request->getQueryParam('steamid'))->first();
+
+        $player = Player::where('steamid', '=', $validator->getValue('steamid'))->first();
         if (!$player) {
             $player = new Player();
-            $player->steamid = $request->getQueryParam('steamid');
-            $player->nick = $request->getQueryParam('nick', '');
+            $player->steamid = $validator->getValue('steamid');
+            $player->nick = $validator->getValue('nick');
             $player->auth_type = Player::AUTH_TYPE_STEAM;
             $player->save();
         }
 
         $punishmentsCollection = $player->punishments()
-                ->where('status', '=', Punishment::STATUS_PUNISHED)
-                ->where('expired_at', '>', Carbon::now()->toDateTimeString())
-                ->get();
+            ->where('status', '=', Punishment::STATUS_PUNISHED)
+            ->where('expired_at', '>', Carbon::now()->toDateTimeString())
+            ->get();
 
         $punishments = [];
         /** @var Punishment $punishment */
@@ -49,56 +55,51 @@ class PlayersController extends BaseApiController {
         }
 
         return $response->withJson([
-			'success' => true,
-            'player' => [
-                'id' => $player->id,
-            ],
-            'punishments' => $punishments
+            'success' => true,
+            'data' => [
+                'player' => [
+                    'id' => $player->id,
+                ],
+                'punishments' => $punishments
+            ]
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws ApiException
+     */
     public function punishAction(Request $request, Response $response, array $args) {
-    	try {
-			$playerExists = function ($id) {
-				return Player::where('id', '=', $id)->exists();
-			};
+        $playerExists = function ($id) {
+            return Player::where('id', '=', $id)->exists();
+        };
 
-			$punisherExists = function ($id) {
-				return ($id == 0 || Player::where('id', '=', $id)->exists());
-			};
+        $punisherExists = function ($id) {
+            return ($id == 0 || Player::where('id', '=', $id)->exists());
+        };
 
-			$validator = new Validator([
-				'player_id' => ['required', 'integer', 'min' => 1, 'exists' => $playerExists],
-				'punisher_id' => ['required', 'integer', 'min' => 0, 'exists' => $punisherExists],
-				'type' => ['required', 'integer'],
-				'reason' => ['required', 'min_length' => 1],
-				'expired_at' => ['required', 'integer']
-			]);
+        $validator = new Validator([
+            'player_id' => ['required', 'integer', 'min' => 1, 'exists' => $playerExists],
+            'punisher_id' => ['required', 'integer', 'min' => 0, 'exists' => $punisherExists],
+            'type' => ['required', 'integer'],
+            'reason' => ['required', 'min_length' => 1],
+            'expired_at' => ['required', 'integer']
+        ]);
 
-			if (!$validator->validate($request->getQueryParams())) {
-				return $response->withJson([
-					'query' => $request->getQueryParams(),
-					'values' => $validator->getValues(),
-					'errors' => $validator->getErrors(),
-				]);
-				throw new \Exception('Error validation');
-			}
+        if (!$validator->validate($this->getBody($request))) {
+            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+        }
 
-			$punishment = new Punishment($validator->getValues());
-			$punishment->server_id = $request->getAttribute('server_id');
-			$punishment->status = Punishment::STATUS_PUNISHED;
-			$punishment->save();
-			return $response->withJson([
-				'success' => true,
-				'punishments' => $punishment->toArray()
-			]);
-		} catch (\Exception $e) {
-			return $response->withJson([
-				'success' => false,
-				'error' => $e->getMessage(),
-				'file' => $e->getFile(),
-				'line' => $e->getLine()
-			]);
-		}
+        $punishment = new Punishment($validator->getValues());
+        $punishment->server_id = $request->getAttribute('server_id');
+        $punishment->status = Punishment::STATUS_PUNISHED;
+        $punishment->save();
+        return $response->withJson([
+            'success' => true,
+            'data' => $punishment->toArray()
+        ]);
     }
 }
