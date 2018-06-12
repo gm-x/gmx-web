@@ -131,6 +131,21 @@ class ServersController extends BaseAdminController {
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
 	 * @param array $args
+	 * @return ResponseInterface
+	 */
+	public function configAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+		$server = $this->getServer($request, $response, $args);
+
+
+
+		return $this->render('admin/servers/config.twig', [
+		]);
+	}
+
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
 	 * @return Server
 	 * @throws NotFoundException
 	 */

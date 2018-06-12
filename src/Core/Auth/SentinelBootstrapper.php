@@ -26,12 +26,12 @@ use \GameX\Core\Session\Session;
 
 class SentinelBootstrapper {
     /**
-     * @var Request
+     * @var Request|null
      */
     protected $request;
 
     /**
-     * @var Session
+     * @var Session|null
      */
     protected $session;
 
@@ -55,7 +55,7 @@ class SentinelBootstrapper {
      * @param Request $request
      * @param Session $session
      */
-    public function __construct(Request $request, Session $session) {
+    public function __construct(Request $request = null, Session $session = null) {
         $this->request = $request;
         $this->session = $session;
         $this->config = new ConfigRepository(__DIR__ . '/config.php');
@@ -194,23 +194,10 @@ class SentinelBootstrapper {
      * @throws \InvalidArgumentException
      */
     protected function createCheckpoints(IlluminateActivationRepository $activations, IlluminateThrottleRepository $throttle, $ipAddress) {
-        $activeCheckpoints = $this->config['checkpoints'];
-
-        $activation = $this->createActivationCheckpoint($activations);
-
-        $throttle = $this->createThrottleCheckpoint($throttle, $ipAddress);
-
-        $checkpoints = [];
-
-        foreach ($activeCheckpoints as $checkpoint) {
-            if (! isset($$checkpoint)) {
-                throw new InvalidArgumentException("Invalid checkpoint [{$checkpoint}] given.");
-            }
-
-            $checkpoints[$checkpoint] = $$checkpoint;
-        }
-
-        return $checkpoints;
+    	return [
+    		'activation' => $this->createActivationCheckpoint($activations),
+    		'throttle' => $this->createThrottleCheckpoint($throttle, $ipAddress),
+		];
     }
 
     /**
