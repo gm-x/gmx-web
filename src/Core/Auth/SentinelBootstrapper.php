@@ -83,12 +83,12 @@ class SentinelBootstrapper {
 
         $throttle = $this->createThrottling();
 
-        $ipAddress = $this->getIpAddress();
+        $sentinel->addCheckpoint('activation', new ActivationCheckpoint($activations));
 
-        $checkpoints = $this->createCheckpoints($activations, $throttle, $ipAddress);
-
-        foreach ($checkpoints as $key => $checkpoint) {
-            $sentinel->addCheckpoint($key, $checkpoint);
+        if ($this->request !== null) {
+            $sentinel->addCheckpoint('throttle',
+                new ThrottleCheckpoint($throttle, $this->request->getAttribute('ip_address'))
+            );
         }
 
         $reminders = $this->createReminders($users);
@@ -165,24 +165,6 @@ class SentinelBootstrapper {
         return new IlluminateActivationRepository(EloquentActivation::class, 259200);
     }
 
-    /**
-     * Returns the client's ip address.
-     *
-     * @return string
-     */
-    protected function getIpAddress() {
-        return $this->request->getAttribute('ip_address');
-    }
-
-    /**
-     * Create an activation checkpoint.
-     *
-     * @param  \Cartalyst\Sentinel\Activations\IlluminateActivationRepository  $activations
-     * @return \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint
-     */
-    protected function createActivationCheckpoint(IlluminateActivationRepository $activations) {
-        return new ActivationCheckpoint($activations);
-    }
 
     /**
      * Create activation and throttling checkpoints.
@@ -194,21 +176,15 @@ class SentinelBootstrapper {
      * @throws \InvalidArgumentException
      */
     protected function createCheckpoints(IlluminateActivationRepository $activations, IlluminateThrottleRepository $throttle, $ipAddress) {
-    	return [
-    		'activation' => $this->createActivationCheckpoint($activations),
-    		'throttle' => $this->createThrottleCheckpoint($throttle, $ipAddress),
-		];
-    }
+        $result = [
+            'activation' => new ActivationCheckpoint($activations)
+        ];
 
-    /**
-     * Create a throttle checkpoint.
-     *
-     * @param  \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository  $throttle
-     * @param  string  $ipAddress
-     * @return \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint
-     */
-    protected function createThrottleCheckpoint(IlluminateThrottleRepository $throtte, $ipAddress) {
-        return new ThrottleCheckpoint($throtte, $ipAddress);
+        if ($ipAddress !== null) {
+            $result['throttle'] = new ThrottleCheckpoint($throttle, $ipAddress);
+        }
+
+        return $result;
     }
 
     /**

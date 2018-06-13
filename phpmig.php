@@ -2,7 +2,7 @@
 
 use \Phpmig\Adapter;
 use \Illuminate\Database\Capsule\Manager as Capsule;
-use \Pimple\Psr11\Container;
+use \Pimple\Container;
 
 $container = new Container();
 
@@ -28,9 +28,9 @@ $container['db'] = function ($c) {
     return $capsule;
 };
 
-$container['auth'] = function (\Psr\Container\ContainerInterface $container) {
-	$container->get('db');
-	$bootsrap = new \GameX\Core\Auth\SentinelBootstrapper($container->get('request'), $container->get('session'));
+$container['auth'] = function ($container) {
+	$container['db'];
+	$bootsrap = new \GameX\Core\Auth\SentinelBootstrapper();
 	return $bootsrap->createSentinel();
 };
 
