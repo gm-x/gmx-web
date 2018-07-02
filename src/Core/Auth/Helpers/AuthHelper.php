@@ -4,7 +4,6 @@ namespace GameX\Core\Auth\Helpers;
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;
-use \GameX\Core\Mail\MailHelper;
 use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
@@ -20,15 +19,9 @@ class AuthHelper {
 	 */
 	protected $auth;
 
-    /**
-     * @var MailHelper
-     */
-	protected $mail;
-
 	public function __construct(ContainerInterface $container) {
         $this->container = $container;
         $this->auth = $container->get('auth');
-        $this->mail = $container->get('mail');
 	}
 
 	/**

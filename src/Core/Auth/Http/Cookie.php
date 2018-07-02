@@ -1,6 +1,6 @@
 <?php
 
-namespace GameX\Core\Auth;
+namespace GameX\Core\Auth\Http;
 
 use Cartalyst\Sentinel\Cookies\CookieInterface;
 use Slim\Http\Request;

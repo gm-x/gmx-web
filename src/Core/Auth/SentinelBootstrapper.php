@@ -1,6 +1,9 @@
 <?php
 namespace GameX\Core\Auth;
 
+use \Slim\Http\Request;
+use \Illuminate\Events\Dispatcher;
+use \Cartalyst\Sentinel\Native\ConfigRepository;
 use \Cartalyst\Sentinel\Activations\EloquentActivation;
 use \Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
 use \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
@@ -13,16 +16,17 @@ use \Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository;
 use \Cartalyst\Sentinel\Users\IlluminateUserRepository;
+use \Cartalyst\Sentinel\Cookies\CookieInterface;
+use \Cartalyst\Sentinel\Sessions\SessionInterface;
+use \GameX\Core\Session\Session;
 use \GameX\Core\Auth\Models\PersistenceModel;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Auth\Repository\UsersRepository;
-use \Illuminate\Events\Dispatcher;
-use \InvalidArgumentException;
-use \Slim\Http\Request;
-use \Cartalyst\Sentinel\Native\ConfigRepository;
-use \GameX\Core\Auth\Session as SentinelSession;
-use \GameX\Core\Session\Session;
+use \GameX\Core\Auth\Http\Cookie as SentinelCookie;
+use \GameX\Core\Auth\Http\FakeCookie as SentinelFakeCookie;
+use \GameX\Core\Auth\Http\Session as SentinelSession;
+use \GameX\Core\Auth\Http\FakeSession as SentinelFakeSession;
 
 class SentinelBootstrapper {
     /**
@@ -114,19 +118,27 @@ class SentinelBootstrapper {
     /**
      * Creates a session.
      *
-     * @return SentinelSession
+     * @return SessionInterface
      */
     protected function createSession() {
-        return new SentinelSession($this->session, 'auth_data');
+        if ($this->session) {
+            return new SentinelSession($this->session, 'auth_data');
+        } else {
+            return new SentinelFakeSession();
+        }
     }
 
     /**
      * Creates a cookie.
      *
-     * @return Cookie
+     * @return CookieInterface
      */
     protected function createCookie() {
-        return new Cookie($this->request, 'persistence_key');
+        if ($this->request) {
+            return new SentinelCookie($this->request, 'persistence_key');
+        } else {
+            return new SentinelFakeCookie();
+        }
     }
 
     /**
