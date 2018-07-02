@@ -25,11 +25,6 @@ return function () {
         ->setName('admin_servers_delete')
         ->setArgument('permission', 'admin.servers');
 
-    $this
-        ->get('/{server}/config', BaseController::action(ServersController::class, 'config'))
-        ->setName('admin_servers_config')
-        ->setArgument('permission', 'admin.servers');
-
     $this->group('/{server}/groups', function () {
         /** @var \Slim\App $this */
         $this
