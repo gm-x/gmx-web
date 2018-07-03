@@ -28,6 +28,12 @@ $container['db'] = function ($c) {
     return $capsule;
 };
 
+$container['auth'] = function ($container) {
+	$container['db'];
+	$bootsrap = new \GameX\Core\Auth\SentinelBootstrapper();
+	return $bootsrap->createSentinel();
+};
+
 $container['phpmig.adapter'] = function($c) {
     return new Adapter\Illuminate\Database($c['db'], 'migrations');
 };

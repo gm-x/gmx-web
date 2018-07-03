@@ -1,6 +1,9 @@
 <?php
 namespace GameX\Core\Auth;
 
+use \Slim\Http\Request;
+use \Illuminate\Events\Dispatcher;
+use \Cartalyst\Sentinel\Native\ConfigRepository;
 use \Cartalyst\Sentinel\Activations\EloquentActivation;
 use \Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
 use \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
@@ -13,25 +16,26 @@ use \Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository;
 use \Cartalyst\Sentinel\Users\IlluminateUserRepository;
+use \Cartalyst\Sentinel\Cookies\CookieInterface;
+use \Cartalyst\Sentinel\Sessions\SessionInterface;
+use \GameX\Core\Session\Session;
 use \GameX\Core\Auth\Models\PersistenceModel;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Auth\Repository\UsersRepository;
-use \Illuminate\Events\Dispatcher;
-use \InvalidArgumentException;
-use \Slim\Http\Request;
-use \Cartalyst\Sentinel\Native\ConfigRepository;
-use \GameX\Core\Auth\Session as SentinelSession;
-use \GameX\Core\Session\Session;
+use \GameX\Core\Auth\Http\Cookie as SentinelCookie;
+use \GameX\Core\Auth\Http\FakeCookie as SentinelFakeCookie;
+use \GameX\Core\Auth\Http\Session as SentinelSession;
+use \GameX\Core\Auth\Http\FakeSession as SentinelFakeSession;
 
 class SentinelBootstrapper {
     /**
-     * @var Request
+     * @var Request|null
      */
     protected $request;
 
     /**
-     * @var Session
+     * @var Session|null
      */
     protected $session;
 
@@ -55,7 +59,7 @@ class SentinelBootstrapper {
      * @param Request $request
      * @param Session $session
      */
-    public function __construct(Request $request, Session $session) {
+    public function __construct(Request $request = null, Session $session = null) {
         $this->request = $request;
         $this->session = $session;
         $this->config = new ConfigRepository(__DIR__ . '/config.php');
@@ -83,12 +87,12 @@ class SentinelBootstrapper {
 
         $throttle = $this->createThrottling();
 
-        $ipAddress = $this->getIpAddress();
+        $sentinel->addCheckpoint('activation', new ActivationCheckpoint($activations));
 
-        $checkpoints = $this->createCheckpoints($activations, $throttle, $ipAddress);
-
-        foreach ($checkpoints as $key => $checkpoint) {
-            $sentinel->addCheckpoint($key, $checkpoint);
+        if ($this->request !== null) {
+            $sentinel->addCheckpoint('throttle',
+                new ThrottleCheckpoint($throttle, $this->request->getAttribute('ip_address'))
+            );
         }
 
         $reminders = $this->createReminders($users);
@@ -114,19 +118,27 @@ class SentinelBootstrapper {
     /**
      * Creates a session.
      *
-     * @return SentinelSession
+     * @return SessionInterface
      */
     protected function createSession() {
-        return new SentinelSession($this->session, 'auth_data');
+        if ($this->session) {
+            return new SentinelSession($this->session, 'auth_data');
+        } else {
+            return new SentinelFakeSession();
+        }
     }
 
     /**
      * Creates a cookie.
      *
-     * @return Cookie
+     * @return CookieInterface
      */
     protected function createCookie() {
-        return new Cookie($this->request, 'persistence_key');
+        if ($this->request) {
+            return new SentinelCookie($this->request, 'persistence_key');
+        } else {
+            return new SentinelFakeCookie();
+        }
     }
 
     /**
@@ -165,24 +177,6 @@ class SentinelBootstrapper {
         return new IlluminateActivationRepository(EloquentActivation::class, 259200);
     }
 
-    /**
-     * Returns the client's ip address.
-     *
-     * @return string
-     */
-    protected function getIpAddress() {
-        return $this->request->getAttribute('ip_address');
-    }
-
-    /**
-     * Create an activation checkpoint.
-     *
-     * @param  \Cartalyst\Sentinel\Activations\IlluminateActivationRepository  $activations
-     * @return \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint
-     */
-    protected function createActivationCheckpoint(IlluminateActivationRepository $activations) {
-        return new ActivationCheckpoint($activations);
-    }
 
     /**
      * Create activation and throttling checkpoints.
@@ -194,34 +188,15 @@ class SentinelBootstrapper {
      * @throws \InvalidArgumentException
      */
     protected function createCheckpoints(IlluminateActivationRepository $activations, IlluminateThrottleRepository $throttle, $ipAddress) {
-        $activeCheckpoints = $this->config['checkpoints'];
+        $result = [
+            'activation' => new ActivationCheckpoint($activations)
+        ];
 
-        $activation = $this->createActivationCheckpoint($activations);
-
-        $throttle = $this->createThrottleCheckpoint($throttle, $ipAddress);
-
-        $checkpoints = [];
-
-        foreach ($activeCheckpoints as $checkpoint) {
-            if (! isset($$checkpoint)) {
-                throw new InvalidArgumentException("Invalid checkpoint [{$checkpoint}] given.");
-            }
-
-            $checkpoints[$checkpoint] = $$checkpoint;
+        if ($ipAddress !== null) {
+            $result['throttle'] = new ThrottleCheckpoint($throttle, $ipAddress);
         }
 
-        return $checkpoints;
-    }
-
-    /**
-     * Create a throttle checkpoint.
-     *
-     * @param  \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository  $throttle
-     * @param  string  $ipAddress
-     * @return \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint
-     */
-    protected function createThrottleCheckpoint(IlluminateThrottleRepository $throtte, $ipAddress) {
-        return new ThrottleCheckpoint($throtte, $ipAddress);
+        return $result;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace GameX\Core\Auth;
+namespace GameX\Core\Auth\Http;
 
 use Cartalyst\Sentinel\Sessions\SessionInterface;
 use \GameX\Core\Session\Session as SessionHelper;
