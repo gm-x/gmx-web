@@ -40,9 +40,8 @@ function rrmdir($dir) {
 	}
 }
 
-function composerInstall() {
+function composerInstall($baseDir) {
 	$tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('GameX', true) . DIRECTORY_SEPARATOR;
-	$baseDir = dirname(__DIR__);
 
 	if (!is_dir($tempDir)) {
 		if (!mkdir($tempDir, 0777, true)) {
@@ -71,4 +70,78 @@ function composerInstall() {
 	$application->run($input, $output);
 
 	rrmdir($tempDir);
+}
+
+function getBaseConfig() {
+	return [
+		'db' => [
+			'driver' => 'mysql',
+			'host' => '127.0.0.1',
+			'port' => 3306,
+			'database' => 'test',
+			'username' => 'root',
+			'password' => '',
+			'charset' => 'utf8',
+			'collation' => 'utf8_unicode_ci',
+			'prefix' => ''
+		],
+		'session' => [
+			'name' => 'sessid',
+			'autorefresh' => true,
+			'lifetime' => '1 hour'
+		],
+		'twig' => [
+			'debug' => true,
+			'auto_reload' => true
+		],
+		'mail' => [
+			'from' => [
+				'name' => 'test',
+				'email' => 'test@example.com'
+			],
+			'transport' => [
+				'type' => 'smtp',
+				'host' => '127.0.0.1',
+				'port' => 4651
+			]
+		],
+		'secret' => 'secret_key'
+	];
+}
+
+function checkDbConnection($config) {
+	try {
+		$dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
+		$dbh = new PDO($dsn, $config['user'], $config['pass']);
+		$dbh = null;
+		return true;
+	} catch (PDOException $e) {
+		return false;
+	}
+}
+
+function runMigrations($container) {
+	$output = new \Symfony\Component\Console\Output\NullOutput();
+	$app = new \Phpmig\Api\PhpmigApplication($container, $output);
+
+	$app->up();
+}
+
+function createUser($container, $email, $password) {
+	$container = new \Pimple\Psr11\Container($container);
+	\GameX\Core\BaseModel::setContainer($container);
+	/** @var \Cartalyst\Sentinel\Sentinel $auth */
+	$auth = $container->get('auth');
+	$auth->register([
+		'email'  => $email,
+		'password' => $password,
+	], true);
+}
+
+function getContainer($baseDir) {
+	require $baseDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+	$container = new \GameX\Core\Container();
+	$container['config'] = json_decode(file_get_contents($baseDir . DIRECTORY_SEPARATOR . 'config.json'), true);
+	require $baseDir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'dependencies.php';
+	return $container;
 }
