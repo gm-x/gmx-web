@@ -10,11 +10,20 @@ $container = new \Slim\Container([
 ]);
 
 $errorHandler = function ($c) {
-	return function ($request, $response, $exception) use ($c) {
-	    $c['log']->error((string)$exception);
-		return $c['response']->withStatus(500)
-			->withHeader('Content-Type', 'text/html')
-			->write('Something went wrong!');
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $e) use ($c) {
+	    $c['log']->error((string)$e);
+
+        /** @var \Slim\Views\Twig $view */
+        $view = $c->get('view');
+	    if ($e instanceof \GameX\Core\Exceptions\NotAllowedException) {
+            return $view->render($response->withStatus(403), 'errors/403.twig');
+        } elseif ($e instanceof \Slim\Exception\NotFoundException) {
+            return $view->render($response->withStatus(404), 'errors/404.twig');
+        } elseif ($e instanceof \Slim\Exception\MethodNotAllowedException) {
+            return $view->render($response->withStatus(405), 'errors/405.twig');
+        } else {
+            return $view->render($response->withStatus(500), 'errors/500.twig');
+        }
 	};
 };
 

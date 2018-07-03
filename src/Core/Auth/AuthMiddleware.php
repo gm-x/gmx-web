@@ -5,6 +5,7 @@ use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Sentinel;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Exceptions\NotAllowedException;
 
 class AuthMiddleware {
 
@@ -26,6 +27,7 @@ class AuthMiddleware {
 	 * @param ResponseInterface $response
 	 * @param callable $next
 	 * @return mixed
+     * @throws NotAllowedException
 	 */
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
 	    /** @var \Slim\Route $route */
@@ -39,8 +41,7 @@ class AuthMiddleware {
         }
         $user = $this->auth->getUser();
         if (!$user || !$user->hasAccess($permission)) {
-            $response->withStatus(403)->getBody()->write('Access denied');
-            return $response;
+            throw new NotAllowedException();
         }
 		return $next($request, $response);
 	}

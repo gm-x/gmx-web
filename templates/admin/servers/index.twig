@@ -24,9 +24,17 @@
 						<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="btn btn-sm">
 							<span class="oi oi-pencil"></span>
 						</a>
+						<button
+								type="button"
+								class="btn btn-sm btn-link"
+								data-toggle="modal"
+								data-target="#tokenModel"
+								data-token="{{ server.token }}">
+							<span class="oi oi-info"></span>
+						</button>
 						<form action="{{ path_for('admin_servers_delete', {'server': server.id}) }}" method="post" style="display: inline-block">
 							{{ csrf_token() }}
-							<button type="submit" class="btn btn-sm">
+							<button type="submit" class="btn btn-sm btn-link">
 								<span class="oi oi-delete"></span>
 							</button>
 						</form>
@@ -38,4 +46,35 @@
 	</div>
 	{{ paginator.render(pagination) }}
 	<a href="{{ path_for('admin_servers_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
+{% endblock %}
+
+{% block modals %}
+	<div class="modal fade" id="tokenModel" tabindex="-1" role="dialog" aria-labelledby="tokenModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="tokenModalLabel">Server token</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<input type="text" class="form-control" readonly>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<script>
+        $('#tokenModel').on('show.bs.modal', function(e) {
+              $(this).find('.modal-body input').val($(e.relatedTarget).data('token'));
+        })
+	</script>
 {% endblock %}
