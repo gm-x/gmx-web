@@ -131,10 +131,15 @@ function createUser($container, $email, $password) {
 	/** @var \Cartalyst\Sentinel\Sentinel $auth */
 	$auth = $container['auth'];
 
+	$permissions = array_fill_keys(
+        array_keys(\GameX\Controllers\Admin\RolesController::PERMISSIONS),
+        true
+    );
+
     $role = $auth->getRoleRepository()->createModel()->create([
         'name' => 'Admins',
         'slug' => 'admin',
-        'permissions' => array_keys(\GameX\Controllers\Admin\RolesController::PERMISSIONS)
+        'permissions' => $permissions
     ]);
 
     /** @var \GameX\Core\Auth\Models\UserModel $user */
