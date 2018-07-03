@@ -62,40 +62,37 @@
 	integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
 	crossorigin="anonymous"></script>
 <script>
+    function result(data) {
+        if (data.success) {
+            alert('Finished');
+        } else {
+            alert('Error: ' + data.message);
+        }
+    }
 	$('#installComposer').on('click', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=1', function (data) {
-			console.log(data)
-		});
+		$.post('<?= $baseUrl; ?>/install/?step=1', result);
 	});
 	$('#installConfig').on('submit', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=2', $(this).serializeArray(), function (data) {
-			console.log(data)
-		});
+		$.post('<?= $baseUrl; ?>/install/?step=2', $(this).serializeArray(), result);
 	});
 	$('#installMigrations').on('click', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=3', function (data) {
-			console.log(data)
-		});
+		$.post('<?= $baseUrl; ?>/install/?step=3', result);
 	});
 	$('#installUser').on('submit', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=4', $(this).serializeArray(), function (data) {
-			console.log(data)
-		});
+		$.post('<?= $baseUrl; ?>/install/?step=4', $(this).serializeArray(), result);
 	});
 	$('#installCronJobs').on('click', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=5', function (data) {
-			console.log(data)
-		});
+		$.post('<?= $baseUrl; ?>/install/?step=5', result);
 	});
 </script>
 </body>

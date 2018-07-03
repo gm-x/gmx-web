@@ -15,11 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				set_time_limit(0);
 				composerInstall(BASE_DIR);
 				json([
-					'status' => true
+					'success' => true
 				]);
 			} catch (Exception $e) {
 				json([
-					'status' => false,
+					'success' => false,
 					'message' => $e->getMessage()
 				]);
 			}
@@ -41,11 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$data = json_encode($config, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 				file_put_contents($filePath, $data);
 				json([
-					'status' => true
+					'success' => true
 				]);
 			} catch (Exception $e) {
 				json([
-					'status' => false,
+					'success' => false,
 					'message' => $e->getMessage()
 				]);
 			}
@@ -53,15 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 3: {
 			try {
-				require BASE_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-				$container = require BASE_DIR . DIRECTORY_SEPARATOR . 'phpmig.php';
+				$container = getContainer(BASE_DIR, true);
 				runMigrations($container);
 				json([
-					'status' => true
+					'success' => true
 				]);
 			} catch (Exception $e) {
 				json([
-					'status' => false,
+					'success' => false,
 					'message' => $e->getMessage()
 				]);
 			}
@@ -69,14 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 4: {
 			try {
-				$container = getContainer(BASE_DIR);
+                $container = getContainer(BASE_DIR, true);
 				createUser($container, $_POST['email'], $_POST['pass']);
 				json([
-					'status' => true
+					'success' => true
 				]);
 			} catch (Exception $e) {
 				json([
-					'status' => false,
+					'success' => false,
 					'message' => $e->getMessage()
 				]);
 			}
@@ -84,17 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 5: {
 			try {
-				$container = getContainer(BASE_DIR);
+                $container = getContainer(BASE_DIR, false);
 
 				\GameX\Core\Jobs\JobHelper::createTask('monitoring');
 				\GameX\Core\Jobs\JobHelper::createTask('punishments');
 
 				json([
-					'status' => true
+					'success' => true
 				]);
 			} catch (Exception $e) {
 				json([
-					'status' => false,
+					'success' => false,
 					'message' => $e->getMessage()
 				]);
 			}

@@ -128,20 +128,33 @@ function runMigrations($container) {
 }
 
 function createUser($container, $email, $password) {
-	$container = new \Pimple\Psr11\Container($container);
-	\GameX\Core\BaseModel::setContainer($container);
 	/** @var \Cartalyst\Sentinel\Sentinel $auth */
-	$auth = $container->get('auth');
-	$auth->register([
+	$auth = $container['auth'];
+
+    $role = $auth->getRoleRepository()->createModel()->create([
+        'name' => 'Admins',
+        'slug' => 'admin',
+        'permissions' => array_keys(\GameX\Controllers\Admin\RolesController::PERMISSIONS)
+    ]);
+
+    /** @var \GameX\Core\Auth\Models\UserModel $user */
+	$user = $auth->register([
 		'email'  => $email,
 		'password' => $password,
 	], true);
+
+    $user->role()->associate($role)->save();
 }
 
-function getContainer($baseDir) {
-	require $baseDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-	$container = new \GameX\Core\Container();
-	$container['config'] = json_decode(file_get_contents($baseDir . DIRECTORY_SEPARATOR . 'config.json'), true);
-	require $baseDir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'dependencies.php';
+function getContainer($baseDir, $phpmig = false) {
+    require $baseDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+    $container = new \GameX\Core\Container();
+    $container['config'] = json_decode(file_get_contents($baseDir . DIRECTORY_SEPARATOR . 'config.json'), true);
+    if ($phpmig) {
+        require $baseDir . DIRECTORY_SEPARATOR . 'phpmig.php';
+    } else {
+        require $baseDir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'dependencies.php';
+    }
+
 	return $container;
 }
