@@ -18,7 +18,8 @@ class UsersRepository extends IlluminateUserRepository {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->createModel()->newQuery();
-        $query->where('login', $credentials['login'])
+        $query
+			->where('login', $credentials['login'])
 			->orWhere('email', $credentials['login']);
 
         return $query->first();

@@ -12,6 +12,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 
 class UserController extends BaseMainController {
@@ -73,6 +74,9 @@ class UserController extends BaseMainController {
                     $connection = $this->getContainer('db')->getConnection();
                     $connection->beginTransaction();
                 	$authHelper = new AuthHelper($this->container);
+                	if ($authHelper->exists($form->getValue('login'), $form->getValue('email'))) {
+						throw new ValidationException('User already exists');
+					}
                     $activationCode = $authHelper->registerUser(
                         $form->getValue('login'),
                         $form->getValue('email'),

@@ -1,8 +1,8 @@
 <?php
 namespace GameX\Core\Auth\Helpers;
 
-use Cartalyst\Sentinel\Users\UserInterface;
 use \Psr\Container\ContainerInterface;
+use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;
 use \GameX\Core\Exceptions\FormException;
@@ -25,13 +25,29 @@ class AuthHelper {
         $this->auth = $container->get('auth');
 	}
 
-
+	/**
+	 * @param string $login
+	 * @return UserInterface
+	 */
 	public function findUser($login) {
-		$user = $this->auth->getUserRepository()->findByCredentials([
+		return $this->auth->getUserRepository()->findByCredentials([
 			'login' => $login
 		]);
+	}
 
-		return $user;
+	/**
+	 * @param string $login
+	 * @param string $email
+	 * @return bool
+	 */
+	public function exists($login, $email) {
+		/** @var \Illuminate\Database\Eloquent\Builder $query */
+		$query = $this->auth->getUserRepository()->createModel()->newQuery();
+		$query
+			->where('login', $login)
+			->orWhere('email', $email);
+
+		return $query->exists();
 	}
 
 	/**
@@ -43,15 +59,6 @@ class AuthHelper {
 	 * @throws ValidationException
 	 */
 	public function registerUser($login, $email, $password) {
-		// TODO: move to validation
-//        $user = $this->auth->getUserRepository()->findByCredentials([
-//			'login' => $email
-//		]);
-//
-//        if ($user) {
-//			throw new FormException('login', 'User already exists');
-//		}
-
 		$user = $this->auth->register([
 			'login'  => $login,
 			'email'  => $email,
