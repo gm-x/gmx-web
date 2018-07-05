@@ -5,11 +5,13 @@ use \GameX\Core\BaseMainController;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \GameX\Core\Forms\Elements\FormInputEmail;
 use \GameX\Core\Forms\Elements\FormInputPassword;
+use GameX\Core\Forms\Elements\FormInputText;
 use GameX\Core\Jobs\JobHelper;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Auth\Helpers\AuthHelper;
+use \GameX\Core\Exceptions\FormException;
 use \Exception;
 
 class UserController extends BaseMainController {
@@ -36,6 +38,11 @@ class UserController extends BaseMainController {
         $form = $this->getContainer('form')->createForm('register');
         $form
             ->setAction((string)$request->getUri())
+			->add(new FormInputText('login', '', [
+				'title' => $this->getTranslate('inputs', 'login'),
+				'error' => 'Required',
+				'required' => true,
+			]))
 			->add(new FormInputEmail('email', '', [
 				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
@@ -51,6 +58,7 @@ class UserController extends BaseMainController {
                 'error' => 'Passwords does not match',
                 'required' => true,
             ]))
+			->setRules('login', ['required', 'trim', 'min_length' => 1])
 			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
 			->setRules('password', ['required', 'trim', 'min_length' => 6])
 			->setRules('password_repeat', ['required', 'trim', 'min_length' => 6, 'identical' => $identical_password_validator])
@@ -66,9 +74,9 @@ class UserController extends BaseMainController {
                     $connection->beginTransaction();
                 	$authHelper = new AuthHelper($this->container);
                     $activationCode = $authHelper->registerUser(
+                        $form->getValue('login'),
                         $form->getValue('email'),
-                        $form->getValue('password'),
-                        $form->getValue('password_repeat')
+                        $form->getValue('password')
                     );
 					JobHelper::createTask('sendmail', [
 					    'type' => 'activation',
@@ -98,12 +106,12 @@ class UserController extends BaseMainController {
         $form = $this->getContainer('form')->createForm('activation');
 		$form
             ->setAction((string)$request->getUri())
-			->add(new FormInputEmail('email', '', [
-				'title' => $this->getTranslate('inputs', 'email'),
-				'error' => 'Must be valid email',
+			->add(new FormInputText('login', '', [
+				'title' => $this->getTranslate('inputs', 'login_email'),
+				'error' => 'Required',
 				'required' => true,
 			]))
-			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+			->setRules('login', ['required', 'trim', 'min_length' => 1])
             ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
@@ -112,7 +120,11 @@ class UserController extends BaseMainController {
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
-					$authHelper->activateUser($form->getValue('email'), $code);
+					$user = $authHelper->findUser($form->getValue('login'));
+					if (!$user) {
+						throw new FormException('login', 'User not found');
+					}
+					$authHelper->activateUser($user, $code);
 					return $this->redirect('login');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);
@@ -130,9 +142,9 @@ class UserController extends BaseMainController {
         $form = $this->getContainer('form')->createForm('login');
         $form
 			->setAction((string)$request->getUri())
-			->add(new FormInputEmail('email', '', [
-				'title' => $this->getTranslate('inputs', 'email'),
-				'error' => 'Must be valid email',
+			->add(new FormInputText('login', '', [
+				'title' => $this->getTranslate('inputs', 'login_email'),
+				'error' => 'Required',
 				'required' => true,
 			]))
 			->add(new FormInputPassword('password', '', [
@@ -144,7 +156,7 @@ class UserController extends BaseMainController {
 				'title' => $this->getTranslate('inputs', 'remember_me'),
 				'required' => false,
 			]))
-			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+			->setRules('login', ['required', 'trim', 'min_length' => 1])
 			->setRules('password', ['required', 'trim', 'min_length' => 1])
 			->setRules('remember_me', ['bool'])
 			->processRequest($request);
@@ -157,7 +169,7 @@ class UserController extends BaseMainController {
 				try {
 					$authHelper = new AuthHelper($this->container);
 					$authHelper->loginUser(
-						$form->getValue('email'),
+						$form->getValue('login'),
 						$form->getValue('password'),
 						(bool)$form->getValue('remember_me')
 					);
@@ -184,12 +196,12 @@ class UserController extends BaseMainController {
 		$form = $this->getContainer('form')->createForm('reset_password');
 		$form
             ->setAction((string)$request->getUri())
-			->add(new FormInputEmail('email', '', [
-				'title' => $this->getTranslate('inputs', 'email'),
-				'error' => 'Must be valid email',
+			->add(new FormInputText('login', '', [
+				'title' => $this->getTranslate('inputs', 'login_email'),
+				'error' => 'Required',
 				'required' => true,
 			]))
-			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+			->setRules('login', ['required', 'trim', 'min_length' => 1])
             ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
@@ -198,12 +210,14 @@ class UserController extends BaseMainController {
 			} else {
 				try {
 					$authHelper = new AuthHelper($this->container);
-                    $reminderCode = $authHelper->resetPassword(
-						$form->getValue('email')
-					);
+					$user = $authHelper->findUser($form->getValue('login'));
+					if (!$user) {
+						throw new FormException('login', 'User not found');
+					}
+                    $reminderCode = $authHelper->resetPassword($user);
                     JobHelper::createTask('sendmail', [
                         'type' => 'reset_password',
-                        'email' => $form->getValue('email'),
+                        'email' => $user->email,
                         'title' => 'Reset Password',
                         'params' => [
                             'link' => $this->pathFor('reset_password_complete', ['code' => $reminderCode], [], true)
@@ -232,9 +246,9 @@ class UserController extends BaseMainController {
         $form = $this->getContainer('form')->createForm('reset_password_complete');
         $form
             ->setAction((string)$request->getUri())
-			->add(new FormInputEmail('email', '', [
-				'title' => $this->getTranslate('inputs', 'email'),
-				'error' => 'Must be valid email',
+			->add(new FormInputText('login', '', [
+				'title' => $this->getTranslate('inputs', 'login_email'),
+				'error' => 'Required',
 				'required' => true,
 			]))
 			->add(new FormInputPassword('password', '', [
@@ -247,7 +261,7 @@ class UserController extends BaseMainController {
 				'error' => 'Passwords does not match',
 				'required' => true,
 			]))
-			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+			->setRules('login', ['required', 'trim', 'min_length' => 1])
 			->setRules('password', ['required', 'trim', 'min_length' => 6])
 			->setRules('password_repeat', ['required', 'trim', 'min_length' => 6, 'identical' => $identical_password_validator])
             ->processRequest($request);
@@ -258,12 +272,11 @@ class UserController extends BaseMainController {
             } else {
                 try {
                     $authHelper = new AuthHelper($this->container);
-                    $authHelper->resetPasswordComplete(
-                        $form->getValue('email'),
-                        $form->getValue('password'),
-                        $form->getValue('password_repeat'),
-                        $code
-                    );
+					$user = $authHelper->findUser($form->getValue('login'));
+					if (!$user) {
+						throw new FormException('login', 'User not found');
+					}
+                    $authHelper->resetPasswordComplete($user, $form->getValue('password'), $code);
                     return $this->redirect('login');
                 } catch (Exception $e) {
                     return $this->failRedirect($e, $form);
