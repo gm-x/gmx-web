@@ -19,7 +19,7 @@ class UsersController extends BaseAdminController {
 	/**
 	 * @return string
 	 */
-	protected function getActiveAdminMenu() {
+	protected function getActiveMenu() {
 		return 'admin_users_list';
 	}
 

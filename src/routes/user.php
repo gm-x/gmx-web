@@ -2,26 +2,26 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\UserController;
 
-$app
+$this
     ->map(['GET', 'POST'], '/register', BaseController::action(UserController::class, 'register'))
     ->setName('register');
 
-$app
+$this
     ->map(['GET', 'POST'], '/activation/{code}', BaseController::action(UserController::class, 'activate'))
     ->setName('activation');
 
-$app
+$this
     ->map(['GET', 'POST'], '/login', BaseController::action(UserController::class, 'login'))
     ->setName('login');
 
-$app
+$this
     ->map(['GET', 'POST'], '/reset_password', BaseController::action(UserController::class, 'resetPassword'))
     ->setName('reset_password');
 
-$app
+$this
     ->map(['GET', 'POST'], '/reset_password/{code}', BaseController::action(UserController::class, 'resetPasswordComplete'))
     ->setName('reset_password_complete');
 
-$app
+$this
     ->get('/logout', BaseController::action(UserController::class, 'logout'))
     ->setName('logout');

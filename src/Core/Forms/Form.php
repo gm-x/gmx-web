@@ -67,7 +67,7 @@ class Form implements ArrayAccess {
     public function __construct(Session $session, $name) {
         $this->session = $session;
         $this->name = $name;
-        $this->validator = new Validator();
+        $this->validator = new Validator([], ['stop_on_error' => false]);
 
         $this->loadValues();
     }

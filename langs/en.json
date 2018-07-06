@@ -15,6 +15,8 @@
 		"activate": "Activate"
 	},
 	"inputs": {
+		"login_email": "Login or Email",
+		"login": "Login",
 		"email": "Email",
 		"password": "Password",
 		"password_repeat": "Repeat password",

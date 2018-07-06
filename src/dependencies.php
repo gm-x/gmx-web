@@ -68,7 +68,6 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	$basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
 	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
 	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
-	$view->addExtension(new \GameX\Core\Pagination\ViewExtension());
 	$view->addExtension(new \GameX\Core\Auth\ViewExtension($container->get('auth')));
 	$view->addExtension(new \GameX\Core\Lang\ViewExtension($container->get('lang')));
 	$view->addExtension(new \GameX\Core\AccessFlags\ViewExtension());
@@ -77,6 +76,12 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	$view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
 
 	return $view;
+};
+
+$container['modules'] = function (\Psr\Container\ContainerInterface $container) {
+	$modules = new \GameX\Core\Module\Module();
+	$modules->addModule(new GameX\Modules\TestModule\Module());
+	return $modules;
 };
 
 \GameX\Core\BaseModel::setContainer($container);

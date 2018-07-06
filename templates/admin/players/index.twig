@@ -7,37 +7,39 @@
         <input type="text" name="filter" value="{{ filter }}">
         <button type="submit"><span class="oi oi-magnifying-glass"></span></button>
     </form>
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Steam ID</th>
-            <th>Nickname</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for player in players %}
-            <tr>
-                <td>{{ player.steamid }}</td>
-                <td>{{ player.nick }}</td>
-                <td>
-                    <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="btn btn-sm">
-                        <span class="oi oi-people"></span>
-                    </a>
-                    <a href="{{ path_for('admin_players_edit', {'player': player.id}) }}" class="btn btn-sm">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <form action="{{ path_for('admin_players_delete', {'player': player.id}) }}" method="post" style="display: inline-block">
-						{{ csrf_token() }}
-                        <button type="submit" class="btn btn-sm">
-                            <span class="oi oi-delete"></span>
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Steam ID</th>
+                    <th>Nickname</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for player in players %}
+                <tr>
+                    <td class="text-nowrap">{{ player.steamid }}</td>
+                    <td class="text-nowrap">{{ player.nick }}</td>
+                    <td class="text-nowrap">
+                        <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="btn btn-sm">
+                            <span class="oi oi-people"></span>
+                        </a>
+                        <a href="{{ path_for('admin_players_edit', {'player': player.id}) }}" class="btn btn-sm">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <form action="{{ path_for('admin_players_delete', {'player': player.id}) }}" method="post" style="display: inline-block">
+                            {{ csrf_token() }}
+                            <button type="submit" class="btn btn-sm">
+                                <span class="oi oi-delete"></span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 	{{ paginator.render(pagination) }}
-    <a href="{{ path_for('admin_players_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
+    <a href="{{ path_for('admin_players_create') }}" class="btn btn-primary btn-sm">{{ trans('buttons', 'create') }}</a>
 {% endblock %}

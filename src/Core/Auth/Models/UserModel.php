@@ -13,6 +13,7 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Class UserModel
  * @package GameX\Core\Auth\Models
  * @property int $id
+ * @property string $login
  * @property string $email
  * @property string $password
  * @property array $permissions
@@ -32,6 +33,7 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 * {@inheritDoc}
 	 */
 	protected $fillable = [
+		'login',
 		'email',
 		'password',
 		'last_name',
@@ -62,7 +64,7 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 * @return string
 	 */
 	public function getUserLogin() {
-		return $this->email;
+		return $this->login;
 	}
 
 	/**
@@ -71,7 +73,7 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 * @return string
 	 */
 	public function getUserLoginName() {
-		return 'email';
+		return 'login';
 	}
 
 	/**

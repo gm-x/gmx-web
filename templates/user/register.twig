@@ -5,6 +5,7 @@
 {% block content %}
 <form action="{{ form.getAction() }}" method="post">
     {{ csrf_token() }}
+    {{ forms.element_input(form.login) }}
     {{ forms.element_input(form.email) }}
     {{ forms.element_input(form.password) }}
     {{ forms.element_input(form.password_repeat) }}

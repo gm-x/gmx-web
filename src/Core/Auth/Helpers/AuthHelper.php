@@ -1,11 +1,10 @@
 <?php
 namespace GameX\Core\Auth\Helpers;
 
-use Cartalyst\Sentinel\Users\UserInterface;
 use \Psr\Container\ContainerInterface;
+use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;
-use \GameX\Core\Mail\MailHelper;
 use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
@@ -21,35 +20,47 @@ class AuthHelper {
 	 */
 	protected $auth;
 
-    /**
-     * @var MailHelper
-     */
-	protected $mail;
-
 	public function __construct(ContainerInterface $container) {
         $this->container = $container;
         $this->auth = $container->get('auth');
-        $this->mail = $container->get('mail');
 	}
 
 	/**
-	 * @param $email
-	 * @param $password
-	 * @param $password_repeat
+	 * @param string $login
+	 * @return UserInterface
+	 */
+	public function findUser($login) {
+		return $this->auth->getUserRepository()->findByCredentials([
+			'login' => $login
+		]);
+	}
+
+	/**
+	 * @param string $login
+	 * @param string $email
+	 * @return bool
+	 */
+	public function exists($login, $email) {
+		/** @var \Illuminate\Database\Eloquent\Builder $query */
+		$query = $this->auth->getUserRepository()->createModel()->newQuery();
+		$query
+			->where('login', $login)
+			->orWhere('email', $email);
+
+		return $query->exists();
+	}
+
+	/**
+	 * @param string $login
+	 * @param string $email
+	 * @param string $password
 	 * @return bool
 	 * @throws FormException
 	 * @throws ValidationException
 	 */
-	public function registerUser($email, $password, $password_repeat) {
-        $user = $this->auth->getUserRepository()->findByCredentials([
-			'email' => $email
-		]);
-
-        if ($user) {
-			throw new FormException('email', 'User already exists');
-		}
-
+	public function registerUser($login, $email, $password) {
 		$user = $this->auth->register([
+			'login'  => $login,
 			'email'  => $email,
 			'password' => $password,
 		]);
@@ -62,43 +73,28 @@ class AuthHelper {
 	}
 
 	/**
-	 * @param $email
-	 * @param $code
-	 * @return \Cartalyst\Sentinel\Users\UserInterface
-	 * @throws FormException
-	 * @throws ValidationException
+	 * @param UserInterface $user
+	 * @param string $code
+	 * @return bool
 	 */
-	public function activateUser($email, $code) {
-		$user = $this->auth->getUserRepository()->findByCredentials([
-			'email' => $email
-		]);
-
-		if (!$user) {
-			throw new FormException('email', 'User not found');
-		}
-
-		$activation = $this->auth->getActivationRepository()->complete($user, $code);
-		if (!$activation) {
-			throw new ValidationException('Something wrong. Please Try again later.');
-		}
-
-		return $user;
+	public function activateUser(UserInterface $user, $code) {
+		return $this->auth->getActivationRepository()->complete($user, $code);
 	}
 
 	/**
-	 * @param $email
-	 * @param $password
+	 * @param string $login
+	 * @param string $password
 	 * @return bool|\Cartalyst\Sentinel\Users\UserInterface
 	 * @throws ValidationException
 	 */
-	public function loginUser($email, $password, $remember) {
+	public function loginUser($login, $password, $remember) {
 		$user =  $this->auth->authenticate([
-			'email' => $email,
+			'login' => $login,
 			'password' => $password
 		], (bool)$remember);
 
 		if (!$user) {
-			throw new ValidationException('Bad email or password');
+			throw new ValidationException('Bad login or password');
 		}
 
 		return $user;
@@ -112,20 +108,12 @@ class AuthHelper {
 	}
 
     /**
-     * @param $email
-     * @return bool
+     * @param UserInterface $user
+     * @return string
      * @throws FormException
      * @throws ValidationException
      */
-	public function resetPassword($email) {
-		$user = $this->auth->getUserRepository()->findByCredentials([
-			'email' => $email
-		]);
-
-		if (!$user) {
-			throw new FormException('email', 'User not found');
-		}
-
+	public function resetPassword(UserInterface $user) {
 		$reminderRepository = $this->auth->getReminderRepository();
 		if ($reminderRepository->exists($user)) {
 			throw new ValidationException('You already reset password');
@@ -140,22 +128,22 @@ class AuthHelper {
 		return $reminder->code;
 	}
 
-    public function resetPasswordComplete($email, $password, $password_repeat, $code) {
-        $user = $this->auth->getUserRepository()->findByCredentials([
-            'email' => $email
-        ]);
-
-        if (!$user) {
-            throw new FormException('email', 'User not found');
-        }
-
+	/**
+	 * @param UserInterface $user
+	 * @param $password
+	 * @param $code
+	 * @throws ValidationException
+	 */
+    public function resetPasswordComplete(UserInterface $user, $password, $code) {
         $reminderRepository = $this->auth->getReminderRepository();
         if (!$reminderRepository->exists($user)) {
             throw new ValidationException('Bad code');
         }
 
         /** @var EloquentReminder $reminder */
-        return $reminderRepository->complete($user, $code, $password);
+        if (!$reminderRepository->complete($user, $code, $password)) {
+			throw new ValidationException('Something wrong. Please Try again later.');
+		}
     }
 
 	/**

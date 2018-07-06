@@ -3,40 +3,42 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Server</th>
-            <th>Group</th>
-            <th>Prefix</th>
-            <th>Expired</th>
-            <th>Active</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for privilege in privileges %}
-            <tr>
-                <td>{{ privilege.group.server.name }}</td>
-                <td>{{ privilege.group.title }}</td>
-                <td>{{ privilege.prefix }}</td>
-                <td>{{ privilege.expired_at|date('d.m.Y') }}</td>
-                <td>{{ privilege.active ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path_for('admin_players_privileges_edit', {'player': player.id, 'privilege': privilege.id}) }}" class="btn btn-sm">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <form action="{{ path_for('admin_players_privileges_delete', {'player': player.id, 'privilege': privilege.id}) }}" method="post" style="display: inline-block">
-                        {{ csrf_token() }}
-                        <button type="submit" class="btn btn-sm">
-                            <span class="oi oi-delete"></span>
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Server</th>
+                    <th>Group</th>
+                    <th>Prefix</th>
+                    <th>Expired</th>
+                    <th>Active</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for privilege in privileges %}
+                <tr>
+                    <td class="text-nowrap">{{ privilege.group.server.name }}</td>
+                    <td class="text-nowrap">{{ privilege.group.title }}</td>
+                    <td class="text-nowrap">{{ privilege.prefix }}</td>
+                    <td class="text-nowrap">{{ privilege.expired_at|date('d.m.Y') }}</td>
+                    <td>{{ privilege.active ? 'Yes' : 'No' }}</td>
+                    <td class="text-nowrap">
+                        <a href="{{ path_for('admin_players_privileges_edit', {'player': player.id, 'privilege': privilege.id}) }}" class="btn btn-sm">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <form action="{{ path_for('admin_players_privileges_delete', {'player': player.id, 'privilege': privilege.id}) }}" method="post" style="display: inline-block">
+                            {{ csrf_token() }}
+                            <button type="submit" class="btn btn-sm">
+                                <span class="oi oi-delete"></span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 	{{ paginator.render(pagination) }}
     <a href="{{ path_for('admin_players_privileges_create', {'player': player.id}) }}" class="btn btn-primary">
         {{ trans('buttons', 'create') }}
