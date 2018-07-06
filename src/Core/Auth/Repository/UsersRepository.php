@@ -12,12 +12,15 @@ class UsersRepository extends IlluminateUserRepository {
      * {@inheritDoc}
      */
     public function findByCredentials(array $credentials) {
-        if (empty($credentials) || empty($credentials['email'])) {
+        if (empty($credentials) || empty($credentials['login'])) {
             return;
         }
 
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->createModel()->newQuery();
-        $query->where('email', $credentials['email']);
+        $query
+			->where('login', $credentials['login'])
+			->orWhere('email', $credentials['login']);
 
         return $query->first();
     }
@@ -45,8 +48,11 @@ class UsersRepository extends IlluminateUserRepository {
      * @throws \InvalidArgumentException
      */
     protected function validateUser(array $credentials, $id = null) {
+        if (empty($credentials['login'])) {
+            throw new InvalidArgumentException('No login credential was passed.');
+        }
         if (empty($credentials['email'])) {
-            throw new InvalidArgumentException('No [login] credential was passed.');
+            throw new InvalidArgumentException('No email credential was passed.');
         }
 
         if (empty($credentials['password'])) {

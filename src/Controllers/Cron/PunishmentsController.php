@@ -20,6 +20,6 @@ class PunishmentsController extends BaseCronController {
 			->where('expired_at', '<', Carbon::now()->toDateTimeString())
 			->update(['status' => Punishment::STATUS_EXPIRED]);
 
-		return new JobResult(true, 5);
+		return new JobResult(true, 10);
     }
 }

@@ -23,7 +23,7 @@ abstract class BaseModel extends Model {
 	 */
 	public static function boot() {
 		// TODO: WTF ??? It's need for create connection
-		self::$container->get('db');
+		self::$container['db'];
 	}
 
 	/**
