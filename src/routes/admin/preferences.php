@@ -6,6 +6,11 @@ return function () {
 	/** @var \Slim\App $this */
 	$this
 		->get('', BaseController::action(PreferencesController::class, 'index'))
-		->setName('admin_preferences')
+		->setName('admin_preferences_index')
+		->setArgument('permission', 'admin.preferences');
+
+	$this
+		->map(['GET', 'POST'], '/email', BaseController::action(PreferencesController::class, 'email'))
+		->setName('admin_preferences_email')
 		->setArgument('permission', 'admin.preferences');
 };

@@ -18,7 +18,7 @@ abstract class BaseAdminController extends BaseMainController {
 
 		$menu
 			->setActiveRoute($this->getActiveMenu())
-			->add(new MenuItem($lang->get('adminMenu', 'preferences'), 'admin_preferences', [], 'admin.preferences'))
+			->add(new MenuItem($lang->get('adminMenu', 'preferences'), 'admin_preferences_index', [], 'admin.preferences'))
 			->add(new MenuItem($lang->get('adminMenu', 'users'), 'admin_users_list', [], 'admin.users'))
 			->add(new MenuItem($lang->get('adminMenu', 'roles'), 'admin_roles_list', [], 'admin.roles'))
 			->add(new MenuItem($lang->get('adminMenu', 'servers'), 'admin_servers_list', [], 'admin.servers'))

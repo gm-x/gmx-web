@@ -1,5 +1,5 @@
 {% extends 'admin/admin.twig' %}
 
 {% block content %}
-	
+	{% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+	{% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
+	<form action="{{ form.getAction() }}" method="post">
+		{{ csrf_token() }}
+		{{ forms.element_checkbox(form.enabled) }}
+		<div class="form-group">
+			<input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
+			<a href="{{ path_for('admin_servers_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
+		</div>
+	</form>
+{% endblock %}
