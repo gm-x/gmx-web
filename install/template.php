@@ -66,20 +66,27 @@
             <button type="submit" class="btn btn-primary float-right">Install</button>
         </form>
     </div>
+    <div class="row justify-content-center  align-items-center">
+        <ul class="list-group col-8 w-100" id="status"></ul>
+    </div>
 </div>
 <script>
-	function result(nextCall) {
+    var statusList = $('#status');
+	function result(step, nextCall) {
+		var el= $('<li/>');
+		el.addClass('list-group-item').text('Install ' + step + ': installing ...');
+		statusList.append(el);
 		return function (data) {
 			if (data.success) {
-				alert('Success');
+				el.text('Install ' + step + ': installed');
 				nextCall();
 			} else {
-				alert('Error: ' + data.message);
+				el.text('Install ' + step + ': error ' + data.message);
 			}
 		}
 	}
 	function installComposer() {
-		$.post('<?= $baseUrl; ?>/install/?step=composer', result(installConfig));
+		$.post('<?= $baseUrl; ?>/install/?step=composer', result('composer', installConfig));
 	}
 
 	function installConfig() {
@@ -93,11 +100,11 @@
 				prefix: $('#formDatabasePrefix').val()
 			}
 		};
-		$.post('<?= $baseUrl; ?>/install/?step=config', data, result(installMigrations));
+		$.post('<?= $baseUrl; ?>/install/?step=config', data, result('config', installMigrations));
 	}
 
 	function installMigrations() {
-		$.post('<?= $baseUrl; ?>/install/?step=migrations', result(installAdmin));
+		$.post('<?= $baseUrl; ?>/install/?step=migrations', result('migrations', installAdmin));
 	}
 
 	function installAdmin() {
@@ -106,11 +113,11 @@
 			email: $('#formAdminEmail').val(),
 			pass: $('#formAdminPass').val()
 		};
-		$.post('<?= $baseUrl; ?>/install/?step=admin', data, result(installTasks));
+		$.post('<?= $baseUrl; ?>/install/?step=admin', data, result('administrator', installTasks));
 	}
 
 	function installTasks() {
-		$.post('<?= $baseUrl; ?>/install/?step=tasks', result(finish));
+		$.post('<?= $baseUrl; ?>/install/?step=tasks', result('tasks', finish));
 	}
 
 	function finish() {
@@ -120,6 +127,7 @@
 	$('#installForm').on('submit', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
+		statusList.empty();
 		installComposer();
 	});
 </script>
