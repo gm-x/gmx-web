@@ -18,6 +18,7 @@ use \Exception;
 class RolesController extends BaseAdminController {
     const PERMISSIONS = [
         'index' => 'Index',
+        'admin.preferences' => 'Site Preferences',
         'admin.users' => 'Admin Users CRUD',
         'admin.roles' => 'Admin Roles CRUD',
         'admin.servers' => 'Admin Servers CRUD',

@@ -45,6 +45,7 @@ $app->group('/admin', function () {
         ->setArgument('permission', 'admin.*');
 
     $root = __DIR__ . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR;
+    $this->group('/preferences', include  $root . 'preferences.php');
     $this->group('/users', include  $root . 'users.php');
     $this->group('/roles', include $root . 'roles.php');
     $this->group('/servers', include $root . 'servers.php');
