@@ -1,7 +1,8 @@
 <?php
 define('BASE_DIR', dirname(__DIR__));
+define('DS', DIRECTORY_SEPARATOR);
 
-include __DIR__ . DIRECTORY_SEPARATOR . 'functions.php';
+include __DIR__ . DS . 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	echo render('template', [
@@ -10,6 +11,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$step = isset($_GET['step']) ? $_GET['step'] : null;
 	switch ($step) {
+        case 'checks': {
+            if (!checkPhpVersion()) {
+                json([
+                    'success' => false,
+                    'message' => 'PHP must be 5.6.0 or higher'
+                ]);
+            } elseif (!is_writable(BASE_DIR . DS . 'runtime' . DS . 'cache')) {
+                json([
+                    'success' => false,
+                    'message' => sprintf('Folder %s is not writable', BASE_DIR . DS . 'runtime' . DS . 'cache')
+                ]);
+            } elseif (!is_writable(BASE_DIR . DS . 'runtime' . DS . 'logs')) {
+                json([
+                    'success' => false,
+                    'message' => sprintf('Folder %s is not writable', BASE_DIR . DS . 'runtime' . DS . 'logs')
+                ]);
+            } elseif (!is_writable(BASE_DIR . DS . 'runtime' . DS . 'twig_cache')) {
+                json([
+                    'success' => false,
+                    'message' => sprintf('Folder %s is not writable', BASE_DIR . DS . 'runtime' . DS . 'twig_cache')
+                ]);
+            } else {
+                json([
+                    'success' => true
+                ]);
+            }
+        } break;
+
 		case 'composer': {
 			try {
 				set_time_limit(0);
@@ -37,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$config['db']['password'] = $_POST['db']['pass'];
 				$config['db']['database'] = $_POST['db']['name'];
 				$config['db']['prefix'] = $_POST['db']['prefix'];
-				$filePath = BASE_DIR . DIRECTORY_SEPARATOR . 'config.json';
+				$filePath = BASE_DIR . DS . 'config.json';
 				$data = json_encode($config, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 				file_put_contents($filePath, $data);
 				json([

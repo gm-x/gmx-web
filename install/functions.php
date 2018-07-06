@@ -2,7 +2,7 @@
 function render($template, array $data = []) {
 	extract($data);
 	ob_start();
-	include __DIR__ . DIRECTORY_SEPARATOR . $template . '.php';
+	include __DIR__ . DS . $template . '.php';
 	return ob_get_clean();
 }
 
@@ -16,12 +16,16 @@ function getBaseUrl() {
 	return rtrim(dirname($_SERVER['REQUEST_URI']), '/'	);
 }
 
+function checkPhpVersion() {
+    return version_compare(PHP_VERSION, '5.6.0') >= 0;
+}
+
 function downloadComposer($dir) {
-	return file_put_contents($dir . DIRECTORY_SEPARATOR . 'composer.phar', file_get_contents('https://getcomposer.org/composer.phar')) !== false;
+	return file_put_contents($dir . DS . 'composer.phar', file_get_contents('https://getcomposer.org/composer.phar')) !== false;
 }
 
 function extractComposer($dir) {
-	$composerPhar = new Phar($dir . DIRECTORY_SEPARATOR .  'composer.phar');
+	$composerPhar = new Phar($dir . DS .  'composer.phar');
 	return $composerPhar->extractTo($dir);
 }
 
@@ -41,7 +45,7 @@ function rrmdir($dir) {
 }
 
 function composerInstall($baseDir) {
-	$tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('GameX', true) . DIRECTORY_SEPARATOR;
+	$tempDir = sys_get_temp_dir() . DS . uniqid('GameX', true) . DS;
 
 	if (!is_dir($tempDir)) {
 		if (!mkdir($tempDir, 0777, true)) {
@@ -55,7 +59,7 @@ function composerInstall($baseDir) {
 	if (!extractComposer($tempDir)) {
 		throw new Exception('Can\'t download composer to ' . $tempDir);
 	}
-	require_once($tempDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
+	require_once($tempDir . DS . 'vendor' . DS . 'autoload.php');
 
 	chdir($baseDir);
 //	https://getcomposer.org/doc/03-cli.md#composer-vendor-dir
@@ -95,7 +99,7 @@ function getBaseConfig() {
 			'auto_reload' => true
 		],
 		'mail' => [
-			'enabled' => 'false',
+			'enabled' => false,
 			'from' => [
 				'name' => 'test',
 				'email' => 'test@example.com'
@@ -152,13 +156,13 @@ function createUser($container, $login, $email, $password) {
 }
 
 function getContainer($baseDir, $phpmig = false) {
-    require $baseDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+    require $baseDir . DS . 'vendor' . DS . 'autoload.php';
     $container = new \GameX\Core\Container();
-    $container['config'] = json_decode(file_get_contents($baseDir . DIRECTORY_SEPARATOR . 'config.json'), true);
+    $container['config'] = json_decode(file_get_contents($baseDir . DS . 'config.json'), true);
     if ($phpmig) {
-        require $baseDir . DIRECTORY_SEPARATOR . 'phpmig.php';
+        require $baseDir . DS . 'phpmig.php';
     } else {
-        require $baseDir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'dependencies.php';
+        require $baseDir . DS . 'src' . DS . 'dependencies.php';
     }
 
 	return $container;
