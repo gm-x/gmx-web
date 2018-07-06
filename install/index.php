@@ -8,9 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		'baseUrl' => getBaseUrl()
 	]);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$step = isset($_GET['step']) ? (int)$_GET['step'] : null;
+	$step = isset($_GET['step']) ? $_GET['step'] : null;
 	switch ($step) {
-		case 1: {
+		case 'composer': {
 			try {
 				set_time_limit(0);
 				composerInstall(BASE_DIR);
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			}
 		} break;
 
-		case 2: {
+		case 'config': {
 			try {
 				if (!checkDbConnection($_POST['db'])) {
 					throw new Exception('Can\'t connect to database');
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			}
 		} break;
 
-		case 3: {
+		case 'migrations': {
 			try {
 				$container = getContainer(BASE_DIR, true);
 				runMigrations($container);
@@ -66,10 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			}
 		}
 
-		case 4: {
+		case 'admin': {
 			try {
                 $container = getContainer(BASE_DIR, true);
-				createUser($container, $_POST['email'], $_POST['pass']);
+				createUser($container, $_POST['login'], $_POST['email'], $_POST['pass']);
 				json([
 					'success' => true
 				]);
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			}
 		}
 
-		case 5: {
+		case 'tasks': {
 			try {
                 $container = getContainer(BASE_DIR, false);
 
@@ -97,6 +97,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 					'message' => $e->getMessage()
 				]);
 			}
+		}
+
+		default: {
+			json([
+				'success' => false,
+				'message' => 'Unknown step ' . $step
+			]);
 		}
 	}
 }

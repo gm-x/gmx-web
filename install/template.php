@@ -5,94 +5,122 @@
 ?>
 <html>
 <head>
-	<title>GameX Install</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GameX Install</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="<?= $baseUrl; ?>/assets/css/bootstrap.min.css">
+    <script src="<?= $baseUrl; ?>/assets/js/jquery-3.3.1.min.js"></script>
+    <script src="<?= $baseUrl; ?>/assets/js/bootstrap.min.js"></script>
 </head>
 <body>
-<button id="installComposer">Install composer</button>
-<hr>
-<form id="installConfig">
-	<fieldset>
-		<legend>Database:</legend>
-		<div>
-			<label>Host:</label>
-			<input type="text" name="db[host]" value="127.0.0.1">
-		</div>
-		<div>
-			<label>Port:</label>
-			<input type="text" name="db[port]" value="3306">
-		</div>
-		<div>
-			<label>User:</label>
-			<input type="text" name="db[user]" value="root">
-		</div>
-		<div>
-			<label>Password:</label>
-			<input type="text" name="db[pass]" value="">
-		</div>
-		<div>
-			<label>Name:</label>
-			<input type="text" name="db[name]" value="test">
-		</div>
-		<div>
-			<label>Prefix:</label>
-			<input type="text" name="db[prefix]" value="">
-		</div>
-	</fieldset>
-    <input type="submit" value="Save">
-</form>
-<hr>
-<button id="installMigrations">Run migrations</button>
-<hr>
-<form id="installUser">
-    <div>
-        <label>Email:</label>
-        <input type="text" name="email" value="">
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <form class="col-8" id="installForm">
+            <div class="form-row">
+                <div class="col">
+                    <fieldset>
+                        <legend>Database:</legend>
+                        <div class="form-group">
+                            <label>Host:</label>
+                            <input type="text" class="form-control" id="formDatabaseHost" value="127.0.0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Port:</label>
+                            <input type="text" class="form-control" id="formDatabasePort" value="3306">
+                        </div>
+                        <div class="form-group">
+                            <label>User:</label>
+                            <input type="text" class="form-control" id="formDatabaseUser" value="root">
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="password" class="form-control" id="formDatabasePass" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Database:</label>
+                            <input type="text" class="form-control" id="formDatabaseName" value="test">
+                        </div>
+                        <div class="form-group">
+                            <label>Prefix:</label>
+                            <input type="text" class="form-control" id="formDatabasePrefix" value="gamex_">
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col">
+                    <fieldset>
+                        <legend>Admin:</legend>
+                        <div class="form-group">
+                            <label>Username:</label>
+                            <input type="text" class="form-control" id="formAdminLogin" value="admin">
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" class="form-control" id="formAdminEmail" value="admin@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="password" class="form-control" id="formAdminPass" value="">
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary float-right">Install</button>
+        </form>
     </div>
-    <div>
-        <label>Password:</label>
-        <input type="text" name="pass">
-    </div>
-    <input type="submit" value="Save">
-</form>
-<button id="installCronJobs">Install cron jobs</button>
-<hr>
-<script
-	src="https://code.jquery.com/jquery-3.3.1.js"
-	integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-	crossorigin="anonymous"></script>
+</div>
 <script>
-    function result(data) {
-        if (data.success) {
-            alert('Finished');
-        } else {
-            alert('Error: ' + data.message);
-        }
-    }
-	$('#installComposer').on('click', function (e) {
+	function result(nextCall) {
+		return function (data) {
+			if (data.success) {
+				alert('Success');
+				nextCall();
+			} else {
+				alert('Error: ' + data.message);
+			}
+		}
+	}
+	function installComposer() {
+		$.post('<?= $baseUrl; ?>/install/?step=composer', result(installConfig));
+	}
+
+	function installConfig() {
+		var data = {
+			db: {
+				host: $('#formDatabaseHost').val(),
+				port: $('#formDatabasePort').val(),
+				user: $('#formDatabaseUser').val(),
+				pass: $('#formDatabasePass').val(),
+				name: $('#formDatabaseName').val(),
+				prefix: $('#formDatabasePrefix').val()
+			}
+		};
+		$.post('<?= $baseUrl; ?>/install/?step=config', data, result(installMigrations));
+	}
+
+	function installMigrations() {
+		$.post('<?= $baseUrl; ?>/install/?step=migrations', result(installAdmin));
+	}
+
+	function installAdmin() {
+		var data = {
+			login: $('#formAdminLogin').val(),
+			email: $('#formAdminEmail').val(),
+			pass: $('#formAdminPass').val()
+		};
+		$.post('<?= $baseUrl; ?>/install/?step=admin', data, result(installTasks));
+	}
+
+	function installTasks() {
+		$.post('<?= $baseUrl; ?>/install/?step=tasks', result(finish));
+	}
+
+	function finish() {
+		alert('Finished');
+	}
+
+	$('#installForm').on('submit', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=1', result);
-	});
-	$('#installConfig').on('submit', function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=2', $(this).serializeArray(), result);
-	});
-	$('#installMigrations').on('click', function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=3', result);
-	});
-	$('#installUser').on('submit', function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=4', $(this).serializeArray(), result);
-	});
-	$('#installCronJobs').on('click', function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		$.post('<?= $baseUrl; ?>/install/?step=5', result);
+		installComposer();
 	});
 </script>
 </body>

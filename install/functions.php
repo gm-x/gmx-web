@@ -127,7 +127,7 @@ function runMigrations($container) {
 	$app->up();
 }
 
-function createUser($container, $email, $password) {
+function createUser($container, $login, $email, $password) {
 	/** @var \Cartalyst\Sentinel\Sentinel $auth */
 	$auth = $container['auth'];
 
@@ -144,6 +144,7 @@ function createUser($container, $email, $password) {
 
     /** @var \GameX\Core\Auth\Models\UserModel $user */
 	$user = $auth->register([
+		'login'  => $login,
 		'email'  => $email,
 		'password' => $password,
 	], true);
