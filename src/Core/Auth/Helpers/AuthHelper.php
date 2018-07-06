@@ -58,17 +58,19 @@ class AuthHelper {
 	 * @throws FormException
 	 * @throws ValidationException
 	 */
-	public function registerUser($login, $email, $password) {
-		$user = $this->auth->register([
+	public function registerUser($login, $email, $password, $activate = false) {
+		return $this->auth->register([
 			'login'  => $login,
 			'email'  => $email,
 			'password' => $password,
-		]);
+		], $activate ? true : null);
+	}
 
-		if (!$user) {
-			throw new ValidationException('Something wrong. Please Try again later.');
-		}
-
+	/**
+	 * @param UserInterface $user
+	 * @return string
+	 */
+	public function getActivationCode(UserInterface $user) {
 		return $this->auth->getActivationRepository()->create($user)->getCode();
 	}
 

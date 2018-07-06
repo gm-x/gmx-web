@@ -2,6 +2,7 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
+use GameX\Core\Exceptions\NotAllowedException;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \GameX\Core\Forms\Elements\FormInputEmail;
 use \GameX\Core\Forms\Elements\FormInputPassword;
@@ -77,19 +78,26 @@ class UserController extends BaseMainController {
                 	if ($authHelper->exists($form->getValue('login'), $form->getValue('email'))) {
 						throw new ValidationException('User already exists');
 					}
-                    $activationCode = $authHelper->registerUser(
+
+					$enabledEmail = (bool) $this->getConfig('mail', 'enabled', false);
+                    $user = $authHelper->registerUser(
                         $form->getValue('login'),
                         $form->getValue('email'),
-                        $form->getValue('password')
+                        $form->getValue('password'),
+						!$enabledEmail
                     );
-					JobHelper::createTask('sendmail', [
-					    'type' => 'activation',
-                        'email' => $form->getValue('email'),
-                        'title' => 'Activation',
-                        'params' => [
-                            'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
-                        ],
-                    ]);
+
+                    if ($enabledEmail) {
+						$activationCode = $authHelper->getActivationCode($user);
+						JobHelper::createTask('sendmail', [
+							'type' => 'activation',
+							'email' => $form->getValue('email'),
+							'title' => 'Activation',
+							'params' => [
+								'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
+							],
+						]);
+					}
 					$connection->commit();
                     return $this->redirect('login');
                 } catch (Exception $e) {
@@ -105,6 +113,10 @@ class UserController extends BaseMainController {
     }
 
     public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
+		if (!$this->getConfig('mail', 'enabled', false)) {
+			throw new NotAllowedException();
+		}
+
     	$code = $args['code'];
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('activation');
@@ -142,6 +154,8 @@ class UserController extends BaseMainController {
     }
 
     public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
+		$enabledEmail = (bool) $this->getConfig('mail', 'enabled', false);
+
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('login');
         $form
@@ -186,6 +200,7 @@ class UserController extends BaseMainController {
 
 		return $this->render('user/login.twig', [
 			'form' => $form,
+			'enabledEmail' => $enabledEmail
 		]);
     }
 
@@ -196,6 +211,9 @@ class UserController extends BaseMainController {
 	}
 
 	public function resetPasswordAction(RequestInterface $request, ResponseInterface $response, array $args) {
+		if (!$this->getConfig('mail', 'enabled', false)) {
+			throw new NotAllowedException();
+		}
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('reset_password');
 		$form
@@ -240,8 +258,10 @@ class UserController extends BaseMainController {
 	}
 
 	public function resetPasswordCompleteAction(RequestInterface $request, ResponseInterface $response, array $args) {
+		if (!$this->getConfig('mail', 'enabled', false)) {
+			throw new NotAllowedException();
+		}
         $code = $args['code'];
-
 		$identical_password_validator = function($confirmation, $form) {
 			return $form->password === $confirmation;
 		};

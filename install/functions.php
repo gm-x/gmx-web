@@ -95,14 +95,13 @@ function getBaseConfig() {
 			'auto_reload' => true
 		],
 		'mail' => [
+			'enabled' => 'false',
 			'from' => [
 				'name' => 'test',
 				'email' => 'test@example.com'
 			],
 			'transport' => [
-				'type' => 'smtp',
-				'host' => '127.0.0.1',
-				'port' => 4651
+				'type' => 'none'
 			]
 		],
 		'secret' => 'secret_key'
