@@ -63,7 +63,7 @@
                     </fieldset>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary float-right">Install</button>
+            <button type="submit" class="btn btn-primary float-right" id="formSubmitButton">Install</button>
         </form>
     </div>
     <div class="row justify-content-center  align-items-center">
@@ -82,6 +82,7 @@
 				nextCall();
 			} else {
 				el.text('Install ' + step + ': error ' + data.message);
+                $('#formSubmitButton').prop('disabled', false);
 			}
 		};
 	}
@@ -92,6 +93,7 @@
                 success: false,
                 message: 'Server error'
             });
+            $('#formSubmitButton').prop('disabled', false);
         };
     }
 
@@ -153,13 +155,14 @@
 	}
 
 	function finish() {
-		alert('Finished');
+        $('#formSubmitButton').prop('disabled', false);
 	}
 
 	$('#installForm').on('submit', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		statusList.empty();
+		$('#formSubmitButton').prop('disabled', true);
         installChecks();
 	});
 </script>
