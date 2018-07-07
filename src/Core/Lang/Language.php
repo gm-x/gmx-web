@@ -44,7 +44,7 @@ class Language {
         $this->baseDir = $baseDir;
         $this->session = $session;
         $this->languages = $this->loadJson($this->baseDir . DIRECTORY_SEPARATOR . 'languages.json');
-        $this->userLanguage = $this->getUserLanguage($session, $request, $default);
+        $this->userLanguage = $this->checkUserLanguage($session, $request, $default);
         if (!$this->userLanguage) {
             throw new BadLanguageException();
         }
@@ -78,12 +78,26 @@ class Language {
     }
 
     /**
+     * @return string
+     */
+    public function getUserLanguage() {
+        return $this->userLanguage;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getLanguages() {
+        return $this->languages;
+    }
+
+    /**
      * @param Session $session
      * @param Request $request
      * @param string $default
-     * @return array
+     * @return string
      */
-    protected function getUserLanguage(Session $session, Request $request, $default) {
+    protected function checkUserLanguage(Session $session, Request $request, $default) {
         if ($session && $session->exists('lang')) {
             $language = $session->get('lang');
             if ($this->exists($language)) {

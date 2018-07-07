@@ -46,10 +46,20 @@
             </form>
             <ul class="navbar-nav mr-0">
                 <li class="nav-item dropdown mx-3">
-                    <a class="nav-link" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link" href="#" id="dropdownLangMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ userLangName }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownLangMenu">
+                        {% for key,value in siteLanguages %}
+                            <a class="dropdown-item" href="{{ path_for('language', {}, {'lang': key, 'r': currentUri}) }}">{{ value }}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link" href="#" id="dropdownMainMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="oi oi-ellipses"></span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMainMenu">
 
                         {% if not is_user() %}
                             <a class="dropdown-item" href="{{ path_for('login') }}">

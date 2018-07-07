@@ -69,8 +69,6 @@ abstract class BaseMainController extends BaseController {
 	protected function initMenu() {
 		/** @var Twig $view */
 		$view = $this->getContainer('view');
-		/** @var \o80\i18n\I18N $lang */
-//		$lang = $this->getContainer('lang');
 
 		$menu = new Menu();
 

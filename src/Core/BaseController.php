@@ -118,7 +118,7 @@ abstract class BaseController {
 	 * @return ResponseInterface
 	 */
 	protected function redirect($path, array $data = [], array $queryParams = [], $status = null) {
-		return $this->getContainer('response')->withRedirect(
+		return $this->redirectTo(
 			$this->pathFor($path, $data, $queryParams),
 			$status
 		);

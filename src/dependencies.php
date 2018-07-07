@@ -67,8 +67,11 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 		'cache' => $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache',
 	], $container['config']['twig']));
 
+	/** @var \Psr\Http\Message\UriInterface $uri */
+	$uri = $container->get('request')->getUri();
+
 	// Instantiate and add Slim specific extension
-	$basePath = rtrim(str_ireplace('index.php', '', $container->get('request')->getUri()->getBasePath()), '/');
+	$basePath = rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
 	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
 	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
 	$view->addExtension(new \GameX\Core\Auth\ViewExtension($container->get('auth')));
@@ -77,6 +80,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	$view->addExtension(new \GameX\Core\Twig_Dump());
 
 	$view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
+	$view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
 
 	return $view;
 };

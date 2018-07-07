@@ -3,8 +3,10 @@ namespace GameX\Core\Lang;
 
 use \Twig_Extension;
 use \Twig_SimpleFunction;
+use \Twig_Environment;
+use \Twig_Extension_InitRuntimeInterface;
 
-class ViewExtension extends Twig_Extension {
+class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntimeInterface {
 
 	/**
 	 * @var Language
@@ -19,7 +21,18 @@ class ViewExtension extends Twig_Extension {
 		$this->language = $language;
 	}
 
-	/**
+    /**
+     * @param Twig_Environment $environment
+     */
+    public function initRuntime(Twig_Environment $environment) {
+        $language = $this->language->getUserLanguage();
+        $languages = $this->language->getLanguages();
+        $environment->addGlobal('userLang', $language);
+        $environment->addGlobal('userLangName', $languages[$language]);
+        $environment->addGlobal('siteLanguages', $this->language->getLanguages());
+    }
+
+    /**
 	 * @return array
 	 */
 	public function getFunctions() {

@@ -16,6 +16,10 @@ $app->group('', function () {
         ->setName('index');
 
     $this
+        ->get('/lang', BaseController::action(IndexController::class, 'language'))
+        ->setName('language');
+
+    $this
         ->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))
         ->setName('punishments');
 
