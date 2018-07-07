@@ -3,21 +3,20 @@ namespace GameX\Core\Lang;
 
 use \Twig_Extension;
 use \Twig_SimpleFunction;
-//use \o80\i18n\I18N;
 
 class ViewExtension extends Twig_Extension {
 
 	/**
-	 * @var I18N
+	 * @var Language
 	 */
-	protected $i18n;
+	protected $language;
 
 	/**
-	 * ViewExtention constructor.
-	 * @param I18N $i18n
+	 * ViewExtension constructor.
+	 * @param Language $language
 	 */
-	public function __construct(I18N $i18n) {
-		$this->i18n = $i18n;
+	public function __construct(Language $language) {
+		$this->language = $language;
 	}
 
 	/**
@@ -36,12 +35,10 @@ class ViewExtension extends Twig_Extension {
 	/**
 	 * @param string $section
 	 * @param string $key
-	 * @param array|null $args
+	 * @param array $args
 	 * @return string
 	 */
-	public function translate($section, $key, array $args = null) {
-		return $args !== null
-			? $this->i18n->format($section, $key, $args)
-			: $this->i18n->get($section, $key);
+	public function translate($section, $key, ...$args) {
+		return $this->language->format($section, $key, $args);
 	}
 }

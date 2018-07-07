@@ -82,16 +82,14 @@ abstract class BaseController {
 	/**
 	 * @param $section
 	 * @param $key
-	 * @param array|null $args
+	 * @param array $args
 	 * @return string
 	 */
-	public function getTranslate($section, $key, array $args = null) {
+	public function getTranslate($section, $key, ...$args) {
         if ($this->translate === null) {
             $this->translate = $this->getContainer('lang');
         }
-        return $args !== null
-            ? $this->translate->format($section, $key, $args)
-            : $this->translate->get($section, $key);
+        return $this->translate->format($section, $key, $args);
     }
 
 	/**

@@ -45,13 +45,17 @@ abstract class BaseCronController {
     	return array_key_exists($key, $config) ? $config[$key] : $default;
 	}
 
-	public function getTranslate($section, $key, array $args = null) {
+    /**
+     * @param $section
+     * @param $key
+     * @param array $args
+     * @return string
+     */
+    public function getTranslate($section, $key, ...$args) {
         if ($this->translate === null) {
             $this->translate = $this->getContainer('lang');
         }
-        return $args !== null
-            ? $this->translate->format($section, $key, $args)
-            : $this->translate->get($section, $key);
+        return $this->translate->format($section, $key, $args);
     }
 
     /**

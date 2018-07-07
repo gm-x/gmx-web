@@ -20,9 +20,12 @@ $container['cache'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
-	$i18n = new \GameX\Core\Lang\I18n($container->get('session'), new \GameX\Core\Lang\LangProvider(), 'ru');
-	$i18n->setPath($container['root'] . 'langs');
-	return $i18n;
+    return new GameX\Core\Lang\Language(
+        $container['root'] . DIRECTORY_SEPARATOR . 'languages',
+        $container->get('session'),
+        $container->get('request'),
+        $container['config']['language']
+    );
 };
 
 $container['db'] = function (\Psr\Container\ContainerInterface $container) {
