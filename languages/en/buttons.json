@@ -8,5 +8,7 @@
 	"logout": "Logout",
 	"reset_password": "Reset password",
 	"change_password": "Change password",
-	"activate": "Activate"
+	"activate": "Activate",
+	"edit": "Edit",
+	"delete": "Delete"
 }
