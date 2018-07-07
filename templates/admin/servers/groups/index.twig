@@ -1,5 +1,6 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
@@ -18,15 +19,8 @@
 					<td class="text-nowrap">{{ group.title }}</td>
 					<td class="text-nowrap">{{ get_flags(group.flags) }}</td>
 					<td class="text-nowrap">
-						<a href="{{ path_for('admin_servers_groups_edit', {'server': server.id, 'group': group.id}) }}" class="btn btn-sm">
-							<span class="oi oi-pencil"></span>
-						</a>
-						<form action="{{ path_for('admin_servers_groups_delete', {'server': server.id, 'group': group.id}) }}" method="post" style="display: inline-block">
-							{{ csrf_token() }}
-							<button type="submit" class="btn btn-sm">
-								<span class="oi oi-delete"></span>
-							</button>
-						</form>
+                        {{ admin.edit_btn(path_for('admin_servers_groups_edit', {'server': server.id, 'group': group.id})) }}
+                        {{ admin.delete_btn(path_for('admin_servers_groups_delete', {'server': server.id, 'group': group.id})) }}
 					</td>
 				</tr>
 			{% endfor %}

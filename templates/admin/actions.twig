@@ -1,0 +1,15 @@
+<span class="dropdown">
+    <button
+            class="btn btn-sm btn-success dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            id="actionButtons{{ actionId }}"
+    >
+        Actions
+    </button>
+    <div class="dropdown-menu" aria-labelledby="actionButtons{{ actionId }}">
+        {% block actions %}{% endblock %}
+    </div>
+</span>

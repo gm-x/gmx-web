@@ -1,5 +1,6 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
@@ -24,15 +25,8 @@
                     <td class="text-nowrap">{{ privilege.expired_at|date('d.m.Y') }}</td>
                     <td>{{ privilege.active ? 'Yes' : 'No' }}</td>
                     <td class="text-nowrap">
-                        <a href="{{ path_for('admin_players_privileges_edit', {'player': player.id, 'privilege': privilege.id}) }}" class="btn btn-sm">
-                            <span class="oi oi-pencil"></span>
-                        </a>
-                        <form action="{{ path_for('admin_players_privileges_delete', {'player': player.id, 'privilege': privilege.id}) }}" method="post" style="display: inline-block">
-                            {{ csrf_token() }}
-                            <button type="submit" class="btn btn-sm">
-                                <span class="oi oi-delete"></span>
-                            </button>
-                        </form>
+                        {{ admin.edit_btn(path_for('admin_players_privileges_edit', {'player': player.id, 'privilege': privilege.id})) }}
+                        {{ admin.delete_btn(path_for('admin_players_privileges_delete', {'player': player.id, 'privilege': privilege.id})) }}
                     </td>
                 </tr>
             {% endfor %}

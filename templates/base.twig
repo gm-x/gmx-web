@@ -12,6 +12,7 @@
     {#<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe" crossorigin="anonymous"></script>#}
     <link href="{{ base_url() }}/assets/css/open-iconic-bootstrap.css" rel="stylesheet">
     {#<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css">#}
+    {% block style %}{% endblock %}
 </head>
 
 <body class="bg-light">
@@ -81,14 +82,10 @@
 
 {% block modals %}{% endblock %}
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
 <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="/assets/js/jquery-slim.min.js"><\/script>')</script>
-{#<script src="/assets/js/popper.min.js"></script>#}
+<script src="{{ base_url() }}/assets/js/popper.min.js"></script>
 <script src="{{ base_url() }}/assets/js/bootstrap.min.js"></script>
-{#<script src="/assets/js/holder.min.js"></script>#}
+<script src="/assets/js/holder.min.js"></script>
 <script src="{{ base_url() }}/assets/js/offcanvas.js"></script>
 {% block javascript %}{% endblock %}
 </body>

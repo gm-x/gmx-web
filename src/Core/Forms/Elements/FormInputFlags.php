@@ -16,7 +16,11 @@ class FormInputFlags extends FormInputText {
      * @inheritdoc
      */
     public function setValue($value) {
-        $this->value = Helper::readFlags($value);
+        if (preg_match('/^\d+$/', $value)) {
+            $this->value = (int)$value;
+        } else {
+            $this->value = Helper::readFlags($value);
+        }
         return $this;
     }
 
