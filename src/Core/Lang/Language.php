@@ -1,21 +1,23 @@
 <?php
 namespace GameX\Core\Lang;
 
-use \Slim\Http\Request;
-use \GameX\Core\Session\Session;
+use \GameX\Core\Lang\Interfaces\Loader;
+use \GameX\Core\Lang\Interfaces\Provider;
+use \GameX\Core\Lang\Exceptions\BadLanguageException;
+use \GameX\Core\Lang\Exceptions\CantReadException;
 
 class Language {
     const HTTP_ACCEPT_PATTERN = '/([[:alpha:]]{1,8}(?:-[[:alpha:]|-]{1,8})?)(?:\\s*;\\s*q\\s*=\\s*(?:1\\.0{0,3}|0\\.\\d{0,3}))?\\s*(?:,|$)/i';
 
     /**
-     * @var string
+     * @var Loader
      */
-    protected $baseDir;
+    protected $loader;
 
     /**
-     * @var Session|null
+     * @var Provider
      */
-    protected $session = null;
+    protected $provider = null;
 
     /**
      * @var string[]
@@ -34,17 +36,17 @@ class Language {
 
     /**
      * Lang constructor.
-     * @param $baseDir
-     * @param Session|null $session
-     * @param Request|null $request
+     * @param Loader $loader
+     * @param Provider $provider
+     * @param string[] $languages
      * @param string $default
-     * @throws CantReadJSONException|BadLanguageException
+     * @throws CantReadException|BadLanguageException
      */
-    public function __construct($baseDir, Session $session = null, Request $request = null, $default = 'en') {
-        $this->baseDir = $baseDir;
-        $this->session = $session;
-        $this->languages = $this->loadJson($this->baseDir . DIRECTORY_SEPARATOR . 'languages.json');
-        $this->userLanguage = $this->checkUserLanguage($session, $request, $default);
+    public function __construct(Loader $loader, Provider $provider, array $languages = ['en' => 'English'], $default = 'en') {
+        $this->loader = $loader;
+        $this->provider = $provider;
+        $this->languages = $languages;
+        $this->userLanguage = $this->checkUserLanguage($default);
         if (!$this->userLanguage) {
             throw new BadLanguageException();
         }
@@ -55,8 +57,8 @@ class Language {
      * @return $this
      */
     public function setUserLang($lang) {
-        if ($this->session && $this->exists($lang)) {
-            $this->session->set('lang', $lang);
+        if ($this->exists($lang)) {
+            $this->provider->setSessionLang($lang);
         }
         return $this;
     }
@@ -92,19 +94,15 @@ class Language {
     }
 
     /**
-     * @param Session $session
-     * @param Request $request
      * @param string $default
      * @return string
      */
-    protected function checkUserLanguage(Session $session, Request $request, $default) {
-        if ($session && $session->exists('lang')) {
-            $language = $session->get('lang');
-            if ($this->exists($language)) {
-                return $language;
-            }
+    protected function checkUserLanguage($default) {
+        $language = $this->provider->getSessionLang();
+        if ($language && $this->exists($language)) {
+            return $language;
         }
-        $language = $request ? $request->getServerParam('HTTP_ACCEPT_LANGUAGE') : null;
+        $language = $this->provider->getAcceptLanguageHeader();
         if ($language) {
             preg_match_all(self::HTTP_ACCEPT_PATTERN, $language, $matches);
             foreach($matches[1] as $match) {
@@ -123,27 +121,6 @@ class Language {
     }
 
     /**
-     * @param string $filePath
-     * @return mixed
-     * @throws CantReadJSONException
-     */
-    protected function loadJson($filePath) {
-        if (!is_readable($filePath)) {
-            throw new CantReadJSONException('Can\'t read file ' . $filePath);
-        }
-
-        $data = file_get_contents($filePath);
-        if (!$data) {
-            throw new CantReadJSONException('Can\'t read file ' . $filePath);
-        }
-        $data = json_decode($data, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new CantReadJSONException('Can\'t read file ' . $filePath);
-        }
-        return $data;
-    }
-
-    /**
      * @param string $section
      * @param string $key
      * @return string|null
@@ -151,10 +128,8 @@ class Language {
     protected function getMessage($section, $key) {
         if (!array_key_exists($section, $this->dictionary)) {
             try {
-                $this->dictionary[$section] = (array)$this->loadJson(
-                    $this->baseDir . DIRECTORY_SEPARATOR . $this->userLanguage . DIRECTORY_SEPARATOR . $section . '.json'
-                );
-            } catch (CantReadJSONException $e) {
+                $this->dictionary[$section] = (array)$this->loader->loadSection($this->userLanguage, $section);
+            } catch (CantReadxception $e) {
                 $this->dictionary[$section] = [];
             }
         }

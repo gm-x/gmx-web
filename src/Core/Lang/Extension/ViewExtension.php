@@ -1,10 +1,11 @@
 <?php
-namespace GameX\Core\Lang;
+namespace GameX\Core\Lang\Extension;
 
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 use \Twig_Environment;
 use \Twig_Extension_InitRuntimeInterface;
+use \GameX\Core\Lang\Language;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntimeInterface {
 

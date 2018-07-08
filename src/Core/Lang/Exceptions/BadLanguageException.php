@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Core\Lang;
+namespace GameX\Core\Lang\Exceptions;
 
 use \Exception;
 

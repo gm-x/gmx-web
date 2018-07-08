@@ -20,12 +20,12 @@ $container['cache'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
-    return new GameX\Core\Lang\Language(
-        $container['root'] . DIRECTORY_SEPARATOR . 'languages',
-        $container->get('session'),
-        $container->get('request'),
-        $container['config']['language']
-    );
+    $loader = new \GameX\Core\Lang\Loaders\JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
+    $provider = new \GameX\Core\Lang\Providers\SlimProvider($container->get('request'), $container->get('session'));
+    return new GameX\Core\Lang\Language($loader, $provider, [
+        'en' => 'English',
+        'ru' => 'Русский',
+    ], $container['config']['language']);
 };
 
 $container['db'] = function (\Psr\Container\ContainerInterface $container) {
@@ -75,7 +75,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
 	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
 	$view->addExtension(new \GameX\Core\Auth\ViewExtension($container->get('auth')));
-	$view->addExtension(new \GameX\Core\Lang\ViewExtension($container->get('lang')));
+	$view->addExtension(new \GameX\Core\Lang\Extension\ViewExtension($container->get('lang')));
 	$view->addExtension(new \GameX\Core\AccessFlags\ViewExtension());
 	$view->addExtension(new \GameX\Core\Twig_Dump());
 
