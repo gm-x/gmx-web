@@ -47,7 +47,7 @@ $container['auth'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
-    return new \GameX\Core\Mail\MailHelper($container);
+    return new \GameX\Core\Mail\Helper($container->get('view'), $container['config']['mail']);
 };
 
 $container['log'] = function (\Psr\Container\ContainerInterface $container) {

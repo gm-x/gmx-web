@@ -91,7 +91,8 @@ class UserController extends BaseMainController {
 						$activationCode = $authHelper->getActivationCode($user);
 						JobHelper::createTask('sendmail', [
 							'type' => 'activation',
-							'email' => $form->getValue('email'),
+							'user' => $user->login,
+							'email' => $user->email,
 							'title' => 'Activation',
 							'params' => [
 								'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
@@ -239,6 +240,7 @@ class UserController extends BaseMainController {
                     $reminderCode = $authHelper->resetPassword($user);
                     JobHelper::createTask('sendmail', [
                         'type' => 'reset_password',
+                        'user' => $user->login,
                         'email' => $user->email,
                         'title' => 'Reset Password',
                         'params' => [

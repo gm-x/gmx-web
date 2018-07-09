@@ -1,7 +1,6 @@
 <?php
 namespace GameX\Core\Mail\Senders;
 
-use \GameX\Core\Mail\Formatter;
 use \GameX\Core\Mail\Sender;
 use \GameX\Core\Mail\Message;
 use \GameX\Core\Mail\Exceptions\ConnectException;
@@ -9,7 +8,7 @@ use \GameX\Core\Mail\Exceptions\CodeException;
 use \GameX\Core\Mail\Exceptions\CryptoException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
-class SMTP extends Sender {
+class SMTP implements Sender {
 	/**
 	 * smtp socket
 	 */
@@ -61,7 +60,6 @@ class SMTP extends Sender {
 	protected $resultStack = [];
 
 	public function __construct($host, $port, $secure = null, $username = null, $password = null) {
-		parent::__construct();
 		$this->host = $host;
 		$this->port = $port;
 		$this->secure = $secure;
@@ -86,20 +84,21 @@ class SMTP extends Sender {
 				$this->auth($socket);
 			}
 
-			$in = 'MAIL FROM:<' . $message->getFromEmail() . '>' . Formatter::CRLF;
+			$in = 'MAIL FROM:<' . $message->getFrom()->getEmail() . '>' . Message::CRLF;
 			$this->pushStack($socket, $in);
 			$code = $this->getCode($socket);
 			if ($code !== '250') {
 				throw new CodeException('250', $code, array_pop($this->resultStack));
 			}
 
+			/** @var \GameX\Core\Mail\Email[] $emails */
 			$emails = array_merge(
 				$message->getTo(),
 				$message->getCc(),
 				$message->getBcc()
 			);
-			foreach ($emails as $email => $_) {
-				$in = 'RCPT TO:<' . $email . '>' . Formatter::CRLF;
+			foreach ($emails as $email) {
+				$in = 'RCPT TO:<' . $email->getEmail() . '>' . Message::CRLF;
 				$this->pushStack($socket, $in);
 				$code = $this->getCode($socket);
 				if ($code !== '250') {
@@ -107,7 +106,7 @@ class SMTP extends Sender {
 				}
 			}
 
-			$in = 'DATA' . Formatter::CRLF;
+			$in = 'DATA' . Message::CRLF;
 			$this->pushStack($socket, $in);
 			$code = $this->getCode($socket);
 			if ($code !== '354') {
@@ -119,7 +118,7 @@ class SMTP extends Sender {
 				throw new CodeException('250', $code, array_pop($this->resultStack));
 			}
 
-			$in = 'QUIT' . Formatter::CRLF;
+			$in = 'QUIT' . Message::CRLF;
 			$this->pushStack($socket, $in);
 			$code = $this->getCode($socket);
 			if ($code !== '221') {
@@ -150,7 +149,7 @@ class SMTP extends Sender {
 	}
 
 	protected function ehlo($socket) {
-		$in = 'EHLO ' . $this->host . Formatter::CRLF;
+		$in = 'EHLO ' . $this->host . Message::CRLF;
 		$this->pushStack($socket, $in);
 		$code = $this->getCode($socket);
 		if ($code !== '250') {
@@ -160,7 +159,7 @@ class SMTP extends Sender {
 	}
 
 	protected function startTLS($socket) {
-		$in = 'STARTTLS' . Formatter::CRLF;
+		$in = 'STARTTLS' . Message::CRLF;
 		$this->pushStack($socket, $in);
 		$code = $this->getCode($socket);
 		if ($code !== '220') {
@@ -172,19 +171,19 @@ class SMTP extends Sender {
 	}
 
 	protected function auth($socket) {
-		$in = "AUTH LOGIN" . Formatter::CRLF;
+		$in = "AUTH LOGIN" . Message::CRLF;
 		$this->pushStack($socket, $in);
 		$code = $this->getCode($socket);
 		if ($code !== '334') {
 			throw new CodeException('334', $code, array_pop($this->resultStack));
 		}
-		$in = base64_encode($this->username) . Formatter::CRLF;
+		$in = base64_encode($this->username) . Message::CRLF;
 		$this->pushStack($socket, $in);
 		$code = $this->getCode($socket);
 		if ($code !== '334') {
 			throw new CodeException('334', $code, array_pop($this->resultStack));
 		}
-		$in = base64_encode($this->password) . Formatter::CRLF;
+		$in = base64_encode($this->password) . Message::CRLF;
 		$this->pushStack($socket, $in);
 		$code = $this->getCode($socket);
 		if ($code !== '235') {
@@ -194,14 +193,14 @@ class SMTP extends Sender {
 
 	protected function getData(Message $message) {
 		$in = '';
-		$in .= 'From: ' . $this->formatter->getFromMail($message);
-		$in .= 'Subject: ' . $this->formatter->getSubject($message);
-		$headers = $this->formatter->getHeaders($message);
+		$in .= 'From: ' . $message->getFrom();
+		$in .= 'Subject: ' . $message->getSubject();
+		$headers = $message->getHeaders();
 		foreach ($headers as $key => $value) {
-			$in .= $key . ': ' . $value . Formatter::CRLF;
+			$in .= $key . ': ' . $value . Message::CRLF;
 		}
-		$in .= $this->formatter->getBody($message);
-		$in .= Formatter::CRLF . Formatter::CRLF . '.' . Formatter::CRLF;
+		$in .= $message->getMessage();
+		$in .= Message::CRLF . Message::CRLF . '.' . Message::CRLF;
 		return $in;
 	}
 

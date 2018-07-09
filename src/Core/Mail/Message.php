@@ -1,148 +1,169 @@
 <?php
-
 namespace GameX\Core\Mail;
 
+class Message {
 
-class Message{
-    /**
-     * from name
-     */
-    protected $fromName;
+	const CHARSET = "UTF-8";
 
-    /**
-     * from email
-     */
-    protected $fromEmail;
+	const CRLF = "\r\n";
 
-    /**
-     * to email
-     */
-    protected $to = array();
+	/**
+	 * header multipart boundaryMixed
+	 */
+	protected $boundaryMixed = null;
 
-    /**
-     * cc email
-     */
-    protected $cc = array();
+	/**
+	 * header multipart alternative
+	 */
+	protected $boundaryAlternative = null;
 
     /**
-     * bcc email
+     * @var Email
      */
-    protected $bcc = array();
+    protected $from;
+
+	/**
+	 * @var string
+	 */
+	protected $subject = '';
+
+	/**
+	 * @var Email
+	 */
+	protected $replyTo = null;
 
     /**
-     * mail subject
+     * @var Email[]
      */
-    protected $subject;
+    protected $to = [];
+
+    /**
+     * @var Email[]
+     */
+    protected $cc = [];
+
+    /**
+     * @var Email[]
+     */
+    protected $bcc = [];
 
     /**
      * mail body
      */
-    protected $body;
+    protected $body = '';
 
     /**
      *mail attachment
      */
     protected $attachment = [];
 
-    /**
-     * Address for the reply-to header
-     * @var string
-     */
-    protected $replyToName;
-
-    /**
-     * Address for the reply-to header
-     * @var string
-     */
-    protected $replyToEmail;
+	/**
+	 * @param Email $from
+	 */
+    public function __construct(Email $from) {
+    	$this->from = $from;
+	}
 
 	/**
-	 * header multipart boundaryMixed
-	 * @var string
+	 * @return Email
 	 */
-	protected $boundaryMixed;
+    public function getFrom() {
+    	return $this->from;
+	}
 
 	/**
-	 * header multipart alternative
-	 * @var string
+	 * set mail subject
+	 * @param string $subject
+	 * @return $this
 	 */
-	protected $boundaryAlternative;
+	public function setSubject($subject) {
+		$this->subject = (string) $subject;
+		return $this;
+	}
 
-    /**
-     * @param string$name
-     * @param string $email
+	/**
+	 * @return string
+	 */
+	public function getSubject() {
+		return !empty($this->subject) ? sprintf('=?utf-8?B?%s?= ', base64_encode($this->subject)) : '';
+	}
+
+	/**
+	 * @param Email $replyTo
+	 * @return $this
+	 */
+	public function setReplyTo(Email $replyTo) {
+		$this->replyTo = $replyTo;
+		return $this;
+	}
+
+	public function getReplyTo() {
+		return $this->replyTo;
+	}
+
+	/**
+     * @param Email $email
      * @return $this
      */
-    public function setReplyTo($name, $email) {
-        $this->replyToName = $name;
-        $this->replyToEmail = $email;
+    public function addTo(Email $email) {
+        $this->to[] = $email;
         return $this;
     }
 
+	/**
+	 * @return Email[]
+	 */
+	public function getTo() {
+		return $this->to;
+	}
+
     /**
-     * set mail from
-     * @param string $name
-     * @param string $email
+     * @param Email $email
      * @return $this
      */
-    public function setFrom($name, $email) {
-        $this->fromName = $name;
-        $this->fromEmail = $email;
+    public function addCc(Email $email) {
+        $this->cc[] = $email;
         return $this;
     }
 
+	/**
+	 * @return Email[]
+	 */
+	public function getCc() {
+		return $this->cc;
+	}
+
     /**
-     * add mail receiver
-     * @param string $name
-     * @param string $email
+     * @param Email $email
      * @return $this
      */
-    public function addTo($name, $email) {
-        $this->to[$email] = $name;
+    public function addBcc(Email $email) {
+        $this->bcc[] = $email;
         return $this;
     }
 
-    /**
-     * add cc mail receiver
-     * @param string $name
-     * @param string $email
-     * @return $this
-     */
-    public function addCc($name, $email) {
-        $this->cc[$email] = $name;
-        return $this;
-    }
+	/**
+	 * @return Email[]
+	 */
+	public function getBcc() {
+		return $this->bcc;
+	}
 
     /**
-     * add bcc mail receiver
-     * @param string $name
-     * @param string $email
-     * @return $this
-     */
-    public function addBcc($name, $email) {
-        $this->bcc[$email] = $name;
-        return $this;
-    }
-
-    /**
-     * set mail subject
-     * @param string $subject
-     * @return $this
-     */
-    public function setSubject($subject) {
-        $this->subject = $subject;
-        return $this;
-    }
-
-    /**
-     * set mail body
      * @param string $body
      * @return $this
      */
     public function setBody($body) {
-        $this->body = $body;
+        $this->body = (string) $body;
         return $this;
     }
+
+	/**
+	 * @return string
+	 */
+	public function getBody() {
+		return $this->body;
+	}
 
     /**
      * add mail attachment
@@ -153,69 +174,6 @@ class Message{
     public function addAttachment($name, $path) {
         $this->attachment[$name] = $path;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFromName() {
-        return $this->fromName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFromEmail() {
-        return $this->fromEmail;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReplyName() {
-        return $this->replyToName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReplyEmail() {
-        return $this->replyToEmail;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTo() {
-        return $this->to;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCc() {
-        return $this->cc;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBcc() {
-        return $this->bcc;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSubject() {
-        return $this->subject;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBody() {
-        return $this->body;
     }
 
     /**
@@ -233,34 +191,117 @@ class Message{
     }
 
 	/**
-	 * @param string $boundaryMixed
-	 * @return $this
-	 */
-    public function setBoundaryMixed($boundaryMixed) {
-    	$this->boundaryMixed = $boundaryMixed;
-    	return $this;
-	}
-
-	/**
-	 * @param string $boundaryAlternative
-	 * @return $this
-	 */
-	public function setBoundaryAlternative($boundaryAlternative) {
-    	$this->boundaryAlternative = $boundaryAlternative;
-    	return $this;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getBoundaryMixed() {
-		return $this->boundaryMixed ;
+		if ($this->boundaryMixed === null) {
+			$this->boundaryMixed = md5(md5(time() . 'MMailer') . uniqid());
+		}
+		return $this->boundaryMixed;
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getBoundaryAlternative() {
+		if ($this->boundaryAlternative === null) {
+			$this->boundaryAlternative = md5(md5(time() . 'AMailer') . uniqid());
+		}
 		return $this->boundaryAlternative;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getHeaders() {
+		$headers = [];
+		$headers['Date'] = date('r');
+
+		$headers['Return-Path'] = $this->from->getEmail();
+
+		$tmp = [];
+		foreach ($this->to as $email) {
+			$tmp[] = (string) $email;
+		}
+		$headers['To'] = implode(', ', $tmp);
+
+		$tmp = [];
+		foreach ($this->cc as $email) {
+			$tmp[] = (string) $email;
+		}
+		$headers['Cc'] = implode(', ', $tmp);
+
+		$tmp = [];
+		foreach ($this->bcc as $email) {
+			$tmp[] = (string) $email;
+		}
+		$headers['Bcc'] = implode(', ', $tmp);
+
+		if ($this->replyTo !== null) {
+			$headers['Reply-To'] = (string) $this->replyTo;
+		}
+
+		$headers['Message-ID'] = '<' . md5(uniqid()) . '@' . $this->from->getEmail() . '>';
+		$headers['X-Priority'] = '3';
+		$headers['MIME-Version'] = '1.0';
+		if ($this->hasAttachment()) {
+			$headers['Content-Type'] = "multipart/mixed; \r\n\tboundary=\"" . $this->getBoundaryMixed() . "\"";
+		}
+		return $headers;
+	}
+
+	public function getMessage() {
+		return $this->hasAttachment() ? $this->createBodyWithAttachment() : $this->createBody();
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function createBody() {
+		$body = chunk_split(base64_encode($this->body));
+		$result = '';
+		$result .= 'Content-Type: multipart/alternative; boundary="' . $this->getBoundaryAlternative(). '"' . self::CRLF . self::CRLF;
+		$result .= '--' . $this->getBoundaryAlternative() . self::CRLF;
+		$result .= 'Content-Type: text/plain; charset="' . self::CHARSET . '"' . self::CRLF;
+		$result .= "Content-Transfer-Encoding: base64" . self::CRLF . self::CRLF;
+		$result .= $body . self::CRLF . self::CRLF;
+		$result .= '--' . $this->getBoundaryAlternative() . self::CRLF;
+		$result .= 'Content-Type: text/html; charset="' . self::CHARSET . '"' . self::CRLF;
+		$result .= 'Content-Transfer-Encoding: base64' . self::CRLF . self::CRLF;
+		$result .= $body . self::CRLF . self::CRLF;
+		$result .= '--' . $this->getBoundaryAlternative() . '--' . self::CRLF;
+		return $result;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function createBodyWithAttachment() {
+		$body = chunk_split(base64_encode($this->body));
+		$result = self::CRLF . self::CRLF;
+		$result .= '--' . $this->getBoundaryMixed() . self::CRLF;
+		$result .= 'Content-Type: multipart/alternative; boundary="' . $this->getBoundaryAlternative() . '"' . self::CRLF . self::CRLF;
+		$result .= '--' . $this->getBoundaryAlternative() . self::CRLF;
+		$result .= 'Content-Type: text/plain; charset="' . self::CHARSET . '"' . self::CRLF;
+		$result .= 'Content-Transfer-Encoding: base64' . self::CRLF . self::CRLF;
+		$result .= $body . self::CRLF . self::CRLF;
+		$result .= "--" . $this->getBoundaryAlternative() . self::CRLF;
+		$result .= 'Content-Type: text/html; charset="' . self::CHARSET . '"' . self::CRLF . self::CRLF;
+		$result .= $body . self::CRLF . self::CRLF;
+		$result .= '--' . $this->getBoundaryAlternative() . '--' . self::CRLF;
+		foreach ($this->attachment as $name => $path) {
+			if (!is_readable($path)) {
+				continue;
+			}
+			$result .= self::CRLF;
+			$result .= '--' . $this->getBoundaryMixed() . self::CRLF;
+			$result .= 'Content-Type: application/octet-stream; name="' . $name . '"' . self::CRLF;
+			$result .= 'Content-Transfer-Encoding: base64' . self::CRLF;
+			$result .= 'Content-Disposition: attachment; filename="' . $name . '"' . self::CRLF . self::CRLF;
+			$result .= chunk_split(base64_encode(file_get_contents($path))) . self::CRLF;
+		}
+		$result .= self::CRLF . self::CRLF;
+		$result .= '--' . $this->getBoundaryMixed() . '--' . self::CRLF;
+		return $result;
 	}
 }

@@ -42,7 +42,7 @@ class Formatter {
         $headers = [];
         $headers['Date'] = date('r');
 
-        $headers['Return-Path'] = $message->getFromEmail();
+        $headers['Return-Path'] = $message->getFrom()->getEmail();
 //        $headers['From'] = $this->formatEmail($message->getFromEmail(), $message->getFromName());
 
         $tmp = [];

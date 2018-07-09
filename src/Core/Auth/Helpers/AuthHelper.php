@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Auth\Helpers;
 
+use GameX\Core\Auth\Models\UserModel;
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Sentinel;
@@ -27,7 +28,7 @@ class AuthHelper {
 
 	/**
 	 * @param string $login
-	 * @return UserInterface
+	 * @return UserModel|null
 	 */
 	public function findUser($login) {
 		return $this->auth->getUserRepository()->findByCredentials([
@@ -54,7 +55,7 @@ class AuthHelper {
 	 * @param string $login
 	 * @param string $email
 	 * @param string $password
-	 * @return bool
+	 * @return UserModel
 	 * @throws FormException
 	 * @throws ValidationException
 	 */
