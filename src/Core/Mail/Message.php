@@ -56,6 +56,18 @@ class Message{
      */
     protected $replyToEmail;
 
+	/**
+	 * header multipart boundaryMixed
+	 * @var string
+	 */
+	protected $boundaryMixed;
+
+	/**
+	 * header multipart alternative
+	 * @var string
+	 */
+	protected $boundaryAlternative;
+
     /**
      * @param string$name
      * @param string $email
@@ -219,4 +231,36 @@ class Message{
     public function hasAttachment() {
         return count($this->attachment) > 0;
     }
+
+	/**
+	 * @param string $boundaryMixed
+	 * @return $this
+	 */
+    public function setBoundaryMixed($boundaryMixed) {
+    	$this->boundaryMixed = $boundaryMixed;
+    	return $this;
+	}
+
+	/**
+	 * @param string $boundaryAlternative
+	 * @return $this
+	 */
+	public function setBoundaryAlternative($boundaryAlternative) {
+    	$this->boundaryAlternative = $boundaryAlternative;
+    	return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBoundaryMixed() {
+		return $this->boundaryMixed ;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBoundaryAlternative() {
+		return $this->boundaryAlternative;
+	}
 }

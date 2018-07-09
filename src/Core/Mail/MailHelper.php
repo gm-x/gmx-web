@@ -74,12 +74,11 @@ class MailHelper {
     }
 
     protected function sendMail(MailMessage $message) {
-    	return false;
-//        return mail(
-//            $message->getFromEmail(),
-//            $message->getSubject(),
-//            $message->getBodyForMail(),
-//            $message->getHeadersForMail()
-//        );
+        return mail(
+            $message->getFromEmail(),
+            $message->getSubject(),
+            $message->getBodyForMail(),
+            $message->getHeadersForMail()
+        );
     }
 }
