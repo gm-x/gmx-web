@@ -295,7 +295,7 @@ class Message {
 			}
 			$result .= self::CRLF;
 			$result .= '--' . $this->getBoundaryMixed() . self::CRLF;
-			$result .= 'Content-Type: application/octet-stream; name="' . $name . '"' . self::CRLF;
+			$result .= 'Content-Type: ' . mime_content_type($path) . '; name="' . $name . '"' . self::CRLF;
 			$result .= 'Content-Transfer-Encoding: base64' . self::CRLF;
 			$result .= 'Content-Disposition: attachment; filename="' . $name . '"' . self::CRLF . self::CRLF;
 			$result .= chunk_split(base64_encode(file_get_contents($path))) . self::CRLF;

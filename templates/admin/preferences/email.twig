@@ -9,7 +9,28 @@
 		{{ forms.element_checkbox(form.enabled) }}
 		<div class="form-group">
 			<input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
+			<a href="#" class="btn btn-warning hvr-grow" id="testMail">Test mail</a>
 			<a href="{{ path_for('admin_servers_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
 		</div>
 	</form>
+{% endblock %}
+
+{% block javascript %}
+	{{ parent() }}
+	<script>
+		$(document).ready(function () {
+			$('#testMail').on('click', function (e) {
+				e.stopPropagation();
+				e.preventDefault();
+
+				$.get('{{ path_for('admin_preferences_email_test') }}')
+					.done(function (data) {
+						console.log(data);
+					})
+					.catch(function (data) {
+						console.error(data)
+					});
+			});
+		});
+	</script>
 {% endblock %}

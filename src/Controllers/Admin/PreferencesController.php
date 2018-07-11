@@ -2,8 +2,9 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+use \Slim\Http\Request;
+use \Slim\Http\Response;
+use Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \Exception;
@@ -18,24 +19,24 @@ class PreferencesController extends BaseAdminController {
 	}
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
+	 * @param Request $request
+	 * @param Response $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function indexAction(Request $request, Response $response, array $args = []) {
 		return $this->render('admin/preferences/index.twig', [
 			'activeTab' => 'admin_preferences_index',
 		]);
     }
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
+	 * @param Request $request
+	 * @param Response $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function emailAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function emailAction(Request $request, Response $response, array $args = []) {
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('admin_preferences_email');
 		$form
@@ -66,4 +67,16 @@ class PreferencesController extends BaseAdminController {
 			'form' => $form
 		]);
     }
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
+    public function testAction(Request $request, Response $response, array $args = []) {
+    	return $response->withJson([
+    		'success' => true
+		]);
+	}
 }

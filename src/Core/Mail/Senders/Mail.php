@@ -7,12 +7,12 @@ use \GameX\Core\Mail\Exceptions\SendException;
 
 class Mail implements Sender {
 	public function send(Message $message) {
-		if (!mail(
-			(string) $message->getFrom(),
-			$message->getSubject(),
-			$message->getMessage(),
-			$message->getHeaders()
-		)) {
+		$headers = $message->getHeaders();
+		$header = '';
+		foreach ($headers as $key => $value) {
+			$header .= $key . ': ' . $value;
+		}
+		if (!mail((string) $message->getFrom(), $message->getSubject(), $message->getMessage(), $header)) {
 			throw new SendException();
 		}
 	}

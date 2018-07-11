@@ -13,4 +13,9 @@ return function () {
 		->map(['GET', 'POST'], '/email', BaseController::action(PreferencesController::class, 'email'))
 		->setName('admin_preferences_email')
 		->setArgument('permission', 'admin.preferences');
+
+	$this
+		->get('/email/test', BaseController::action(PreferencesController::class, 'test'))
+		->setName('admin_preferences_email_test')
+		->setArgument('permission', 'admin.preferences');
 };
