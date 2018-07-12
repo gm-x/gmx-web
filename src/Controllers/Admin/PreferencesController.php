@@ -2,7 +2,6 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
-use GameX\Core\Forms\Elements\FormSelect;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
@@ -11,6 +10,8 @@ use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \GameX\Core\Forms\Elements\FormInputText;
 use \GameX\Core\Forms\Elements\FormInputEmail;
+use \GameX\Core\Forms\Elements\FormSelect;
+use \GameX\Core\Forms\Elements\FormInputNumber;
 use \Exception;
 
 class PreferencesController extends BaseAdminController {
@@ -45,6 +46,7 @@ class PreferencesController extends BaseAdminController {
         $config = $this->getContainer('config');
         $settings = $config->get('mail');
         $from = $settings->get('from');
+        $transport = $settings->get('transport');
 
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('admin_preferences_email');
@@ -53,15 +55,30 @@ class PreferencesController extends BaseAdminController {
 				'title' => 'Enabled',
 			]))
 			->add(new FormInputText('from_name', $from->get('name'), [
-				'title' => 'From name',
+				'title' => 'From Name',
 			]))
 			->add(new FormInputEmail('from_email', $from->get('email'), [
-				'title' => 'From email',
+				'title' => 'From Email',
 			]))
-			->add(new FormSelect('from_email', $from->get('email'), [], [
-				'title' => 'From email',
+			->add(new FormSelect('transport_type', $transport->get('type'), [
+			    'smtp' => "SMTP",
+                'mail' => 'Mail'
+            ], [
+				'title' => 'Mail Transport',
+                'id' => 'email_pref_transport'
 			]))
+            ->add(new FormInputText('smtp_host', $transport->get('host'), [
+                'title' => 'Host',
+            ]))
+            ->add(new FormInputNumber('smtp_port', $transport->get('port'), [
+                'title' => 'Port',
+            ]))
 			->setRules('enabled', ['bool'])
+			->setRules('from_name', ['trim'])
+			->setRules('from_email', ['trim', 'email'])
+			->setRules('transport_type', ['trim', 'in' => ['smtp', 'mail']])
+			->setRules('smtp_host', ['trim'])
+			->setRules('smtp_port', ['numeric'])
 			->setAction((string)$request->getUri())
 			->processRequest($request);
 
@@ -70,8 +87,13 @@ class PreferencesController extends BaseAdminController {
 				return $this->redirectTo($form->getAction());
 			} else {
 				try {
-				    var_dump((bool) $form->getValue('enabled'));
-                    $settings->set('enabled', (bool) $form->getValue('enabled'));
+				    $enabled = (bool) $form->getValue('enabled');
+                    $settings->set('enabled', $enabled);
+                    $from->set('name', $form->getValue('from_name'));
+                    $from->set('email', $form->getValue('from_email'));
+                    $transport->set('type', $form->getValue('transport_type'));
+                    $transport->set('host', $form->getValue('smtp_host'));
+                    $transport->set('port', (int) $form->getValue('smtp_port'));
 				    $config->save();
 					return $this->redirect('admin_preferences_email');
 				} catch (Exception $e) {

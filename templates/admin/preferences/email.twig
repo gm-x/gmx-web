@@ -9,6 +9,14 @@
 		{{ forms.element_checkbox(form.enabled) }}
 		{{ forms.element_input(form.from_name) }}
 		{{ forms.element_input(form.from_email) }}
+		{{ forms.element_select(form.transport_type) }}
+		<div id="email_pref_smtp" class="{{ form.transport_type.getValue() != "smtp" ? 'd-none' : ''}}">
+			<fieldset>
+				<legend>SMTP</legend>
+                {{ forms.element_input(form.smtp_host) }}
+                {{ forms.element_input(form.smtp_port) }}
+			</fieldset>
+		</div>
 		<div class="form-group">
 			<input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
 			<a href="#" class="btn btn-warning hvr-grow" id="testMail">Test mail</a>
@@ -37,6 +45,14 @@
 						alert('Fail with server error');
 					});
 			});
+
+			$('#email_pref_transport').on('change', function () {
+				if ($(this).val() === 'smtp') {
+				    $('#email_pref_smtp').show();
+				} else {
+                    $('#email_pref_smtp').hide();
+				}
+            });
 		});
 	</script>
 {% endblock %}
