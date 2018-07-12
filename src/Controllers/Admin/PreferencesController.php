@@ -4,7 +4,7 @@ namespace GameX\Controllers\Admin;
 use \GameX\Core\BaseAdminController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
-use Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \Exception;
@@ -75,8 +75,18 @@ class PreferencesController extends BaseAdminController {
 	 * @return ResponseInterface
 	 */
     public function testAction(Request $request, Response $response, array $args = []) {
-    	return $response->withJson([
-    		'success' => true
-		]);
+    	try {
+			/** @var \GameX\Core\Mail\Helper $mail */
+			$mail = $this->getContainer('mail');
+			$mail->send($mail->getFrom(), 'test', 'Test Email');
+			return $response->withJson([
+				'success' => true,
+			]);
+		} catch (Exception $e) {
+			return $response->withJson([
+				'success' => false,
+				'message' => $e->getMessage()
+			]);
+		}
 	}
 }

@@ -29,6 +29,13 @@ class Helper {
 	}
 
 	/**
+	 * @return Email
+	 */
+	public function getFrom() {
+		return $this->from;
+	}
+
+	/**
 	 * @param string $template
 	 * @param array $data
 	 * @return string

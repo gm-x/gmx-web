@@ -25,10 +25,14 @@
 
 				$.get('{{ path_for('admin_preferences_email_test') }}')
 					.done(function (data) {
-						console.log(data);
+						if (data.success) {
+							alert('SUCCESS');
+						} else {
+							alert('Fail' + data.message);
+						}
 					})
-					.catch(function (data) {
-						console.error(data)
+					.catch(function () {
+						alert('Fail with server error');
 					});
 			});
 		});
