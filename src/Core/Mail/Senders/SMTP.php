@@ -193,8 +193,8 @@ class SMTP implements Sender {
 
 	protected function getData(Message $message) {
 		$in = '';
-		$in .= 'From: ' . $message->getFrom();
-		$in .= 'Subject: ' . $message->getSubject();
+		$in .= 'From: ' . $message->getFrom() . Message::CRLF;
+		$in .= 'Subject: ' . $message->getSubject() . Message::CRLF;
 		$headers = $message->getHeaders();
 		foreach ($headers as $key => $value) {
 			$in .= $key . ': ' . $value . Message::CRLF;
