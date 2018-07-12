@@ -4,6 +4,7 @@ namespace GameX\Core\Mail;
 use \Slim\Views\Twig;
 use \GameX\Core\Mail\Senders\SMTP;
 use \GameX\Core\Mail\Senders\Mail;
+use \GameX\Core\Configuration\Node;
 
 class Helper {
 
@@ -22,10 +23,16 @@ class Helper {
 	 */
 	protected $from;
 
-	public function __construct(Twig $view, array $config) {
+    /**
+     * Helper constructor.
+     * @param Twig $view
+     * @param Node $config
+     */
+	public function __construct(Twig $view, Node $config) {
 		$this->view = $view;
-		$this->sender = $this->createSender($config['transport']);
-		$this->from = new Email($config['from']['email'], !empty($config['from']['name']) ? $config['from']['name'] : null);
+		$this->sender = $this->createSender($config->get('transport'));
+		$from = $config->get('from');
+		$this->from = new Email($from->get('email'), $from->get('name'));
 	}
 
 	/**
@@ -69,16 +76,16 @@ class Helper {
 	 * @param $config
 	 * @return Sender
 	 */
-	protected function createSender($config) {
-		switch ($config['type']) {
+	protected function createSender(Node $config) {
+		switch ($config->get('type')) {
 			case 'smtp': {
-				$secure = null;
-				if (!empty($config['secure']) && in_array($config['secure'], ['ssl', 'tls'], true)) {
-					$secure = $config['secure'];
-				}
-				$username = !empty($config['username']) ? $config['username'] : null;
-				$password = !empty($config['password']) ? $config['password'] : null;
-				return new SMTP($config['host'], $config['port'], $secure, $username, $password);
+				return new SMTP(
+				    $config->get('host'),
+				    $config->get('port'),
+				    $config->get('secure'),
+				    $config->get('username'),
+				    $config->get('password')
+                );
 			}
 
 			default: {

@@ -53,11 +53,10 @@ class UsersController extends BaseAdminController {
 		$form = $this->getContainer('form')->createForm('admin_users_edit');
 		$form
 			->setAction((string)$request->getUri())
-			->add(new FormSelect('role', $user->role->slug, [
+			->add(new FormSelect('role', $user->role->slug, $roles, [
 				'title' => 'Role',
 				'error' => 'Required',
 				'required' => true,
-				'options' => $roles,
 				'empty_option' => 'Choose role'
 			]))
 			->setRules('role', ['required', 'trim', 'in' => array_keys($roles)])

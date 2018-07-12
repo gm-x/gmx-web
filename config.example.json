@@ -1,5 +1,11 @@
 {
-  "language": "en",
+  "language": {
+    "default": "ru",
+    "list": {
+      "en" : "English",
+      "ru" : "Русский"
+    }
+  },
   "db": {
     "driver": "mysql",
     "host": "127.0.0.1",

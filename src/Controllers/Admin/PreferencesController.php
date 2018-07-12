@@ -2,11 +2,15 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
+use GameX\Core\Forms\Elements\FormSelect;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Configuration\Config;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
+use \GameX\Core\Forms\Elements\FormInputText;
+use \GameX\Core\Forms\Elements\FormInputEmail;
 use \Exception;
 
 class PreferencesController extends BaseAdminController {
@@ -37,14 +41,25 @@ class PreferencesController extends BaseAdminController {
 	 * @return ResponseInterface
 	 */
     public function emailAction(Request $request, Response $response, array $args = []) {
+        /** @var Config $config */
+        $config = $this->getContainer('config');
+        $settings = $config->get('mail');
+        $from = $settings->get('from');
+
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('admin_preferences_email');
 		$form
-			->add(new FormInputCheckbox('enabled', false, [
+			->add(new FormInputCheckbox('enabled', $settings->get('enabled'), [
 				'title' => 'Enabled',
-				'error' => 'Required',
-				'required' => true,
-				'attributes' => [],
+			]))
+			->add(new FormInputText('from_name', $from->get('name'), [
+				'title' => 'From name',
+			]))
+			->add(new FormInputEmail('from_email', $from->get('email'), [
+				'title' => 'From email',
+			]))
+			->add(new FormSelect('from_email', $from->get('email'), [], [
+				'title' => 'From email',
 			]))
 			->setRules('enabled', ['bool'])
 			->setAction((string)$request->getUri())
@@ -55,6 +70,9 @@ class PreferencesController extends BaseAdminController {
 				return $this->redirectTo($form->getAction());
 			} else {
 				try {
+				    var_dump((bool) $form->getValue('enabled'));
+                    $settings->set('enabled', (bool) $form->getValue('enabled'));
+				    $config->save();
 					return $this->redirect('admin_preferences_email');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);
