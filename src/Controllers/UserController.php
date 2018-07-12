@@ -79,7 +79,7 @@ class UserController extends BaseMainController {
 						throw new ValidationException('User already exists');
 					}
 
-					$enabledEmail = (bool) $this->getConfig('mail', 'enabled', false);
+					$enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
                     $user = $authHelper->registerUser(
                         $form->getValue('login'),
                         $form->getValue('email'),
@@ -114,7 +114,8 @@ class UserController extends BaseMainController {
     }
 
     public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
-		if (!$this->getConfig('mail', 'enabled', false)) {
+        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
+		if (!$enabledEmail) {
 			throw new NotAllowedException();
 		}
 
@@ -155,7 +156,7 @@ class UserController extends BaseMainController {
     }
 
     public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
-		$enabledEmail = (bool) $this->getConfig('mail', 'enabled', false);
+        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
 
         /** @var Form $form */
         $form = $this->getContainer('form')->createForm('login');
@@ -212,9 +213,10 @@ class UserController extends BaseMainController {
 	}
 
 	public function resetPasswordAction(RequestInterface $request, ResponseInterface $response, array $args) {
-		if (!$this->getConfig('mail', 'enabled', false)) {
-			throw new NotAllowedException();
-		}
+        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
+        if (!$enabledEmail) {
+            throw new NotAllowedException();
+        }
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('reset_password');
 		$form
@@ -260,9 +262,10 @@ class UserController extends BaseMainController {
 	}
 
 	public function resetPasswordCompleteAction(RequestInterface $request, ResponseInterface $response, array $args) {
-		if (!$this->getConfig('mail', 'enabled', false)) {
-			throw new NotAllowedException();
-		}
+        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
+        if (!$enabledEmail) {
+            throw new NotAllowedException();
+        }
         $code = $args['code'];
 		$identical_password_validator = function($confirmation, $form) {
 			return $form->password === $confirmation;

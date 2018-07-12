@@ -55,11 +55,13 @@ class Language {
     /**
      * @param string $lang
      * @return $this
+     * @throws BadLanguageException
      */
     public function setUserLang($lang) {
-        if ($this->exists($lang)) {
-            $this->provider->setSessionLang($lang);
+        if (!$this->exists($lang)) {
+            throw new BadLanguageException();
         }
+        $this->provider->setSessionLang($lang);
         return $this;
     }
 

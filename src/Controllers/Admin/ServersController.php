@@ -58,7 +58,7 @@ class ServersController extends BaseAdminController {
                     $server->save();
 					$server->token = JWT::encode([
 						'server_id' => $server->id
-					], $this->getConfig('secret'), 'HS512');
+					], $this->getConfig('secret', ''), 'HS512');
 					$server->save();
 					return $this->redirect('admin_servers_list');
 				} catch (Exception $e) {

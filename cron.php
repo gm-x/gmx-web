@@ -3,7 +3,6 @@ require __DIR__ . '/vendor/autoload.php';
 $container = new \Slim\Container([
     'root' => __DIR__ . DIRECTORY_SEPARATOR
 ]);
-$container['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
 include __DIR__ . '/src/dependencies.php';
 
 use \GameX\Core\BaseCronController;
@@ -17,12 +16,11 @@ set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
     $logger->error("#$errno: $error in $file:$line");
 }, E_ALL);
 
-BaseCronController::setContainer($container);
-
 BaseCronController::registerKey('sendmail', \GameX\Controllers\Cron\SendMailController::class);
 BaseCronController::registerKey('monitoring', \GameX\Controllers\Cron\MonitoringlController::class);
 BaseCronController::registerKey('punishments', \GameX\Controllers\Cron\PunishmentsController::class);
 
+$task = null;
 try {
     $task = JobHelper::getTask();
     if ($task) {
@@ -30,7 +28,7 @@ try {
             'task' => $task->id
         ]);
         JobHelper::markTask($task, Task::STATUS_IN_PROGRESS);
-        $result = BaseCronController::execute($task->key, $task);
+        $result = BaseCronController::execute($task->key, $task, $container);
         if ($result->getStatus()) {
             if ($result->getNextTimeExecute() === null) {
                 JobHelper::markTask($task, Task::STATUS_DONE);
@@ -49,5 +47,7 @@ try {
     }
 } catch (Exception $e) {
     $logger->error((string)$e);
-    JobHelper::failTask($task);
+    if ($task) {
+        JobHelper::failTask($task);
+    }
 }
