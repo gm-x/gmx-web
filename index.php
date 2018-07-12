@@ -38,4 +38,11 @@ include __DIR__ . '/src/dependencies.php';
 include __DIR__ . '/src/middlewares.php';
 include __DIR__ . '/src/routes/index.php';
 
+/** @var \Monolog\Logger $logger */
+$logger = $container->get('log');
+
+set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
+    $logger->error("#$errno: $error in $file:$line");
+}, E_ALL);
+
 $app->run();

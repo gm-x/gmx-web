@@ -10,7 +10,7 @@ class Config {
 		$this->config = $config;
 	}
 
-	public function get
+//	public function get)
 
 	public static function loadFromFile($configPath) {
 		if (!is_readable($configPath)) {
