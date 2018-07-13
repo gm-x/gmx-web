@@ -32,8 +32,37 @@ class PreferencesController extends BaseAdminController {
 	 * @return ResponseInterface
 	 */
     public function indexAction(Request $request, Response $response, array $args = []) {
+		/** @var Config $config */
+		$config = $this->getContainer('config');
+
+		/** @var Form $form */
+		$form = $this->getContainer('form')->createForm('admin_preferences_main');
+		$form
+			->add(new FormInputText('title', $config->get('main')->get('title'), [
+				'title' => $this->getTranslate('admin_preferences', 'title'),
+				'required' => true,
+			]))
+			->setRules('title', ['required', 'trim', 'min_length' => 1])
+			->setAction((string)$request->getUri())
+			->processRequest($request);
+
+		if ($form->getIsSubmitted()) {
+			if (!$form->getIsValid()) {
+				return $this->redirectTo($form->getAction());
+			} else {
+				try {
+					$config->get('main')->set('title', $form->getValue('title'));
+					$config->save();
+					return $this->redirect('admin_preferences_index');
+				} catch (Exception $e) {
+					return $this->failRedirect($e, $form);
+				}
+			}
+		}
+
 		return $this->render('admin/preferences/index.twig', [
 			'activeTab' => 'admin_preferences_index',
+			'form' => $form,
 		]);
     }
 
@@ -125,7 +154,7 @@ class PreferencesController extends BaseAdminController {
 
 		return $this->render('admin/preferences/email.twig', [
 			'activeTab' => 'admin_preferences_email',
-			'form' => $form
+			'form' => $form,
 		]);
     }
 
