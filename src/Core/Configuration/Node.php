@@ -18,7 +18,7 @@ class Node {
     /**
      * @param string $key
      * @param mixed $value
-     * @return $this
+     * @return Node
      */
     public function set($key, $value) {
         $this->data[$key] = is_array($value) ? new self($value) : $value;
@@ -31,8 +31,28 @@ class Node {
      * @return Node|mixed|null
      */
     public function get($key, $default = null) {
-        return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
+        return $this->exists($key) ? $this->data[$key] : $default;
     }
+
+	/**
+	 * @param string $key
+	 * @return bool
+	 */
+    public function exists($key) {
+    	return array_key_exists($key, $this->data);
+	}
+
+	/**
+	 * @param string $key
+	 * @return Node
+	 */
+	public function remove($key) {
+    	if ($this->exists($key)) {
+    		unset($this->data[$key]);
+		}
+
+		return $this;
+	}
 
     /**
      * @return array

@@ -1,10 +1,10 @@
 <?php
 $container['config'] = function (\Psr\Container\ContainerInterface $container) {
-    return new GameX\Core\Configuration\Config($container->get('root') . '/config.json');
+    return new \GameX\Core\Configuration\Config($container->get('root') . '/config.json');
 };
 
 $container['session'] = function (\Psr\Container\ContainerInterface $container) {
-    return new GameX\Core\Session\Session();
+    return new \GameX\Core\Session\Session();
 };
 
 $container['flash'] = function (\Psr\Container\ContainerInterface $container) {
@@ -29,7 +29,7 @@ $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
 
     $loader = new \GameX\Core\Lang\Loaders\JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
     $provider = new \GameX\Core\Lang\Providers\SlimProvider($container->get('request'), $container->get('session'));
-    return new GameX\Core\Lang\Language(
+    return new \GameX\Core\Lang\Language(
         $loader, $provider,
         $config->get('language')->get('list')->toArray(),
         $config->get('language')->get('default')
@@ -105,7 +105,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 
 $container['modules'] = function (\Psr\Container\ContainerInterface $container) {
 	$modules = new \GameX\Core\Module\Module();
-	$modules->addModule(new GameX\Modules\TestModule\Module());
+	$modules->addModule(new \GameX\Modules\TestModule\Module());
 	return $modules;
 };
 

@@ -1,0 +1,43 @@
+{
+	"site": {
+		"title": "GameX"
+	},
+	"language": {
+		"default": "en",
+		"list": {
+			"en": "English",
+			"ru": "Russian"
+		}
+	},
+	"db": {
+		"driver": "mysql",
+		"host": "127.0.0.1",
+		"port": 3307,
+		"database": "test",
+		"username": "root",
+		"password": "",
+		"charset": "utf8",
+		"collation": "utf8_unicode_ci",
+		"prefix": "gamex_"
+	},
+	"session": {
+		"name": "sessid",
+		"autorefresh": true,
+		"lifetime": "1 hour"
+	},
+	"view": {
+		"debug": false,
+		"auto_reload": false
+	},
+	"mail": {
+		"enabled": false,
+		"from": {
+			"name": "test",
+			"email": "test@example.com"
+		},
+		"transport": {
+			"type": "mail"
+		}
+	},
+	"secret": "secret_key"
+}
