@@ -35,7 +35,7 @@ class SettingsController extends BaseMainController {
             ->processRequest($request);
     
         $passwordValidator = function($confirmation, $form) {
-            return $form->password === $confirmation;
+            return $form->new_password === $confirmation;
         };
         
         $passwordForm = $this->createForm('user_settings_password')
@@ -85,7 +85,7 @@ class SettingsController extends BaseMainController {
                     $this->addSuccessMessage('Password updated successfully');
                     return $this->redirect('user_settings');
                 } catch (Exception $e) {
-                    return $this->failRedirect($e, $emailForm);
+                    return $this->failRedirect($e, $passwordForm);
                 }
             }
         }
