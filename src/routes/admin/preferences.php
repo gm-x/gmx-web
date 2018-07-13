@@ -5,7 +5,7 @@ use \GameX\Controllers\Admin\PreferencesController;
 return function () {
 	/** @var \Slim\App $this */
 	$this
-		->get('', BaseController::action(PreferencesController::class, 'index'))
+        ->map(['GET', 'POST'], '', BaseController::action(PreferencesController::class, 'index'))
 		->setName('admin_preferences_index')
 		->setArgument('permission', 'admin.preferences');
 
@@ -15,7 +15,7 @@ return function () {
 		->setArgument('permission', 'admin.preferences');
 
 	$this
-		->get('/email/test', BaseController::action(PreferencesController::class, 'test'))
+		->post('/email/test', BaseController::action(PreferencesController::class, 'test'))
 		->setName('admin_preferences_email_test')
 		->setArgument('permission', 'admin.preferences');
 };

@@ -49,29 +49,37 @@ abstract class BaseMainController extends BaseController {
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function render($template, array $data = []) {
+    public function render($template, array $data = []) {
         /** @var Twig $view */
         $view = $this->getContainer('view');
         return $view->render($this->getContainer('response'), $template, $data);
     }
 
     /**
-     * @param string $type
      * @param string $message
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function addFlashMessage($type, $message) {
-        $this->getContainer('flash')->addMessage($type, $message);
+    public function addErrorMessage($message) {
+        $this->getContainer('flash')->addMessage('error', $message);
+    }
+
+    /**
+     * @param string $message
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function addSuccessMessage($message) {
+        $this->getContainer('flash')->addMessage('success', $message);
     }
 
     protected function failRedirect(Exception $e, Form $form) {
         if ($e instanceof FormException) {
             $form->setError($e->getField(), $e->getMessage());
         } elseif ($e instanceof ValidationException) {
-            $this->addFlashMessage('error', $e->getMessage());
+            $this->addErrorMessage($e->getMessage());
         } else {
-            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+            $this->addErrorMessage('Something wrong. Please Try again later.');
         }
 
         $form->saveValues();

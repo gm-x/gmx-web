@@ -9,5 +9,6 @@
 	"secure": "Secure",
 	"secure_none": "None",
 	"username": "Username",
-	"password": "Password"
+	"password": "Password",
+	"title": "Title"
 }

@@ -128,7 +128,7 @@ class GroupsController extends BaseAdminController {
         try {
             $group->delete();
         } catch (Exception $e) {
-            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+            $this->addErrorMessage('Something wrong. Please Try again later.');
             /** @var \Monolog\Logger $logger */
             $logger = $this->getContainer('log');
             $logger->error((string) $e);

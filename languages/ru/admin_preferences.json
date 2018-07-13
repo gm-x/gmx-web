@@ -9,5 +9,6 @@
 	"secure": "Безопасность",
 	"secure_none": "Отсутсвует",
 	"username": "Логин",
-	"password": "Пароль"
+	"password": "Пароль",
+	"title": "Заголовок"
 }

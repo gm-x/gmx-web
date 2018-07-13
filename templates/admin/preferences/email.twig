@@ -60,7 +60,7 @@
 				e.stopPropagation();
 				e.preventDefault();
 
-				$.get('{{ path_for('admin_preferences_email_test') }}')
+				$.post('{{ path_for('admin_preferences_email_test') }}')
 					.done(function (data) {
 						if (data.success) {
 							$('#testMailModalLabel').text('Success');

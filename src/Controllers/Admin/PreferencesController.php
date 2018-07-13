@@ -53,6 +53,7 @@ class PreferencesController extends BaseAdminController {
 				try {
 					$config->get('main')->set('title', $form->getValue('title'));
 					$config->save();
+                    $this->addSuccessMessage('Saved');
 					return $this->redirect('admin_preferences_index');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);
@@ -145,6 +146,7 @@ class PreferencesController extends BaseAdminController {
                     $transport->set('username', $form->getValue('smtp_user'));
                     $transport->set('password', $form->getValue('smtp_pass'));
 				    $config->save();
+                    $this->addSuccessMessage('Saved');
 					return $this->redirect('admin_preferences_email');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);

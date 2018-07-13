@@ -1,5 +1,7 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/forms.twig' as forms %}
+
 {% block content %}
 	{% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
 	<form action="{{ form.getAction() }}" method="post">

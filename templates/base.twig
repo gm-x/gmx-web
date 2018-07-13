@@ -82,8 +82,12 @@
 
 <main role="main" class="container">
     <div class="my-3 p-3 bg-white rounded box-shadow">
-    {% for error in flash_messages.error %}
-        <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% for message in flash_messages.success %}
+        <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in flash_messages.error %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
     {% endfor %}
 
     {% block content %}{% endblock %}
