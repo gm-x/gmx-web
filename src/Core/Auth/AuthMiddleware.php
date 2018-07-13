@@ -37,7 +37,7 @@ class AuthMiddleware {
 		}
         $permission = $route->getArgument('permission');
         if ($permission === null) {
-            return $next($request->withAttribute(), $response);
+            return $next($request, $response);
         }
         $user = $this->auth->getUser();
         if (!$user || !$user->hasAccess($permission)) {
