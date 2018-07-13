@@ -1,0 +1,18 @@
+<ul class="nav nav-tabs">
+	<li class="nav-item">
+		<a
+			class="nav-link {{ activeTab == 'admin_preferences_index' ? 'active' : '' }}"
+			href="{{ path_for('admin_preferences_index') }}"
+		>
+			{{ trans('admin_preferences', 'tab_main') }}
+		</a>
+	</li>
+	<li class="nav-item">
+		<a
+			class="nav-link {{ activeTab == 'admin_preferences_email' ? 'active' : '' }}"
+			href="{{ path_for('admin_preferences_email') }}"
+		>
+            {{ trans('admin_preferences', 'tab_email') }}
+		</a>
+	</li>
+</ul>

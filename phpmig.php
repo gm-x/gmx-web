@@ -17,11 +17,17 @@ $container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migratio
 //     glob('migrations_2/*.php')
 // );
 
-$container['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
+$container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
 
-$container['db'] = function ($c) {
+$container['config'] = function ($container) {
+	return new \GameX\Core\Configuration\Config($container['root'] . DIRECTORY_SEPARATOR . 'config.json');
+};
+
+$container['db'] = function ($container) {
+	/** @var \GameX\Core\Configuration\Config $config */
+	$config = $container['config'];
     $capsule = new Capsule();
-    $capsule->addConnection($c['config']['db']);
+    $capsule->addConnection($config->get('db')->toArray());
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 
@@ -34,8 +40,8 @@ $container['auth'] = function ($container) {
 	return $bootsrap->createSentinel();
 };
 
-$container['phpmig.adapter'] = function($c) {
-    return new Adapter\Illuminate\Database($c['db'], 'migrations');
+$container['phpmig.adapter'] = function($container) {
+    return new Adapter\Illuminate\Database($container['db'], 'migrations');
 };
 
 return $container;

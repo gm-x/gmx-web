@@ -1,0 +1,88 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+	{% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
+	<form action="{{ form.getAction() }}" method="post">
+		{{ csrf_token() }}
+		{{ forms.element_checkbox(form.enabled) }}
+		{{ forms.element_input(form.from_name) }}
+		{{ forms.element_input(form.from_email) }}
+		{{ forms.element_select(form.transport_type) }}
+		<div id="email_pref_smtp" class="{{ form.transport_type.getValue() != "smtp" ? 'd-none' : ''}}">
+			<fieldset>
+				<legend>SMTP</legend>
+                {{ forms.element_input(form.smtp_host) }}
+                {{ forms.element_input(form.smtp_port) }}
+                {{ forms.element_select(form.smtp_secure) }}
+                {{ forms.element_input(form.smtp_user) }}
+                {{ forms.element_input(form.smtp_pass) }}
+			</fieldset>
+		</div>
+		<div class="form-group">
+			<input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
+			<a href="#" class="btn btn-warning hvr-grow" id="testMail">{{ trans('admin_preferences', 'test_mail') }}</a>
+		</div>
+	</form>
+{% endblock %}
+
+{% block modals %}
+	{{ parent() }}
+	<div
+		class="modal fade"
+		id="testMailModal"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="testMailModalLabel"
+		aria-hidden="true"
+	>
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="testMailModalLabel"></h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						{{ trans('buttons', 'close') }}
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	{{ parent() }}
+	<script>
+		$(document).ready(function () {
+			$('#testMail').on('click', function (e) {
+				e.stopPropagation();
+				e.preventDefault();
+
+				$.post('{{ path_for('admin_preferences_email_test') }}')
+					.done(function (data) {
+						if (data.success) {
+							$('#testMailModalLabel').text('Success');
+							$('#testMailModal').modal('show');
+						} else {
+							$('#testMailModalLabel').text('Fail: ' + data.message || 'Unknown');
+							$('#testMailModal').modal('show');
+						}
+					})
+					.catch(function () {
+						$('#testMailModalLabel').text('Fail: Server Error');
+						$('#testMailModal').modal('show');
+					});
+			});
+
+			$('#email_pref_transport').on('change', function () {
+				if ($(this).val() === 'smtp') {
+				    $('#email_pref_smtp').show();
+				} else {
+                    $('#email_pref_smtp').hide();
+				}
+            });
+		});
+	</script>
+{% endblock %}

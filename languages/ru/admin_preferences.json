@@ -1,0 +1,17 @@
+{
+	"tab_main": "Основные настройки",
+	"tab_email": "Настройки email",
+	"test_mail": "Отправить тестовый email",
+	"enabled": "Включено",
+	"from_name": "Имя отправителя",
+	"from_email": "Email отправителя",
+	"transport": "Транспорт",
+	"host": "Хост",
+	"port": "Порт",
+	"secure": "Безопасность",
+	"secure_none": "Отсутсвует",
+	"username": "Логин",
+	"password": "Пароль",
+	"title": "Заголовок",
+	"language": "Язык"
+}

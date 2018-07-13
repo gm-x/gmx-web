@@ -1,5 +1,6 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
@@ -22,18 +23,16 @@
                     <td class="text-nowrap">{{ player.steamid }}</td>
                     <td class="text-nowrap">{{ player.nick }}</td>
                     <td class="text-nowrap">
-                        <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="btn btn-sm">
-                            <span class="oi oi-people"></span>
-                        </a>
-                        <a href="{{ path_for('admin_players_edit', {'player': player.id}) }}" class="btn btn-sm">
-                            <span class="oi oi-pencil"></span>
-                        </a>
-                        <form action="{{ path_for('admin_players_delete', {'player': player.id}) }}" method="post" style="display: inline-block">
-                            {{ csrf_token() }}
-                            <button type="submit" class="btn btn-sm">
-                                <span class="oi oi-delete"></span>
-                            </button>
-                        </form>
+                        {% embed "admin/actions.twig" with {'actionId': role.id} %}
+                            {% block actions %}
+                                <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="dropdown-item">
+                                    <span class="oi oi-people"></span> Privileges
+                                </a>
+                            {% endblock %}
+                        {% endembed %}
+
+                        {{ admin.edit_btn(path_for('admin_players_edit', {'player': player.id})) }}
+                        {{ admin.delete_btn(path_for('admin_players_delete', {'player': player.id})) }}
                     </td>
                 </tr>
             {% endfor %}

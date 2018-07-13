@@ -2,9 +2,10 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
-use \Psr\Http\Message\RequestInterface;
+use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Models\Server;
+use \GameX\Core\Lang\Language;
 
 class IndexController extends BaseMainController {
 
@@ -16,12 +17,12 @@ class IndexController extends BaseMainController {
 	}
 
 	/**
-	 * @param RequestInterface $request
+	 * @param Request $request
 	 * @param ResponseInterface $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function indexAction(RequestInterface $request, ResponseInterface $response, array $args) {
+    public function indexAction(Request $request, ResponseInterface $response, array $args) {
     	/** @var \Stash\Pool $item$cache */
 		$cache = $this->getContainer('cache');
 
@@ -53,5 +54,18 @@ class IndexController extends BaseMainController {
         return $this->render('index/index.twig', [
         	'servers' => $servers,
 		]);
+    }
+
+    /**
+     * @param Request $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+    public function languageAction(Request $request, ResponseInterface $response, array $args) {
+        /** @var Language $lang */
+        $lang = $this->getContainer('lang');
+        $lang->setUserLang($request->getParam('lang'));
+        return $this->redirectTo($request->getParam('r'));
     }
 }

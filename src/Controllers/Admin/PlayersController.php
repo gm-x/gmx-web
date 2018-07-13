@@ -119,7 +119,7 @@ class PlayersController extends BaseAdminController {
 		try {
 			$player->delete();
 		} catch (Exception $e) {
-			$this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+			$this->addErrorMessage('Something wrong. Please Try again later.');
 			/** @var \Monolog\Logger $logger */
 			$logger = $this->getContainer('log');
 			$logger->error((string) $e);
@@ -193,17 +193,16 @@ class PlayersController extends BaseAdminController {
 				'required' => true,
 			]))
 			->add(new FormSelect('auth_type', $player->auth_type, [
+                Player::AUTH_TYPE_STEAM => 'Steam ID',
+                Player::AUTH_TYPE_STEAM_AND_PASS => 'Steam ID + pass',
+                Player::AUTH_TYPE_NICK_AND_PASS => 'Nick + pass',
+                Player::AUTH_TYPE_STEAM_AND_HASH => 'Steam ID + hash',
+                Player::AUTH_TYPE_NICK_AND_HASH => 'Nick + hash',
+            ], [
 				'title' => 'Auth Type',
 				'error' => 'Required',
 				'required' => true,
 				'empty_option' => 'Choose auth type',
-				'options' => [
-					Player::AUTH_TYPE_STEAM => 'Steam ID',
-					Player::AUTH_TYPE_STEAM_AND_PASS => 'Steam ID + pass',
-					Player::AUTH_TYPE_NICK_AND_PASS => 'Nick + pass',
-					Player::AUTH_TYPE_STEAM_AND_HASH => 'Steam ID + hash',
-					Player::AUTH_TYPE_NICK_AND_HASH => 'Nick + hash',
-				]
 			]))
 			->add(new FormInputPassword('password', '', [
 				'title' => 'Password',

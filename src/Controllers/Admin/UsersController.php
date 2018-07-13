@@ -39,7 +39,7 @@ class UsersController extends BaseAdminController {
     }
 
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-		$user = $this->getUser($request, $response, $args);
+		$user = $this->getUserFromRequest($request, $response, $args);
 
 		/** @var RoleModel[] $roles */
 		$rolesCollection = $this->getContainer('auth')->getRoleRepository()->all();
@@ -53,11 +53,10 @@ class UsersController extends BaseAdminController {
 		$form = $this->getContainer('form')->createForm('admin_users_edit');
 		$form
 			->setAction((string)$request->getUri())
-			->add(new FormSelect('role', $user->role->slug, [
+			->add(new FormSelect('role', $user->role->slug, $roles, [
 				'title' => 'Role',
 				'error' => 'Required',
 				'required' => true,
-				'options' => $roles,
 				'empty_option' => 'Choose role'
 			]))
 			->setRules('role', ['required', 'trim', 'in' => array_keys($roles)])
@@ -92,7 +91,7 @@ class UsersController extends BaseAdminController {
      * @return UserInterface
      * @throws NotFoundException
      */
-    protected function getUser(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    protected function getUserFromRequest(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         $user = $this->userRepository->findById($args['user']);
         if (!$user) {
             throw new NotFoundException($request, $response);

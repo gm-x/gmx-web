@@ -134,7 +134,7 @@ class PrivilegesController extends BaseAdminController {
         try {
 			$privilege->delete();
         } catch (Exception $e) {
-            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+            $this->addErrorMessage('Something wrong. Please Try again later.');
             /** @var \Monolog\Logger $logger */
             $logger = $this->getContainer('log');
             $logger->error((string) $e);
@@ -223,21 +223,19 @@ class PrivilegesController extends BaseAdminController {
 		/** @var Form $form */
         $form = $this->getContainer('form')->createForm('admin_server_group');
         $form
-            ->add(new FormSelect('server', $server->id, [
+            ->add(new FormSelect('server', $server->id, $servers, [
                 'id' => 'input_admin_server',
                 'title' => 'Server',
                 'error' => 'Required',
                 'required' => true,
 				'empty_option' => 'Choose server',
-				'options' => $servers,
             ]))
-			->add(new FormSelect('group', $privilege->group_id, [
+			->add(new FormSelect('group', $privilege->group_id, $groups, [
                 'id' => 'input_player_group',
                 'title' => 'Group',
                 'error' => 'Required',
                 'required' => true,
 				'empty_option' => 'Choose group',
-				'options' => $groups
             ]))
             ->add(new FormInputText('prefix', $privilege->prefix, [
                 'title' => 'Prefix',

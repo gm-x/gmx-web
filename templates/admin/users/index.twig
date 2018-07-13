@@ -1,5 +1,6 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
@@ -7,6 +8,7 @@
         <table class="table table-hover">
             <thead>
             <tr>
+                <th>Login</th>
                 <th>Email</th>
                 <th></th>
             </tr>
@@ -14,11 +16,10 @@
             <tbody>
             {% for user in users %}
                 <tr>
+                    <td class="text-nowrap">{{ user.login }}</td>
                     <td class="text-nowrap">{{ user.email }}</td>
                     <td class="text-nowrap">
-                        <a href="{{ path_for('admin_users_edit', {'user': user.id}) }}" class="btn btn-sm">
-                            <span class="oi oi-pencil"></span>
-                        </a>
+                        {{ admin.edit_btn(path_for('admin_users_edit', {'user': user.id})) }}
                     </td>
                 </tr>
             {% endfor %}

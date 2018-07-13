@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "72c80d4baec8591c703fbc9ba40f16b2",
+    "content-hash": "895757f52aa1f78d1c81ff0911c5c6a7",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -189,7 +189,7 @@
                 "laravel",
                 "support"
             ],
-            "time": "2017-02-23T12:05:30+00:00"
+            "time": "2017-02-23 12:05:30"
         },
         {
             "name": "container-interop/container-interop",
@@ -224,22 +224,22 @@
         },
         {
             "name": "davedevelopment/phpmig",
-            "version": "v1.4.0",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/davedevelopment/phpmig.git",
-                "reference": "93882bfa15b7cb443b58d248bfec868dded8614c"
+                "reference": "0c6bb9277ce34f2ea3f1a58707bd11b8f8fffeed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/davedevelopment/phpmig/zipball/93882bfa15b7cb443b58d248bfec868dded8614c",
-                "reference": "93882bfa15b7cb443b58d248bfec868dded8614c",
+                "url": "https://api.github.com/repos/davedevelopment/phpmig/zipball/0c6bb9277ce34f2ea3f1a58707bd11b8f8fffeed",
+                "reference": "0c6bb9277ce34f2ea3f1a58707bd11b8f8fffeed",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2",
-                "symfony/config": "^2||^3",
-                "symfony/console": "^2||^3"
+                "symfony/config": "^2.0||^3.0||^4.0",
+                "symfony/console": "^2.0||^3.0||^4.0"
             },
             "require-dev": {
                 "mockery/mockery": "*@dev",
@@ -283,7 +283,7 @@
                 "database migrations",
                 "migrations"
             ],
-            "time": "2017-09-06T15:42:49+00:00"
+            "time": "2017-11-21T11:24:25+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -350,7 +350,7 @@
                 "singularize",
                 "string"
             ],
-            "time": "2015-11-06T14:35:42+00:00"
+            "time": "2015-11-06 14:35:42"
         },
         {
             "name": "firebase/php-jwt",
@@ -439,7 +439,7 @@
             ],
             "description": "The Illuminate Container package.",
             "homepage": "https://laravel.com",
-            "time": "2017-05-24T14:15:53+00:00"
+            "time": "2017-05-24 14:15:53"
         },
         {
             "name": "illuminate/contracts",
@@ -481,7 +481,7 @@
             ],
             "description": "The Illuminate Contracts package.",
             "homepage": "https://laravel.com",
-            "time": "2017-09-20T12:31:30+00:00"
+            "time": "2017-09-20 12:31:30"
         },
         {
             "name": "illuminate/database",
@@ -541,7 +541,7 @@
                 "orm",
                 "sql"
             ],
-            "time": "2017-12-07T13:59:34+00:00"
+            "time": "2017-12-07 13:59:34"
         },
         {
             "name": "illuminate/events",
@@ -643,7 +643,7 @@
             ],
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
-            "time": "2017-08-15T13:25:41+00:00"
+            "time": "2017-08-15 13:25:41"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -764,16 +764,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.29.2",
+            "version": "1.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "ed6aa898982f441ccc9b2acdec51490f2bc5d337"
+                "reference": "64563e2b9f69e4db1b82a60e81efa327a30ff343"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/ed6aa898982f441ccc9b2acdec51490f2bc5d337",
-                "reference": "ed6aa898982f441ccc9b2acdec51490f2bc5d337",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/64563e2b9f69e4db1b82a60e81efa327a30ff343",
+                "reference": "64563e2b9f69e4db1b82a60e81efa327a30ff343",
                 "shasum": ""
             },
             "require": {
@@ -785,6 +785,13 @@
                 "phpunit/phpunit": "^4.8.35 || ^5.7"
             },
             "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Carbon\\Laravel\\ServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "": "src/"
@@ -808,7 +815,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-05-29T15:23:46+00:00"
+            "time": "2018-07-05T06:59:26+00:00"
         },
         {
             "name": "nikic/fast-route",
@@ -857,63 +864,17 @@
             "time": "2018-02-13T20:26:39+00:00"
         },
         {
-            "name": "o80/i18n",
-            "version": "0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/olivierperez/o80-i18n.git",
-                "reference": "3915d608d724da58ef390336d76bff02614f984d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/olivierperez/o80-i18n/zipball/3915d608d724da58ef390336d76bff02614f984d",
-                "reference": "3915d608d724da58ef390336d76bff02614f984d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "o80\\": "src/o80"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache License 2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Olivier Perez",
-                    "email": "olivier@olivierperez.fr",
-                    "homepage": "http://github.com/olivierperez"
-                }
-            ],
-            "description": "Easy library to manage i18n with PHP.",
-            "homepage": "https://github.com/olivierperez/o80-i18n",
-            "keywords": [
-                "i18n",
-                "internationalization",
-                "php"
-            ],
-            "time": "2016-05-12T12:14:32+00:00"
-        },
-        {
             "name": "paragonie/random_compat",
-            "version": "v2.0.14",
+            "version": "v2.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "f6ce7dd93628088e1017fb5dd73b0b9fec7df9e5"
+                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/f6ce7dd93628088e1017fb5dd73b0b9fec7df9e5",
-                "reference": "f6ce7dd93628088e1017fb5dd73b0b9fec7df9e5",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/29af24f25bab834fcbb38ad2a69fa93b867e070d",
+                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d",
                 "shasum": ""
             },
             "require": {
@@ -949,7 +910,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2018-06-06T17:40:22+00:00"
+            "time": "2018-07-04T16:31:37+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -999,7 +960,7 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2018-04-20T06:17:25+00:00"
+            "time": "2018-04-20 06:17:25"
         },
         {
             "name": "psr/cache",
@@ -1045,7 +1006,7 @@
                 "psr",
                 "psr-6"
             ],
-            "time": "2016-10-13T14:48:10+00:00"
+            "time": "2016-10-13 14:48:10"
         },
         {
             "name": "psr/container",
@@ -1094,7 +1055,7 @@
                 "container-interop",
                 "psr"
             ],
-            "time": "2017-06-28T15:35:32+00:00"
+            "time": "2017-06-28 15:35:32"
         },
         {
             "name": "psr/http-message",
@@ -1144,7 +1105,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06T14:39:51+00:00"
+            "time": "2016-08-06 14:39:51"
         },
         {
             "name": "psr/log",
@@ -1191,7 +1152,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2018-04-03T15:59:15+00:00"
+            "time": "2018-04-03 15:59:15"
         },
         {
             "name": "rlanvin/php-form",
@@ -1359,12 +1320,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "73e055cf2e6467715f187724a0347ea32079967c"
+                "reference": "1fffdeb349ff36a25184e5564c25289b1dbfc402"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/73e055cf2e6467715f187724a0347ea32079967c",
-                "reference": "73e055cf2e6467715f187724a0347ea32079967c",
+                "url": "https://api.github.com/repos/symfony/config/zipball/1fffdeb349ff36a25184e5564c25289b1dbfc402",
+                "reference": "1fffdeb349ff36a25184e5564c25289b1dbfc402",
                 "shasum": ""
             },
             "require": {
@@ -1415,7 +1376,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-14T16:49:53+00:00"
+            "time": "2018-06-19 14:02:58"
         },
         {
             "name": "symfony/console",
@@ -1423,12 +1384,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "1b97071a26d028c9bd4588264e101e14f6e7cd00"
+                "reference": "766e49de630b5bccc916905a75dbd2089af9a4d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/1b97071a26d028c9bd4588264e101e14f6e7cd00",
-                "reference": "1b97071a26d028c9bd4588264e101e14f6e7cd00",
+                "url": "https://api.github.com/repos/symfony/console/zipball/766e49de630b5bccc916905a75dbd2089af9a4d4",
+                "reference": "766e49de630b5bccc916905a75dbd2089af9a4d4",
                 "shasum": ""
             },
             "require": {
@@ -1484,7 +1445,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-23T05:02:55+00:00"
+            "time": "2018-07-07 15:54:55"
         },
         {
             "name": "symfony/debug",
@@ -1492,12 +1453,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "b28fd73fefbac341f673f5efd707d539d6a19f68"
+                "reference": "0e3ca9cbde90fffec8038f4d4e16fd4046bbd018"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/b28fd73fefbac341f673f5efd707d539d6a19f68",
-                "reference": "b28fd73fefbac341f673f5efd707d539d6a19f68",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/0e3ca9cbde90fffec8038f4d4e16fd4046bbd018",
+                "reference": "0e3ca9cbde90fffec8038f4d4e16fd4046bbd018",
                 "shasum": ""
             },
             "require": {
@@ -1540,7 +1501,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-16T14:03:39+00:00"
+            "time": "2018-06-26 08:45:54"
         },
         {
             "name": "symfony/filesystem",
@@ -1548,12 +1509,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "8e03ca3fa52a0f56b87506f38cf7bd3f9442b3a0"
+                "reference": "8a721a5f2553c6c3482b1c5b22ed60fe94dd63ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/8e03ca3fa52a0f56b87506f38cf7bd3f9442b3a0",
-                "reference": "8e03ca3fa52a0f56b87506f38cf7bd3f9442b3a0",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/8a721a5f2553c6c3482b1c5b22ed60fe94dd63ed",
+                "reference": "8a721a5f2553c6c3482b1c5b22ed60fe94dd63ed",
                 "shasum": ""
             },
             "require": {
@@ -1590,7 +1551,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-16T08:49:21+00:00"
+            "time": "2018-06-21 11:10:19"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -1648,7 +1609,7 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2018-05-17T18:32:56+00:00"
+            "time": "2018-05-17 18:32:56"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1707,7 +1668,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-05-30T15:56:36+00:00"
+            "time": "2018-05-30 15:56:36"
         },
         {
             "name": "symfony/translation",
@@ -1775,7 +1736,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-21T10:06:52+00:00"
+            "time": "2018-05-21 10:06:52"
         },
         {
             "name": "tedivm/stash",
@@ -1843,12 +1804,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "3b71efb7b4506e32ec52aa4620d1099daa7e045d"
+                "reference": "76cc34554b42d7b8f5ba9b345106fa076992f364"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3b71efb7b4506e32ec52aa4620d1099daa7e045d",
-                "reference": "3b71efb7b4506e32ec52aa4620d1099daa7e045d",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/76cc34554b42d7b8f5ba9b345106fa076992f364",
+                "reference": "76cc34554b42d7b8f5ba9b345106fa076992f364",
                 "shasum": ""
             },
             "require": {
@@ -1901,7 +1862,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2018-06-07T05:40:46+00:00"
+            "time": "2018-06-25 15:02:19"
         },
         {
             "name": "txthinking/mailer",

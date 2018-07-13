@@ -63,7 +63,7 @@
                     </fieldset>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary float-right">Install</button>
+            <button type="submit" class="btn btn-primary float-right" id="formSubmitButton">Install</button>
         </form>
     </div>
     <div class="row justify-content-center  align-items-center">
@@ -82,11 +82,33 @@
 				nextCall();
 			} else {
 				el.text('Install ' + step + ': error ' + data.message);
+                $('#formSubmitButton').prop('disabled', false);
 			}
-		}
+		};
 	}
+
+	function fail(nextFunc) {
+        return function () {
+            nextFunc({
+                success: false,
+                message: 'Server error'
+            });
+            $('#formSubmitButton').prop('disabled', false);
+        };
+    }
+
+    function installChecks() {
+        var nextFunc = result('composer', installComposer);
+        $.post('<?= $baseUrl; ?>/install/?step=checks')
+            .done(nextFunc)
+            .fail(fail(nextFunc));
+    }
+
 	function installComposer() {
-		$.post('<?= $baseUrl; ?>/install/?step=composer', result('composer', installConfig));
+	    var nextFunc = result('composer', installConfig);
+		$.post('<?= $baseUrl; ?>/install/?step=composer')
+            .done(nextFunc)
+            .fail(fail(nextFunc));
 	}
 
 	function installConfig() {
@@ -100,11 +122,17 @@
 				prefix: $('#formDatabasePrefix').val()
 			}
 		};
-		$.post('<?= $baseUrl; ?>/install/?step=config', data, result('config', installMigrations));
+        var nextFunc = result('config', installMigrations);
+		$.post('<?= $baseUrl; ?>/install/?step=config', data)
+            .done(nextFunc)
+            .fail(fail(nextFunc));
 	}
 
 	function installMigrations() {
-		$.post('<?= $baseUrl; ?>/install/?step=migrations', result('migrations', installAdmin));
+        var nextFunc = result('migrations', installAdmin);
+		$.post('<?= $baseUrl; ?>/install/?step=migrations')
+            .done(nextFunc)
+            .fail(fail(nextFunc));
 	}
 
 	function installAdmin() {
@@ -113,22 +141,29 @@
 			email: $('#formAdminEmail').val(),
 			pass: $('#formAdminPass').val()
 		};
-		$.post('<?= $baseUrl; ?>/install/?step=admin', data, result('administrator', installTasks));
+        var nextFunc = result('administrator', installTasks);
+		$.post('<?= $baseUrl; ?>/install/?step=admin', data)
+            .done(nextFunc)
+            .fail(fail(nextFunc));
 	}
 
 	function installTasks() {
-		$.post('<?= $baseUrl; ?>/install/?step=tasks', result('tasks', finish));
+        var nextFunc = result('tasks', finish);
+		$.post('<?= $baseUrl; ?>/install/?step=tasks')
+            .done(nextFunc)
+            .fail(fail(nextFunc));
 	}
 
 	function finish() {
-		alert('Finished');
+        $('#formSubmitButton').prop('disabled', false);
 	}
 
 	$('#installForm').on('submit', function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		statusList.empty();
-		installComposer();
+		$('#formSubmitButton').prop('disabled', true);
+        installChecks();
 	});
 </script>
 </body>

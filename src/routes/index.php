@@ -16,6 +16,10 @@ $app->group('', function () {
         ->setName('index');
 
     $this
+        ->get('/lang', BaseController::action(IndexController::class, 'language'))
+        ->setName('language');
+
+    $this
         ->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))
         ->setName('punishments');
 
@@ -45,6 +49,7 @@ $app->group('/admin', function () {
         ->setArgument('permission', 'admin.*');
 
     $root = __DIR__ . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR;
+    $this->group('/preferences', include  $root . 'preferences.php');
     $this->group('/users', include  $root . 'users.php');
     $this->group('/roles', include $root . 'roles.php');
     $this->group('/servers', include $root . 'servers.php');

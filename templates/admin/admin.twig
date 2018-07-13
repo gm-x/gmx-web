@@ -1,1 +1,53 @@
 {% extends 'base.twig' %}
+
+{% block style %}
+    <style>
+        .btn-delete {
+            display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            var modalDelete = $('#deleteConfirmModal');
+            $('form.btn-delete').on('submit', function (e) {
+                e.preventDefault();
+                var form = this;
+                modalDelete
+                    .modal('show')
+                    .one('click', '#deleteConfirmBtn', function(e) {
+                        form.submit();
+                    });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block modals %}
+    <div
+            class="modal fade"
+            id="deleteConfirmModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="deleteConfirmLabel"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmLabel">{{ trans('labels', 'are_you_sure') }}</h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="deleteConfirmBtn">
+                        {{ trans('buttons', 'delete') }}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        {{ trans('buttons', 'cancel') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

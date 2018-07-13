@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Auth\Helpers;
 
+use GameX\Core\Auth\Models\UserModel;
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Sentinel;
@@ -27,7 +28,7 @@ class AuthHelper {
 
 	/**
 	 * @param string $login
-	 * @return UserInterface
+	 * @return UserModel|null
 	 */
 	public function findUser($login) {
 		return $this->auth->getUserRepository()->findByCredentials([
@@ -54,21 +55,23 @@ class AuthHelper {
 	 * @param string $login
 	 * @param string $email
 	 * @param string $password
-	 * @return bool
+	 * @return UserModel
 	 * @throws FormException
 	 * @throws ValidationException
 	 */
-	public function registerUser($login, $email, $password) {
-		$user = $this->auth->register([
+	public function registerUser($login, $email, $password, $activate = false) {
+		return $this->auth->register([
 			'login'  => $login,
 			'email'  => $email,
 			'password' => $password,
-		]);
+		], $activate ? true : null);
+	}
 
-		if (!$user) {
-			throw new ValidationException('Something wrong. Please Try again later.');
-		}
-
+	/**
+	 * @param UserInterface $user
+	 * @return string
+	 */
+	public function getActivationCode(UserInterface $user) {
 		return $this->auth->getActivationRepository()->create($user)->getCode();
 	}
 

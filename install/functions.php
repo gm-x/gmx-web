@@ -2,7 +2,7 @@
 function render($template, array $data = []) {
 	extract($data);
 	ob_start();
-	include __DIR__ . DIRECTORY_SEPARATOR . $template . '.php';
+	include __DIR__ . DS . $template . '.php';
 	return ob_get_clean();
 }
 
@@ -16,12 +16,16 @@ function getBaseUrl() {
 	return rtrim(dirname($_SERVER['REQUEST_URI']), '/'	);
 }
 
+function checkPhpVersion() {
+    return version_compare(PHP_VERSION, '5.6.0') >= 0;
+}
+
 function downloadComposer($dir) {
-	return file_put_contents($dir . DIRECTORY_SEPARATOR . 'composer.phar', file_get_contents('https://getcomposer.org/composer.phar')) !== false;
+	return file_put_contents($dir . DS . 'composer.phar', file_get_contents('https://getcomposer.org/composer.phar')) !== false;
 }
 
 function extractComposer($dir) {
-	$composerPhar = new Phar($dir . DIRECTORY_SEPARATOR .  'composer.phar');
+	$composerPhar = new Phar($dir . DS .  'composer.phar');
 	return $composerPhar->extractTo($dir);
 }
 
@@ -29,19 +33,19 @@ function rrmdir($dir) {
 	if (is_dir($dir)) {
 		$objects = scandir($dir);
 		foreach ($objects as $object) {
-			if ($object != "." && $object != "..") {
-				if (is_dir($dir."/".$object))
-					rrmdir($dir."/".$object);
+			if ($object != '.' && $object != '..') {
+				if (is_dir($dir . DS . $object))
+					rrmdir($dir . DS . $object);
 				else
-					unlink($dir."/".$object);
+					unlink($dir . DS . $object);
 			}
 		}
 		rmdir($dir);
 	}
 }
 
-function composerInstall($baseDir) {
-	$tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('GameX', true) . DIRECTORY_SEPARATOR;
+function composerInstall() {
+	$tempDir = sys_get_temp_dir() . DS . uniqid('GameX', true) . DS;
 
 	if (!is_dir($tempDir)) {
 		if (!mkdir($tempDir, 0777, true)) {
@@ -55,13 +59,13 @@ function composerInstall($baseDir) {
 	if (!extractComposer($tempDir)) {
 		throw new Exception('Can\'t download composer to ' . $tempDir);
 	}
-	require_once($tempDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
+	require_once($tempDir . 'vendor' . DS . 'autoload.php');
 
-	chdir($baseDir);
+	chdir(BASE_DIR);
 //	https://getcomposer.org/doc/03-cli.md#composer-vendor-dir
-	putenv('COMPOSER_HOME=' . $tempDir . '/vendor/bin/composer');
-	putenv('COMPOSER_VENDOR_DIR=' . $baseDir . '/vendor');
-	putenv('COMPOSER_BIN_DIR=' . $baseDir . '/vendor/bin');
+	putenv('COMPOSER_HOME=' . $tempDir . 'vendor/bin/composer');
+	putenv('COMPOSER_VENDOR_DIR=' . BASE_DIR . 'vendor');
+	putenv('COMPOSER_BIN_DIR=' . BASE_DIR . 'vendor/bin');
 
 	$input = new \Symfony\Component\Console\Input\ArrayInput(['command' => 'install']);
 	$output = new \Symfony\Component\Console\Output\NullOutput();
@@ -70,43 +74,6 @@ function composerInstall($baseDir) {
 	$application->run($input, $output);
 
 	rrmdir($tempDir);
-}
-
-function getBaseConfig() {
-	return [
-		'db' => [
-			'driver' => 'mysql',
-			'host' => '127.0.0.1',
-			'port' => 3306,
-			'database' => 'test',
-			'username' => 'root',
-			'password' => '',
-			'charset' => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'prefix' => ''
-		],
-		'session' => [
-			'name' => 'sessid',
-			'autorefresh' => true,
-			'lifetime' => '1 hour'
-		],
-		'twig' => [
-			'debug' => true,
-			'auto_reload' => true
-		],
-		'mail' => [
-			'from' => [
-				'name' => 'test',
-				'email' => 'test@example.com'
-			],
-			'transport' => [
-				'type' => 'smtp',
-				'host' => '127.0.0.1',
-				'port' => 4651
-			]
-		],
-		'secret' => 'secret_key'
-	];
 }
 
 function checkDbConnection($config) {
@@ -118,6 +85,10 @@ function checkDbConnection($config) {
 	} catch (PDOException $e) {
 		return false;
 	}
+}
+
+function generateSecretKey() {
+	return bin2hex(random_bytes(32));
 }
 
 function runMigrations($container) {
@@ -152,15 +123,19 @@ function createUser($container, $login, $email, $password) {
     $user->role()->associate($role)->save();
 }
 
-function getContainer($baseDir, $phpmig = false) {
-    require $baseDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+function getContainer($phpmig = false) {
+    require BASE_DIR . 'vendor' . DS . 'autoload.php';
     $container = new \GameX\Core\Container();
-    $container['config'] = json_decode(file_get_contents($baseDir . DIRECTORY_SEPARATOR . 'config.json'), true);
+    $container['root'] = BASE_DIR;
     if ($phpmig) {
-        require $baseDir . DIRECTORY_SEPARATOR . 'phpmig.php';
+        require BASE_DIR . 'phpmig.php';
     } else {
-        require $baseDir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'dependencies.php';
+        require BASE_DIR . 'src' . DS . 'dependencies.php';
     }
 
 	return $container;
+}
+
+function logException(\Exception $e) {
+	file_put_contents(__DIR__ . DS . 'install.log', (string) $e . PHP_EOL . PHP_EOL, FILE_APPEND);
 }

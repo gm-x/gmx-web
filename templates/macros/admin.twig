@@ -1,0 +1,30 @@
+{% macro edit_btn(href) %}
+	<a
+			href="{{ href }}"
+			class="btn btn-sm btn-warning"
+			data-toggle="tooltip"
+			data-placement="top"
+			title="{{ trans('buttons', 'edit') }}"
+	>
+		<span class="oi oi-pencil"></span>
+	</a>
+{% endmacro %}
+
+{% macro delete_btn(href) %}
+	<form
+			action="{{ href }}"
+			method="post"
+			class="btn-delete"
+	>
+        {{ csrf_token() }}
+		<button
+				type="submit"
+				class="btn btn-sm btn-danger"
+				data-toggle="tooltip"
+				data-placement="top"
+				title="{{ trans('buttons', 'delete') }}"
+		>
+			<span class="oi oi-delete"></span>
+		</button>
+	</form>
+{% endmacro %}
