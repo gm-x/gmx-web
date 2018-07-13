@@ -34,15 +34,23 @@ class PreferencesController extends BaseAdminController {
     public function indexAction(Request $request, Response $response, array $args = []) {
 		/** @var Config $config */
 		$config = $this->getContainer('config');
+		$main = $config->get('main');
+		$language = $config->get('language');
+        $languages = $language->get('list')->toArray();
 
 		/** @var Form $form */
 		$form = $this->getContainer('form')->createForm('admin_preferences_main');
 		$form
-			->add(new FormInputText('title', $config->get('main')->get('title'), [
+			->add(new FormInputText('title', $main->get('title'), [
 				'title' => $this->getTranslate('admin_preferences', 'title'),
 				'required' => true,
 			]))
+			->add(new FormSelect('language', $language->get('default'), $languages, [
+				'title' => $this->getTranslate('admin_preferences', 'language'),
+				'required' => true,
+			]))
 			->setRules('title', ['required', 'trim', 'min_length' => 1])
+			->setRules('language', ['required', 'trim', 'in' => array_keys($languages)])
 			->setAction((string)$request->getUri())
 			->processRequest($request);
 
@@ -51,9 +59,10 @@ class PreferencesController extends BaseAdminController {
 				return $this->redirectTo($form->getAction());
 			} else {
 				try {
-					$config->get('main')->set('title', $form->getValue('title'));
+                    $main->set('title', $form->getValue('title'));
+					$language->set('default', $form->getValue('language'));
 					$config->save();
-                    $this->addSuccessMessage('Saved');
+                    $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
 					return $this->redirect('admin_preferences_index');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);
@@ -146,7 +155,7 @@ class PreferencesController extends BaseAdminController {
                     $transport->set('username', $form->getValue('smtp_user'));
                     $transport->set('password', $form->getValue('smtp_pass'));
 				    $config->save();
-                    $this->addSuccessMessage('Saved');
+                    $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
 					return $this->redirect('admin_preferences_email');
 				} catch (Exception $e) {
 					return $this->failRedirect($e, $form);

@@ -6,19 +6,20 @@ use \Slim\Http\Request;
 use \GameX\Core\Session\Session;
 
 class SlimProvider implements Provider {
-    const SESSION_KEY = 'lang';
+    const COOKIE_KEY = 'lang';
+    const COOKIE_LIFETIME = 31556926; // 1 year
 
+    /**
+     * @var Request
+     */
     protected $request;
-    protected $session;
 
     /**
      * SlimProvider constructor.
      * @param Request $request
-     * @param Session $session
      */
-    public function __construct(Request $request, Session $session) {
+    public function __construct(Request $request) {
         $this->request = $request;
-        $this->session = $session;
     }
 
     /**
@@ -31,14 +32,22 @@ class SlimProvider implements Provider {
     /**
      * {@inheritDoc}
      */
-    public function getSessionLang() {
-        return $this->session->get(self::SESSION_KEY);
+    public function getLang() {
+        return array_key_exists(self::COOKIE_KEY, $_COOKIE) ? $_COOKIE[self::COOKIE_KEY] : null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setSessionLang($lang) {
-        $this->session->set(self::SESSION_KEY, $lang);
+    public function setLang($lang) {
+        setcookie(
+            self::COOKIE_KEY,
+            $lang,
+            time() + self::COOKIE_LIFETIME,
+            '/',
+            null,
+            false,
+            false
+        );
     }
 }

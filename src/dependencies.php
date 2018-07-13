@@ -28,7 +28,7 @@ $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
     $config = $container->get('config');
 
     $loader = new \GameX\Core\Lang\Loaders\JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
-    $provider = new \GameX\Core\Lang\Providers\SlimProvider($container->get('request'), $container->get('session'));
+    $provider = new \GameX\Core\Lang\Providers\SlimProvider($container->get('request'));
     return new \GameX\Core\Lang\Language(
         $loader, $provider,
         $config->get('language')->get('list')->toArray(),
@@ -99,6 +99,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 
 	$view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
 	$view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
+	$view->getEnvironment()->addGlobal('title', $config->get('main')->get('title'));
 
 	return $view;
 };

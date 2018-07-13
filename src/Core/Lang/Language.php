@@ -61,7 +61,7 @@ class Language {
         if (!$this->exists($lang)) {
             throw new BadLanguageException();
         }
-        $this->provider->setSessionLang($lang);
+        $this->provider->setLang($lang);
         return $this;
     }
 
@@ -100,7 +100,7 @@ class Language {
      * @return string
      */
     protected function checkUserLanguage($default) {
-        $language = $this->provider->getSessionLang();
+        $language = $this->provider->getLang();
         if ($language && $this->exists($language)) {
             return $language;
         }
@@ -131,7 +131,7 @@ class Language {
         if (!array_key_exists($section, $this->dictionary)) {
             try {
                 $this->dictionary[$section] = (array)$this->loader->loadSection($this->userLanguage, $section);
-            } catch (CantReadxception $e) {
+            } catch (CantReadException $e) {
                 $this->dictionary[$section] = [];
             }
         }
