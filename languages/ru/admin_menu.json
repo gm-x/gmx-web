@@ -3,5 +3,8 @@
 	"users": "Пользователи",
 	"roles": "Роли",
 	"servers": "Сервера",
-	"players": "Игрокы"
+	"players": "Игроки",
+	"permissions": "Права",
+	"role": "Роль",
+	"name": "Имя"
 }
