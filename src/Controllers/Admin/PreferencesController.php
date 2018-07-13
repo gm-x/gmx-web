@@ -39,8 +39,7 @@ class PreferencesController extends BaseAdminController {
         $languages = $language->get('list')->toArray();
 
 		/** @var Form $form */
-		$form = $this->getContainer('form')->createForm('admin_preferences_main');
-		$form
+		$form = $this->createForm('admin_preferences_main')
 			->add(new FormInputText('title', $main->get('title'), [
 				'title' => $this->getTranslate('admin_preferences', 'title'),
 				'required' => true,
@@ -90,8 +89,7 @@ class PreferencesController extends BaseAdminController {
         $transport = $settings->get('transport');
 
 		/** @var Form $form */
-		$form = $this->getContainer('form')->createForm('admin_preferences_email');
-		$form
+		$form = $this->createForm('admin_preferences_email')
 			->add(new FormInputCheckbox('enabled', $settings->get('enabled'), [
 				'title' => $this->getTranslate('admin_preferences', 'enabled'),
 			]))

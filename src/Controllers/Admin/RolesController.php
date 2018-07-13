@@ -50,7 +50,7 @@ class RolesController extends BaseAdminController {
 
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $form = $this->getForm(new RoleModel())
-            ->setAction((string)$request->getUri())
+            ->setAction($request->getUri())
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
@@ -80,7 +80,7 @@ class RolesController extends BaseAdminController {
         $role = $this->getRole($request, $response, $args);
 
         $form = $this->getForm($role)
-            ->setAction((string)$request->getUri())
+            ->setAction($request->getUri())
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
@@ -180,9 +180,7 @@ class RolesController extends BaseAdminController {
      * @return Form
      */
     protected function getForm(RoleModel $role) {
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_role');
-        $form
+        return $this->createForm('admin_role')
             ->add(new FormInputText('name', $role->name, [
                 'title' => 'Name',
                 'error' => 'Required',
@@ -197,7 +195,5 @@ class RolesController extends BaseAdminController {
             ]))
 			->setRules('name', ['required', 'trim', 'min_length' => 1])
 			->setRules('slug', ['required', 'trim', 'min_length' => 1]);
-
-        return $form;
     }
 }

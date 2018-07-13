@@ -51,7 +51,7 @@ class PlayersController extends BaseAdminController {
 		$player = $this->getPlayer($request, $response, $args);
 		$form = $this
 			->getForm($player)
-			->setAction((string)$request->getUri())
+			->setAction($request->getUri())
 			->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
@@ -84,7 +84,7 @@ class PlayersController extends BaseAdminController {
 		$player = $this->getPlayer($request, $response, $args);
 		$form = $this
 			->getForm($player)
-			->setAction((string)$request->getUri())
+			->setAction($request->getUri())
 			->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
@@ -179,9 +179,7 @@ class PlayersController extends BaseAdminController {
 			return $validator->getValue('auth_type') !== Player::AUTH_TYPE_STEAM  && empty($password) ? false : true;
 		};
 
-		/** @var Form $form */
-		$form = $this->getContainer('form')->createForm('admin_player');
-		$form
+		return $this->createForm('admin_player')
 			->add(new FormInputText('steamid', $player->steamid, [
 				'title' => 'Steam ID',
 				'error' => 'Valid STEAM ID',

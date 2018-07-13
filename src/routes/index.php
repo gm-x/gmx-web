@@ -24,6 +24,7 @@ $app->group('', function () {
         ->setName('punishments');
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
+    include __DIR__ . DIRECTORY_SEPARATOR . 'settings.php';
 
     $modules = $this->getContainer()->get('modules');
     /** @var \GameX\Core\Module\ModuleInterface $module */

@@ -46,7 +46,7 @@ class ServersController extends BaseAdminController {
         $server = $this->getServer($request, $response, $args);
         $form = $this
             ->getForm($server)
-            ->setAction((string)$request->getUri())
+            ->setAction($request->getUri())
             ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
@@ -83,7 +83,7 @@ class ServersController extends BaseAdminController {
 		$server = $this->getServer($request, $response, $args);
         $form = $this
             ->getForm($server)
-            ->setAction((string)$request->getUri())
+            ->setAction($request->getUri())
             ->processRequest($request);
 
 		if ($form->getIsSubmitted()) {
@@ -152,9 +152,7 @@ class ServersController extends BaseAdminController {
      * @return Form
      */
 	protected function getForm(Server $server) {
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_server');
-        $form
+        $form = $this->createForm('admin_server')
             ->add(new FormInputText('name', $server->name, [
                 'title' => 'Name',
                 'error' => 'Required',

@@ -53,7 +53,7 @@ class PrivilegesController extends BaseAdminController {
         $privilege = $this->getPrivilege($request, $response, $args);
         $form = $this
             ->getForm($privilege)
-            ->setAction((string)$request->getUri())
+            ->setAction($request->getUri())
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
@@ -93,7 +93,7 @@ class PrivilegesController extends BaseAdminController {
         $privilege = $this->getPrivilege($request, $response, $args);
         $form = $this
             ->getForm($privilege)
-            ->setAction((string)$request->getUri())
+            ->setAction($request->getUri())
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
@@ -220,9 +220,7 @@ class PrivilegesController extends BaseAdminController {
 			return Group::where('id', '=', $group)->exists();
 		};
 
-		/** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_server_group');
-        $form
+		return $this->createForm('admin_server_group')
             ->add(new FormSelect('server', $server->id, $servers, [
                 'id' => 'input_admin_server',
                 'title' => 'Server',
@@ -256,8 +254,6 @@ class PrivilegesController extends BaseAdminController {
 			->setRules('prefix', ['trim'])
 			->setRules('expired', ['required', 'date'])
 			->setRules('active', ['bool']);
-
-        return $form;
     }
 
 	/**

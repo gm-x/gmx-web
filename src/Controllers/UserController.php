@@ -37,9 +37,8 @@ class UserController extends BaseMainController {
         };
 
         /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('register');
-        $form
-            ->setAction((string)$request->getUri())
+        $form = $this->createForm('register')
+            ->setAction($request->getUri())
 			->add(new FormInputText('login', '', [
 				'title' => $this->getTranslate('inputs', 'login'),
 				'error' => 'Required',
@@ -121,9 +120,8 @@ class UserController extends BaseMainController {
 
     	$code = $args['code'];
         /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('activation');
-		$form
-            ->setAction((string)$request->getUri())
+        $form = $this->createForm('activation')
+            ->setAction($request->getUri())
 			->add(new FormInputText('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'error' => 'Required',
@@ -158,10 +156,8 @@ class UserController extends BaseMainController {
     public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
         $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
 
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('login');
-        $form
-			->setAction((string)$request->getUri())
+        $form = $this->createForm('login')
+			->setAction($request->getUri())
 			->add(new FormInputText('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'error' => 'Required',
@@ -217,10 +213,9 @@ class UserController extends BaseMainController {
         if (!$enabledEmail) {
             throw new NotAllowedException();
         }
-		/** @var Form $form */
-		$form = $this->getContainer('form')->createForm('reset_password');
-		$form
-            ->setAction((string)$request->getUri())
+
+		$form = $this->createForm('reset_password')
+            ->setAction($request->getUri())
 			->add(new FormInputText('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'error' => 'Required',
@@ -267,14 +262,12 @@ class UserController extends BaseMainController {
             throw new NotAllowedException();
         }
         $code = $args['code'];
-		$identical_password_validator = function($confirmation, $form) {
+        $passwordValidator = function($confirmation, $form) {
 			return $form->password === $confirmation;
 		};
 
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('reset_password_complete');
-        $form
-            ->setAction((string)$request->getUri())
+        $form = $this->createForm('reset_password_complete')
+            ->setAction($request->getUri())
 			->add(new FormInputText('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'error' => 'Required',
@@ -292,7 +285,7 @@ class UserController extends BaseMainController {
 			]))
 			->setRules('login', ['required', 'trim', 'min_length' => 1])
 			->setRules('password', ['required', 'trim', 'min_length' => 6])
-			->setRules('password_repeat', ['required', 'trim', 'min_length' => 6, 'identical' => $identical_password_validator])
+			->setRules('password_repeat', ['required', 'trim', 'min_length' => 6, 'identical' => $passwordValidator])
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {

@@ -19,7 +19,9 @@
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand mr-auto mr-lg-5" href="{{ path_for('index') }}"><img src="{{ base_url() }}/assets/images/gxlogo-xs.png"></a>
+        <a class="navbar-brand mr-auto mr-lg-5" href="{{ path_for('index') }}">
+            <img src="{{ base_url() }}/assets/images/gxlogo-xs.png">
+        </a>
         <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,7 +32,9 @@
 				    {% if has_access(item.permission) %}
 						{% if menu.getActiveRoute() == item.route %}
                             <li class="nav-item active">
-                                <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }} <span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="{{ path_for(item.route, item.params) }}">
+                                    {{ item.title }}<span class="sr-only">(current)</span>
+                                </a>
                             </li>
                         {% else %}
                             <li class="nav-item">
@@ -70,7 +74,7 @@
                             {% if has_access('admin.*') %}
                                 <a class="dropdown-item" href="{{ path_for('admin_index') }}">Admin</a>
                             {% endif %}
-                            <a class="dropdown-item" href="#">Settings</a>
+                            <a class="dropdown-item" href="{{ path_for('user_settings') }}">Settings</a>
                             <a class="dropdown-item" href="{{ path_for('logout') }}">{{ trans('buttons', 'logout') }}</a>
                         {% endif %}
                     </div>

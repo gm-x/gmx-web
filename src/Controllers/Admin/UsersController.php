@@ -49,10 +49,8 @@ class UsersController extends BaseAdminController {
 			$roles[$role->slug] = $role->name;
 		}
 
-		/** @var Form $form */
-		$form = $this->getContainer('form')->createForm('admin_users_edit');
-		$form
-			->setAction((string)$request->getUri())
+		$form = $this->createForm('admin_users_edit')
+			->setAction($request->getUri())
 			->add(new FormSelect('role', $user->role->slug, $roles, [
 				'title' => 'Role',
 				'error' => 'Required',

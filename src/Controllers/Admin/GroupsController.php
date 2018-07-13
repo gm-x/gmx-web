@@ -50,7 +50,7 @@ class GroupsController extends BaseAdminController {
         $group = $this->getGroup($request, $response, $args);
         $form = $this
             ->getForm($group)
-            ->setAction((string)$request->getUri())
+            ->setAction($request->getUri())
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
@@ -89,7 +89,7 @@ class GroupsController extends BaseAdminController {
         $group = $this->getGroup($request, $response, $args);
         $form = $this
             ->getForm($group)
-            ->setAction((string)$request->getUri())
+            ->setAction($request->getUri())
             ->processRequest($request);
 
         if ($form->getIsSubmitted()) {
@@ -182,9 +182,7 @@ class GroupsController extends BaseAdminController {
      * @return Form
      */
     protected function getForm(Group $group) {
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_server_group');
-        $form
+       return $this->createForm('admin_server_group')
             ->add(new FormInputText('title', $group->title, [
                 'title' => 'Title',
                 'error' => 'Required',
@@ -202,7 +200,5 @@ class GroupsController extends BaseAdminController {
             ->setRules('title', ['required', 'trim', 'min_length' => 1])
             ->setRules('flags', ['required', 'trim', 'min_length' => 1])
             ->setRules('priority', ['integer', 'min' => 0]);
-
-        return $form;
     }
 }
