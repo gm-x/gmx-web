@@ -15,14 +15,42 @@
 				<legend>SMTP</legend>
                 {{ forms.element_input(form.smtp_host) }}
                 {{ forms.element_input(form.smtp_port) }}
+                {{ forms.element_select(form.smtp_secure) }}
+                {{ forms.element_input(form.smtp_user) }}
+                {{ forms.element_input(form.smtp_pass) }}
 			</fieldset>
 		</div>
 		<div class="form-group">
 			<input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
-			<a href="#" class="btn btn-warning hvr-grow" id="testMail">Test mail</a>
+			<a href="#" class="btn btn-warning hvr-grow" id="testMail">{{ trans('admin_preferences', 'test_mail') }}</a>
 			<a href="{{ path_for('admin_servers_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
 		</div>
 	</form>
+{% endblock %}
+
+{% block modals %}
+	{{ parent() }}
+	<div
+			class="modal fade"
+			id="testMailModal"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="testMailModalLabel"
+			aria-hidden="true"
+	>
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="testMailModalLabel"></h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						{{ trans('buttons', 'close') }}
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block javascript %}
@@ -36,13 +64,16 @@
 				$.get('{{ path_for('admin_preferences_email_test') }}')
 					.done(function (data) {
 						if (data.success) {
-							alert('SUCCESS');
+							$('#testMailModalLabel').text('Success');
+							$('#testMailModal').modal('show');
 						} else {
-							alert('Fail' + data.message);
+							$('#testMailModalLabel').text('Fail: ' + data.message || 'Unknown');
+							$('#testMailModal').modal('show');
 						}
 					})
 					.catch(function () {
-						alert('Fail with server error');
+						$('#testMailModalLabel').text('Fail: Server Error');
+						$('#testMailModal').modal('show');
 					});
 			});
 

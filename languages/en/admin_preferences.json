@@ -1,0 +1,13 @@
+{
+	"test_mail": "Send test email",
+	"enabled": "Enabled",
+	"from_name": "From Name",
+	"from_email": "From Email",
+	"transport": "Transport",
+	"host": "Host",
+	"port": "Port",
+	"secure": "Secure",
+	"secure_none": "None",
+	"username": "Username",
+	"password": "Password"
+}

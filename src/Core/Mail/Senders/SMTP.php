@@ -80,7 +80,7 @@ class SMTP implements Sender {
 				$this->ehlo($socket);
 			}
 
-			if ($this->username !== null || $this->password !== null) {
+			if (!empty($this->username) && !empty($this->password)) {
 				$this->auth($socket);
 			}
 

@@ -2,6 +2,7 @@
 namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
+use \GameX\Core\Auth\Models\UserModel;
 use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
 use \GameX\Core\Menu\MenuItem;
@@ -11,6 +12,12 @@ use \GameX\Core\Exceptions\FormException;
 use \Exception;
 
 abstract class BaseMainController extends BaseController {
+
+	/**
+	 * @var UserModel
+	 */
+	protected $user = null;
+
 	/**
 	 * @return string
 	 */
@@ -24,6 +31,16 @@ abstract class BaseMainController extends BaseController {
         parent::__construct($container);
 		$this->initMenu();
     }
+
+	/**
+	 * @return UserModel
+	 */
+    public function getUser() {
+    	if ($this->user === null) {
+    		$this->user = $this->getContainer('auth')->getUser();
+		}
+    	return $this->user;
+	}
 
     /**
      * @param string $template
