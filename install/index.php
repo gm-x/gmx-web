@@ -1,13 +1,12 @@
 <?php
 define('DS', DIRECTORY_SEPARATOR);
 define('BASE_DIR', dirname(__DIR__) . DS);
-define('BASE_URL', str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
 
 include __DIR__ . DS . 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	echo render('template', [
-		'baseUrl' => BASE_URL
+		'baseUrl' => getBaseUrl()
 	]);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$step = isset($_GET['step']) ? $_GET['step'] : null;

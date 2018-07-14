@@ -17,5 +17,6 @@ return function () {
 	$this
 		->post('/email/test', BaseController::action(PreferencesController::class, 'test'))
 		->setName('admin_preferences_email_test')
-		->setArgument('permission', 'admin.preferences');
+		->setArgument('permission', 'admin.preferences')
+		->setArgument('csrf_skip', true);
 };

@@ -13,7 +13,9 @@ function json($data) {
 }
 
 function getBaseUrl() {
-	return rtrim(dirname($_SERVER['REQUEST_URI']), '/'	);
+    $url = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+    
+	return rtrim(dirname($url), '/');
 }
 
 function checkPhpVersion($version) {

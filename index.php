@@ -27,8 +27,8 @@ $errorHandler = function ($c) {
 	};
 };
 
-$container['errorHandler'] = $errorHandler;
-$container['phpErrorHandler'] = $errorHandler;
+//$container['errorHandler'] = $errorHandler;
+//$container['phpErrorHandler'] = $errorHandler;
 
 $app = new \Slim\App($container);
 
