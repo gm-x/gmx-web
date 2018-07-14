@@ -1,40 +1,35 @@
 <?php
 define('DS', DIRECTORY_SEPARATOR);
 define('BASE_DIR', dirname(__DIR__) . DS);
+define('BASE_URL', str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
 
 include __DIR__ . DS . 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	echo render('template', [
-		'baseUrl' => getBaseUrl()
+		'baseUrl' => BASE_URL
 	]);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$step = isset($_GET['step']) ? $_GET['step'] : null;
 	switch ($step) {
         case 'checks': {
-            if (!checkPhpVersion()) {
-                json([
-                    'success' => false,
-                    'message' => 'PHP must be 5.6.0 or higher'
+            try {
+                if (!checkPhpVersion('5.6.0')) {
+                    throw new Exception('PHP must be 5.6.0 or higher');
+                }
+                checkDirectories([
+                    BASE_DIR . 'vendor',
+                    BASE_DIR . 'runtime' . DS . 'cache',
+                    BASE_DIR . 'runtime' . DS . 'logs',
+                    BASE_DIR . 'runtime' . DS . 'twig_cache',
                 ]);
-            } elseif (!is_writable(BASE_DIR . 'runtime' . DS . 'cache')) {
-                json([
-                    'success' => false,
-                    'message' => sprintf('Folder %s is not writable', BASE_DIR . 'runtime' . DS . 'cache')
-                ]);
-            } elseif (!is_writable(BASE_DIR . 'runtime' . DS . 'logs')) {
-                json([
-                    'success' => false,
-                    'message' => sprintf('Folder %s is not writable', BASE_DIR . 'runtime' . DS . 'logs')
-                ]);
-            } elseif (!is_writable(BASE_DIR . 'runtime' . DS . 'twig_cache')) {
-                json([
-                    'success' => false,
-                    'message' => sprintf('Folder %s is not writable', BASE_DIR . 'runtime' . DS . 'twig_cache')
-                ]);
-            } else {
                 json([
                     'success' => true
+                ]);
+            } catch (Exception $e) {
+                json([
+                    'success' => false,
+                    'message' => $e->getMessage()
                 ]);
             }
         } break;

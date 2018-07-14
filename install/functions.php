@@ -16,8 +16,8 @@ function getBaseUrl() {
 	return rtrim(dirname($_SERVER['REQUEST_URI']), '/'	);
 }
 
-function checkPhpVersion() {
-    return version_compare(PHP_VERSION, '5.6.0') >= 0;
+function checkPhpVersion($version) {
+    return version_compare(PHP_VERSION, $version) >= 0;
 }
 
 function downloadComposer($dir) {
@@ -138,4 +138,19 @@ function getContainer($phpmig = false) {
 
 function logException(\Exception $e) {
 	file_put_contents(__DIR__ . DS . 'install.log', (string) $e . PHP_EOL . PHP_EOL, FILE_APPEND);
+}
+
+function checkDirectories(array $directories) {
+    foreach ($directories as $directory) {
+        if (is_dir($directory)) {
+            if (!is_writable($directory) && !chmod($directory, 0755)) {
+                throw new Exception('Can\'t write to directory ' . $directory);
+            }
+        } else {
+            if (!mkdir($directory, 0755, true)) {
+                throw new Exception('Can\'t create directory ' . $directory);
+            }
+        }
+        
+    }
 }
