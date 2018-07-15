@@ -3,6 +3,7 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
 	{% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
 	<form action="{{ form.getAction() }}" method="post">
 		{{ csrf_token() }}
@@ -25,6 +26,7 @@
 			<a href="#" class="btn btn-warning hvr-grow" id="testMail">{{ trans('admin_preferences', 'test_mail') }}</a>
 		</div>
 	</form>
+</div>
 {% endblock %}
 
 {% block modals %}

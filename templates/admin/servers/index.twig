@@ -4,8 +4,9 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
-	<div class="table-responsive">
-		<table class="table table-hover">
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+	<div class="uk-overflow-auto">
+		<table class="uk-table uk-table-divider">
 			<thead>
 				<tr>
 					<th>Name</th>
@@ -46,6 +47,7 @@
 	</div>
 	{{ paginator.render(pagination) }}
 	<a href="{{ path_for('admin_servers_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
+</div>
 {% endblock %}
 
 {% block modals %}

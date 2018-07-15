@@ -164,11 +164,13 @@ class UserController extends BaseMainController {
 			->setAction((string)$request->getUri())
 			->add(new FormInputText('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
+				'icon' => 'user',
 				'error' => 'Required',
 				'required' => true,
 			]))
 			->add(new FormInputPassword('password', '', [
 				'title' => $this->getTranslate('inputs', 'password'),
+                'icon' => 'lock',
 				'error' => $this->getTranslate('labels', 'required'),
 				'required' => true,
 			]))

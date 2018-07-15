@@ -31,6 +31,11 @@ abstract class FormInput implements FormElement {
     protected $title;
 
     /**
+     * @var string
+     */
+    protected $icon;
+
+    /**
      * @var array
      */
     protected $classes = [];
@@ -70,6 +75,9 @@ abstract class FormInput implements FormElement {
         $this->title = array_key_exists('title', $options) ? (string) $options['title'] : ucfirst($name);
         if (array_key_exists('required', $options)) {
             $this->isRequired = (bool) $options['required'];
+        }
+        if (array_key_exists('icon', $options)) {
+            $this->icon = (string) $options['icon'];
         }
         if (array_key_exists('classes', $options)) {
             $this->classes = (array) $options['classes'];
@@ -189,6 +197,23 @@ abstract class FormInput implements FormElement {
      */
     public function setError($error) {
         $this->error = (string) $error;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
         return $this;
     }
 

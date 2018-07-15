@@ -3,6 +3,7 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
 		{{ forms.element_select(form.role) }}
@@ -11,4 +12,5 @@
             <a href="{{ path_for('admin_users_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
         </div>
     </form>
+</div>
 {% endblock %}

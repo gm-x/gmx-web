@@ -4,12 +4,13 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ path_for('admin_players_list') }}" method="get">
         <input type="text" name="filter" value="{{ filter }}">
         <button type="submit"><span class="oi oi-magnifying-glass"></span></button>
     </form>
-    <div class="table-responsive">
-        <table class="table table-hover">
+    <div class="uk-overflow-auto">
+        <table class="uk-table uk-table-divider">
             <thead>
                 <tr>
                     <th>Steam ID</th>
@@ -41,4 +42,5 @@
     </div>
 	{{ paginator.render(pagination) }}
     <a href="{{ path_for('admin_players_create') }}" class="btn btn-primary btn-sm">{{ trans('buttons', 'create') }}</a>
+</div>
 {% endblock %}

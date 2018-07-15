@@ -138,7 +138,6 @@
         </div>
 
 <main role="main" class="container">
-    <div class="my-3 p-3 bg-white rounded box-shadow">
     {% for message in flash_messages.success %}
         <div class="alert alert-success" role="alert">{{ message }}</div>
     {% endfor %}
@@ -148,7 +147,6 @@
     {% endfor %}
 
     {% block content %}{% endblock %}
-    </div>
 </main>
 
         {% block modals %}{% endblock %}

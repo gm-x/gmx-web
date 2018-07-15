@@ -3,7 +3,8 @@
 {% import 'macros/admin.twig' as admin %}
 
 {% block content %}
-    <div class="table-responsive">
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <div class="uk-overflow-auto">
         <table class="uk-table uk-table-divider">
             <thead>
                 <tr>
@@ -42,4 +43,5 @@
         </table>
     </div>
     <a href="{{ path_for('admin_roles_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
+</div>
 {% endblock %}
