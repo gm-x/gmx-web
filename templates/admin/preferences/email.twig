@@ -4,7 +4,7 @@
 
 {% block content %}
 	{% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
-	<form action="{{ form.getAction() }}" method="post">
+	<form action="{{ form.getAction() }}" method="post" id="mailConfigForm">
 		{{ csrf_token() }}
 		{{ forms.element_checkbox(form.enabled) }}
 		{{ forms.element_input(form.from_name) }}
@@ -60,7 +60,7 @@
 				e.stopPropagation();
 				e.preventDefault();
 
-				$.post('{{ path_for('admin_preferences_email_test') }}')
+				$.post('{{ path_for('admin_preferences_email_test') }}', $('#mailConfigForm').serialize())
 					.done(function (data) {
 						if (data.success) {
 							$('#testMailModalLabel').text('Success');
@@ -78,9 +78,9 @@
 
 			$('#email_pref_transport').on('change', function () {
 				if ($(this).val() === 'smtp') {
-				    $('#email_pref_smtp').show();
+				    $('#email_pref_smtp').removeClass('d-none');
 				} else {
-                    $('#email_pref_smtp').hide();
+                    $('#email_pref_smtp').addClass('d-none');
 				}
             });
 		});
