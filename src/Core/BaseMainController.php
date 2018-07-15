@@ -95,12 +95,15 @@ abstract class BaseMainController extends BaseController {
 		/** @var Twig $view */
 		$view = $this->getContainer('view');
 
+        /** @var \GameX\Core\Lang\Language $lang */
+        $lang = $this->getContainer('lang');
+
 		$menu = new Menu();
 
 		$menu
 			->setActiveRoute($this->getActiveMenu())
-			->add(new MenuItem('Index', 'index', [], null))
-			->add(new MenuItem('Punishments', 'punishments', [], null));
+			->add(new MenuItem($lang->format('labels',  'index'), 'index', [], null))
+			->add(new MenuItem($lang->format('labels',  'punishments'), 'punishments', [], null));
 
 		$modules = $this->getContainer('modules');
 		/** @var \GameX\Core\Module\ModuleInterface $module */
