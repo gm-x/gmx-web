@@ -2,11 +2,9 @@
 namespace GameX\Core\Mail;
 
 use \Slim\Views\Twig;
-use \GameX\Core\Mail\Senders\SMTP;
-use \GameX\Core\Mail\Senders\Mail;
 use \GameX\Core\Configuration\Node;
 
-class Helper {
+abstract class Helper {
 
 	/**
 	 * @var Twig
@@ -30,9 +28,7 @@ class Helper {
      */
 	public function __construct(Twig $view, Node $config) {
 		$this->view = $view;
-		$this->sender = $this->createSender($config->get('transport'));
-		$from = $config->get('from');
-		$this->from = new Email($from->get('email'), $from->get('name'));
+		$this->configure($config);
 	}
 
 	/**
@@ -41,6 +37,15 @@ class Helper {
 	public function getFrom() {
 		return $this->from;
 	}
+    
+    /**
+     * @param Node $config
+     * @return $this
+     */
+	public function setConfiguration(Node $config) {
+        $this->configure($config);
+        return $this;
+    }
 
 	/**
 	 * @param string $template
@@ -55,42 +60,21 @@ class Helper {
 	 * @param Email $to
 	 * @param string $subject
 	 * @param string $body
-	 * @param array $attachments
 	 */
-	public function send(Email $to, $subject, $body, array $attachments = []) {
-		$message = new Message($this->from);
-
-		$message
-			->addTo($to)
-			->setSubject($subject)
-			->setBody($body);
-
-		foreach ($attachments as $name => $attachment) {
-			$message->addAttachment($name, $attachment);
-		}
-
-		$this->sender->send($message);
+	public function send(Email $to, $subject, $body) {
+		$this->sender->send($this->message($to, $subject, $body));
 	}
+    
+    /**
+     * @param Email $to
+     * @param string $subject
+     * @param string $body
+     * @return Message
+     */
+	abstract protected function message(Email $to, $subject, $body);
 
 	/**
 	 * @param $config
-	 * @return Sender
 	 */
-	protected function createSender(Node $config) {
-		switch ($config->get('type')) {
-			case 'smtp': {
-				return new SMTP(
-				    $config->get('host'),
-				    $config->get('port'),
-				    $config->get('secure'),
-				    $config->get('username'),
-				    $config->get('password')
-                );
-			}
-
-			default: {
-				return new Mail();
-			}
-		}
-	}
+	abstract protected function configure(Node $config);
 }

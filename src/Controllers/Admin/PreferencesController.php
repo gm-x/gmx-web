@@ -84,45 +84,43 @@ class PreferencesController extends BaseAdminController {
     public function emailAction(Request $request, Response $response, array $args = []) {
         /** @var Config $config */
         $config = $this->getContainer('config');
-        $settings = $config->get('mail');
-        $from = $settings->get('from');
-        $transport = $settings->get('transport');
+        $mail = $config->get('mail');
 
 		/** @var Form $form */
 		$form = $this->createForm('admin_preferences_email')
-			->add(new FormInputCheckbox('enabled', $settings->get('enabled'), [
+			->add(new FormInputCheckbox('enabled', $mail->get('enabled'), [
 				'title' => $this->getTranslate('admin_preferences', 'enabled'),
 			]))
-			->add(new FormInputText('from_name', $from->get('name'), [
+			->add(new FormInputText('from_name', $mail->get('name'), [
 				'title' => $this->getTranslate('admin_preferences', 'from_name'),
 			]))
-			->add(new FormInputEmail('from_email', $from->get('email'), [
+			->add(new FormInputEmail('from_email', $mail->get('email'), [
 				'title' => $this->getTranslate('admin_preferences', 'from_email'),
 			]))
-			->add(new FormSelect('transport_type', $transport->get('type'), [
+			->add(new FormSelect('transport_type', $mail->get('type'), [
 			    'smtp' => "SMTP",
                 'mail' => 'Mail'
             ], [
 				'title' => $this->getTranslate('admin_preferences', 'transport'),
                 'id' => 'email_pref_transport'
 			]))
-            ->add(new FormInputText('smtp_host', $transport->get('host'), [
+            ->add(new FormInputText('smtp_host', $mail->get('host'), [
                 'title' => $this->getTranslate('admin_preferences', 'host'),
             ]))
-            ->add(new FormInputNumber('smtp_port', $transport->get('port'), [
+            ->add(new FormInputNumber('smtp_port', $mail->get('port'), [
                 'title' => $this->getTranslate('admin_preferences', 'port'),
             ]))
-			->add(new FormSelect('smtp_secure', $transport->get('secure'), [
+			->add(new FormSelect('smtp_secure', $mail->get('secure'), [
 				'none' => $this->getTranslate('admin_preferences', 'secure_none'),
 				'ssl' => "SSL",
 				'tls' => 'TLS'
 			], [
 				'title' => $this->getTranslate('admin_preferences', 'secure'),
 			]))
-            ->add(new FormInputText('smtp_user', $transport->get('username'), [
+            ->add(new FormInputText('smtp_user', $mail->get('username'), [
                 'title' => $this->getTranslate('admin_preferences', 'username'),
             ]))
-            ->add(new FormInputPassword('smtp_pass', $transport->get('password'), [
+            ->add(new FormInputPassword('smtp_pass', $mail->get('password'), [
                 'title' => $this->getTranslate('admin_preferences', 'password'),
             ]))
 			->setRules('enabled', ['bool'])
@@ -143,15 +141,15 @@ class PreferencesController extends BaseAdminController {
 			} else {
 				try {
 				    $enabled = (bool) $form->getValue('enabled');
-                    $settings->set('enabled', $enabled);
-                    $from->set('name', $form->getValue('from_name'));
-                    $from->set('email', $form->getValue('from_email'));
-                    $transport->set('type', $form->getValue('transport_type'));
-                    $transport->set('host', $form->getValue('smtp_host'));
-                    $transport->set('port', (int) $form->getValue('smtp_port'));
-                    $transport->set('secure', $form->getValue('smtp_secure'));
-                    $transport->set('username', $form->getValue('smtp_user'));
-                    $transport->set('password', $form->getValue('smtp_pass'));
+                    $mail->set('enabled', $enabled);
+                    $mail->set('name', $form->getValue('from_name'));
+                    $mail->set('email', $form->getValue('from_email'));
+                    $mail->set('type', $form->getValue('transport_type'));
+                    $mail->set('host', $form->getValue('smtp_host'));
+                    $mail->set('port', (int) $form->getValue('smtp_port'));
+                    $mail->set('secure', $form->getValue('smtp_secure'));
+                    $mail->set('username', $form->getValue('smtp_user'));
+                    $mail->set('password', $form->getValue('smtp_pass'));
 				    $config->save();
                     $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
 					return $this->redirect('admin_preferences_email');

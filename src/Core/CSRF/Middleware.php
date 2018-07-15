@@ -3,30 +3,30 @@ namespace GameX\Core\CSRF;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Exceptions\NotAllowedException;
 
 class Middleware {
+    
+    const METHODS = ['POST', 'PUT', 'DELETE', 'PATCH'];
 
     /**
      * @var Token
      */
     protected $token;
-
+    
     /**
-     * @var callable
+     * Middleware constructor.
+     * @param Token $token
      */
-    protected $failure;
-
-    public function __construct(Token $token, $failure = null) {
+    public function __construct(Token $token) {
         $this->token = $token;
-        $this->failure = $failure !== null
-            ? $failure
-            : $this->getFailureCallable();
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
-        if (!in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
+        if (!in_array($request->getMethod(), self::METHODS)) {
             return $next($request, $response);
         }
+        
         if ($this->checkSkipValidate($request)) {
             return $next($request, $response);
         }
@@ -42,22 +42,16 @@ class Middleware {
 
 
         if (!$this->token->validateToken($name, $token)) {
-            $failureCallable = $this->failure;
-            return $failureCallable($request, $response, $next);
+            throw new NotAllowedException();
         }
-    }
-
-    /**
-     * @return callable
-     */
-    protected function getFailureCallable() {
-        return function (ServerRequestInterface $request, ResponseInterface $response, $next) {
-            $body = new \Slim\Http\Body(fopen('php://temp', 'r+'));
-            $body->write('Failed CSRF check!');
-            return $response->withStatus(400)->withHeader('Content-type', 'text/plain')->withBody($body);
-        };
+    
+        return $next($request, $response);
     }
     
+    /**
+     * @param ServerRequestInterface $request
+     * @return bool
+     */
     protected function checkSkipValidate(ServerRequestInterface $request) {
         /** @var \Slim\Route $route */
         $route = $request->getAttribute('route');
