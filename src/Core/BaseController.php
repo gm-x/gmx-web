@@ -3,16 +3,10 @@ namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Slim\Http\Request;
-use \Slim\Http\Response;
-use \Slim\Views\Twig;
-use \GameX\Core\Menu\Menu;
-use \GameX\Core\Menu\MenuItem;
-use \GameX\Core\Lang\I18n;
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Exceptions\ValidationException;
-use \GameX\Core\Exceptions\FormException;
-use \Exception;
+use \GameX\Core\Lang\Language;
+use \GameX\Core\Configuration\Config;
+use \GameX\Core\Configuration\Node;
+
 
 abstract class BaseController {
     /**
@@ -21,17 +15,12 @@ abstract class BaseController {
     protected $container;
 
     /**
-     * @var Request
+     * @var Config|null
      */
-    protected $request;
+    protected $config = null;
 
     /**
-     * @var Response
-     */
-    protected $response;
-
-    /**
-     * @var I18n|null
+     * @var Language|null
      */
     protected $translate = null;
 
@@ -61,22 +50,15 @@ abstract class BaseController {
 
 	/**
 	 * @param string $key
-	 * @param string|null $element
-	 * @param mixed $default
-	 * @return mixed
+	 * @param mixed|null $default
+	 * @return Node|mixed|null
 	 */
-    public function getConfig($key, $element = null, $default = null) {
-    	$config = $this->getContainer('config');
-    	if (!array_key_exists($key, $config)) {
-    		return $default;
-		}
-		if ($element == null) {
-    		return $config[$key];
-		}
+    public function getConfig($key, $default = null) {
+        if ($this->config === null) {
+            $this->config = $this->getContainer('config');
+        }
 
-		return array_key_exists($element, $config[$key])
-			? $config[$key][$element]
-			: $default;
+        return $this->config->get($key, $default);
 	}
 
 	/**

@@ -6,12 +6,7 @@ use \GameX\Core\Lang\I18n;
 use \GameX\Models\Task;
 use \GameX\Core\Jobs\JobResult;
 
-abstract class BaseCronController {
-
-    /**
-     * @var ContainerInterface
-     */
-    private static $container;
+abstract class BaseCronController extends BaseController {
 
     /**
      * @var string[]
@@ -19,67 +14,10 @@ abstract class BaseCronController {
     private static $keys = [];
 
     /**
-     * @var I18n|null
-     */
-    protected $translate = null;
-
-	/**
-	 * BaseController constructor.
-	 */
-    public function __construct() {
-        $this->init();
-    }
-
-    /**
-     * Init method
-     */
-    protected function init() {}
-
-	/**
-	 * @param string $key
-	 * @param mixed $default
-	 * @return mixed
-	 */
-    public function getConfig($key, $default = null) {
-    	$config = $this->getContainer('config');
-    	return array_key_exists($key, $config) ? $config[$key] : $default;
-	}
-
-    /**
-     * @param $section
-     * @param $key
-     * @param array $args
-     * @return string
-     */
-    public function getTranslate($section, $key, ...$args) {
-        if ($this->translate === null) {
-            $this->translate = $this->getContainer('lang');
-        }
-        return $this->translate->format($section, $key, $args);
-    }
-
-    /**
      * @param Task $task
      * @return JobResult
      */
     abstract public function run(Task $task);
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public static function setContainer(ContainerInterface $container) {
-        self::$container = $container;
-    }
-
-    /**
-     * @param $container
-     * @return mixed
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function getContainer($container) {
-        return self::$container->get($container);
-    }
 
     /**
      * @param string $key
@@ -92,9 +30,10 @@ abstract class BaseCronController {
     /**
      * @param string $key
      * @param Task $task
+     * @param ContainerInterface $container
 	 * @return JobResult
      */
-    public static function execute($key, Task $task) {
+    public static function execute($key, Task $task, ContainerInterface $container) {
         if (!array_key_exists($key, self::$keys)) {
             return;
         }
@@ -103,7 +42,7 @@ abstract class BaseCronController {
         if (!class_exists($controller)) {
             return;
         }
-        $controller = new $controller();
+        $controller = new $controller($container);
         return $controller->run($task);
     }
 }

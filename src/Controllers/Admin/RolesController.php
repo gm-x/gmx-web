@@ -109,7 +109,7 @@ class RolesController extends BaseAdminController {
         try {
             $role->delete();
         } catch (Exception $e) {
-            $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+            $this->addErrorMessage('Something wrong. Please Try again later.');
             /** @var \Monolog\Logger $logger */
             $logger = $this->getContainer('log');
             $logger->error((string) $e);
@@ -144,7 +144,7 @@ class RolesController extends BaseAdminController {
                 $role->save();
                 return $this->redirect('admin_roles_list');
             } catch (Exception $e) {
-                $this->addFlashMessage('error', 'Something wrong. Please Try again later.');
+                $this->addErrorMessage('Something wrong. Please Try again later.');
                 /** @var \Monolog\Logger $logger */
                 $logger = $this->getContainer('log');
                 $logger->error((string) $e);

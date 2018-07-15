@@ -10,10 +10,10 @@ interface Provider {
     /**
      * @return string|null
      */
-    public function getSessionLang();
+    public function getLang();
 
     /**
      * @param string $lang
      */
-    public function setSessionLang($lang);
+    public function setLang($lang);
 }

@@ -65,7 +65,7 @@ class IndexController extends BaseMainController {
     public function languageAction(Request $request, ResponseInterface $response, array $args) {
         /** @var Language $lang */
         $lang = $this->getContainer('lang');
-        $lang->setUserLang($request->getParam('lang'), $this->getConfig('language'));
+        $lang->setUserLang($request->getParam('lang'));
         return $this->redirectTo($request->getParam('r'));
     }
 }

@@ -1,6 +1,10 @@
 <?php
+$container['config'] = function (\Psr\Container\ContainerInterface $container) {
+    return new \GameX\Core\Configuration\Config($container->get('root') . '/config.json');
+};
+
 $container['session'] = function (\Psr\Container\ContainerInterface $container) {
-    return new GameX\Core\Session\Session();
+    return new \GameX\Core\Session\Session();
 };
 
 $container['flash'] = function (\Psr\Container\ContainerInterface $container) {
@@ -20,17 +24,24 @@ $container['cache'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
+    /** @var GameX\Core\Configuration\Config $config */
+    $config = $container->get('config');
+
     $loader = new \GameX\Core\Lang\Loaders\JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
-    $provider = new \GameX\Core\Lang\Providers\SlimProvider($container->get('request'), $container->get('session'));
-    return new GameX\Core\Lang\Language($loader, $provider, [
-        'en' => 'English',
-        'ru' => 'Русский',
-    ], $container['config']['language']);
+    $provider = new \GameX\Core\Lang\Providers\SlimProvider($container->get('request'));
+    return new \GameX\Core\Lang\Language(
+        $loader, $provider,
+        $config->get('language')->get('list')->toArray(),
+        $config->get('language')->get('default')
+    );
 };
 
 $container['db'] = function (\Psr\Container\ContainerInterface $container) {
+    /** @var GameX\Core\Configuration\Config $config */
+    $config = $container->get('config');
+
     $capsule = new \Illuminate\Database\Capsule\Manager;
-    $capsule->addConnection($container['config']['db']);
+    $capsule->addConnection($config->get('db')->toArray());
 
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
@@ -47,7 +58,10 @@ $container['auth'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
-    return new \GameX\Core\Mail\Helper($container->get('view'), $container['config']['mail']);
+    /** @var GameX\Core\Configuration\Config $config */
+    $config = $container->get('config');
+
+    return new \GameX\Core\Mail\Helper($container->get('view'), $config->get('mail'));
 };
 
 $container['log'] = function (\Psr\Container\ContainerInterface $container) {
@@ -63,9 +77,13 @@ $container['form'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['view'] = function (\Psr\Container\ContainerInterface $container) {
-	$view = new \Slim\Views\Twig($container->get('root') . 'templates', array_merge([
-		'cache' => $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache',
-	], $container['config']['twig']));
+    /** @var GameX\Core\Configuration\Config $config */
+    $config = $container->get('config');
+
+    $settings = $config->get('view')->toArray();
+    $settings['cache'] = $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache';
+
+	$view = new \Slim\Views\Twig($container->get('root') . 'templates', $settings);
 
 	/** @var \Psr\Http\Message\UriInterface $uri */
 	$uri = $container->get('request')->getUri();
@@ -81,13 +99,14 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 
 	$view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
 	$view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
+	$view->getEnvironment()->addGlobal('title', $config->get('main')->get('title'));
 
 	return $view;
 };
 
 $container['modules'] = function (\Psr\Container\ContainerInterface $container) {
 	$modules = new \GameX\Core\Module\Module();
-	$modules->addModule(new GameX\Modules\TestModule\Module());
+	$modules->addModule(new \GameX\Modules\TestModule\Module());
 	return $modules;
 };
 

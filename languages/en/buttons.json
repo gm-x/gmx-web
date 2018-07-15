@@ -10,5 +10,6 @@
 	"change_password": "Change password",
 	"activate": "Activate",
 	"edit": "Edit",
-	"delete": "Delete"
+	"delete": "Delete",
+	"close": "Close"
 }

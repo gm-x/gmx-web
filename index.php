@@ -1,4 +1,8 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require __DIR__ . '/vendor/autoload.php';
 
 $container = new \Slim\Container([
@@ -30,12 +34,17 @@ $errorHandler = function ($c) {
 $container['errorHandler'] = $errorHandler;
 $container['phpErrorHandler'] = $errorHandler;
 
-$container['config'] = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
-
 $app = new \Slim\App($container);
 
 include __DIR__ . '/src/dependencies.php';
 include __DIR__ . '/src/middlewares.php';
 include __DIR__ . '/src/routes/index.php';
+
+/** @var \Monolog\Logger $logger */
+$logger = $container->get('log');
+
+//set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
+//    $logger->error("#$errno: $error in $file:$line");
+//}, E_ALL);
 
 $app->run();

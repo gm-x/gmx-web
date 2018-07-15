@@ -1,6 +1,6 @@
 <?php
-define('BASE_DIR', dirname(__DIR__));
 define('DS', DIRECTORY_SEPARATOR);
+define('BASE_DIR', dirname(__DIR__) . DS);
 
 include __DIR__ . DS . 'functions.php';
 
@@ -17,20 +17,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     'success' => false,
                     'message' => 'PHP must be 5.6.0 or higher'
                 ]);
-            } elseif (!is_writable(BASE_DIR . DS . 'runtime' . DS . 'cache')) {
+            } elseif (!is_writable(BASE_DIR . 'runtime' . DS . 'cache')) {
                 json([
                     'success' => false,
-                    'message' => sprintf('Folder %s is not writable', BASE_DIR . DS . 'runtime' . DS . 'cache')
+                    'message' => sprintf('Folder %s is not writable', BASE_DIR . 'runtime' . DS . 'cache')
                 ]);
-            } elseif (!is_writable(BASE_DIR . DS . 'runtime' . DS . 'logs')) {
+            } elseif (!is_writable(BASE_DIR . 'runtime' . DS . 'logs')) {
                 json([
                     'success' => false,
-                    'message' => sprintf('Folder %s is not writable', BASE_DIR . DS . 'runtime' . DS . 'logs')
+                    'message' => sprintf('Folder %s is not writable', BASE_DIR . 'runtime' . DS . 'logs')
                 ]);
-            } elseif (!is_writable(BASE_DIR . DS . 'runtime' . DS . 'twig_cache')) {
+            } elseif (!is_writable(BASE_DIR . 'runtime' . DS . 'twig_cache')) {
                 json([
                     'success' => false,
-                    'message' => sprintf('Folder %s is not writable', BASE_DIR . DS . 'runtime' . DS . 'twig_cache')
+                    'message' => sprintf('Folder %s is not writable', BASE_DIR . 'runtime' . DS . 'twig_cache')
                 ]);
             } else {
                 json([
@@ -42,11 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		case 'composer': {
 			try {
 				set_time_limit(0);
-				composerInstall(BASE_DIR);
+				composerInstall();
 				json([
 					'success' => true
 				]);
 			} catch (Exception $e) {
+				logException($e);
 				json([
 					'success' => false,
 					'message' => $e->getMessage()
@@ -59,20 +60,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				if (!checkDbConnection($_POST['db'])) {
 					throw new Exception('Can\'t connect to database');
 				}
-				$config = getBaseConfig();
-				$config['db']['host'] = $_POST['db']['host'];
-				$config['db']['port'] = $_POST['db']['port'];
-				$config['db']['username'] = $_POST['db']['user'];
-				$config['db']['password'] = $_POST['db']['pass'];
-				$config['db']['database'] = $_POST['db']['name'];
-				$config['db']['prefix'] = $_POST['db']['prefix'];
-				$filePath = BASE_DIR . DS . 'config.json';
-				$data = json_encode($config, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-				file_put_contents($filePath, $data);
+
+				require BASE_DIR . 'vendor' . DS . 'autoload.php';
+				$config = new GameX\Core\Configuration\Config();
+				$db = $config->get('db');
+				$db->set('host', $_POST['db']['host']);
+				$db->set('port', (int) $_POST['db']['port']);
+				$db->set('username', $_POST['db']['user']);
+				$db->set('password', $_POST['db']['pass']);
+				$db->set('database', $_POST['db']['name']);
+				$db->set('prefix', $_POST['db']['prefix']);
+
+				$config->set('secret', generateSecretKey());
+
+				$config->setPath(BASE_DIR . 'config.json');
+				$config->save();
 				json([
 					'success' => true
 				]);
 			} catch (Exception $e) {
+				logException($e);
 				json([
 					'success' => false,
 					'message' => $e->getMessage()
@@ -82,12 +89,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 'migrations': {
 			try {
-				$container = getContainer(BASE_DIR, true);
+				$container = getContainer(true);
 				runMigrations($container);
 				json([
 					'success' => true
 				]);
 			} catch (Exception $e) {
+				logException($e);
 				json([
 					'success' => false,
 					'message' => $e->getMessage()
@@ -97,12 +105,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 'admin': {
 			try {
-                $container = getContainer(BASE_DIR, true);
+                $container = getContainer(true);
+                /** @var \Illuminate\Database\Capsule\Manager $db */
+                $db = $container['db'];
+				$db->getConnection()->statement("SET foreign_key_checks=0");
+				\GameX\Core\Auth\Models\RoleModel::truncate();
+				\GameX\Core\Auth\Models\UserModel::truncate();
+				\GameX\Core\Auth\Models\PersistenceModel::truncate();
+				$db->getConnection()->statement("SET foreign_key_checks=1");
 				createUser($container, $_POST['login'], $_POST['email'], $_POST['pass']);
 				json([
 					'success' => true
 				]);
 			} catch (Exception $e) {
+				logException($e);
 				json([
 					'success' => false,
 					'message' => $e->getMessage()
@@ -112,8 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 'tasks': {
 			try {
-                $container = getContainer(BASE_DIR, false);
-
+                $container = getContainer(false);
+				\GameX\Models\Task::truncate();
 				\GameX\Core\Jobs\JobHelper::createTask('monitoring');
 				\GameX\Core\Jobs\JobHelper::createTask('punishments');
 
@@ -121,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 					'success' => true
 				]);
 			} catch (Exception $e) {
+				logException($e);
 				json([
 					'success' => false,
 					'message' => $e->getMessage()

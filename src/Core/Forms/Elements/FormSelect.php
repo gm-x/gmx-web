@@ -16,13 +16,10 @@ class FormSelect extends FormInput {
 	/**
 	 * @inheritdoc
 	 */
-    public function __construct($name, $value, array $options = []) {
-		parent::__construct($name, $value, $options);
+    public function __construct($name, $value, array $options = [], array $params = []) {
+		parent::__construct($name, $value, $params);
 
-		if (array_key_exists('options', $options)) {
-			$this->options = (array) $options['options'];
-		}
-
+		$this->options = $options;
 		if (array_key_exists('empty_option', $options)) {
 			$this->emptyOption = (string) $options['empty_option'];
 		}
