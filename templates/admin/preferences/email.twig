@@ -3,7 +3,7 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
-	{% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
+	{% include 'admin/preferences/tabs.twig' with {'href': currentHref} %}
 	<form action="{{ form.getAction() }}" method="post" id="mailConfigForm">
 		{{ csrf_token() }}
 		{{ forms.element_checkbox(form.enabled) }}

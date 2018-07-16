@@ -2,12 +2,13 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
-use GameX\Core\Mail\Email;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Node;
+use \GameX\Core\Mail\Email;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\FormInputCheckbox;
 use \GameX\Core\Forms\Elements\FormInputText;
@@ -71,7 +72,7 @@ class PreferencesController extends BaseAdminController {
 		}
 
 		return $this->render('admin/preferences/index.twig', [
-			'activeTab' => 'admin_preferences_index',
+            'currentHref' => UriHelper::getUrl($request->getUri(), false),
 			'form' => $form,
 		]);
     }
@@ -107,7 +108,7 @@ class PreferencesController extends BaseAdminController {
 		}
 
 		return $this->render('admin/preferences/email.twig', [
-			'activeTab' => 'admin_preferences_email',
+            'currentHref' => UriHelper::getUrl($request->getUri(), false),
 			'form' => $form,
 		]);
     }

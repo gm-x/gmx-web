@@ -74,7 +74,7 @@
                             {% if has_access('admin.*') %}
                                 <a class="dropdown-item" href="{{ path_for('admin_index') }}">Admin</a>
                             {% endif %}
-                            <a class="dropdown-item" href="{{ path_for('user_settings') }}">Settings</a>
+                            <a class="dropdown-item" href="{{ path_for('user_settings_index') }}">Settings</a>
                             <a class="dropdown-item" href="{{ path_for('logout') }}">{{ trans('buttons', 'logout') }}</a>
                         {% endif %}
                     </div>

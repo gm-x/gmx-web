@@ -3,6 +3,8 @@
 namespace GameX\Core\Forms;
 
 use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\UriInterface;
+use \GameX\Core\Helpers\UriHelper;
 use \Form\Validator;
 use \GameX\Core\Session\Session;
 use \ArrayAccess;
@@ -86,7 +88,11 @@ class Form implements ArrayAccess {
      * @return $this
      */
     public function setAction($action) {
-        $this->action = (string) $action;
+        if ($action instanceof UriInterface) {
+            $this->action = UriHelper::getUrl($action, false);
+        } else {
+                $this->action = (string) $action;
+        }
         return $this;
     }
 

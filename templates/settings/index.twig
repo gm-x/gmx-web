@@ -3,6 +3,7 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
+    {% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
     <form action="{{ emailForm.getAction() }}" method="post">
         {{ csrf_token() }}
         {{ forms.element_input(emailForm.email) }}

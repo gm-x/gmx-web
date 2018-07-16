@@ -1,7 +1,7 @@
 {% import 'macros/tabs.twig' as tabs %}
 {{ tabs.render([{
-	'href': path_for('admin_preferences_index'),
-	'title': trans('admin_preferences', 'tab_main')
+    'href': path_for('user_settings_index'),
+    'title': 'Email'
 }, {
     'href': path_for('admin_preferences_email'),
     'title': trans('admin_preferences', 'tab_email')
