@@ -36,10 +36,15 @@ class AuthMiddleware {
 			return $next($request, $response);
 		}
         $permission = $route->getArgument('permission');
+		$isAuthorized = $route->getArgument('is_authorized');
+		$user = $this->auth->getUser();
         if ($permission === null) {
+        	if ($isAuthorized === true && !$user) {
+				throw new NotAllowedException();
+			}
             return $next($request, $response);
         }
-        $user = $this->auth->getUser();
+
         if (!$user || !$user->hasAccess($permission)) {
             throw new NotAllowedException();
         }

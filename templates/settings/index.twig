@@ -1,23 +1,5 @@
 {% extends 'base.twig' %}
 
-{% import 'macros/forms.twig' as forms %}
-
 {% block content %}
-    {% include 'admin/preferences/tabs.twig' with {'activeTab': activeTab} %}
-    <form action="{{ emailForm.getAction() }}" method="post">
-        {{ csrf_token() }}
-        {{ forms.element_input(emailForm.email) }}
-        <div class="form-group">
-            <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
-        </div>
-    </form>
-    <form action="{{ passwordForm.getAction() }}" method="post">
-        {{ csrf_token() }}
-        {{ forms.element_input(passwordForm.old_password) }}
-        {{ forms.element_input(passwordForm.new_password) }}
-        {{ forms.element_input(passwordForm.repeat_password) }}
-        <div class="form-group">
-            <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
-        </div>
-    </form>
+    {% include 'settings//tabs.twig' with {'href': currentHref} %}
 {% endblock %}
