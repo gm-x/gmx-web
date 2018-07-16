@@ -22,3 +22,8 @@ $this
 	->map(['GET', 'POST'], '/settings/avatar', BaseController::action(SettingsController::class, 'avatar'))
 	->setName('user_settings_avatar')
 	->setArgument('is_authorized', true);
+
+$this
+	->map(['GET', 'POST'], '/settings/steamid', BaseController::action(SettingsController::class, 'steamid'))
+	->setName('user_settings_steamid')
+	->setArgument('is_authorized', true);

@@ -8,6 +8,7 @@ use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Forms\Elements\FormInputEmail;
 use \GameX\Core\Forms\Elements\FormInputPassword;
+use \GameX\Core\Forms\Elements\FormInputFile;
 use \GameX\Core\Exceptions\FormException;
 use \Exception;
 
@@ -134,6 +135,10 @@ class SettingsController extends BaseMainController {
 		$user = $this->getUser();
 
 		$form = $this->createForm('user_settings_avatar')
+			->add(new FormInputFile('avatar', '', [
+				'title' => 'Avatar',
+				'required' => true,
+			]))
 			->setAction($request->getUri())
 			->processRequest($request);
 
@@ -151,6 +156,38 @@ class SettingsController extends BaseMainController {
 		}
 
 		return $this->render('settings/avatar.twig', [
+			'currentHref' => UriHelper::getUrl($request->getUri()),
+			'form' => $form,
+		]);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
+	public function steamidAction(Request $request, ResponseInterface $response, array $args) {
+		$user = $this->getUser();
+
+		$form = $this->createForm('user_settings_steamid')
+			->setAction($request->getUri())
+			->processRequest($request);
+
+		if ($form->getIsSubmitted()) {
+			if (!$form->getIsValid()) {
+				return $this->redirectTo($form->getAction());
+			} else {
+				try {
+					$this->addSuccessMessage('Steamid updated successfully');
+					return $this->redirect('user_settings_steamid');
+				} catch (Exception $e) {
+					return $this->failRedirect($e, $form);
+				}
+			}
+		}
+
+		return $this->render('settings/steamid.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
 			'form' => $form,
 		]);
