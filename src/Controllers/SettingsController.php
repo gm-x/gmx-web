@@ -9,6 +9,7 @@ use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Forms\UserSettingsEmail;
 use \GameX\Forms\UserSettingsPassword;
 use \GameX\Core\Forms\Elements\File;
+use \GameX\Core\Exceptions\RedirectException;
 use \GameX\Core\Exceptions\FormException;
 use \Exception;
 
@@ -36,32 +37,23 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function emailAction(Request $request, ResponseInterface $response, array $args) {
-		$user = $this->getUser();
+		$form = new UserSettingsEmail($this->getUser());
+		try {
+			$form->create();
 
-		$form = UserSettingsEmail::init([
-		    'email' => $user->email
-        ])
-			->setAction($request->getUri())
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$user->email = $form->getValue('email');
-					$user->save();
-					$this->addSuccessMessage('Email saved successfully');
-					return $this->redirect('user_settings_email');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
+			if ($form->process($request)) {
+				$this->addSuccessMessage('Email saved successfully');
+				return $this->redirect('user_settings_email');
 			}
+		} catch (RedirectException $e) {
+			$this->redirectTo($e->getUrl());
+		} catch (Exception $e) {
+			$this->failRedirect($e, $form->getForm());
 		}
 
 		return $this->render('settings/email.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
-			'form' => $form,
+			'form' => $form->getForm(),
 		]);
 	}
 

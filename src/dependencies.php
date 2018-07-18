@@ -61,7 +61,8 @@ $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
     /** @var GameX\Core\Configuration\Config $config */
     $config = $container->get('config');
 
-    return new \GameX\Core\Mail\Helpers\SwiftMailer($container->get('view'), $config->get('mail'));
+//    return new \GameX\Core\Mail\Helpers\SwiftMailer($container->get('view'), $config->get('mail'));
+    return new \GameX\Core\Mail\Helpers\MailHelper($container->get('view'), $config->get('mail'));
 };
 
 $container['log'] = function (\Psr\Container\ContainerInterface $container) {

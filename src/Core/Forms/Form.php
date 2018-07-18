@@ -4,8 +4,6 @@ namespace GameX\Core\Forms;
 
 
 use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\UriInterface;
-use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Session\Session;
 use \GameX\Core\Lang\Language;
 use \ArrayAccess;
@@ -95,11 +93,7 @@ class Form implements ArrayAccess {
      * @return $this
      */
     public function setAction($action) {
-        if ($action instanceof UriInterface) {
-            $this->action = UriHelper::getUrl($action, false);
-        } else {
-                $this->action = (string) $action;
-        }
+		$this->action = (string) $action;
         return $this;
     }
 
@@ -170,23 +164,13 @@ class Form implements ArrayAccess {
         $this->isSubmitted = true;
         $this->isValid = true;
         foreach ($this->elements as $element) {
-            $name = $element->getName();
-            if (array_key_exists($name, $values)) {
-                $element->setValue($values[$name]);
+            if (array_key_exists($element->getName(), $values)) {
+                $element->setValue($values[$element->getName()]);
             } else {
                 $element->setValue('');
             }
             
-            $rules = $this->rules[$name];
-            foreach ($rules as $rule) {
-                if(!$rule->validate($this, $name)) {
-                    $this->isValid = false;
-                    $element
-                        ->setHasError(true)
-                        ->setError($rule->getMessage($this->language));
-                    break;
-                }
-            }
+            $this->processValidate($element);
             
         }
         return $this;
@@ -300,4 +284,20 @@ class Form implements ArrayAccess {
     protected function getSessionKey() {
         return 'form_' . $this->name;
     }
+
+    protected function processValidate(Element $element) {
+    	if (!array_key_exists($element->getName(), $this->rules)) {
+    		return;
+		}
+		$name = $element->getName();
+		foreach ($this->rules[$name] as $rule) {
+			if(!$rule->validate($this, $name)) {
+				$this->isValid = false;
+				$element
+					->setHasError(true)
+					->setError($rule->getMessage($this->language));
+				break;
+			}
+		}
+	}
 }

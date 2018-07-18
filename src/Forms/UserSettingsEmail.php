@@ -2,31 +2,53 @@
 namespace GameX\Forms;
 
 use \GameX\Core\BaseForm;
+use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Email as EmailElement;
 use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Email as EmailRule;
+use \GameX\Core\Exceptions\FormException;
 
 class UserSettingsEmail extends BaseForm {
-    
-    public static function init(array $data) {
-        return static::create('user_settings_email')
-            ->add(new Password('old_password', '', [
-                'title' => 'Old password',
-                'required' => true,
-            ]))
-            ->add(new Password('new_password', '', [
-                'title' => 'New password',
-                'required' => true,
-            ]))
-            ->add(new Password('repeat_password', '', [
-                'title' => 'Repeat password',
-                'required' => true,
-            ]))
-            ->addRule('old_password', new Required())
-            ->addRule('old_password', new Length(['min' => 6]))
-            ->addRule('new_password', new Required())
-            ->addRule('new_password', new Length(['min' => 6]))
-            ->addRule('repeat_password', new PasswordRepeat(['element' => 'new_password']));
-    }
+
+	/**
+	 * @var string
+	 */
+	protected $name = 'user_settings_email';
+
+	/**
+	 * @var UserModel
+	 */
+	protected $user;
+
+	/**
+	 * UserSettingsEmail constructor.
+	 * @param UserModel $user
+	 */
+	public function __construct(UserModel $user) {
+		$this->user = $user;
+	}
+
+	/**
+	 * @noreturn
+	 */
+	protected function createForm() {
+		$this->form
+			->add(new EmailElement('email', $this->user->email, [
+				'title' => 'Email',
+				'required' => true
+			]))
+			->addRule('old_password', new Required())
+			->addRule('old_password', new EmailRule());
+	}
+
+	/**
+	 * @return boolean
+	 * @throws FormException
+	 */
+	protected function processForm() {
+		$this->user->email = $this->form->getValue('email');
+		$this->user->save();
+
+		return true;
+	}
 }

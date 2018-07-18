@@ -77,9 +77,6 @@ abstract class Input implements Element {
         if (array_key_exists('attributes', $options)) {
             $this->attributes = (array) $options['attributes'];
         }
-        if (array_key_exists('error', $options)) {
-            $this->error = (string) $options['error'];
-        }
     }
 
     /**
