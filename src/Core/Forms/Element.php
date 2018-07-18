@@ -1,10 +1,10 @@
 <?php
 namespace GameX\Core\Forms;
 
-interface FormElement {
+interface Element {
 
     /**
-     * FormElement constructor.
+     * Element constructor.
      * @param string $name
      * @param string $value
      * @param array $options

@@ -73,7 +73,7 @@ $container['log'] = function (\Psr\Container\ContainerInterface $container) {
 };
 
 $container['form'] = function (\Psr\Container\ContainerInterface $container) {
-    return new \GameX\Core\Forms\FormFactory($container->get('session'));
+    return new \GameX\Core\Forms\FormFactory($container->get('session'), $container->get('lang'));
 };
 
 $container['view'] = function (\Psr\Container\ContainerInterface $container) {
@@ -111,3 +111,4 @@ $container['modules'] = function (\Psr\Container\ContainerInterface $container) 
 };
 
 \GameX\Core\BaseModel::setContainer($container);
+\GameX\Core\BaseForm::setContainer($container);

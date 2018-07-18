@@ -8,8 +8,8 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Firebase\JWT\JWT;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\FormInputText;
-use \GameX\Core\Forms\Elements\FormInputNumber;
+use \GameX\Core\Forms\Elements\Text;
+use \GameX\Core\Forms\Elements\Number;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -153,19 +153,19 @@ class ServersController extends BaseAdminController {
      */
 	protected function getForm(Server $server) {
         $form = $this->createForm('admin_server')
-            ->add(new FormInputText('name', $server->name, [
+            ->add(new Text('name', $server->name, [
                 'title' => 'Name',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
             ]))
-            ->add(new FormInputText('ip', $server->ip, [
+            ->add(new Text('ip', $server->ip, [
                 'title' => 'IP',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
             ]))
-            ->add(new FormInputNumber('port', $server->port, [
+            ->add(new Number('port', $server->port, [
                 'title' => 'Port',
                 'error' => 'Required',
                 'required' => true,

@@ -10,10 +10,10 @@ use \GameX\Models\Server;
 use \GameX\Models\Group;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Core\Forms\Form;
-use GameX\Core\Forms\Elements\FormInputCheckbox;
-use GameX\Core\Forms\Elements\FormInputDate;
-use GameX\Core\Forms\Elements\FormInputText;
-use GameX\Core\Forms\Elements\FormSelect;
+use GameX\Core\Forms\Elements\Checkbox;
+use GameX\Core\Forms\Elements\Date;
+use GameX\Core\Forms\Elements\Text;
+use GameX\Core\Forms\Elements\Select;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -221,31 +221,31 @@ class PrivilegesController extends BaseAdminController {
 		};
 
 		return $this->createForm('admin_server_group')
-            ->add(new FormSelect('server', $server->id, $servers, [
+            ->add(new Select('server', $server->id, $servers, [
                 'id' => 'input_admin_server',
                 'title' => 'Server',
                 'error' => 'Required',
                 'required' => true,
 				'empty_option' => 'Choose server',
             ]))
-			->add(new FormSelect('group', $privilege->group_id, $groups, [
+			->add(new Select('group', $privilege->group_id, $groups, [
                 'id' => 'input_player_group',
                 'title' => 'Group',
                 'error' => 'Required',
                 'required' => true,
 				'empty_option' => 'Choose group',
             ]))
-            ->add(new FormInputText('prefix', $privilege->prefix, [
+            ->add(new Text('prefix', $privilege->prefix, [
                 'title' => 'Prefix',
                 'error' => '',
                 'required' => false,
             ]))
-            ->add(new FormInputDate('expired', $privilege->expired_at, [
+            ->add(new Date('expired', $privilege->expired_at, [
                 'title' => 'Expired',
                 'error' => 'Required',
                 'required' => true,
             ]))
-            ->add(new FormInputCheckbox('active', $privilege->active ? true : false, [
+            ->add(new Checkbox('active', $privilege->active ? true : false, [
                 'title' => 'Active',
                 'required' => false,
             ]))

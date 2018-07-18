@@ -3,7 +3,7 @@ namespace GameX\Core\Forms\Elements;
 
 use \DateTime;
 
-class FormInputDate extends FormInput {
+class Date extends Input {
 
 	/**
 	 * @inheritdoc

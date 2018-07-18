@@ -1,7 +1,7 @@
 <?php
 namespace GameX\Core\Forms\Elements;
 
-class FormSelect extends FormInput {
+class Select extends Input {
 
 	/**
 	 * @var array

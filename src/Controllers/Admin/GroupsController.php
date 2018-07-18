@@ -9,9 +9,9 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\FormInputText;
-use \GameX\Core\Forms\Elements\FormInputFlags;
-use \GameX\Core\Forms\Elements\FormInputNumber;
+use \GameX\Core\Forms\Elements\Text;
+use \GameX\Core\Forms\Elements\Flags;
+use \GameX\Core\Forms\Elements\Number;
 use \Exception;
 
 class GroupsController extends BaseAdminController {
@@ -183,17 +183,17 @@ class GroupsController extends BaseAdminController {
      */
     protected function getForm(Group $group) {
        return $this->createForm('admin_server_group')
-            ->add(new FormInputText('title', $group->title, [
+            ->add(new Text('title', $group->title, [
                 'title' => 'Title',
                 'error' => 'Required',
                 'required' => true,
             ]))
-            ->add(new FormInputFlags('flags', $group->flags, [
+            ->add(new Flags('flags', $group->flags, [
                 'title' => 'Flags',
                 'error' => 'Required',
                 'required' => true,
             ]))
-            ->add(new FormInputNumber('priority', $group->priority, [
+            ->add(new Number('priority', $group->priority, [
                 'title' => 'Priority',
                 'required' => false,
             ]))

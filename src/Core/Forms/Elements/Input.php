@@ -1,9 +1,9 @@
 <?php
 namespace GameX\Core\Forms\Elements;
 
-use \GameX\Core\Forms\FormElement;
+use \GameX\Core\Forms\Element;
 
-abstract class FormInput implements FormElement {
+abstract class Input implements Element {
 
     /**
      * @var string
@@ -56,7 +56,7 @@ abstract class FormInput implements FormElement {
     protected $error;
 
     /**
-     * FormInput constructor.
+     * Input constructor.
      * @param string $name
      * @param mixed $value
      * @param array $options

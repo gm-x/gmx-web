@@ -10,7 +10,7 @@ use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\FormInputText;
+use \GameX\Core\Forms\Elements\Text;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
@@ -181,13 +181,13 @@ class RolesController extends BaseAdminController {
      */
     protected function getForm(RoleModel $role) {
         return $this->createForm('admin_role')
-            ->add(new FormInputText('name', $role->name, [
+            ->add(new Text('name', $role->name, [
                 'title' => 'Name',
                 'error' => 'Required',
                 'required' => true,
                 'attributes' => [],
             ]))
-            ->add(new FormInputText('slug', $role->slug, [
+            ->add(new Text('slug', $role->slug, [
                 'title' => 'Slug',
                 'error' => 'Required',
                 'required' => true,

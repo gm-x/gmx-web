@@ -2,11 +2,12 @@
 
 namespace GameX\Core\Forms;
 
+
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\UriInterface;
 use \GameX\Core\Helpers\UriHelper;
-use \Form\Validator;
 use \GameX\Core\Session\Session;
+use \GameX\Core\Lang\Language;
 use \ArrayAccess;
 use \Exception;
 
@@ -15,11 +16,11 @@ class Form implements ArrayAccess {
      * @var Session
      */
     protected $session;
-
+    
     /**
-     * @var Validator
+     * @var Language
      */
-    protected $validator;
+    protected $language;
 
     /**
      * @var string
@@ -57,19 +58,25 @@ class Form implements ArrayAccess {
     protected $action;
 
     /**
-     * @var FormElement[]
+     * @var Element[]
      */
     protected $elements = [];
+    
+    /**
+     * @var Rule[][]
+     */
+    protected $rules = [];
 
     /**
      * Form constructor.
      * @param Session $session
+     * @param Language $language
      * @param $name
      */
-    public function __construct(Session $session, $name) {
+    public function __construct(Session $session, Language $language, $name) {
         $this->session = $session;
+        $this->language = $language;
         $this->name = $name;
-        $this->validator = new Validator([], ['stop_on_error' => false]);
 
         $this->loadValues();
     }
@@ -104,10 +111,10 @@ class Form implements ArrayAccess {
     }
 
     /**
-     * @param FormElement $element
+     * @param Element $element
      * @return $this
      */
-    public function add(FormElement $element) {
+    public function add(Element $element) {
         $this->elements[$element->getName()] = $element;
 
         if (array_key_exists($element->getName(), $this->values)) {
@@ -125,7 +132,7 @@ class Form implements ArrayAccess {
 
     /**
      * @param string $name
-     * @return FormElement
+     * @return Element
      * @throws Exception
      */
     public function get($name) {
@@ -161,22 +168,27 @@ class Form implements ArrayAccess {
         $values = $body[$this->name];
 
         $this->isSubmitted = true;
-        $this->isValid = $this->validator->validate($values);
-        $values = $this->validator->getValues();
-        foreach ($values as $key => $value) {
-            if (array_key_exists($key, $this->elements)) {
-                $this->elements[$key]->setValue($value);
+        $this->isValid = true;
+        foreach ($this->elements as $element) {
+            $name = $element->getName();
+            if (array_key_exists($name, $values)) {
+                $element->setValue($values[$name]);
+            } else {
+                $element->setValue('');
             }
-        }
-        $errors = $this->validator->getErrors();
-        foreach ($errors as $key => $error) {
-            if ($this->exists($key)) {
-                $this->get($key)->setHasError(true);
+            
+            $rules = $this->rules[$name];
+            foreach ($rules as $rule) {
+                if(!$rule->validate($this, $name)) {
+                    $this->isValid = false;
+                    $element
+                        ->setHasError(true)
+                        ->setError($rule->getMessage($this->language));
+                    break;
+                }
             }
+            
         }
-
-
-
         return $this;
     }
 
@@ -231,33 +243,13 @@ class Form implements ArrayAccess {
         $this->isValid = false;
         return $this;
     }
-
-    /**
-     * @return Validator
-     */
-    public function getValidator() {
-        return $this->validator;
-    }
-
-    /**
-     * @param string $name
-     * @param array $rules
-     * @return $this;
-     */
-    public function setRules($name, array $rules) {
-        $this->validator->setRules($name, $rules);
-        return $this;
-    }
-
-    /**
-     * @param string $field
-     * @param array $rules
-     * @return $this
-     */
-    public function addRules($field, array $rules) {
-        $this->validator->addRules([
-            $field => $rules
-        ]);
+    
+    public function addRule($key, Rule $rule) {
+        if (!array_key_exists($key, $this->rules)) {
+            $this->rules[$key] = [];
+        }
+        
+        $this->rules[$key][] = $rule;
         return $this;
     }
 

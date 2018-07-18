@@ -3,10 +3,10 @@ namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
 use GameX\Core\Exceptions\NotAllowedException;
-use \GameX\Core\Forms\Elements\FormInputCheckbox;
-use \GameX\Core\Forms\Elements\FormInputEmail;
-use \GameX\Core\Forms\Elements\FormInputPassword;
-use GameX\Core\Forms\Elements\FormInputText;
+use \GameX\Core\Forms\Elements\Checkbox;
+use \GameX\Core\Forms\Elements\Email;
+use \GameX\Core\Forms\Elements\Password;
+use GameX\Core\Forms\Elements\Text;
 use GameX\Core\Jobs\JobHelper;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -39,22 +39,22 @@ class UserController extends BaseMainController {
         /** @var Form $form */
         $form = $this->createForm('register')
             ->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
+			->add(new Text('login', '', [
 				'title' => $this->getTranslate('inputs', 'login'),
 				'error' => 'Required',
 				'required' => true,
 			]))
-			->add(new FormInputEmail('email', '', [
+			->add(new Email('email', '', [
 				'title' => $this->getTranslate('inputs', 'email'),
 				'error' => 'Must be valid email',
 				'required' => true,
 			]))
-            ->add(new FormInputPassword('password', '', [
+            ->add(new Password('password', '', [
                 'title' => $this->getTranslate('inputs', 'password'),
                 'error' => $this->getTranslate('labels', 'required'),
                 'required' => true,
 			]))
-            ->add(new FormInputPassword('password_repeat', '', [
+            ->add(new Password('password_repeat', '', [
                 'title' => $this->getTranslate('inputs', 'password_repeat'),
                 'error' => 'Passwords does not match',
                 'required' => true,
@@ -122,7 +122,7 @@ class UserController extends BaseMainController {
         /** @var Form $form */
         $form = $this->createForm('activation')
             ->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
+			->add(new Text('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'error' => 'Required',
 				'required' => true,
@@ -158,17 +158,17 @@ class UserController extends BaseMainController {
 
         $form = $this->createForm('login')
 			->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
+			->add(new Text('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'error' => 'Required',
 				'required' => true,
 			]))
-			->add(new FormInputPassword('password', '', [
+			->add(new Password('password', '', [
 				'title' => $this->getTranslate('inputs', 'password'),
 				'error' => $this->getTranslate('labels', 'required'),
 				'required' => true,
 			]))
-			->add(new FormInputCheckbox('remember_me', true, [
+			->add(new Checkbox('remember_me', true, [
 				'title' => $this->getTranslate('inputs', 'remember_me'),
 				'required' => false,
 			]))
@@ -216,7 +216,7 @@ class UserController extends BaseMainController {
 
 		$form = $this->createForm('reset_password')
             ->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
+			->add(new Text('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'error' => 'Required',
 				'required' => true,
@@ -268,17 +268,17 @@ class UserController extends BaseMainController {
 
         $form = $this->createForm('reset_password_complete')
             ->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
+			->add(new Text('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'error' => 'Required',
 				'required' => true,
 			]))
-			->add(new FormInputPassword('password', '', [
+			->add(new Password('password', '', [
 				'title' => $this->getTranslate('inputs', 'password'),
 				'error' => $this->getTranslate('labels', 'required'),
 				'required' => true,
 			]))
-			->add(new FormInputPassword('password_repeat', '', [
+			->add(new Password('password_repeat', '', [
 				'title' => $this->getTranslate('inputs', 'password_repeat'),
 				'error' => 'Passwords does not match',
 				'required' => true,

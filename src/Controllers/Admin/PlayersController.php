@@ -8,10 +8,10 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Pagination\Pagination;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\FormInputPassword;
-use \GameX\Core\Forms\Elements\FormInputText;
-use \GameX\Core\Forms\Elements\FormSelect;
-use \GameX\Core\Forms\Elements\FormInputCheckbox;
+use \GameX\Core\Forms\Elements\Password;
+use \GameX\Core\Forms\Elements\Text;
+use \GameX\Core\Forms\Elements\Select;
+use \GameX\Core\Forms\Elements\Checkbox;
 use \Form\Validator;
 use \Exception;
 
@@ -180,17 +180,17 @@ class PlayersController extends BaseAdminController {
 		};
 
 		return $this->createForm('admin_player')
-			->add(new FormInputText('steamid', $player->steamid, [
+			->add(new Text('steamid', $player->steamid, [
 				'title' => 'Steam ID',
 				'error' => 'Valid STEAM ID',
 				'required' => true,
 			]))
-			->add(new FormInputText('nick', $player->nick, [
+			->add(new Text('nick', $player->nick, [
 				'title' => 'Nickname',
 				'error' => 'Required',
 				'required' => true,
 			]))
-			->add(new FormSelect('auth_type', $player->auth_type, [
+			->add(new Select('auth_type', $player->auth_type, [
                 Player::AUTH_TYPE_STEAM => 'Steam ID',
                 Player::AUTH_TYPE_STEAM_AND_PASS => 'Steam ID + pass',
                 Player::AUTH_TYPE_NICK_AND_PASS => 'Nick + pass',
@@ -202,15 +202,15 @@ class PlayersController extends BaseAdminController {
 				'required' => true,
 				'empty_option' => 'Choose auth type',
 			]))
-			->add(new FormInputPassword('password', '', [
+			->add(new Password('password', '', [
 				'title' => 'Password',
 				'required' => false,
 			]))
-			->add(new FormInputCheckbox('access_reserve_nick', $player->hasAccess(Player::ACCESS_RESERVE_NICK), [
+			->add(new Checkbox('access_reserve_nick', $player->hasAccess(Player::ACCESS_RESERVE_NICK), [
 				'title' => 'Reserve nickname',
 				'required' => false,
 			]))
-			->add(new FormInputCheckbox('access_block_change_nick', $player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK), [
+			->add(new Checkbox('access_block_change_nick', $player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK), [
 				'title' => 'Block change nick',
 				'required' => false,
 			]))

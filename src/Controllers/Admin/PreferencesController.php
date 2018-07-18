@@ -10,12 +10,12 @@ use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Node;
 use \GameX\Core\Mail\Email;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\FormInputCheckbox;
-use \GameX\Core\Forms\Elements\FormInputText;
-use \GameX\Core\Forms\Elements\FormInputEmail;
-use \GameX\Core\Forms\Elements\FormSelect;
-use \GameX\Core\Forms\Elements\FormInputNumber;
-use \GameX\Core\Forms\Elements\FormInputPassword;
+use \GameX\Core\Forms\Elements\Checkbox;
+use \GameX\Core\Forms\Elements\Text;
+use \GameX\Core\Forms\Elements\Email;
+use \GameX\Core\Forms\Elements\Select;
+use \GameX\Core\Forms\Elements\Number;
+use \GameX\Core\Forms\Elements\Password;
 use \Exception;
 
 class PreferencesController extends BaseAdminController {
@@ -42,11 +42,11 @@ class PreferencesController extends BaseAdminController {
 
 		/** @var Form $form */
 		$form = $this->createForm('admin_preferences_main')
-			->add(new FormInputText('title', $main->get('title'), [
+			->add(new Text('title', $main->get('title'), [
 				'title' => $this->getTranslate('admin_preferences', 'title'),
 				'required' => true,
 			]))
-			->add(new FormSelect('language', $language->get('default'), $languages, [
+			->add(new Select('language', $language->get('default'), $languages, [
 				'title' => $this->getTranslate('admin_preferences', 'language'),
 				'required' => true,
 			]))
@@ -158,39 +158,39 @@ class PreferencesController extends BaseAdminController {
      */
 	protected function getMailForm(Node $config) {
         return $this->createForm('admin_preferences_email')
-            ->add(new FormInputCheckbox('enabled', $config->get('enabled'), [
+            ->add(new Checkbox('enabled', $config->get('enabled'), [
                 'title' => $this->getTranslate('admin_preferences', 'enabled'),
             ]))
-            ->add(new FormInputText('from_name', $config->get('name'), [
+            ->add(new Text('from_name', $config->get('name'), [
                 'title' => $this->getTranslate('admin_preferences', 'from_name'),
             ]))
-            ->add(new FormInputEmail('from_email', $config->get('email'), [
+            ->add(new Email('from_email', $config->get('email'), [
                 'title' => $this->getTranslate('admin_preferences', 'from_email'),
             ]))
-            ->add(new FormSelect('transport_type', $config->get('type'), [
+            ->add(new Select('transport_type', $config->get('type'), [
                 'smtp' => "SMTP",
                 'mail' => 'Mail'
             ], [
                 'title' => $this->getTranslate('admin_preferences', 'transport'),
                 'id' => 'email_pref_transport'
             ]))
-            ->add(new FormInputText('smtp_host', $config->get('host'), [
+            ->add(new Text('smtp_host', $config->get('host'), [
                 'title' => $this->getTranslate('admin_preferences', 'host'),
             ]))
-            ->add(new FormInputNumber('smtp_port', $config->get('port'), [
+            ->add(new Number('smtp_port', $config->get('port'), [
                 'title' => $this->getTranslate('admin_preferences', 'port'),
             ]))
-            ->add(new FormSelect('smtp_secure', $config->get('secure'), [
+            ->add(new Select('smtp_secure', $config->get('secure'), [
                 'none' => $this->getTranslate('admin_preferences', 'secure_none'),
                 'ssl' => "SSL",
                 'tls' => 'TLS'
             ], [
                 'title' => $this->getTranslate('admin_preferences', 'secure'),
             ]))
-            ->add(new FormInputText('smtp_user', $config->get('username'), [
+            ->add(new Text('smtp_user', $config->get('username'), [
                 'title' => $this->getTranslate('admin_preferences', 'username'),
             ]))
-            ->add(new FormInputPassword('smtp_pass', $config->get('password'), [
+            ->add(new Password('smtp_pass', $config->get('password'), [
                 'title' => $this->getTranslate('admin_preferences', 'password'),
             ]))
             ->setRules('enabled', ['bool'])

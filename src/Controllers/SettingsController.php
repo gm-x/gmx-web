@@ -6,9 +6,9 @@ use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
-use \GameX\Core\Forms\Elements\FormInputEmail;
-use \GameX\Core\Forms\Elements\FormInputPassword;
-use \GameX\Core\Forms\Elements\FormInputFile;
+use \GameX\Forms\UserSettingsEmail;
+use \GameX\Forms\UserSettingsPassword;
+use \GameX\Core\Forms\Elements\File;
 use \GameX\Core\Exceptions\FormException;
 use \Exception;
 
@@ -38,13 +38,9 @@ class SettingsController extends BaseMainController {
 	public function emailAction(Request $request, ResponseInterface $response, array $args) {
 		$user = $this->getUser();
 
-		$form = $this->createForm('user_settings_email')
-			->add(new FormInputEmail('email', $user->email, [
-				'title' => 'Email',
-				'error' => 'Must be valid email',
-				'required' => true,
-			]))
-			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
+		$form = UserSettingsEmail::init([
+		    'email' => $user->email
+        ])
 			->setAction($request->getUri())
 			->processRequest($request);
 
@@ -78,26 +74,7 @@ class SettingsController extends BaseMainController {
 	public function passwordAction(Request $request, ResponseInterface $response, array $args) {
 		$user = $this->getUser();
 
-		$passwordValidator = function($confirmation, $form) {
-			return $form->new_password === $confirmation;
-		};
-
-		$form = $this->createForm('user_settings_password')
-			->add(new FormInputPassword('old_password', '', [
-				'title' => 'Old password',
-				'required' => true,
-			]))
-			->add(new FormInputPassword('new_password', '', [
-				'title' => 'New password',
-				'required' => true,
-			]))
-			->add(new FormInputPassword('repeat_password', '', [
-				'title' => 'Repeat password',
-				'required' => true,
-			]))
-			->setRules('old_password', ['required', 'trim', 'min_length' => 6])
-			->setRules('new_password', ['required', 'trim', 'min_length' => 6])
-			->setRules('repeat_password', ['required', 'trim', 'min_length' => 6, 'identical' => $passwordValidator])
+		$form = UserSettingsPassword::init([])
 			->setAction($request->getUri())
 			->processRequest($request);
 
@@ -135,7 +112,7 @@ class SettingsController extends BaseMainController {
 		$user = $this->getUser();
 
 		$form = $this->createForm('user_settings_avatar')
-			->add(new FormInputFile('avatar', '', [
+			->add(new File('avatar', '', [
 				'title' => 'Avatar',
 				'required' => true,
 			]))
