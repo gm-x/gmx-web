@@ -1,19 +1,18 @@
 <?php
-namespace GameX\Forms;
+namespace GameX\Forms\Settings;
 
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Models\UserModel;
-use \GameX\Core\Forms\Elements\Email as EmailElement;
+use GameX\Core\Forms\Elements\File;
 use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Email as EmailRule;
 use \GameX\Core\Exceptions\FormException;
 
-class UserSettingsEmail extends BaseForm {
+class AvatarForm extends BaseForm {
 
 	/**
 	 * @var string
 	 */
-	protected $name = 'user_settings_email';
+	protected $name = 'user_settings_avatar';
 
 	/**
 	 * @var UserModel
@@ -21,7 +20,6 @@ class UserSettingsEmail extends BaseForm {
 	protected $user;
 
 	/**
-	 * UserSettingsEmail constructor.
 	 * @param UserModel $user
 	 */
 	public function __construct(UserModel $user) {
@@ -33,12 +31,11 @@ class UserSettingsEmail extends BaseForm {
 	 */
 	protected function createForm() {
 		$this->form
-			->add(new EmailElement('email', $this->user->email, [
-				'title' => 'Email',
+			->add(new File('avatar', '', [
+				'title' => 'Avatar',
 				'required' => true
 			]))
-			->addRule('old_password', new Required())
-			->addRule('old_password', new EmailRule());
+			->addRule('avatar', new Required());
 	}
 
 	/**
@@ -46,9 +43,8 @@ class UserSettingsEmail extends BaseForm {
 	 * @throws FormException
 	 */
 	protected function processForm() {
-		$this->user->email = $this->form->getValue('email');
-		$this->user->save();
-
+	    var_dump($this->form->getValue('avatar'));
+	    die();
 		return true;
 	}
 }

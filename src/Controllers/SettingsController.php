@@ -6,10 +6,10 @@ use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
-use \GameX\Forms\UserSettingsEmail;
-use \GameX\Forms\UserSettingsPassword;
-use \GameX\Core\Forms\Elements\File;
-use \GameX\Core\Exceptions\RedirectException;
+use \GameX\Forms\Settings\EmailForm;
+use \GameX\Forms\Settings\PasswordForm;
+use \GameX\Forms\Settings\AvatarForm;
+use \GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
 use \Exception;
 
@@ -37,7 +37,7 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function emailAction(Request $request, ResponseInterface $response, array $args) {
-		$form = new UserSettingsEmail($this->getUser());
+		$form = new EmailForm($this->getUser());
 		try {
 			$form->create();
 
@@ -45,11 +45,15 @@ class SettingsController extends BaseMainController {
 				$this->addSuccessMessage('Email saved successfully');
 				return $this->redirect('user_settings_email');
 			}
-		} catch (RedirectException $e) {
-			$this->redirectTo($e->getUrl());
-		} catch (Exception $e) {
-			$this->failRedirect($e, $form->getForm());
-		}
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 
 		return $this->render('settings/email.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
@@ -64,33 +68,27 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function passwordAction(Request $request, ResponseInterface $response, array $args) {
-		$user = $this->getUser();
-
-		$form = UserSettingsPassword::init([])
-			->setAction($request->getUri())
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$authHelper = new AuthHelper($this->container);
-					if (!$authHelper->validatePassword($user, $form->getValue('old_password'))) {
-						throw new FormException('old_password', "Bad password");
-					}
-					$authHelper->changePassword($user, $form->getValue('new_password'));
-					$this->addSuccessMessage('Password updated successfully');
-					return $this->redirect('user_settings_password');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
+        $form = new PasswordForm($this->getUser(), new AuthHelper($this->container));
+        try {
+            $form->create();
+            
+            if ($form->process($request)) {
+                $this->addSuccessMessage('Password updated successfully');
+                return $this->redirect('user_settings_password');
+            }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 
 		return $this->render('settings/password.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
-			'form' => $form,
+			'form' => $form->getForm(),
 		]);
 	}
 
@@ -101,32 +99,28 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function avatarAction(Request $request, ResponseInterface $response, array $args) {
-		$user = $this->getUser();
-
-		$form = $this->createForm('user_settings_avatar')
-			->add(new File('avatar', '', [
-				'title' => 'Avatar',
-				'required' => true,
-			]))
-			->setAction($request->getUri())
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$this->addSuccessMessage('Avatar updated successfully');
-					return $this->redirect('user_settings_avatar');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
-
+	    
+	    
+        $form = new AvatarForm($this->getUser());
+        try {
+            $form->create();
+            
+            if ($form->process($request)) {
+                $this->addSuccessMessage('Avatar updated successfully');
+                return $this->redirect('user_settings_avatar');
+            }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 		return $this->render('settings/avatar.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
-			'form' => $form,
+			'form' => $form->getForm(),
 		]);
 	}
 

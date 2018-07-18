@@ -1,11 +1,10 @@
 <?php
-
 namespace GameX\Core\Forms;
-
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Session\Session;
 use \GameX\Core\Lang\Language;
+use \GameX\Core\Forms\Elements\File;
 use \ArrayAccess;
 use \Exception;
 
@@ -155,19 +154,36 @@ class Form implements ArrayAccess {
         }
 
         $body = $request->getParsedBody();
-        if (!array_key_exists($this->name, $body) || !is_array($body[$this->name])) {
-            return $this;
-        }
+        $values = array_key_exists($this->name, $body) && is_array($body[$this->name])
+            ? $body[$this->name]
+            : [];
 
-        $values = $body[$this->name];
+        $body = $request->getUploadedFiles();
+        $files = array_key_exists($this->name, $body) && is_array($body[$this->name])
+            ? $body[$this->name]
+            : [];
 
         $this->isSubmitted = true;
         $this->isValid = true;
         foreach ($this->elements as $element) {
-            if (array_key_exists($element->getName(), $values)) {
-                $element->setValue($values[$element->getName()]);
+            if ($element instanceof File) {
+                if (array_key_exists($element->getName(), $files)) {
+                    /** @var \Slim\Http\UploadedFile $file */
+                    $file = $files[$element->getName()];
+                    if ($file->getError() !== UPLOAD_ERR_OK) {
+                        $element->setValue(null);
+                    } else {
+                        $element->setValue($file);
+                    }
+                } else {
+                    $element->setValue(null);
+                }
             } else {
-                $element->setValue('');
+                if (array_key_exists($element->getName(), $values)) {
+                    $element->setValue($values[$element->getName()]);
+                } else {
+                    $element->setValue('');
+                }
             }
             
             $this->processValidate($element);

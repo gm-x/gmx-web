@@ -5,40 +5,39 @@ use \GameX\Core\Forms\Rule;
 use \GameX\Core\Lang\Language;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Element;
-use \GameX\Core\Forms\BadOptionException;
 
 abstract class BaseRule implements Rule {
-    protected $options = [];
     
-    public function __construct(array $options = []) {
-        $this->options = $options;
-    }
-    
+    /**
+     * @param Form $form
+     * @param string $key
+     * @return bool
+     */
     public function validate(Form $form, $key) {
         if (!$form->exists($key)) {
             return false;
         }
-    
-        try {
-            return (bool)$this->isValid($form, $form->get($key));
-        } catch (BadOptionException $e) {
-            return false;
-        }
+        return (bool)$this->isValid($form, $form->get($key));
     }
     
+    /**
+     * @param Language $language
+     * @return string
+     */
     public function getMessage(Language $language) {
         list ($key, $args) = $this->getMessageKey();
         return $language->format('forms', $key, $args);
     }
     
-    protected function getOption($option) {
-        if (!array_key_exists($option, $this->options)) {
-            throw new BadOptionException();
-        }
-        
-        return $this->options[$option];
-    }
-    
+    /**
+     * @return array
+     */
     abstract protected function getMessageKey();
+    
+    /**
+     * @param Form $form
+     * @param Element $element
+     * @return bool
+     */
     abstract protected function isValid(Form $form, Element $element);
 }

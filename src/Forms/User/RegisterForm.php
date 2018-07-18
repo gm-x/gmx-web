@@ -65,9 +65,9 @@ class RegisterForm extends BaseForm {
 			->addRule('email', new Required())
 			->addRule('email', new EmailRule())
 			->addRule('password', new Trim())
-			->addRule('password', new Length(['min' => 6]))
+			->addRule('password', new Length(AuthHelper::MIN_PASSWORD_LENGTH))
 			->addRule('password_repeat', new Trim())
-			->addRule('password_repeat', new PasswordRepeat(['element' => 'password']));
+			->addRule('password_repeat', new PasswordRepeat('password'));
 	}
 
 	/**

@@ -5,15 +5,35 @@ use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Element;
 
 class PasswordRepeat extends BaseRule {
+    
+    /**
+     * @var string
+     */
+    protected $field;
+    
+    /**
+     * @param string $field
+     */
+    public function __construct($field) {
+        $this->field = (string) $field;
+    }
+    
+    /**
+     * @param Form $form
+     * @param Element $element
+     * @return bool
+     */
     protected function isValid(Form $form, Element $element) {
-        $repeat = $form->get($this->getOption('element'));
-        if (!$repeat) {
+        if (!$form->exists($this->field)) {
             return false;
         }
         
-        return $element->getValue() === $repeat->getValue();
+        return $element->getValue() === $form->get($this->field)->getValue();
     }
     
+    /**
+     * @return array
+     */
     public function getMessageKey() {
         return ['password_repeat'];
     }

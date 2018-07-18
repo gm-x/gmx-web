@@ -3,8 +3,9 @@ namespace GameX\Core\Forms\Rules;
 
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Element;
+use \Psr\Http\Message\UploadedFileInterface;
 
-class Email extends BaseRule {
+class File extends BaseRule {
     
     /**
      * @param Form $form
@@ -12,13 +13,19 @@ class Email extends BaseRule {
      * @return bool
      */
     protected function isValid(Form $form, Element $element) {
-        return filter_var($element->getValue(), FILTER_VALIDATE_EMAIL) !== false;
+        /** @var UploadedFileInterface|null $file */
+        $file = $element->getValue();
+        if ($file === null) {
+            return true;
+        }
+        
+        return true;
     }
     
     /**
      * @return array
      */
     public function getMessageKey() {
-        return ['email'];
+        return ['file'];
     }
 }

@@ -3,59 +3,57 @@ namespace GameX\Core\Forms\Rules;
 
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Element;
-use \GameX\Core\Forms\BadOptionException;
 
 class Length extends BaseRule {
+    
+    /**
+     * @var integer|null
+     */
+    protected $min;
+    
+    /**
+     * @var integer|null
+     */
+    protected $max;
+    
+    /**
+     * @param integer|null $min
+     * @param integer|null $max
+     */
+    public function __construct($min = null, $max = null) {
+        $this->min = (int) $min;
+        $this->max = (int) $max;
+    }
+    
+    /**
+     * @param Form $form
+     * @param Element $element
+     * @return bool
+     */
     protected function isValid(Form $form, Element $element) {
-        $min = null;
-        $max = null;
         $len = mb_strlen($element->getValue());
-        
-        try {
-            $min = $this->getOption('min');
-        } catch (BadOptionException $e) {
-            $min = null;
-        }
-        
-        if ($min !== null && $len < $min) {
+
+        if ($this->min !== null && $len < $this->min) {
             return false;
         }
     
-        try {
-            $max = $this->getOption('max');
-        } catch (BadOptionException $e) {
-            $max = null;
-        }
-    
-        if ($max !== null && $len > $max) {
+        if ($this->max !== null && $len > $this->max) {
             return false;
         }
         
         return true;
     }
     
+    /**
+     * @return array
+     */
     public function getMessageKey() {
-        $min = null;
-        $max = null;
-    
-        try {
-            $min = $this->getOption('min');
-        } catch (BadOptionException $e) {
-            $min = null;
-        }
-    
-        try {
-            $max = $this->getOption('max');
-        } catch (BadOptionException $e) {
-            $max = null;
-        }
-        
-        if ($min !== null && $max !== null) {
-            return ['min_max_length', [$min, $max]];
-        } elseif ($min !== null) {
-            return ['min_length', [$min]];
-        } elseif ($max !== null) {
-            return ['max_length', [$max]];
+        if ($this->min !== null && $this->max !== null) {
+            return ['min_max_length', [$this->min, $this->max]];
+        } elseif ($this->min !== null) {
+            return ['min_length', [$this->min]];
+        } elseif ($this->max !== null) {
+            return ['max_length', [$this->max]];
         } else {
             return [];
         }

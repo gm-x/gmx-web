@@ -4,7 +4,17 @@ namespace GameX\Core\Forms;
 use \GameX\Core\Lang\Language;
 
 interface Rule {
-    public function __construct(array $options = []);
+    
+    /**
+     * @param Form $form
+     * @param string $key
+     * @return bool
+     */
     public function validate(Form $form, $key);
+    
+    /**
+     * @param Language $language
+     * @return string
+     */
     public function getMessage(Language $language);
 }

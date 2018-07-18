@@ -94,3 +94,34 @@
 		{% endif %}
 	</div>
 {% endmacro %}
+
+{% macro element_file(element) %}
+    {% set classes = ['custom-file-input'] %}
+    {% if element.getHasError() %}
+        {% set classes = classes|merge(['is-invalid']) %}
+    {% endif %}
+    {% set classes = classes|merge(element.getClasses()) %}
+    {% set attributes = element.getAttributes() %}
+    {% if element.getIsRequired() %}
+        {% set attributes = attributes|merge({'required': 'required'}) %}
+    {% endif %}
+
+	<div class="form-group">
+		<div class="custom-control custom-file">
+			<input
+					type="file"
+					id="{{ element.getId() }}"
+					name="{{ element.getFormName() }}[{{ element.getName() }}]"
+					value="1"
+					class="{{ classes | join(' ') }}"
+            {% for key, value in attributes %}
+                {{ key }}="{{ value }}"
+            {% endfor %}
+			/>
+			<label for="{{ element.getId() }}" class="custom-file-label">{{ element.getTitle() }}</label>
+            {% if element.getHasError() %}
+				<span class="invalid-feedback">{{ element.getError() }}</span>
+            {% endif %}
+		</div>
+	</div>
+{% endmacro %}

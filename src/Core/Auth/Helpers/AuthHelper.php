@@ -10,6 +10,8 @@ use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
 class AuthHelper {
+    
+    const MIN_PASSWORD_LENGTH = 6;
 
     /**
      * @var ContainerInterface
