@@ -8,12 +8,12 @@ use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Exceptions\FormException;
 
-class ActivationForm extends BaseForm {
+class ResetPasswordForm extends BaseForm {
 
 	/**
 	 * @var string
 	 */
-	protected $name = 'activation';
+	protected $name = 'reset_password';
 
 	/**
 	 * @var AuthHelper
@@ -21,17 +21,10 @@ class ActivationForm extends BaseForm {
 	protected $authHelper;
 
 	/**
-	 * @var string
-	 */
-	protected $code;
-
-	/**
 	 * @param AuthHelper $authHelper
-	 * @param string $code
 	 */
-	public function __construct(AuthHelper $authHelper, $code) {
+	public function __construct(AuthHelper $authHelper) {
 		$this->authHelper = $authHelper;
-		$this->code = $code;
 	}
 
 	/**
@@ -48,7 +41,7 @@ class ActivationForm extends BaseForm {
 	}
 
 	/**
-	 * @return \GameX\Core\Auth\Models\UserModel
+	 * @return array
 	 * @throws FormException
 	 */
 	protected function processForm() {
@@ -56,7 +49,10 @@ class ActivationForm extends BaseForm {
 		if (!$user) {
 			throw new FormException('login', 'User not found');
 		}
-		$this->authHelper->activateUser($user, $this->code);
-		return $user;
+		$code = $this->authHelper->resetPassword($user);
+		return [
+			'user' => $user,
+			'code' => $code,
+		];
 	}
 }

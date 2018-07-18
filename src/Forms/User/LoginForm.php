@@ -7,6 +7,8 @@ use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Forms\Rules\Required;
+use \GameX\Core\Forms\Rules\Trim;
+use \GameX\Core\Forms\Rules\Boolean;
 
 class LoginForm extends BaseForm {
 
@@ -21,7 +23,6 @@ class LoginForm extends BaseForm {
 	protected $authHelper;
 
 	/**
-	 * LoginForm constructor.
 	 * @param AuthHelper $authHelper
 	 */
 	public function __construct(AuthHelper $authHelper) {
@@ -46,7 +47,9 @@ class LoginForm extends BaseForm {
 				'required' => false,
 			]))
 			->addRule('login', new Required())
-			->addRule('password', new Required());
+			->addRule('password', new Trim())
+			->addRule('password', new Required())
+			->addRule('remember_me', new Boolean());
 	}
 
 	/**

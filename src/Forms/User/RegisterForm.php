@@ -31,7 +31,6 @@ class RegisterForm extends BaseForm {
 	protected $emailEnabled;
 
 	/**
-	 * LoginForm constructor.
 	 * @param AuthHelper $authHelper
 	 * @param boolean $emailEnabled
 	 */
@@ -65,13 +64,15 @@ class RegisterForm extends BaseForm {
 			->addRule('login', new Required())
 			->addRule('email', new Required())
 			->addRule('email', new EmailRule())
+			->addRule('password', new Trim())
 			->addRule('password', new Length(['min' => 6]))
+			->addRule('password_repeat', new Trim())
 			->addRule('password_repeat', new PasswordRepeat(['element' => 'password']));
 	}
 
 	/**
-	 * @return boolean
-	 * @throws  ValidationException
+	 * @return \GameX\Core\Auth\Models\UserModel
+	 * @throws ValidationException
 	 */
 	protected function processForm() {
 		if ($this->authHelper->exists($this->form->getValue('login'), $this->form->getValue('email'))) {

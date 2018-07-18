@@ -4,16 +4,18 @@ namespace GameX\Forms\User;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Forms\Elements\Text;
+use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Trim;
+use \GameX\Core\Forms\Rules\PasswordRepeat;
 use \GameX\Core\Exceptions\FormException;
 
-class ActivationForm extends BaseForm {
+class ResetPasswordCompleteForm extends BaseForm {
 
 	/**
 	 * @var string
 	 */
-	protected $name = 'activation';
+	protected $name = 'reset_password';
 
 	/**
 	 * @var AuthHelper
@@ -43,8 +45,22 @@ class ActivationForm extends BaseForm {
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'required' => true,
 			]))
+			->add(new Password('password', '', [
+				'title' => $this->getTranslate('inputs', 'password'),
+				'error' => $this->getTranslate('labels', 'required'),
+				'required' => true,
+			]))
+			->add(new Password('password_repeat', '', [
+				'title' => $this->getTranslate('inputs', 'password_repeat'),
+				'error' => 'Passwords does not match',
+				'required' => true,
+			]))
 			->addRule('login', new Trim())
-			->addRule('login', new Required());
+			->addRule('login', new Required())
+			->addRule('password', new Trim())
+			->addRule('password', new Required())
+			->addRule('password_repeat', new Trim())
+			->addRule('password_repeat', new PasswordRepeat(['element' => 'password']));
 	}
 
 	/**
@@ -56,7 +72,7 @@ class ActivationForm extends BaseForm {
 		if (!$user) {
 			throw new FormException('login', 'User not found');
 		}
-		$this->authHelper->activateUser($user, $this->code);
+		$this->authHelper->resetPasswordComplete($user, $this->form->getValue('password'), $this->code);
 		return $user;
 	}
 }
