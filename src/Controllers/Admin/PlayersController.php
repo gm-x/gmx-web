@@ -5,14 +5,11 @@ use \GameX\Core\BaseAdminController;
 use \GameX\Models\Player;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Forms\Admin\PlayersForm;
 use \GameX\Core\Pagination\Pagination;
 use \Slim\Exception\NotFoundException;
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\Password;
-use \GameX\Core\Forms\Elements\Text;
-use \GameX\Core\Forms\Elements\Select;
-use \GameX\Core\Forms\Elements\Checkbox;
-use \Form\Validator;
+use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 
 class PlayersController extends BaseAdminController {
@@ -49,27 +46,28 @@ class PlayersController extends BaseAdminController {
 	 */
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
-		$form = $this
-			->getForm($player)
-			->setAction($request->getUri())
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$this->fillPlayer($player, $form);
-					$player->save();
-					return $this->redirect('admin_players_list');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
+        $form = new PlayersForm($player);
+        try {
+            $form->create();
+            
+            if ($form->process($request)) {
+                $this->addSuccessMessage($this->getTranslate('admins_players', 'created'));
+                return $this->redirect('admin_players_edit', [
+                    'player' => $player->id,
+                ]);
+            }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 
 		return $this->render('admin/players/form.twig', [
-			'form' => $form,
+			'form' => $form->getForm(),
 			'create' => true,
 		]);
 	}
@@ -82,27 +80,28 @@ class PlayersController extends BaseAdminController {
 	 */
 	public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
-		$form = $this
-			->getForm($player)
-			->setAction($request->getUri())
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-                    $this->fillPlayer($player, $form);
-					$player->save();
-					return $this->redirect('admin_players_list');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
+        $form = new PlayersForm($player);
+        try {
+            $form->create();
+            
+            if ($form->process($request)) {
+                $this->addSuccessMessage($this->getTranslate('admins_players', 'updated'));
+                return $this->redirect('admin_players_edit', [
+                    'player' => $player->id,
+                ]);
+            }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 
 		return $this->render('admin/players/form.twig', [
-			'form' => $form,
+			'form' => $form->getForm(),
 			'create' => false,
 		]);
 	}
@@ -118,8 +117,9 @@ class PlayersController extends BaseAdminController {
 
 		try {
 			$player->delete();
+            $this->addSuccessMessage($this->getTranslate('admins_players', 'removed'));
 		} catch (Exception $e) {
-			$this->addErrorMessage('Something wrong. Please Try again later.');
+            $this->addErrorMessage($this->getTranslate('labels', 'exception'));
 			/** @var \Monolog\Logger $logger */
 			$logger = $this->getContainer('log');
 			$logger->error((string) $e);
@@ -147,92 +147,4 @@ class PlayersController extends BaseAdminController {
 
 		return $player;
     }
-
-    /**
-     * @param Player $player
-     * @param Form $form
-     */
-    protected function fillPlayer(Player $player, Form $form) {
-        $player->steamid = $form->getValue('steamid');
-        $player->nick = $form->getValue('nick');
-        $authType = $form->getValue('auth_type');
-        $player->auth_type = $authType;
-        if ($authType == Player::AUTH_TYPE_STEAM_AND_PASS || $authType == Player::AUTH_TYPE_NICK_AND_PASS) {
-            $player->password = md5($form->getValue('password'));
-        }
-        $access = 0;
-        if ($form->getValue('access_reserve_nick')) {
-            $access |= Player::ACCESS_RESERVE_NICK;
-        }
-        if ($form->getValue('access_block_change_nick')) {
-            $access |= Player::ACCESS_BLOCK_CHANGE_NICK;
-        }
-        $player->access = $access;
-    }
-
-	/**
-	 * @param Player $player
-	 * @return Form
-	 */
-    protected function getForm(Player $player) {
-    	$checkPasswordRequired = function ($password, Validator $validator) {
-			return $validator->getValue('auth_type') !== Player::AUTH_TYPE_STEAM  && empty($password) ? false : true;
-		};
-
-		return $this->createForm('admin_player')
-			->add(new Text('steamid', $player->steamid, [
-				'title' => 'Steam ID',
-				'error' => 'Valid STEAM ID',
-				'required' => true,
-			]))
-			->add(new Text('nick', $player->nick, [
-				'title' => 'Nickname',
-				'error' => 'Required',
-				'required' => true,
-			]))
-			->add(new Select('auth_type', $player->auth_type, [
-                Player::AUTH_TYPE_STEAM => 'Steam ID',
-                Player::AUTH_TYPE_STEAM_AND_PASS => 'Steam ID + pass',
-                Player::AUTH_TYPE_NICK_AND_PASS => 'Nick + pass',
-                Player::AUTH_TYPE_STEAM_AND_HASH => 'Steam ID + hash',
-                Player::AUTH_TYPE_NICK_AND_HASH => 'Nick + hash',
-            ], [
-				'title' => 'Auth Type',
-				'error' => 'Required',
-				'required' => true,
-				'empty_option' => 'Choose auth type',
-			]))
-			->add(new Password('password', '', [
-				'title' => 'Password',
-				'required' => false,
-			]))
-			->add(new Checkbox('access_reserve_nick', $player->hasAccess(Player::ACCESS_RESERVE_NICK), [
-				'title' => 'Reserve nickname',
-				'required' => false,
-			]))
-			->add(new Checkbox('access_block_change_nick', $player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK), [
-				'title' => 'Block change nick',
-				'required' => false,
-			]))
-			->setRules('steamid', ['required', 'trim', 'min_length' => 1, 'regexp' => '/^(?:STEAM|VALVE)_\d:\d:\d+$/'])
-			->setRules('nick', ['required', 'trim', 'min_length' => 1])
-			->setRules('auth_type', ['required', 'trim', 'min_length' => 1, 'in' => [
-				Player::AUTH_TYPE_STEAM ,
-				Player::AUTH_TYPE_STEAM_AND_PASS,
-				Player::AUTH_TYPE_NICK_AND_PASS,
-				Player::AUTH_TYPE_STEAM_AND_HASH,
-				Player::AUTH_TYPE_NICK_AND_HASH,
-			]])
-            ->setRules('password', ['check' => $checkPasswordRequired])
-            ->setRules('access_reserve_nick', ['bool'])
-            ->setRules('access_block_change_nick', ['bool']);
-
-		if (!$player->exists) {
-			$form->addRules('steamid', ['exists' => function ($steamid, Validator $validator) {
-				return !Player::where('steamid', '=', $steamid)->exists();
-			}]);
-		}
-
-		return $form;
-	}
 }

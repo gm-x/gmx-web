@@ -1,6 +1,8 @@
 <?php
 namespace GameX\Forms\Admin\Servers;
 
+use \GameX\Forms\Admin\ServerForm;
+
 class UpdateServerForm extends ServerForm {
 
 	/**

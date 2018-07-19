@@ -127,8 +127,9 @@ class GroupsController extends BaseAdminController {
 
         try {
             $group->delete();
+            $this->addSuccessMessage($this->getTranslate('admins_players', 'removed'));
         } catch (Exception $e) {
-            $this->addErrorMessage('Something wrong. Please Try again later.');
+            $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             /** @var \Monolog\Logger $logger */
             $logger = $this->getContainer('log');
             $logger->error((string) $e);

@@ -115,7 +115,7 @@ class ServersController extends BaseAdminController {
 			$server->delete();
             $this->addSuccessMessage($this->getTranslate('admins_servers', 'removed'));
 		} catch (Exception $e) {
-			$this->addErrorMessage($this->getTranslate('admins_servers', 'exception'));
+			$this->addErrorMessage($this->getTranslate('labels', 'exception'));
 			/** @var \Monolog\Logger $logger */
 			$logger = $this->getContainer('log');
 			$logger->error((string) $e);

@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Forms\Admin\Servers;
+namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
 use \GameX\Models\Server;
