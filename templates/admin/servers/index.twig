@@ -22,7 +22,7 @@
                         {% embed "admin/actions.twig" with {'actionId': server.id} %}
                         	{% block actions %}
 								<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="dropdown-item">
-									<span class="oi oi-grid-two-up"></span> {{ trans('admin_servers', 'groups') }}
+									<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'groups') }}
 								</a>
 								<a
 										href="#"
@@ -31,7 +31,7 @@
 										data-target="#tokenModel"
 										data-token="{{ server.token }}"
 								>
-									<span class="oi oi-info"></span> {{ trans('admin_servers', 'token') }}
+									<span class="oi oi-info"></span>&nbsp;{{ trans('admin_servers', 'token') }}
 								</a>
 							{% endblock %}
                         {% endembed %}
