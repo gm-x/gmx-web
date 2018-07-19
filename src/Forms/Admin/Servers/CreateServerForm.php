@@ -3,7 +3,7 @@ namespace GameX\Forms\Admin\Servers;
 
 use \Firebase\JWT\JWT;
 
-class CreateForm extends Form {
+class CreateServerForm extends ServerForm {
 
 	/**
 	 * @var string
@@ -18,8 +18,13 @@ class CreateForm extends Form {
 		$this->secret = (string) $secret;
 		return $this;
 	}
-
-	/**
+	
+	protected function createForm() {
+        parent::createForm();
+//        return !Server::where(['ip' => $form->getValue('ip'), 'port' => $port])->exists();
+    }
+    
+    /**
 	 * @return boolean
 	 */
 	protected function processForm() {

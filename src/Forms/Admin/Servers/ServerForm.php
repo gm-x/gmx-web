@@ -11,7 +11,7 @@ use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\IPv4;
 
-abstract class Form extends BaseForm {
+abstract class ServerForm extends BaseForm {
 
 	/**
 	 * @var string
