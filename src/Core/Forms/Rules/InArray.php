@@ -4,22 +4,33 @@ namespace GameX\Core\Forms\Rules;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Element;
 
-class Trim extends BaseRule {
-    
-    /**
+class InArray extends BaseRule {
+
+	/**
+	 * @var array
+	 */
+	protected $values;
+
+	/**
+	 * @param array $values
+	 */
+	public function __construct(array $values) {
+		$this->values = $values;
+	}
+
+	/**
      * @param Form $form
      * @param Element $element
      * @return bool
      */
     protected function isValid(Form $form, Element $element) {
-        $element->setValue(trim($element->getValue()));
-        return true;
+        return in_array($element->getValue(), $this->values);
     }
     
     /**
-     * @return array|null
+     * @return array
      */
     public function getMessage() {
-        return null;
+        return ['in_array'];
     }
 }

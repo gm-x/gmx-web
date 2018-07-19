@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Controllers\Admin;
 
+use GameX\Forms\Admin\Servers\CreateForm;
 use \GameX\Models\Server;
 use \GameX\Core\BaseAdminController;
 use \GameX\Core\Pagination\Pagination;
@@ -10,6 +11,8 @@ use \Firebase\JWT\JWT;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Number;
+use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Exceptions\FormException;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -44,31 +47,27 @@ class ServersController extends BaseAdminController {
      */
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
-        $form = $this
-            ->getForm($server)
-            ->setAction($request->getUri())
-            ->processRequest($request);
 
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-                    $server->fill($form->getValues());
-                    $server->save();
-					$server->token = JWT::encode([
-						'server_id' => $server->id
-					], $this->getConfig('secret', ''), 'HS512');
-					$server->save();
-					return $this->redirect('admin_servers_list');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
+		$form = new CreateForm($server);
+		$form->setSecret($this->getConfig('secret', ''));
+		try {
+			$form->create();
+
+			if ($form->process($request)) {
+				return $this->redirect('admin_servers_edit', ['server' => $server->id]);
 			}
+		} catch (FormException $e) {
+			$form->getForm()->setError($e->getField(), $e->getMessage());
+			return $this->redirectTo($form->getForm()->getAction());
+		} catch (ValidationException $e) {
+			if ($e->hasMessage()) {
+				$this->addErrorMessage($e->getMessage());
+			}
+			return $this->redirectTo($form->getForm()->getAction());
 		}
 
 		return $this->render('admin/servers/form.twig', [
-			'form' => $form,
+			'form' => $form->getForm(),
             'create' => true,
 		]);
 	}

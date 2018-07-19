@@ -23,7 +23,7 @@ class Boolean extends BaseRule {
     /**
      * @return array
      */
-    public function getMessageKey() {
+	protected function getMessage() {
         return ['boolean'];
     }
 }

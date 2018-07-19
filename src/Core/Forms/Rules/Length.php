@@ -45,9 +45,9 @@ class Length extends BaseRule {
     }
     
     /**
-     * @return array
+     * @return array|null
      */
-    public function getMessageKey() {
+    public function getMessage() {
         if ($this->min !== null && $this->max !== null) {
             return ['min_max_length', [$this->min, $this->max]];
         } elseif ($this->min !== null) {
@@ -55,7 +55,7 @@ class Length extends BaseRule {
         } elseif ($this->max !== null) {
             return ['max_length', [$this->max]];
         } else {
-            return [];
+            return null;
         }
     }
 }

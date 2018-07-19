@@ -14,7 +14,7 @@ class Image extends BaseRule {
 	/**
 	 * @var array
 	 */
-	protected $message = [];
+	protected $message = null;
 
 	/**
 	 * @var array|null
@@ -32,7 +32,6 @@ class Image extends BaseRule {
 	protected $height;
 
 	/**
-	 * Image constructor.
 	 * @param array|null $types
 	 * @param array|int|null $width
 	 * @param array|int|null $height
@@ -94,7 +93,7 @@ class Image extends BaseRule {
     /**
      * @return array
      */
-    public function getMessageKey() {
+    public function getMessage() {
         return $this->message;
     }
 

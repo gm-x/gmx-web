@@ -18,7 +18,7 @@ class Email extends BaseRule {
     /**
      * @return array
      */
-    public function getMessageKey() {
+	protected function getMessage() {
         return ['email'];
     }
 }

@@ -16,5 +16,5 @@ interface Rule {
      * @param Language $language
      * @return string
      */
-    public function getMessage(Language $language);
+    public function getError(Language $language);
 }

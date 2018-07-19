@@ -19,7 +19,7 @@ class Required extends BaseRule {
     /**
      * @return array
      */
-    public function getMessageKey() {
+    public function getMessage() {
         return ['required'];
     }
 }

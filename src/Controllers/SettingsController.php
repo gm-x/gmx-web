@@ -11,7 +11,6 @@ use \GameX\Forms\Settings\PasswordForm;
 use \GameX\Forms\Settings\AvatarForm;
 use \GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
-use \Exception;
 
 class SettingsController extends BaseMainController {
     protected function getActiveMenu() {
@@ -131,28 +130,8 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function steamidAction(Request $request, ResponseInterface $response, array $args) {
-		$user = $this->getUser();
-
-		$form = $this->createForm('user_settings_steamid')
-			->setAction($request->getUri())
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$this->addSuccessMessage('Steamid updated successfully');
-					return $this->redirect('user_settings_steamid');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
-
 		return $this->render('settings/steamid.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
-			'form' => $form,
 		]);
 	}
 }

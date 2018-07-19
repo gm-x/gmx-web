@@ -24,15 +24,19 @@ abstract class BaseRule implements Rule {
      * @param Language $language
      * @return string
      */
-    public function getMessage(Language $language) {
-        list ($key, $args) = $this->getMessageKey();
+    public function getError(Language $language) {
+        $message = $this->getMessage();
+        if ($message === null) {
+        	return '';
+		}
+		list ($key, $args) = $message;
         return $language->format('forms', $key, $args);
     }
     
     /**
-     * @return array
+     * @return array|null
      */
-    abstract protected function getMessageKey();
+    abstract protected function getMessage();
     
     /**
      * @param Form $form

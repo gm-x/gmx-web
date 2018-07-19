@@ -17,6 +17,9 @@ class FileMimeType extends BaseRule {
 	 */
 	protected $type;
 
+	/**
+	 * @param array $types
+	 */
 	public function __construct(array $types) {
 		$this->types = [];
 		foreach ($types as $type) {
@@ -43,7 +46,7 @@ class FileMimeType extends BaseRule {
     /**
      * @return array
      */
-    public function getMessageKey() {
+	protected function getMessage() {
         return ['file_mime_type', [$this->type]];
     }
 }

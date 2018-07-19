@@ -4,7 +4,7 @@ namespace GameX\Core\Forms\Rules;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Element;
 
-class Trim extends BaseRule {
+class IPv4 extends BaseRule {
     
     /**
      * @param Form $form
@@ -12,14 +12,13 @@ class Trim extends BaseRule {
      * @return bool
      */
     protected function isValid(Form $form, Element $element) {
-        $element->setValue(trim($element->getValue()));
-        return true;
+        return filter_var($element->getValue(), FILTER_VALIDATE_IP, ['flags' => FILTER_FLAG_IPV4]) !== false;
     }
     
     /**
-     * @return array|null
+     * @return array
      */
-    public function getMessage() {
-        return null;
+	protected function getMessage() {
+        return ['ip'];
     }
 }

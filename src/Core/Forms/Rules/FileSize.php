@@ -12,6 +12,9 @@ class FileSize extends BaseRule {
 	 */
 	protected $size;
 
+	/**
+	 * @param $size
+	 */
 	public function __construct($size) {
 		$this->size = $this->convertToBytes($size);
 	}
@@ -34,7 +37,7 @@ class FileSize extends BaseRule {
     /**
      * @return array
      */
-    public function getMessageKey() {
+    public function getMessage() {
         return ['file_size', [$this->size]];
     }
 

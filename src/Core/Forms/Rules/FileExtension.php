@@ -18,6 +18,9 @@ class FileExtension extends BaseRule {
 	 */
 	protected $extension;
 
+	/**
+	 * @param array $extensions
+	 */
 	public function __construct(array $extensions) {
 		$this->extensions = [];
 		foreach ($extensions as $extension) {
@@ -44,7 +47,7 @@ class FileExtension extends BaseRule {
     /**
      * @return array
      */
-    public function getMessageKey() {
+	protected function getMessage() {
         return ['file_extension', [$this->extension]];
     }
 }
