@@ -101,7 +101,7 @@ class SettingsController extends BaseMainController {
 	public function avatarAction(Request $request, ResponseInterface $response, array $args) {
 	    
 	    
-        $form = new AvatarForm($this->getUser());
+        $form = new AvatarForm($this->getUser(), $this->getContainer('root') . 'upload' . DIRECTORY_SEPARATOR);
         try {
             $form->create();
             
