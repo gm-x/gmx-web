@@ -49,8 +49,7 @@ class PlayersForm extends BaseForm {
      * @return bool
      */
     public function checkExists(Form $form) {
-        $steamid = $form->get('steamid')->getValue();
-        return !Player::where('steamid', $steamid)->exists();
+        return !Player::where('steamid', $form->getValue('steamid'))->exists();
     }
 
 	/**

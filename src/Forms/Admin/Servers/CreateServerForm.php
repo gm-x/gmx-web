@@ -31,7 +31,7 @@ class CreateServerForm extends ServerForm {
         $ip = $form->get('ip');
         $port = $form->get('port');
         
-        if (!$ip || !$port || $ip->getHasError() || $port->getHasError()) {
+        if ($ip->getHasError() || $port->getHasError()) {
             return true;
         }
         

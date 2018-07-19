@@ -11,20 +11,9 @@ class Date extends Input {
 	public function getType() {
 		return 'date';
 	}
-
-    /**
-     * @inheritdoc
-     */
-    public function getValue() {
-        return $this->value->format('Y-m-d');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setValue($value) {
-        $this->value = new DateTime($value);
-        return $this;
+	
+	public function setDate(DateTime $dateTime) {
+	   
     }
 
 	/**
