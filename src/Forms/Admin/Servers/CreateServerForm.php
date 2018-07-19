@@ -22,13 +22,21 @@ class CreateServerForm extends ServerForm {
 		return $this;
 	}
     
-    public function checkExists(Form $form, $key) {
-        if ($form->exists('ip') || !$form->exists('port')) {
-            return false;
+    /**
+     * @param Form $form
+     * @return bool
+     */
+    public function checkExists(Form $form) {
+        $ip = $form->get('ip');
+        $port = $form->get('port');
+        
+        if (!$ip || !$port || $ip->getHasError() || $port->getHasError()) {
+            return true;
         }
+        
         return !Server::where([
-            'ip' => $form->get('ip')->getValue(),
-            'port' => $form->get('port')->getValue()
+            'ip' => $ip->getValue(),
+            'port' => $port->getValue()
         ])->exists();
     }
 	

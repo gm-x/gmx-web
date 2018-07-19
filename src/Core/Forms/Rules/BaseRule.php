@@ -30,7 +30,14 @@ abstract class BaseRule implements Rule {
         	return '';
 		}
 		list ($key, $args) = $message;
-        return $language->format('forms', $key, $args);
+        return $language->format($this->getErrorSection(), $key, $args);
+    }
+    
+    /**
+     * @return string
+     */
+    protected function getErrorSection() {
+        return 'forms';
     }
     
     /**

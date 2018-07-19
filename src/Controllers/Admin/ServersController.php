@@ -51,7 +51,7 @@ class ServersController extends BaseAdminController {
 			$form->create();
 
 			if ($form->process($request)) {
-			    $this->addSuccessMessage('Server create successfully');
+			    $this->addSuccessMessage($this->getTranslate('admins_servers', 'created'));
 				return $this->redirect('admin_servers_edit', ['server' => $server->id]);
 			}
 		} catch (FormException $e) {
@@ -84,7 +84,7 @@ class ServersController extends BaseAdminController {
             $form->create();
             
             if ($form->process($request)) {
-                $this->addSuccessMessage('Server updated successfully');
+                $this->addSuccessMessage($this->getTranslate('admins_servers', 'updated'));
                 return $this->redirect('admin_servers_edit', ['server' => $server->id]);
             }
         } catch (FormException $e) {
@@ -114,8 +114,9 @@ class ServersController extends BaseAdminController {
 
 		try {
 			$server->delete();
+            $this->addSuccessMessage($this->getTranslate('admins_servers', 'removed'));
 		} catch (Exception $e) {
-			$this->addErrorMessage('Something wrong. Please Try again later.');
+			$this->addErrorMessage($this->getTranslate('admins_servers', 'exception'));
 			/** @var \Monolog\Logger $logger */
 			$logger = $this->getContainer('log');
 			$logger->error((string) $e);

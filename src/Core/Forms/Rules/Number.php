@@ -52,13 +52,13 @@ class Number extends BaseRule {
      */
 	protected function getMessage() {
     	if ($this->min !== null && $this->max !== null) {
-    		return ['int_min_max', [$this->min, $this->max]];
+    		return ['number_min_max', [$this->min, $this->max]];
 		} elseif ($this->min !== null) {
-			return ['int_min', [$this->min]];
+			return ['number_min', [$this->min]];
 		} elseif ($this->max !== null) {
-			return ['int_max', [$this->max]];
+			return ['number_max', [$this->max]];
 		} else {
-    		return ['int'];
+    		return ['number'];
 		}
     }
 }

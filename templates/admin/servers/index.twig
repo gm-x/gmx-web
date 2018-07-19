@@ -8,8 +8,8 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Address</th>
+					<th>{{ trans('admin_servers', 'name') }}</th>
+					<th>{{ trans('admin_servers', 'address') }}</th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
@@ -22,7 +22,7 @@
                         {% embed "admin/actions.twig" with {'actionId': server.id} %}
                         	{% block actions %}
 								<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="dropdown-item">
-									<span class="oi oi-grid-two-up"></span> Groups
+									<span class="oi oi-grid-two-up"></span> {{ trans('admin_servers', 'groups') }}
 								</a>
 								<a
 										href="#"
@@ -31,7 +31,7 @@
 										data-target="#tokenModel"
 										data-token="{{ server.token }}"
 								>
-									<span class="oi oi-info"></span> Token
+									<span class="oi oi-info"></span> {{ trans('admin_servers', 'token') }}
 								</a>
 							{% endblock %}
                         {% endembed %}
@@ -61,7 +61,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="tokenModalLabel">Server token</h5>
+					<h5 class="modal-title" id="tokenModalLabel">{{ trans('admin_servers', 'token') }}</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -72,7 +72,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('buttons', 'close') }}</button>
 				</div>
 			</div>
 		</div>

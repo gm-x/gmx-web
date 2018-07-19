@@ -49,11 +49,11 @@ class Length extends BaseRule {
      */
     public function getMessage() {
         if ($this->min !== null && $this->max !== null) {
-            return ['min_max_length', [$this->min, $this->max]];
+            return ['length_min_max', [$this->min, $this->max]];
         } elseif ($this->min !== null) {
-            return ['min_length', [$this->min]];
+            return ['length_min', [$this->min]];
         } elseif ($this->max !== null) {
-            return ['max_length', [$this->max]];
+            return ['length_max', [$this->max]];
         } else {
             return null;
         }

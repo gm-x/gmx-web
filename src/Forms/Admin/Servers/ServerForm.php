@@ -2,7 +2,6 @@
 namespace GameX\Forms\Admin\Servers;
 
 use \GameX\Core\BaseForm;
-use GameX\Core\Configuration\Config;
 use \GameX\Models\Server;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
@@ -36,22 +35,16 @@ abstract class ServerForm extends BaseForm {
 	protected function createForm() {
 		$this->form
 			->add(new Text('name', $this->server->name, [
-				'title' => 'Name',
-				'error' => 'Required',
+				'title' => $this->getTranslate('admin_servers', 'name'),
 				'required' => true,
-				'attributes' => [],
 			]))
 			->add(new Text('ip', $this->server->ip, [
-				'title' => 'IP',
-				'error' => 'Required',
+				'title' => $this->getTranslate('admin_servers', 'ip'),
 				'required' => true,
-				'attributes' => [],
 			]))
 			->add(new NumberElement('port', $this->server->port, [
-				'title' => 'Port',
-				'error' => 'Required',
+				'title' => $this->getTranslate('admin_servers', 'port'),
 				'required' => true,
-				'attributes' => [],
 			]))
 			->addRule('name', new Required())
 			->addRule('name', new Trim())
