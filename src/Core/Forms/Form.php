@@ -311,7 +311,7 @@ class Form implements ArrayAccess {
 				$this->isValid = false;
 				$element
 					->setHasError(true)
-					->setError($rule->getMessage($this->language));
+					->setError($rule->getError($this->language));
 				break;
 			}
 		}

@@ -36,7 +36,9 @@ abstract class BaseRule implements Rule {
     /**
      * @return array|null
      */
-    abstract protected function getMessage();
+    protected function getMessage() {
+        return null;
+    }
     
     /**
      * @param Form $form

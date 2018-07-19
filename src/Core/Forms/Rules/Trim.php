@@ -12,7 +12,11 @@ class Trim extends BaseRule {
      * @return bool
      */
     protected function isValid(Form $form, Element $element) {
-        $element->setValue(trim($element->getValue()));
+        $value = $element->getValue();
+        if (!is_string($value)) {
+            return false;
+        }
+        $element->setValue(trim($value));
         return true;
     }
     
@@ -20,6 +24,6 @@ class Trim extends BaseRule {
      * @return array|null
      */
     public function getMessage() {
-        return null;
+        return ['string'];
     }
 }

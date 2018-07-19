@@ -2,6 +2,9 @@
 namespace GameX\Forms\Admin\Servers;
 
 use \Firebase\JWT\JWT;
+use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Forms\Form;
+use \GameX\Models\Server;
 
 class CreateServerForm extends ServerForm {
 
@@ -18,10 +21,25 @@ class CreateServerForm extends ServerForm {
 		$this->secret = (string) $secret;
 		return $this;
 	}
+    
+    public function checkExists(Form $form, $key) {
+        if ($form->exists('ip') || !$form->exists('port')) {
+            return false;
+        }
+        return !Server::where([
+            'ip' => $form->get('ip')->getValue(),
+            'port' => $form->get('port')->getValue()
+        ])->exists();
+    }
 	
+    /**
+     * @noreturn
+     */
 	protected function createForm() {
         parent::createForm();
-//        return !Server::where(['ip' => $form->getValue('ip'), 'port' => $port])->exists();
+        $this->form->addRule('port', new Callback(
+            [$this, 'checkExists'], $this->getTranslate('admin_servers', 'already_exists')
+        ));
     }
     
     /**
