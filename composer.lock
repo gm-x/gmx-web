@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5d3298fb3f4fc821b6873bb58a41277a",
+    "content-hash": "2fb6e48a180bbc51626ae8f1fa50df5d",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -1153,45 +1153,6 @@
                 "psr-3"
             ],
             "time": "2018-04-03 15:59:15"
-        },
-        {
-            "name": "rlanvin/php-form",
-            "version": "v2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/rlanvin/php-form.git",
-                "reference": "d68c4fe9cc2e9191175169409d718a59ea1bff55"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rlanvin/php-form/zipball/d68c4fe9cc2e9191175169409d718a59ea1bff55",
-                "reference": "d68c4fe9cc2e9191175169409d718a59ea1bff55",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mbstring": "*",
-                "php": ">=5.4.0"
-            },
-            "suggest": {
-                "ext-intl": "Intl extension is useful for validating formatted numbers"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Form\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Lightweight form validation library for PHP",
-            "homepage": "https://github.com/rlanvin/php-form",
-            "keywords": [
-                "form",
-                "validation"
-            ],
-            "time": "2016-04-11T09:58:23+00:00"
         },
         {
             "name": "slim/slim",

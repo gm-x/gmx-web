@@ -18,7 +18,6 @@
 		"cartalyst/sentinel": "v2.0.17",
 		"illuminate/events": "v5.4.36",
 		"ircmaxell/password-compat": "1.0.3",
-		"rlanvin/php-form": "v2.0.1",
 		"monolog/monolog": "1.23.0",
 		"paragonie/random_compat": "^2.0",
 		"davedevelopment/phpmig": "^1.2@dev",
