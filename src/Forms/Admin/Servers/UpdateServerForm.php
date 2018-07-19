@@ -8,7 +8,6 @@ class UpdateServerForm extends ServerForm {
 	 */
 	protected function processForm() {
 		$this->server->fill($this->form->getValues());
-		$this->server->save();
-		return true;
+		return $this->server->save();
 	}
 }

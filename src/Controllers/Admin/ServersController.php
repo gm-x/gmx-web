@@ -45,8 +45,7 @@ class ServersController extends BaseAdminController {
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
 
-		$form = new CreateServerForm($server);
-		$form->setSecret($this->getConfig('secret', ''));
+		$form = new CreateServerForm($server, $this->getConfig('secret', ''));
 		try {
 			$form->create();
 

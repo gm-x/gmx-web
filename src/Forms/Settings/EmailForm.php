@@ -46,8 +46,6 @@ class EmailForm extends BaseForm {
 	 */
 	protected function processForm() {
 		$this->user->email = $this->form->getValue('email');
-		$this->user->save();
-
-		return true;
+		return $this->user->save();
 	}
 }

@@ -69,7 +69,6 @@ class PasswordForm extends BaseForm {
             throw new FormException('old_password', "Bad password");
         }
         $this->authHelper->changePassword($this->user, $this->form->getValue('new_password'));
-    
         return true;
     }
 }

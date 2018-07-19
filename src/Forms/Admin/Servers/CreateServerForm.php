@@ -12,15 +12,15 @@ class CreateServerForm extends ServerForm {
 	 * @var string
 	 */
 	protected $secret;
-
-	/**
-	 * @param string $secret
-	 * @return $this
-	 */
-	public function setSecret($secret) {
-		$this->secret = (string) $secret;
-		return $this;
-	}
+    
+    /**
+     * @param Server $server
+     * @param string $secret
+     */
+	public function __construct(Server $server, $secret){
+        parent::__construct($server);
+        $this->secret = (string) $secret;
+    }
     
     /**
      * @param Form $form
@@ -58,7 +58,6 @@ class CreateServerForm extends ServerForm {
 		$this->server->token = JWT::encode([
 			'server_id' => $this->server->id
 		], $this->secret, 'HS512');
-		$this->server->save();
-		return true;
+		return $this->server->save();
 	}
 }

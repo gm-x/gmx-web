@@ -21,6 +21,7 @@
 	"number_min": "Must be greater than %d",
 	"number_max": "Must be less than %d",
 	"password_repeat": "Passwords don't match",
-	"required": "Is required",
-	"string": "Isn't a valid value"
+	"required": "Can't be empty",
+	"string": "Must be a valid value",
+	"regexp": "Must be a valid value"
 }
