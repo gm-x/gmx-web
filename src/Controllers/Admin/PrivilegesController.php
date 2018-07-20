@@ -12,6 +12,7 @@ use \GameX\Core\Pagination\Pagination;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Exceptions\PrivilegeFormException;
 use \Exception;
 
 class PrivilegesController extends BaseAdminController {
@@ -52,15 +53,18 @@ class PrivilegesController extends BaseAdminController {
     
         $form = new PrivilegesForm($privilege);
         try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_privileges', 'created'));
-                return $this->redirect('admin_players_privileges_edit', [
-                    'player' => $player->id,
-                    'privilege' => $privilege->id,
-                ]);
-            }
+			$form->create();
+
+			if ($form->process($request)) {
+				$this->addSuccessMessage($this->getTranslate('admins_privileges', 'created'));
+				return $this->redirect('admin_players_privileges_edit', [
+					'player' => $player->id,
+					'privilege' => $privilege->id,
+				]);
+			}
+		} catch (PrivilegeFormException $e) {
+        	$this->addErrorMessage($e->getMessage());
+        	return $this->redirect($e->getPath(), $e->getData());
         } catch (FormException $e) {
             $form->getForm()->setError($e->getField(), $e->getMessage());
             return $this->redirectTo($form->getForm()->getAction());

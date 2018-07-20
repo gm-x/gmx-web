@@ -17,6 +17,7 @@ use \GameX\Core\Forms\Rules\Boolean;
 use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\Date as DateRule;
 use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Exceptions\PrivilegeFormException;
 
 class PrivilegesForm extends BaseForm {
 
@@ -42,8 +43,21 @@ class PrivilegesForm extends BaseForm {
      * @param string $key
      * @return bool
      */
-    public function checkExists(Form $form, $key) {
+    public function checkGroupExists(Form $form, $key) {
         return Group::where('id', $form->getValue($key))->exists();
+    }
+
+
+    /**
+     * @param Form $form
+     * @param string $key
+     * @return bool
+     */
+    public function checkPrivilegeExists(Form $form, $key) {
+        return !Privilege::where([
+        	'player_id' => $this->privilege->player_id,
+        	'group_id' => $form->getValue($key),
+		])->exists();
     }
 
 	/**
@@ -53,9 +67,16 @@ class PrivilegesForm extends BaseForm {
         $server = $this->privilege->exists
             ? $this->privilege->group->server
             : Server::first();
+
+        if (!$server) {
+        	throw new PrivilegeFormException('Add server before adding privilege', 'admin_servers_list');
+		}
         
         $servers = $this->getServers();
         $groups = $this->getGroups($server);
+		if (!count($groups)) {
+			throw new PrivilegeFormException('Add privileges groups before adding privilege', 'admin_servers_groups_list', ['server' => $server->id]);
+		}
         
 		$this->form
             ->add(new Select('server', $server->id, $servers, [
@@ -77,7 +98,7 @@ class PrivilegesForm extends BaseForm {
                 'title' => 'Expired',
                 'required' => true,
             ]))
-            ->add(new Checkbox('active', $this->privilege->active ? true : false, [
+            ->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
                 'title' => 'Active',
             ]))
             ->addRule('server', new Required())
@@ -85,7 +106,8 @@ class PrivilegesForm extends BaseForm {
             ->addRule('server', new InArray(array_keys($servers)))
             ->addRule('group', new Required())
             ->addRule('group', new Number(1))
-            ->addRule('group', new Callback([$this, 'checkExists'], 'Group doesn\'t exists'))
+            ->addRule('group', new Callback([$this, 'checkGroupExists'], 'Group doesn\'t exists'))
+            ->addRule('group', new Callback([$this, 'checkPrivilegeExists'], 'Privilege already exists'))
             ->addRule('prefix', new Trim())
             ->addRule('expired', new Required())
             ->addRule('expired', new DateRule())
