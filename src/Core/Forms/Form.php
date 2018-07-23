@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Forms;
 
+use GameX\Core\Forms\Elements\Password;
 use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Session\Session;
 use \GameX\Core\Lang\Language;
@@ -283,7 +284,7 @@ class Form implements ArrayAccess {
     protected function writeValues() {
         $values = []; $errors = [];
         foreach ($this->elements as $element) {
-            if ($element->getType() != 'password') {
+            if (!($element instanceof Password)) {
                 $values[$element->getName()] = $element->getValue();
             }
             if ($element->getHasError()) {

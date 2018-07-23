@@ -94,10 +94,14 @@ class PrivilegesForm extends BaseForm {
             ->add(new Text('prefix', $this->privilege->prefix, [
                 'title' => 'Prefix',
             ]))
-            ->add(new DateElement('expired', $this->privilege->expired_at, [
+            ->add(new Text('expired', $this->privilege->expired_at, [
                 'title' => 'Expired',
                 'required' => true,
             ]))
+//            ->add(new DateElement('expired', $this->privilege->expired_at, [
+//                'title' => 'Expired',
+//                'required' => true,
+//            ]))
             ->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
                 'title' => 'Active',
             ]))

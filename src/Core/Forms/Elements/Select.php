@@ -1,7 +1,7 @@
 <?php
 namespace GameX\Core\Forms\Elements;
 
-class Select extends Input {
+class Select extends BaseElement {
 
 	/**
 	 * @var array
@@ -12,6 +12,11 @@ class Select extends Input {
 	 * @var null|string
 	 */
 	protected $emptyOption = null;
+    
+    /**
+     * @var string
+     */
+	protected $value;
 
 	/**
 	 * @inheritdoc
@@ -24,6 +29,21 @@ class Select extends Input {
 			$this->emptyOption = (string) $options['empty_option'];
 		}
 	}
+    
+    /**
+     * @inheritdoc
+     */
+    public function getValue() {
+        return $this->value;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function setValue($value) {
+        $this->value = $value;
+        return $this;
+    }
 
 	/**
 	 * @inheritdoc
