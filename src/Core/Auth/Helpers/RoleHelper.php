@@ -60,6 +60,18 @@ class RoleHelper {
             ->updatePermission((string) $permission, (bool) $allow, true)
             ->save();
     }
+    
+    /**
+     * @return array
+     */
+    public function getRolesAsArray() {
+        $roles = [];
+        foreach ($this->roleRepository->all() as $role) {
+            $roles[$role->slug] = $role->name;
+        }
+        
+        return $roles;
+    }
 
     /**
      * @param string $role

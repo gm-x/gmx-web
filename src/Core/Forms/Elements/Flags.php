@@ -3,7 +3,7 @@ namespace GameX\Core\Forms\Elements;
 
 use \GameX\Core\AccessFlags\Helper;
 
-class FormInputFlags extends FormInputText {
+class Flags extends Text {
 
     /**
      * @inheritdoc

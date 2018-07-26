@@ -1,12 +1,12 @@
 <?php
 namespace GameX\Core\Forms\Elements;
 
-class FormInputEmail extends FormInput {
+class Password extends Input {
 
     /**
      * @inheritdoc
      */
     public function getType() {
-        return 'email';
+        return 'password';
     }
 }

@@ -6,10 +6,10 @@ use \GameX\Core\BaseAdminController;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Firebase\JWT\JWT;
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\FormInputText;
-use \GameX\Core\Forms\Elements\FormInputNumber;
+use \GameX\Forms\Admin\Servers\CreateServerForm;
+use \GameX\Forms\Admin\Servers\UpdateServerForm;
+use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Exceptions\FormException;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -44,31 +44,27 @@ class ServersController extends BaseAdminController {
      */
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
-        $form = $this
-            ->getForm($server)
-            ->setAction($request->getUri())
-            ->processRequest($request);
 
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-                    $server->fill($form->getValues());
-                    $server->save();
-					$server->token = JWT::encode([
-						'server_id' => $server->id
-					], $this->getConfig('secret', ''), 'HS512');
-					$server->save();
-					return $this->redirect('admin_servers_list');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
+		$form = new CreateServerForm($server, $this->getConfig('secret', ''));
+		try {
+			$form->create();
+
+			if ($form->process($request)) {
+			    $this->addSuccessMessage($this->getTranslate('admins_servers', 'created'));
+				return $this->redirect('admin_servers_edit', ['server' => $server->id]);
 			}
+		} catch (FormException $e) {
+			$form->getForm()->setError($e->getField(), $e->getMessage());
+			return $this->redirectTo($form->getForm()->getAction());
+		} catch (ValidationException $e) {
+			if ($e->hasMessage()) {
+				$this->addErrorMessage($e->getMessage());
+			}
+			return $this->redirectTo($form->getForm()->getAction());
 		}
 
 		return $this->render('admin/servers/form.twig', [
-			'form' => $form,
+			'form' => $form->getForm(),
             'create' => true,
 		]);
 	}
@@ -80,28 +76,28 @@ class ServersController extends BaseAdminController {
      * @return ResponseInterface
      */
 	public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-		$server = $this->getServer($request, $response, $args);
-        $form = $this
-            ->getForm($server)
-            ->setAction($request->getUri())
-            ->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$server->fill($form->getValues());
-					$server->save();
-					return $this->redirect('admin_servers_list');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
+        $server = $this->getServer($request, $response, $args);
+        
+        $form = new UpdateServerForm($server);
+		try {
+            $form->create();
+            
+            if ($form->process($request)) {
+                $this->addSuccessMessage($this->getTranslate('admins_servers', 'updated'));
+                return $this->redirect('admin_servers_edit', ['server' => $server->id]);
+            }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 
 		return $this->render('admin/servers/form.twig', [
-			'form' => $form,
+			'form' => $form->getForm(),
             'create' => false,
 		]);
 	}
@@ -117,8 +113,9 @@ class ServersController extends BaseAdminController {
 
 		try {
 			$server->delete();
+            $this->addSuccessMessage($this->getTranslate('admins_servers', 'removed'));
 		} catch (Exception $e) {
-			$this->addErrorMessage('Something wrong. Please Try again later.');
+			$this->addErrorMessage($this->getTranslate('labels', 'exception'));
 			/** @var \Monolog\Logger $logger */
 			$logger = $this->getContainer('log');
 			$logger->error((string) $e);
@@ -146,41 +143,4 @@ class ServersController extends BaseAdminController {
 
 		return $server;
 	}
-
-    /**
-     * @param Server $server
-     * @return Form
-     */
-	protected function getForm(Server $server) {
-        $form = $this->createForm('admin_server')
-            ->add(new FormInputText('name', $server->name, [
-                'title' => 'Name',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ]))
-            ->add(new FormInputText('ip', $server->ip, [
-                'title' => 'IP',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ]))
-            ->add(new FormInputNumber('port', $server->port, [
-                'title' => 'Port',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ]))
-			->setRules('name', ['required', 'trim', 'min_length' => 1])
-			->setRules('ip', ['required', 'ipv4'])
-			->setRules('port', ['required', 'integer', 'between' => [1024, 65535]]);
-
-        if (!$server->exists) {
-            $form->addRules('port', ['exists' => function ($port, \Form\Validator $form) {
-                return !Server::where(['ip' => $form->getValue('ip'), 'port' => $port])->exists();
-            }]);
-        }
-
-        return $form;
-    }
 }

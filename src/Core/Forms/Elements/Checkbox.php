@@ -1,12 +1,12 @@
 <?php
 namespace GameX\Core\Forms\Elements;
 
-class FormInputFile extends FormInput {
+class Checkbox extends Input {
 
     /**
      * @inheritdoc
      */
     public function getType() {
-        return 'file';
+        return 'checkbox';
     }
 }

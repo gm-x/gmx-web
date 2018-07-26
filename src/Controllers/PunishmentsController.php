@@ -23,10 +23,20 @@ class PunishmentsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
     public function indexAction(RequestInterface $request, ResponseInterface $response, array $args) {
+        $filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
+        
+        if ($filter === null) {
+            $players = Punishment::get();
+        } else {
+            $players = Punishment::where('steamid', 'LIKE', '%' . $filter . '%')
+                ->orWhere('nick', 'LIKE', '%' . $filter . '%');
+        }
+        
 		$pagination = new Pagination(Punishment::get(), $request);
 		return $this->render('punishments/index.twig', [
 			'punishments' => $pagination->getCollection(),
 			'pagination' => $pagination,
+            'filter' => $filter
 		]);
     }
 }

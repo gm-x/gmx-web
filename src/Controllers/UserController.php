@@ -2,19 +2,19 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
-use GameX\Core\Exceptions\NotAllowedException;
-use \GameX\Core\Forms\Elements\FormInputCheckbox;
-use \GameX\Core\Forms\Elements\FormInputEmail;
-use \GameX\Core\Forms\Elements\FormInputPassword;
-use GameX\Core\Forms\Elements\FormInputText;
-use GameX\Core\Jobs\JobHelper;
-use \Psr\Http\Message\RequestInterface;
+use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Core\Forms\Form;
+use \GameX\Core\Jobs\JobHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
+use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Forms\User\LoginForm;
+use \GameX\Forms\User\RegisterForm;
+use \GameX\Forms\User\ActivationForm;
+use \GameX\Forms\User\ResetPasswordForm;
+use \GameX\Forms\User\ResetPasswordCompleteForm;
+use \GameX\Core\Exceptions\NotAllowedException;
 use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
-use \Exception;
 
 class UserController extends BaseMainController {
 
@@ -26,288 +26,227 @@ class UserController extends BaseMainController {
 	}
 
 	/**
-	 * @param RequestInterface $request
+	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function registerAction(RequestInterface $request, ResponseInterface $response, array $args) {
-        $identical_password_validator = function($confirmation, $form) {
-            return $form->password === $confirmation;
-        };
-
-        /** @var Form $form */
-        $form = $this->createForm('register')
-            ->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
-				'title' => $this->getTranslate('inputs', 'login'),
-				'error' => 'Required',
-				'required' => true,
-			]))
-			->add(new FormInputEmail('email', '', [
-				'title' => $this->getTranslate('inputs', 'email'),
-				'error' => 'Must be valid email',
-				'required' => true,
-			]))
-            ->add(new FormInputPassword('password', '', [
-                'title' => $this->getTranslate('inputs', 'password'),
-                'error' => $this->getTranslate('labels', 'required'),
-                'required' => true,
-			]))
-            ->add(new FormInputPassword('password_repeat', '', [
-                'title' => $this->getTranslate('inputs', 'password_repeat'),
-                'error' => 'Passwords does not match',
-                'required' => true,
-            ]))
-			->setRules('login', ['required', 'trim', 'min_length' => 1])
-			->setRules('email', ['required', 'trim', 'email', 'min_length' => 1])
-			->setRules('password', ['required', 'trim', 'min_length' => 6])
-			->setRules('password_repeat', ['required', 'trim', 'min_length' => 6, 'identical' => $identical_password_validator])
-            ->processRequest($request);
-
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-                    /** @var \Illuminate\Database\Connection $connection */
-                    $connection = $this->getContainer('db')->getConnection();
-                    $connection->beginTransaction();
-                	$authHelper = new AuthHelper($this->container);
-                	if ($authHelper->exists($form->getValue('login'), $form->getValue('email'))) {
-						throw new ValidationException('User already exists');
-					}
-
-					$enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-                    $user = $authHelper->registerUser(
-                        $form->getValue('login'),
-                        $form->getValue('email'),
-                        $form->getValue('password'),
-						!$enabledEmail
-                    );
-
-                    if ($enabledEmail) {
-						$activationCode = $authHelper->getActivationCode($user);
-						JobHelper::createTask('sendmail', [
-							'type' => 'activation',
-							'user' => $user->login,
-							'email' => $user->email,
-							'title' => 'Activation',
-							'params' => [
-								'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
-							],
-						]);
-					}
-					$connection->commit();
-                    return $this->redirect('login');
-                } catch (Exception $e) {
-                    $connection->rollBack();
-                    return $this->failRedirect($e, $form);
-                }
-            }
-        }
+    public function registerAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+		$emailEnabled = (bool) $this->getConfig('mail')->get('enabled', false);
+		$authHelper = new AuthHelper($this->container);
+		/** @var \Illuminate\Database\Connection $connection */
+		$connection = $this->getContainer('db')->getConnection();
+		$form = new RegisterForm($authHelper, $emailEnabled);
+		try {
+			$form->create();
+			$connection->beginTransaction();
+			/** @var UserModel|null $user */
+			$user = $form->process($request);
+			if ($user) {
+				if ($emailEnabled) {
+					$activationCode = $authHelper->getActivationCode($user);
+					JobHelper::createTask('sendmail', [
+						'type' => 'activation',
+						'user' => $user->login,
+						'email' => $user->email,
+						'title' => 'Activation',
+						'params' => [
+							'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
+						],
+					]);
+				}
+				$connection->commit();
+				return $this->redirect('login');
+			}
+			$connection->commit();
+		} catch (FormException $e) {
+			$connection->rollBack();
+			$form->getForm()->setError($e->getField(), $e->getMessage());
+			return $this->redirectTo($form->getForm()->getAction());
+		} catch (ValidationException $e) {
+			$connection->rollBack();
+			if ($e->hasMessage()) {
+				$this->addErrorMessage($e->getMessage());
+			}
+			return $this->redirectTo($form->getForm()->getAction());
+		}
 
         return $this->render('user/register.twig', [
-            'form' => $form,
+            'form' => $form->getForm(),
         ]);
     }
 
-    public function activateAction(RequestInterface $request, ResponseInterface $response, array $args) {
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 * @throws NotAllowedException
+	 */
+    public function activateAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
 		if (!$enabledEmail) {
 			throw new NotAllowedException();
 		}
 
-    	$code = $args['code'];
-        /** @var Form $form */
-        $form = $this->createForm('activation')
-            ->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
-				'title' => $this->getTranslate('inputs', 'login_email'),
-				'error' => 'Required',
-				'required' => true,
-			]))
-			->setRules('login', ['required', 'trim', 'min_length' => 1])
-            ->processRequest($request);
+		/** @var \Illuminate\Database\Connection $connection */
+		$connection = $this->getContainer('db')->getConnection();
+		$authHelper = new AuthHelper($this->container);
 
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$authHelper = new AuthHelper($this->container);
-					$user = $authHelper->findUser($form->getValue('login'));
-					if (!$user) {
-						throw new FormException('login', 'User not found');
-					}
-					$authHelper->activateUser($user, $code);
-					return $this->redirect('login');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
+		$form = new ActivationForm($authHelper, $args['code']);
+		try {
+			$form->create();
+			$connection->beginTransaction();
+			if ($form->process($request)) {
+				$connection->commit();
+				return $this->redirect('login');
 			}
+			$connection->commit();
+		} catch (FormException $e) {
+			$connection->rollBack();
+			$form->getForm()->setError($e->getField(), $e->getMessage());
+			return $this->redirectTo($form->getForm()->getAction());
+		} catch (ValidationException $e) {
+			$connection->rollBack();
+			if ($e->hasMessage()) {
+				$this->addErrorMessage($e->getMessage());
+			}
+			return $this->redirectTo($form->getForm()->getAction());
 		}
 
 		return $this->render('user/activation.twig', [
-			'form' => $form,
+			'form' => $form->getForm(),
 		]);
     }
 
-    public function loginAction(RequestInterface $request, ResponseInterface $response, array $args) {
-        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
+    public function loginAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+		$enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
 
-        $form = $this->createForm('login')
-			->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
-				'title' => $this->getTranslate('inputs', 'login_email'),
-				'error' => 'Required',
-				'required' => true,
-			]))
-			->add(new FormInputPassword('password', '', [
-				'title' => $this->getTranslate('inputs', 'password'),
-				'error' => $this->getTranslate('labels', 'required'),
-				'required' => true,
-			]))
-			->add(new FormInputCheckbox('remember_me', true, [
-				'title' => $this->getTranslate('inputs', 'remember_me'),
-				'required' => false,
-			]))
-			->setRules('login', ['required', 'trim', 'min_length' => 1])
-			->setRules('password', ['required', 'trim', 'min_length' => 1])
-			->setRules('remember_me', ['bool'])
-			->processRequest($request);
+        $form = new LoginForm(new AuthHelper($this->container));
+		try {
+			$form->create();
 
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				$form->saveValues();
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$authHelper = new AuthHelper($this->container);
-					$authHelper->loginUser(
-						$form->getValue('login'),
-						$form->getValue('password'),
-						(bool)$form->getValue('remember_me')
-					);
-					return $this->redirect('index');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
+			if ($form->process($request) === true) {
+				return $this->redirect('index');
 			}
+		} catch (FormException $e) {
+			$form->getForm()->setError($e->getField(), $e->getMessage());
+			return $this->redirectTo($form->getForm()->getAction());
+		} catch (ValidationException $e) {
+			if ($e->hasMessage()) {
+				$this->addErrorMessage($e->getMessage());
+			}
+			return $this->redirectTo($form->getForm()->getAction());
 		}
 
 		return $this->render('user/login.twig', [
-			'form' => $form,
+			'form' => $form->getForm(),
 			'enabledEmail' => $enabledEmail
 		]);
     }
 
-    public function logoutAction(RequestInterface $request, ResponseInterface $response, array $args) {
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
+    public function logoutAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
 		$authHelper = new AuthHelper($this->container);
 		$authHelper->logoutUser();
     	return $this->redirect('index');
 	}
 
-	public function resetPasswordAction(RequestInterface $request, ResponseInterface $response, array $args) {
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 * @throws NotAllowedException
+	 */
+	public function resetPasswordAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
         if (!$enabledEmail) {
             throw new NotAllowedException();
         }
 
-		$form = $this->createForm('reset_password')
-            ->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
-				'title' => $this->getTranslate('inputs', 'login_email'),
-				'error' => 'Required',
-				'required' => true,
-			]))
-			->setRules('login', ['required', 'trim', 'min_length' => 1])
-            ->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$authHelper = new AuthHelper($this->container);
-					$user = $authHelper->findUser($form->getValue('login'));
-					if (!$user) {
-						throw new FormException('login', 'User not found');
-					}
-                    $reminderCode = $authHelper->resetPassword($user);
-                    JobHelper::createTask('sendmail', [
-                        'type' => 'reset_password',
-                        'user' => $user->login,
-                        'email' => $user->email,
-                        'title' => 'Reset Password',
-                        'params' => [
-                            'link' => $this->pathFor('reset_password_complete', ['code' => $reminderCode], [], true)
-                        ],
-                    ]);
-					return $this->redirect('index');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
+		$authHelper = new AuthHelper($this->container);
+		/** @var \Illuminate\Database\Connection $connection */
+		$connection = $this->getContainer('db')->getConnection();
+		$form = new ResetPasswordForm($authHelper);
+		try {
+			$form->create();
+			$connection->beginTransaction();
+			$result = $form->process($request);
+			if ($result) {
+				JobHelper::createTask('sendmail', [
+					'type' => 'reset_password',
+					'user' => $result['user']->login,
+					'email' => $result['user']->email,
+					'title' => 'Reset Password',
+					'params' => [
+						'link' => $this->pathFor('reset_password_complete', ['code' => $result['code']], [], true)
+					],
+				]);
+				$connection->commit();
+				return $this->redirect('index');
 			}
+			$connection->commit();
+		} catch (FormException $e) {
+			$connection->rollBack();
+			$form->getForm()->setError($e->getField(), $e->getMessage());
+			return $this->redirectTo($form->getForm()->getAction());
+		} catch (ValidationException $e) {
+			$connection->rollBack();
+			if ($e->hasMessage()) {
+				$this->addErrorMessage($e->getMessage());
+			}
+			return $this->redirectTo($form->getForm()->getAction());
 		}
 
 		$this->render('user/reset_password.twig', [
-			'form' => $form
+			'form' => $form->getForm()
 		]);
 	}
 
-	public function resetPasswordCompleteAction(RequestInterface $request, ResponseInterface $response, array $args) {
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 * @throws NotAllowedException
+	 */
+	public function resetPasswordCompleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
         if (!$enabledEmail) {
             throw new NotAllowedException();
         }
-        $code = $args['code'];
-        $passwordValidator = function($confirmation, $form) {
-			return $form->password === $confirmation;
-		};
 
-        $form = $this->createForm('reset_password_complete')
-            ->setAction($request->getUri())
-			->add(new FormInputText('login', '', [
-				'title' => $this->getTranslate('inputs', 'login_email'),
-				'error' => 'Required',
-				'required' => true,
-			]))
-			->add(new FormInputPassword('password', '', [
-				'title' => $this->getTranslate('inputs', 'password'),
-				'error' => $this->getTranslate('labels', 'required'),
-				'required' => true,
-			]))
-			->add(new FormInputPassword('password_repeat', '', [
-				'title' => $this->getTranslate('inputs', 'password_repeat'),
-				'error' => 'Passwords does not match',
-				'required' => true,
-			]))
-			->setRules('login', ['required', 'trim', 'min_length' => 1])
-			->setRules('password', ['required', 'trim', 'min_length' => 6])
-			->setRules('password_repeat', ['required', 'trim', 'min_length' => 6, 'identical' => $passwordValidator])
-            ->processRequest($request);
+		$form = new ResetPasswordCompleteForm(new AuthHelper($this->container), $args['code']);
+		try {
+			$form->create();
 
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-                    $authHelper = new AuthHelper($this->container);
-					$user = $authHelper->findUser($form->getValue('login'));
-					if (!$user) {
-						throw new FormException('login', 'User not found');
-					}
-                    $authHelper->resetPasswordComplete($user, $form->getValue('password'), $code);
-                    return $this->redirect('login');
-                } catch (Exception $e) {
-                    return $this->failRedirect($e, $form);
-                }
-            }
-        }
+			if ($form->process($request)) {
+				return $this->redirect('login');
+			}
+		} catch (FormException $e) {
+			$form->getForm()->setError($e->getField(), $e->getMessage());
+			return $this->redirectTo($form->getForm()->getAction());
+		} catch (ValidationException $e) {
+			if ($e->hasMessage()) {
+				$this->addErrorMessage($e->getMessage());
+			}
+			return $this->redirectTo($form->getForm()->getAction());
+		}
 
         return $this->render('user/reset_password_complete.twig', [
-            'form' => $form,
+            'form' => $form->getForm(),
         ]);
     }
 }
