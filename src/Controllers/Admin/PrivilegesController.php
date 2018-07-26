@@ -52,27 +52,12 @@ class PrivilegesController extends BaseAdminController {
         $privilege->player_id = $player->id;
     
         $form = new PrivilegesForm($privilege);
-        try {
-			$form->create();
-
-			if ($form->process($request)) {
-				$this->addSuccessMessage($this->getTranslate('admins_privileges', 'created'));
-				return $this->redirect('admin_players_privileges_edit', [
-					'player' => $player->id,
-					'privilege' => $privilege->id,
-				]);
-			}
-		} catch (PrivilegeFormException $e) {
-        	$this->addErrorMessage($e->getMessage());
-        	return $this->redirect($e->getPath(), $e->getData());
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_players_privileges_edit', [
+                'player' => $player->id,
+                'privilege' => $privilege->id,
+            ]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
@@ -94,24 +79,12 @@ class PrivilegesController extends BaseAdminController {
         $privilege = $this->getPrivilege($request, $response, $args);
         
         $form = new PrivilegesForm($privilege);
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_privileges', 'updated'));
-                return $this->redirect('admin_players_privileges_edit', [
-                    'player' => $player->id,
-                    'privilege' => $privilege->id,
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_players_privileges_edit', [
+                'player' => $player->id,
+                'privilege' => $privilege->id,
+            ]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [

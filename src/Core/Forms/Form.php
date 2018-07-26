@@ -59,6 +59,11 @@ class Form implements ArrayAccess {
      * @var Element[]
      */
     protected $elements = [];
+    
+    /**
+     * @var bool
+     */
+    protected $isSaved = false;
 
     /**
      * Form constructor.
@@ -285,6 +290,9 @@ class Form implements ArrayAccess {
      * Save values and errors to session
      */
     protected function writeValues() {
+        if ($this->isSaved) {
+            return;
+        }
         $values = []; $errors = [];
         foreach ($this->elements as $element) {
             if (!($element instanceof Password)) {
@@ -299,6 +307,7 @@ class Form implements ArrayAccess {
         	'values' => $values,
         	'errors' => $errors,
 		]);
+        $this->isSaved = true;
     }
     
     /**

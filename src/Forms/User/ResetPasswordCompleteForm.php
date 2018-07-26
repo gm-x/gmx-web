@@ -3,11 +3,14 @@ namespace GameX\Forms\User;
 
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
+use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\PasswordRepeat;
+use \GameX\Core\Forms\Rules\Callback;
 use \GameX\Core\Exceptions\FormException;
 
 class ResetPasswordCompleteForm extends BaseForm {
@@ -26,6 +29,11 @@ class ResetPasswordCompleteForm extends BaseForm {
 	 * @var string
 	 */
 	protected $code;
+    
+    /**
+     * @var UserModel
+     */
+	protected $user;
 
 	/**
 	 * @param AuthHelper $authHelper
@@ -35,6 +43,29 @@ class ResetPasswordCompleteForm extends BaseForm {
 		$this->authHelper = $authHelper;
 		$this->code = $code;
 	}
+    
+    /**
+     * @return UserModel
+     */
+    public function getUser() {
+        return $this->user;
+    }
+    
+    /**
+     * @param Form $form
+     * @return bool
+     */
+    public function checkExists(Form $form) {
+        $this->user = $this->authHelper->findUser($form->getValue('login'));
+        return (bool) $this->user;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function checkCode() {
+        return (bool) $this->authHelper->checkActivationExists($this->user, $this->code);
+    }
 
 	/**
 	 * @noreturn
@@ -57,22 +88,23 @@ class ResetPasswordCompleteForm extends BaseForm {
 			]))
 			->addRule('login', new Trim())
 			->addRule('login', new Required())
+            ->addRule('login', new Callback([$this, 'checkExists'], 'User not found'))
+            ->addRule('login', new Callback([$this, 'checkCode'], 'Bad code'))
 			->addRule('password', new Trim())
 			->addRule('password', new Required())
 			->addRule('password_repeat', new Trim())
-			->addRule('password_repeat', new PasswordRepeat(['element' => 'password']));
+			->addRule('password_repeat', new PasswordRepeat('password'));
 	}
 
 	/**
-	 * @return \GameX\Core\Auth\Models\UserModel
+	 * @return bool
 	 * @throws FormException
 	 */
 	protected function processForm() {
-		$user = $this->authHelper->findUser($this->form->getValue('login'));
-		if (!$user) {
-			throw new FormException('login', 'User not found');
+		if (!$this->user) {
+			return false;
 		}
-		$this->authHelper->resetPasswordComplete($user, $this->form->getValue('password'), $this->code);
-		return $user;
+		$this->authHelper->resetPasswordComplete($this->user, $this->form->getValue('password'), $this->code);
+		return true;
 	}
 }

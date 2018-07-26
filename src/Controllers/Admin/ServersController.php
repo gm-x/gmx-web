@@ -46,22 +46,12 @@ class ServersController extends BaseAdminController {
         $server = $this->getServer($request, $response, $args);
 
 		$form = new CreateServerForm($server, $this->getConfig('secret', ''));
-		try {
-			$form->create();
-
-			if ($form->process($request)) {
-			    $this->addSuccessMessage($this->getTranslate('admins_servers', 'created'));
-				return $this->redirect('admin_servers_edit', ['server' => $server->id]);
-			}
-		} catch (FormException $e) {
-			$form->getForm()->setError($e->getField(), $e->getMessage());
-			return $this->redirectTo($form->getForm()->getAction());
-		} catch (ValidationException $e) {
-			if ($e->hasMessage()) {
-				$this->addErrorMessage($e->getMessage());
-			}
-			return $this->redirectTo($form->getForm()->getAction());
-		}
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_servers_edit', [
+                'server' => $server->id,
+            ]);
+        }
 
 		return $this->render('admin/servers/form.twig', [
 			'form' => $form->getForm(),
@@ -79,21 +69,11 @@ class ServersController extends BaseAdminController {
         $server = $this->getServer($request, $response, $args);
         
         $form = new UpdateServerForm($server);
-		try {
-            $form->create();
-            
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_servers', 'updated'));
-                return $this->redirect('admin_servers_edit', ['server' => $server->id]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_servers_edit', [
+                'server' => $server->id,
+            ]);
         }
 
 		return $this->render('admin/servers/form.twig', [

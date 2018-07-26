@@ -34,42 +34,23 @@ class UserController extends BaseMainController {
     public function registerAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
 		$emailEnabled = (bool) $this->getConfig('mail')->get('enabled', false);
 		$authHelper = new AuthHelper($this->container);
-		/** @var \Illuminate\Database\Connection $connection */
-		$connection = $this->getContainer('db')->getConnection();
-		$form = new RegisterForm($authHelper, $emailEnabled);
-		try {
-			$form->create();
-			$connection->beginTransaction();
-			/** @var UserModel|null $user */
-			$user = $form->process($request);
-			if ($user) {
-				if ($emailEnabled) {
-					$activationCode = $authHelper->getActivationCode($user);
-					JobHelper::createTask('sendmail', [
-						'type' => 'activation',
-						'user' => $user->login,
-						'email' => $user->email,
-						'title' => 'Activation',
-						'params' => [
-							'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
-						],
-					]);
-				}
-				$connection->commit();
-				return $this->redirect('login');
-			}
-			$connection->commit();
-		} catch (FormException $e) {
-			$connection->rollBack();
-			$form->getForm()->setError($e->getField(), $e->getMessage());
-			return $this->redirectTo($form->getForm()->getAction());
-		} catch (ValidationException $e) {
-			$connection->rollBack();
-			if ($e->hasMessage()) {
-				$this->addErrorMessage($e->getMessage());
-			}
-			return $this->redirectTo($form->getForm()->getAction());
-		}
+		$form = new RegisterForm($authHelper, !$emailEnabled);
+		if ($this->processForm($request, $form, true)) {
+            if ($emailEnabled) {
+                $user = $form->getUser();
+                $activationCode = $authHelper->getActivationCode($user);
+                JobHelper::createTask('sendmail', [
+                    'type' => 'activation',
+                    'user' => $user->login,
+                    'email' => $user->email,
+                    'title' => 'Activation',
+                    'params' => [
+                        'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
+                    ],
+                ]);
+            }
+            return $this->redirect('login');
+        }
 
         return $this->render('user/register.twig', [
             'form' => $form->getForm(),
@@ -89,30 +70,11 @@ class UserController extends BaseMainController {
 			throw new NotAllowedException();
 		}
 
-		/** @var \Illuminate\Database\Connection $connection */
-		$connection = $this->getContainer('db')->getConnection();
 		$authHelper = new AuthHelper($this->container);
-
 		$form = new ActivationForm($authHelper, $args['code']);
-		try {
-			$form->create();
-			$connection->beginTransaction();
-			if ($form->process($request)) {
-				$connection->commit();
-				return $this->redirect('login');
-			}
-			$connection->commit();
-		} catch (FormException $e) {
-			$connection->rollBack();
-			$form->getForm()->setError($e->getField(), $e->getMessage());
-			return $this->redirectTo($form->getForm()->getAction());
-		} catch (ValidationException $e) {
-			$connection->rollBack();
-			if ($e->hasMessage()) {
-				$this->addErrorMessage($e->getMessage());
-			}
-			return $this->redirectTo($form->getForm()->getAction());
-		}
+		if ($this->processForm($request, $form, true)) {
+            return $this->redirect('login');
+        }
 
 		return $this->render('user/activation.twig', [
 			'form' => $form->getForm(),
@@ -129,21 +91,9 @@ class UserController extends BaseMainController {
 		$enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
 
         $form = new LoginForm(new AuthHelper($this->container));
-		try {
-			$form->create();
-
-			if ($form->process($request) === true) {
-				return $this->redirect('index');
-			}
-		} catch (FormException $e) {
-			$form->getForm()->setError($e->getField(), $e->getMessage());
-			return $this->redirectTo($form->getForm()->getAction());
-		} catch (ValidationException $e) {
-			if ($e->hasMessage()) {
-				$this->addErrorMessage($e->getMessage());
-			}
-			return $this->redirectTo($form->getForm()->getAction());
-		}
+        if ($this->processForm($request, $form, true)) {
+            return $this->redirect('index');
+        }
 
 		return $this->render('user/login.twig', [
 			'form' => $form->getForm(),
@@ -177,38 +127,19 @@ class UserController extends BaseMainController {
         }
 
 		$authHelper = new AuthHelper($this->container);
-		/** @var \Illuminate\Database\Connection $connection */
-		$connection = $this->getContainer('db')->getConnection();
 		$form = new ResetPasswordForm($authHelper);
-		try {
-			$form->create();
-			$connection->beginTransaction();
-			$result = $form->process($request);
-			if ($result) {
-				JobHelper::createTask('sendmail', [
-					'type' => 'reset_password',
-					'user' => $result['user']->login,
-					'email' => $result['user']->email,
-					'title' => 'Reset Password',
-					'params' => [
-						'link' => $this->pathFor('reset_password_complete', ['code' => $result['code']], [], true)
-					],
-				]);
-				$connection->commit();
-				return $this->redirect('index');
-			}
-			$connection->commit();
-		} catch (FormException $e) {
-			$connection->rollBack();
-			$form->getForm()->setError($e->getField(), $e->getMessage());
-			return $this->redirectTo($form->getForm()->getAction());
-		} catch (ValidationException $e) {
-			$connection->rollBack();
-			if ($e->hasMessage()) {
-				$this->addErrorMessage($e->getMessage());
-			}
-			return $this->redirectTo($form->getForm()->getAction());
-		}
+		if ($this->processForm($request, $form, true)) {
+            JobHelper::createTask('sendmail', [
+                'type' => 'reset_password',
+                'user' => $form->getUser()->login,
+                'email' => $form->getUser()->email,
+                'title' => 'Reset Password',
+                'params' => [
+                    'link' => $this->pathFor('reset_password_complete', ['code' => $form->getCode()], [], true)
+                ],
+            ]);
+            return $this->redirect('index');
+        }
 
 		$this->render('user/reset_password.twig', [
 			'form' => $form->getForm()
@@ -229,21 +160,9 @@ class UserController extends BaseMainController {
         }
 
 		$form = new ResetPasswordCompleteForm(new AuthHelper($this->container), $args['code']);
-		try {
-			$form->create();
-
-			if ($form->process($request)) {
-				return $this->redirect('login');
-			}
-		} catch (FormException $e) {
-			$form->getForm()->setError($e->getField(), $e->getMessage());
-			return $this->redirectTo($form->getForm()->getAction());
-		} catch (ValidationException $e) {
-			if ($e->hasMessage()) {
-				$this->addErrorMessage($e->getMessage());
-			}
-			return $this->redirectTo($form->getForm()->getAction());
-		}
+        if ($this->processForm($request, $form, true)) {
+            return $this->redirect('login');
+        }
 
         return $this->render('user/reset_password_complete.twig', [
             'form' => $form->getForm(),

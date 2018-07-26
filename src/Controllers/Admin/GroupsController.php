@@ -50,24 +50,12 @@ class GroupsController extends BaseAdminController {
         $group->server_id = $server->id;
     
         $form = new GroupForm($group);
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_groups', 'created'));
-                return $this->redirect('admin_servers_groups_edit', [
-                    'server' => $server->id,
-                    'group' => $group->id
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_servers_groups_edit', [
+                'server' => $server->id,
+                'group' => $group->id
+            ]);
         }
 
         return $this->render('admin/servers/groups/form.twig', [
@@ -88,24 +76,12 @@ class GroupsController extends BaseAdminController {
         $group = $this->getGroup($request, $response, $args);
     
         $form = new GroupForm($group);
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_groups', 'updated'));
-                return $this->redirect('admin_servers_groups_edit', [
-                    'server' => $server->id,
-                    'group' => $group->id
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_servers_groups_edit', [
+                'server' => $server->id,
+                'group' => $group->id
+            ]);
         }
 
         return $this->render('admin/servers/groups/form.twig', [

@@ -2,6 +2,7 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
+use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\Text;
@@ -22,9 +23,9 @@ class RolesForm extends BaseForm {
 	protected $role;
 
 	/**
-	 * @param RoleModel $role
+	 * @param RoleInterface $role
 	 */
-	public function __construct(RoleModel $role) {
+	public function __construct(RoleInterface $role) {
 		$this->role = $role;
 	}
     

@@ -3,9 +3,12 @@ namespace GameX\Forms\User;
 
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
+use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Trim;
+use \GameX\Core\Forms\Rules\Callback;
 use \GameX\Core\Exceptions\FormException;
 
 class ActivationForm extends BaseForm {
@@ -19,6 +22,11 @@ class ActivationForm extends BaseForm {
 	 * @var AuthHelper
 	 */
 	protected $authHelper;
+    
+    /**
+     * @var UserModel
+     */
+	protected $user;
 
 	/**
 	 * @var string
@@ -33,6 +41,29 @@ class ActivationForm extends BaseForm {
 		$this->authHelper = $authHelper;
 		$this->code = $code;
 	}
+    
+    /**
+     * @return UserModel
+     */
+    public function getUser() {
+        return $this->user;
+    }
+    
+    /**
+     * @param Form $form
+     * @return bool
+     */
+    public function checkExists(Form $form) {
+        $this->user = $this->authHelper->findUser($form->getValue('login'));
+        return (bool) $this->user;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function checkCode() {
+        return (bool) $this->authHelper->checkActivationExists($this->user, $this->code);
+    }
 
 	/**
 	 * @noreturn
@@ -44,19 +75,16 @@ class ActivationForm extends BaseForm {
 				'required' => true,
 			]))
 			->addRule('login', new Trim())
-			->addRule('login', new Required());
+			->addRule('login', new Required())
+            ->addRule('login', new Callback([$this, 'checkExists'], 'User not found'))
+            ->addRule('login', new Callback([$this, 'checkCode'], 'Bad code'));
 	}
 
 	/**
-	 * @return \GameX\Core\Auth\Models\UserModel
-	 * @throws FormException
+	 * @return bool
 	 */
 	protected function processForm() {
-		$user = $this->authHelper->findUser($this->form->getValue('login'));
-		if (!$user) {
-			throw new FormException('login', 'User not found');
-		}
-		$this->authHelper->activateUser($user, $this->code);
-		return $user;
+		$this->authHelper->activateUser($this->user, $this->code);
+		return false;
 	}
 }

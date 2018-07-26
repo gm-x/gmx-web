@@ -21,8 +21,8 @@ class Length extends BaseRule {
      * @param integer|null $max
      */
     public function __construct($min = null, $max = null) {
-        $this->min = (int) $min;
-        $this->max = (int) $max;
+        $this->min = $min;
+        $this->max = $max;
     }
     
     /**

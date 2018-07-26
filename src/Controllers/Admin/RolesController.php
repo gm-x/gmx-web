@@ -67,23 +67,11 @@ class RolesController extends BaseAdminController {
         $role = $this->getRole($request, $response, $args);
     
         $form = new RolesForm($role);
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_roles', 'created'));
-                return $this->redirect('admin_roles_edit', [
-                    'role' => $role->id,
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_roles_edit', [
+                'role' => $role->id,
+            ]);
         }
 
         return $this->render('admin/roles/form.twig', [
@@ -101,23 +89,11 @@ class RolesController extends BaseAdminController {
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
         $form = new RolesForm($role);
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_roles', 'updated'));
-                return $this->redirect('admin_roles_edit', [
-                    'role' => $role->id,
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_roles_edit', [
+                'role' => $role->id,
+            ]);
         }
 
         return $this->render('admin/roles/form.twig', [

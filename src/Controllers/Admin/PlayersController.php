@@ -47,23 +47,11 @@ class PlayersController extends BaseAdminController {
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
         $form = new PlayersForm($player);
-        try {
-            $form->create();
-            
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_players', 'created'));
-                return $this->redirect('admin_players_edit', [
-                    'player' => $player->id,
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_players_edit', [
+                'player' => $player->id,
+            ]);
         }
 
 		return $this->render('admin/players/form.twig', [
@@ -81,23 +69,11 @@ class PlayersController extends BaseAdminController {
 	public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
         $form = new PlayersForm($player);
-        try {
-            $form->create();
-            
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_players', 'updated'));
-                return $this->redirect('admin_players_edit', [
-                    'player' => $player->id,
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_players_edit', [
+                'player' => $player->id,
+            ]);
         }
 
 		return $this->render('admin/players/form.twig', [

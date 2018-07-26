@@ -86,7 +86,7 @@ $app->group('/api', function () {
         throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
     }
     $token = trim($token, ':');
-	$data = \Firebase\JWT\JWT::decode($token, $config['secret'], ['HS512']);
+	$data = \Firebase\JWT\JWT::decode($token, $config->get('secret'), ['HS512']);
 	if (empty($data->server_id)) {
 		throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
 	}
