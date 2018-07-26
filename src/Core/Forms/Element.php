@@ -18,7 +18,7 @@ interface Element {
 
     /**
      * @param string $name
-     * @return $this
+     * @return Element
      */
     public function setName($name);
 
@@ -29,7 +29,7 @@ interface Element {
 
     /**
      * @param mixed $value
-     * @return $this
+     * @return Element
      */
     public function setValue($value);
 
@@ -70,7 +70,7 @@ interface Element {
 
     /**
      * @param string $formName
-     * @return $this
+     * @return Element
      */
     public function setFormName($formName);
 
@@ -81,7 +81,7 @@ interface Element {
 
     /**
      * @param bool $hasError
-     * @return $this
+     * @return Element
      */
     public function setHasError($hasError);
 
@@ -92,7 +92,7 @@ interface Element {
 
     /**
      * @param string $error
-     * @return $this
+     * @return Element
      */
     public function setError($error);
 }

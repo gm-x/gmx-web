@@ -16,9 +16,9 @@ class Form implements ArrayAccess {
     protected $session;
     
     /**
-     * @var Language
+     * @var Validator
      */
-    protected $language;
+    protected $validator;
 
     /**
      * @var string
@@ -59,11 +59,6 @@ class Form implements ArrayAccess {
      * @var Element[]
      */
     protected $elements = [];
-    
-    /**
-     * @var Rule[][]
-     */
-    protected $rules = [];
 
     /**
      * Form constructor.
@@ -73,7 +68,7 @@ class Form implements ArrayAccess {
      */
     public function __construct(Session $session, Language $language, $name) {
         $this->session = $session;
-        $this->language = $language;
+        $this->validator = new Validator($language);
         $this->name = $name;
 
         $this->loadValues();
@@ -186,10 +181,10 @@ class Form implements ArrayAccess {
                     $element->setValue('');
                 }
             }
-            
-            $this->processValidate($element);
-            
         }
+    
+        $this->isValid = $this->validator->validate($this);
+        
         return $this;
     }
 
@@ -230,6 +225,13 @@ class Form implements ArrayAccess {
     public function getValue($name) {
         return $this->get($name)->getValue();
     }
+    
+    /**
+     * @return Element[]
+     */
+    public function getElements() {
+        return $this->elements;
+    }
 
     /**
      * @param $name
@@ -245,12 +247,13 @@ class Form implements ArrayAccess {
         return $this;
     }
     
+    /**
+     * @param $key
+     * @param Rule $rule
+     * @return Form
+     */
     public function addRule($key, Rule $rule) {
-        if (!array_key_exists($key, $this->rules)) {
-            $this->rules[$key] = [];
-        }
-        
-        $this->rules[$key][] = $rule;
+        $this->validator->add($key, $rule);
         return $this;
     }
 
@@ -297,24 +300,11 @@ class Form implements ArrayAccess {
         	'errors' => $errors,
 		]);
     }
-
+    
+    /**
+     * @return string
+     */
     protected function getSessionKey() {
         return 'form_' . $this->name;
     }
-
-    protected function processValidate(Element $element) {
-    	if (!array_key_exists($element->getName(), $this->rules)) {
-    		return;
-		}
-		$name = $element->getName();
-		foreach ($this->rules[$name] as $rule) {
-			if(!$rule->validate($this, $name)) {
-				$this->isValid = false;
-				$element
-					->setHasError(true)
-					->setError($rule->getError($this->language));
-				break;
-			}
-		}
-	}
 }

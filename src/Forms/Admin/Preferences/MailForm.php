@@ -2,14 +2,14 @@
 namespace GameX\Forms\Admin\Preferences;
 
 use \GameX\Core\BaseForm;
-use \GameX\Core\Configuration\Config;
+use \GameX\Core\Configuration\Node;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Email as EmailElement;
-use \GameX\Core\Forms\Elements\Number as NumberElelement;
+use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Forms\Elements\Select;
-use GameX\Core\Forms\Rules\Boolean;
+use \GameX\Core\Forms\Rules\Boolean;
 use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Email as EmailRule;
@@ -29,9 +29,9 @@ class MailForm extends BaseForm {
 	protected $config;
 
 	/**
-	 * @param Config $config
+	 * @param Node $config
 	 */
-	public function __construct(Config $config, $test) {
+	public function __construct(Node $config) {
 		$this->config = $config;
 	}
 
@@ -39,41 +39,40 @@ class MailForm extends BaseForm {
 	 * @noreturn
 	 */
 	protected function createForm() {
-        $config = $this->config->get('mail');
 		$this->form
-            ->add(new Checkbox('enabled', $config->get('enabled'), [
+            ->add(new Checkbox('enabled', $this->config->get('enabled'), [
                 'title' => $this->getTranslate('admin_preferences', 'enabled'),
             ]))
-            ->add(new Text('from_name', $config->get('name'), [
+            ->add(new Text('from_name', $this->config->get('name'), [
                 'title' => $this->getTranslate('admin_preferences', 'from_name'),
             ]))
-            ->add(new EmailElement('from_email', $config->get('email'), [
+            ->add(new EmailElement('from_email', $this->config->get('email'), [
                 'title' => $this->getTranslate('admin_preferences', 'from_email'),
             ]))
-            ->add(new Select('transport_type', $config->get('type'), [
+            ->add(new Select('transport_type', $this->config->get('type'), [
                 'smtp' => "SMTP",
                 'mail' => 'Mail'
             ], [
                 'title' => $this->getTranslate('admin_preferences', 'transport'),
                 'id' => 'email_pref_transport'
             ]))
-            ->add(new Text('smtp_host', $config->get('host'), [
+            ->add(new Text('smtp_host', $this->config->get('host'), [
                 'title' => $this->getTranslate('admin_preferences', 'host'),
             ]))
-            ->add(new NumberElelement('smtp_port', $config->get('port'), [
+            ->add(new NumberElement('smtp_port', $this->config->get('port'), [
                 'title' => $this->getTranslate('admin_preferences', 'port'),
             ]))
-            ->add(new Select('smtp_secure', $config->get('secure'), [
+            ->add(new Select('smtp_secure', $this->config->get('secure'), [
                 'none' => $this->getTranslate('admin_preferences', 'secure_none'),
                 'ssl' => "SSL",
                 'tls' => 'TLS'
             ], [
                 'title' => $this->getTranslate('admin_preferences', 'secure'),
             ]))
-            ->add(new Text('smtp_user', $config->get('username'), [
+            ->add(new Text('smtp_user', $this->config->get('username'), [
                 'title' => $this->getTranslate('admin_preferences', 'username'),
             ]))
-            ->add(new Password('smtp_pass', $config->get('password'), [
+            ->add(new Password('smtp_pass', $this->config->get('password'), [
                 'title' => $this->getTranslate('admin_preferences', 'password'),
             ]))
             ->addRule('enabled', new Boolean())
@@ -95,18 +94,15 @@ class MailForm extends BaseForm {
      * @return boolean
      */
     protected function processForm() {
-        $config = $this->config->get('mail');
-        $enabled = (bool) $this->form->getValue('enabled');
-        $config->set('enabled', $enabled);
-        $config->set('name', $this->form->getValue('from_name'));
-        $config->set('email', $this->form->getValue('from_email'));
-        $config->set('type', $this->form->getValue('transport_type'));
-        $config->set('host', $this->form->getValue('smtp_host'));
-        $config->set('port', (int) $this->form->getValue('smtp_port'));
-        $config->set('secure', $this->form->getValue('smtp_secure'));
-        $config->set('username', $this->form->getValue('smtp_user'));
-        $config->set('password', $this->form->getValue('smtp_pass'));
-        $this->config->save();
+        $this->config->set('enabled', $this->form->getValue('enabled'));
+        $this->config->set('name', $this->form->getValue('from_name'));
+        $this->config->set('email', $this->form->getValue('from_email'));
+        $this->config->set('type', $this->form->getValue('transport_type'));
+        $this->config->set('host', $this->form->getValue('smtp_host'));
+        $this->config->set('port', (int) $this->form->getValue('smtp_port'));
+        $this->config->set('secure', $this->form->getValue('smtp_secure'));
+        $this->config->set('username', $this->form->getValue('smtp_user'));
+        $this->config->set('password', $this->form->getValue('smtp_pass'));
         return true;
     }
 }
