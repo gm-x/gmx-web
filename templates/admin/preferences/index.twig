@@ -1,0 +1,15 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+	{% include 'admin/preferences/tabs.twig' with {'href': currentHref} %}
+	<form action="{{ form.getAction() }}" method="post">
+		{{ csrf_token() }}
+		{{ forms.element_input(form.title) }}
+		{{ forms.element_select(form.language) }}
+		<div class="form-group">
+			<input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
+		</div>
+	</form>
+{% endblock %}

@@ -3,16 +3,10 @@ namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Slim\Http\Request;
-use \Slim\Http\Response;
-use \Slim\Views\Twig;
-use \GameX\Core\Menu\Menu;
-use \GameX\Core\Menu\MenuItem;
-use \GameX\Core\Lang\I18n;
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Exceptions\ValidationException;
-use \GameX\Core\Exceptions\FormException;
-use \Exception;
+use \GameX\Core\Lang\Language;
+use \GameX\Core\Configuration\Config;
+use \GameX\Core\Configuration\Node;
+
 
 abstract class BaseController {
     /**
@@ -21,17 +15,12 @@ abstract class BaseController {
     protected $container;
 
     /**
-     * @var Request
+     * @var Config|null
      */
-    protected $request;
+    protected $config = null;
 
     /**
-     * @var Response
-     */
-    protected $response;
-
-    /**
-     * @var I18n|null
+     * @var Language|null
      */
     protected $translate = null;
 
@@ -61,27 +50,28 @@ abstract class BaseController {
 
 	/**
 	 * @param string $key
-	 * @param mixed $default
-	 * @return mixed
+	 * @param mixed|null $default
+	 * @return Node|mixed|null
 	 */
     public function getConfig($key, $default = null) {
-    	$config = $this->getContainer('config');
-    	return array_key_exists($key, $config) ? $config[$key] : $default;
+        if ($this->config === null) {
+            $this->config = $this->getContainer('config');
+        }
+
+        return $this->config->get($key, $default);
 	}
 
 	/**
 	 * @param $section
 	 * @param $key
-	 * @param array|null $args
+	 * @param array $args
 	 * @return string
 	 */
-	public function getTranslate($section, $key, array $args = null) {
+	public function getTranslate($section, $key, ...$args) {
         if ($this->translate === null) {
             $this->translate = $this->getContainer('lang');
         }
-        return $args !== null
-            ? $this->translate->format($section, $key, $args)
-            : $this->translate->get($section, $key);
+        return $this->translate->format($section, $key, $args);
     }
 
 	/**
@@ -110,7 +100,7 @@ abstract class BaseController {
 	 * @return ResponseInterface
 	 */
 	protected function redirect($path, array $data = [], array $queryParams = [], $status = null) {
-		return $this->getContainer('response')->withRedirect(
+		return $this->redirectTo(
 			$this->pathFor($path, $data, $queryParams),
 			$status
 		);

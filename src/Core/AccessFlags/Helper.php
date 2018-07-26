@@ -2,6 +2,10 @@
 namespace GameX\Core\AccessFlags;
 
 class Helper {
+    /**
+     * @param string $flags
+     * @return int
+     */
     public static function readFlags($flags) {
         $result = 0;
         for ($i = 0, $l = strlen($flags); $i < $l; $i++) {
@@ -14,6 +18,10 @@ class Helper {
         return $result;
     }
 
+    /**
+     * @param int $flags
+     * @return string
+     */
     public static function getFlags($flags) {
         $result = '';
         for ($i = 0; $i <= 32; $i++) {

@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Auth\Helpers;
 
+use GameX\Core\Auth\Models\UserModel;
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Sentinel;
@@ -9,6 +10,8 @@ use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
 class AuthHelper {
+    
+    const MIN_PASSWORD_LENGTH = 6;
 
     /**
      * @var ContainerInterface
@@ -19,7 +22,11 @@ class AuthHelper {
 	 * @var Sentinel
 	 */
 	protected $auth;
-
+    
+    /**
+     * AuthHelper constructor.
+     * @param ContainerInterface $container
+     */
 	public function __construct(ContainerInterface $container) {
         $this->container = $container;
         $this->auth = $container->get('auth');
@@ -27,7 +34,7 @@ class AuthHelper {
 
 	/**
 	 * @param string $login
-	 * @return UserInterface
+	 * @return UserModel|null
 	 */
 	public function findUser($login) {
 		return $this->auth->getUserRepository()->findByCredentials([
@@ -54,21 +61,23 @@ class AuthHelper {
 	 * @param string $login
 	 * @param string $email
 	 * @param string $password
-	 * @return bool
+	 * @return UserModel
 	 * @throws FormException
 	 * @throws ValidationException
 	 */
-	public function registerUser($login, $email, $password) {
-		$user = $this->auth->register([
+	public function registerUser($login, $email, $password, $activate = false) {
+		return $this->auth->register([
 			'login'  => $login,
 			'email'  => $email,
 			'password' => $password,
-		]);
+		], $activate ? true : null);
+	}
 
-		if (!$user) {
-			throw new ValidationException('Something wrong. Please Try again later.');
-		}
-
+	/**
+	 * @param UserInterface $user
+	 * @return string
+	 */
+	public function getActivationCode(UserInterface $user) {
 		return $this->auth->getActivationRepository()->create($user)->getCode();
 	}
 
@@ -144,6 +153,23 @@ class AuthHelper {
         if (!$reminderRepository->complete($user, $code, $password)) {
 			throw new ValidationException('Something wrong. Please Try again later.');
 		}
+    }
+    
+    /**
+     * @param UserInterface $user
+     * @param string $password
+     * @return bool
+     */
+    public function validatePassword(UserInterface $user, $password) {
+        return $this->auth->getUserRepository()->validateCredentials($user, ['password' => $password]);
+    }
+    
+    /**
+     * @param UserInterface $user
+     * @param string $password
+     */
+    public function changePassword(UserInterface $user, $password) {
+        $this->auth->getUserRepository()->update($user, ['password' => $password]);
     }
 
 	/**

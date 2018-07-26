@@ -1,5 +1,6 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
@@ -7,8 +8,8 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Address</th>
+					<th>{{ trans('admin_servers', 'name') }}</th>
+					<th>{{ trans('admin_servers', 'address') }}</th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
@@ -18,26 +19,25 @@
 					<td class="text-nowrap">{{ server.name }}</td>
 					<td class="text-nowrap">{{ server.ip }}:{{ server.port }}</td>
 					<td class="text-nowrap">
-						<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="btn btn-sm">
-							<span class="oi oi-grid-two-up"></span>
-						</a>
-						<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="btn btn-sm">
-							<span class="oi oi-pencil"></span>
-						</a>
-						<button
-								type="button"
-								class="btn btn-sm btn-link"
-								data-toggle="modal"
-								data-target="#tokenModel"
-								data-token="{{ server.token }}">
-							<span class="oi oi-info"></span>
-						</button>
-						<form action="{{ path_for('admin_servers_delete', {'server': server.id}) }}" method="post" style="display: inline-block">
-							{{ csrf_token() }}
-							<button type="submit" class="btn btn-sm btn-link">
-								<span class="oi oi-delete"></span>
-							</button>
-						</form>
+                        {% embed "admin/actions.twig" with {'actionId': server.id} %}
+                        	{% block actions %}
+								<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="dropdown-item">
+									<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'groups') }}
+								</a>
+								<a
+										href="#"
+										class="dropdown-item"
+										data-toggle="modal"
+										data-target="#tokenModel"
+										data-token="{{ server.token }}"
+								>
+									<span class="oi oi-info"></span>&nbsp;{{ trans('admin_servers', 'token') }}
+								</a>
+							{% endblock %}
+                        {% endembed %}
+
+						{{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id})) }}
+						{{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id})) }}
 					</td>
 				</tr>
 			{% endfor %}
@@ -49,11 +49,19 @@
 {% endblock %}
 
 {% block modals %}
-	<div class="modal fade" id="tokenModel" tabindex="-1" role="dialog" aria-labelledby="tokenModalLabel" aria-hidden="true">
+    {{ parent() }}
+	<div
+			class="modal fade"
+			id="tokenModel"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="tokenModalLabel"
+			aria-hidden="true"
+	>
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="tokenModalLabel">Server token</h5>
+					<h5 class="modal-title" id="tokenModalLabel">{{ trans('admin_servers', 'token') }}</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -64,7 +72,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('buttons', 'close') }}</button>
 				</div>
 			</div>
 		</div>
@@ -72,9 +80,12 @@
 {% endblock %}
 
 {% block javascript %}
+    {{ parent() }}
 	<script>
-        $('#tokenModel').on('show.bs.modal', function(e) {
-              $(this).find('.modal-body input').val($(e.relatedTarget).data('token'));
-        })
+		$(document).ready(function () {
+			$('#tokenModel').on('show.bs.modal', function(e) {
+				  $(this).find('.modal-body input').val($(e.relatedTarget).data('token'));
+			});
+        });
 	</script>
 {% endblock %}

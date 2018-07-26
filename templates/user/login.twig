@@ -10,8 +10,9 @@
     {{ forms.element_checkbox(form.remember_me) }}
     <div class="form-group">
         <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'login') }}">
-
-        <a href="{{ path_for('reset_password') }}" class="btn btn-warning">{{ trans('buttons', 'reset_password') }}</a>
+        {% if enabledEmail %}
+            <a href="{{ path_for('reset_password') }}" class="btn btn-warning">{{ trans('buttons', 'reset_password') }}</a>
+        {% endif %}
         <a href="{{ path_for('register') }}" class="btn btn-success">{{ trans('buttons', 'register') }}</a>
     </div>
 </form>

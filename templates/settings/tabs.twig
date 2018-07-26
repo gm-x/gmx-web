@@ -1,0 +1,17 @@
+{% import 'macros/tabs.twig' as tabs %}
+{{ tabs.render([{
+    'href': path_for('user_settings_index'),
+    'title': 'Index'
+}, {
+    'href': path_for('user_settings_email'),
+    'title': 'Email'
+}, {
+    'href': path_for('user_settings_password'),
+    'title': 'Password'
+}, {
+    'href': path_for('user_settings_avatar'),
+    'title': 'Avatar'
+}, {
+    'href': path_for('user_settings_steamid'),
+    'title': 'Steamid'
+}], href) }}

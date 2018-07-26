@@ -1,9 +1,12 @@
 vendor/
+install/install.log
 runtime/twig_cache/
 !runtime/twig_cache/.gitkeep
 runtime/cache/
 !runtime/cache/.gitkeep
 runtime/logs/
 !runtime/logs/.gitkeep
+upload/
+!upload/.gitkeep
 config.json
 .idea/

@@ -1,0 +1,7 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+	{% include 'settings//tabs.twig' with {'href': currentHref} %}
+{% endblock %}
