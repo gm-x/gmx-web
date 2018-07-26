@@ -3,16 +3,15 @@ namespace GameX\Controllers\Admin;
 
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Users\UserRepositoryInterface;
-use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\BaseAdminController;
-use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Pagination\Pagination;
+use \GameX\Forms\Admin\UsersForm;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Core\Forms\Form;
 use \GameX\Core\Auth\Helpers\RoleHelper;
 use \Slim\Exception\NotFoundException;
-use \Exception;
+use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class UsersController extends BaseAdminController {
 
@@ -40,45 +39,30 @@ class UsersController extends BaseAdminController {
 
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$user = $this->getUserFromRequest($request, $response, $args);
-
-		/** @var RoleModel[] $roles */
-		$rolesCollection = $this->getContainer('auth')->getRoleRepository()->all();
-
-		$roles = [];
-		foreach ($rolesCollection as $role) {
-			$roles[$role->slug] = $role->name;
-		}
-
-		$form = $this->createForm('admin_users_edit')
-			->setAction($request->getUri())
-			->add(new Select('role', $user->role->slug, $roles, [
-				'title' => 'Role',
-				'error' => 'Required',
-				'required' => true,
-				'empty_option' => 'Choose role'
-			]))
-			->setRules('role', ['required', 'trim', 'in' => array_keys($roles)])
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-					$roleHelper = new RoleHelper($this->container);
-					$roleHelper->assignUser(
-						$form->getValue('role'),
-						$user
-					);
-					return $this->redirect('admin_users_list');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
+        $roleHelper = new RoleHelper($this->container);
+    
+        $form = new UsersForm($user, $roleHelper);
+        try {
+            $form->create();
+        
+            if ($form->process($request)) {
+                $this->addSuccessMessage($this->getTranslate('admins_users', 'updated'));
+                return $this->redirect('admin_users_edit', [
+                    'user' => $user->id,
+                ]);
+            }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 
 		return $this->render('admin/users/form.twig', [
-			'form' => $form,
+			'form' => $form->getForm(),
 		]);
     }
 
