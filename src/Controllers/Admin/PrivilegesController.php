@@ -7,14 +7,12 @@ use \GameX\Core\BaseAdminController;
 use \GameX\Models\Player;
 use \GameX\Models\Privilege;
 use \GameX\Models\Server;
-use \GameX\Models\Group;
+use \GameX\Forms\Admin\PrivilegesForm;
 use \GameX\Core\Pagination\Pagination;
-use \GameX\Core\Forms\Form;
-use GameX\Core\Forms\Elements\FormInputCheckbox;
-use GameX\Core\Forms\Elements\FormInputDate;
-use GameX\Core\Forms\Elements\FormInputText;
-use GameX\Core\Forms\Elements\FormSelect;
 use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Exceptions\PrivilegeFormException;
 use \Exception;
 
 class PrivilegesController extends BaseAdminController {
@@ -51,32 +49,35 @@ class PrivilegesController extends BaseAdminController {
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
         $privilege = $this->getPrivilege($request, $response, $args);
-        $form = $this
-            ->getForm($privilege)
-            ->setAction((string)$request->getUri())
-            ->processRequest($request);
+        $privilege->player_id = $player->id;
+    
+        $form = new PrivilegesForm($privilege);
+        try {
+			$form->create();
 
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-                    $privilege->player_id = $player->id;
-					$privilege->group_id = $form->get('group')->getValue();
-					$privilege->prefix = $form->get('prefix')->getValue();
-					$privilege->expired_at = $form->get('expired')->getDate();
-					$privilege->active = $form->get('active')->getValue() ? 1 : 0;
-                    $privilege->save();
-                    return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
-                } catch (Exception $e) {
-                    return $this->failRedirect($e, $form);
-                }
+			if ($form->process($request)) {
+				$this->addSuccessMessage($this->getTranslate('admins_privileges', 'created'));
+				return $this->redirect('admin_players_privileges_edit', [
+					'player' => $player->id,
+					'privilege' => $privilege->id,
+				]);
+			}
+		} catch (PrivilegeFormException $e) {
+        	$this->addErrorMessage($e->getMessage());
+        	return $this->redirect($e->getPath(), $e->getData());
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
             }
+            return $this->redirectTo($form->getForm()->getAction());
         }
 
         return $this->render('admin/players/privileges/form.twig', [
             'player' => $player,
-            'form' => $form,
+            'form' => $form->getForm(),
             'create' => true,
             'servers' => $this->getServers(),
         ]);
@@ -91,31 +92,31 @@ class PrivilegesController extends BaseAdminController {
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
         $privilege = $this->getPrivilege($request, $response, $args);
-        $form = $this
-            ->getForm($privilege)
-            ->setAction((string)$request->getUri())
-            ->processRequest($request);
-
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-                    $privilege->group_id = $form->get('group')->getValue();
-                    $privilege->prefix = $form->get('prefix')->getValue();
-                    $privilege->expired_at = $form->get('expired')->getDate();
-                    $privilege->active = $form->get('active')->getValue() ? 1 : 0;
-                    $privilege->save();
-                    return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
-                } catch (Exception $e) {
-                    return $this->failRedirect($e, $form);
-                }
+        
+        $form = new PrivilegesForm($privilege);
+        try {
+            $form->create();
+        
+            if ($form->process($request)) {
+                $this->addSuccessMessage($this->getTranslate('admins_privileges', 'updated'));
+                return $this->redirect('admin_players_privileges_edit', [
+                    'player' => $player->id,
+                    'privilege' => $privilege->id,
+                ]);
             }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
         }
 
         return $this->render('admin/players/privileges/form.twig', [
             'player' => $player,
-            'form' => $form,
+            'form' => $form->getForm(),
             'create' => false,
             'servers' => $this->getServers(),
         ]);
@@ -133,8 +134,9 @@ class PrivilegesController extends BaseAdminController {
 
         try {
 			$privilege->delete();
+            $this->addSuccessMessage($this->getTranslate('admins_privileges', 'removed'));
         } catch (Exception $e) {
-            $this->addErrorMessage('Something wrong. Please Try again later.');
+            $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             /** @var \Monolog\Logger $logger */
             $logger = $this->getContainer('log');
             $logger->error((string) $e);
@@ -202,62 +204,6 @@ class PrivilegesController extends BaseAdminController {
         }
 
         return $privilege;
-    }
-
-    /**
-     * @param Privilege $privilege
-     * @return Form
-     */
-    protected function getForm(Privilege $privilege) {
-    	$server = $privilege->exists
-			? $privilege->group->server
-			: Server::first();
-
-    	$servers = $this->getServers();
-    	$groups = $this->getGroups($server);
-
-		$exists = function ($group) {
-			return Group::where('id', '=', $group)->exists();
-		};
-
-		/** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_server_group');
-        $form
-            ->add(new FormSelect('server', $server->id, $servers, [
-                'id' => 'input_admin_server',
-                'title' => 'Server',
-                'error' => 'Required',
-                'required' => true,
-				'empty_option' => 'Choose server',
-            ]))
-			->add(new FormSelect('group', $privilege->group_id, $groups, [
-                'id' => 'input_player_group',
-                'title' => 'Group',
-                'error' => 'Required',
-                'required' => true,
-				'empty_option' => 'Choose group',
-            ]))
-            ->add(new FormInputText('prefix', $privilege->prefix, [
-                'title' => 'Prefix',
-                'error' => '',
-                'required' => false,
-            ]))
-            ->add(new FormInputDate('expired', $privilege->expired_at, [
-                'title' => 'Expired',
-                'error' => 'Required',
-                'required' => true,
-            ]))
-            ->add(new FormInputCheckbox('active', $privilege->active ? true : false, [
-                'title' => 'Active',
-                'required' => false,
-            ]))
-			->setRules('server', ['required', 'integer', 'in' => array_keys($servers)])
-			->setRules('group', ['required', 'integer', 'exists' => $exists])
-			->setRules('prefix', ['trim'])
-			->setRules('expired', ['required', 'date'])
-			->setRules('active', ['bool']);
-
-        return $form;
     }
 
 	/**

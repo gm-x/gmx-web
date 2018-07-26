@@ -1,10 +1,10 @@
 <?php
 namespace GameX\Core\Forms;
 
-interface FormElement {
+interface Element {
 
     /**
-     * FormElement constructor.
+     * Element constructor.
      * @param string $name
      * @param string $value
      * @param array $options
@@ -18,7 +18,7 @@ interface FormElement {
 
     /**
      * @param string $name
-     * @return $this
+     * @return Element
      */
     public function setName($name);
 
@@ -29,7 +29,7 @@ interface FormElement {
 
     /**
      * @param mixed $value
-     * @return $this
+     * @return Element
      */
     public function setValue($value);
 
@@ -70,7 +70,7 @@ interface FormElement {
 
     /**
      * @param string $formName
-     * @return $this
+     * @return Element
      */
     public function setFormName($formName);
 
@@ -81,7 +81,7 @@ interface FormElement {
 
     /**
      * @param bool $hasError
-     * @return $this
+     * @return Element
      */
     public function setHasError($hasError);
 
@@ -92,7 +92,7 @@ interface FormElement {
 
     /**
      * @param string $error
-     * @return $this
+     * @return Element
      */
     public function setError($error);
 }

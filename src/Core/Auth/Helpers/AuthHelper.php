@@ -10,6 +10,8 @@ use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
 class AuthHelper {
+    
+    const MIN_PASSWORD_LENGTH = 6;
 
     /**
      * @var ContainerInterface
@@ -20,7 +22,11 @@ class AuthHelper {
 	 * @var Sentinel
 	 */
 	protected $auth;
-
+    
+    /**
+     * AuthHelper constructor.
+     * @param ContainerInterface $container
+     */
 	public function __construct(ContainerInterface $container) {
         $this->container = $container;
         $this->auth = $container->get('auth');
@@ -147,6 +153,23 @@ class AuthHelper {
         if (!$reminderRepository->complete($user, $code, $password)) {
 			throw new ValidationException('Something wrong. Please Try again later.');
 		}
+    }
+    
+    /**
+     * @param UserInterface $user
+     * @param string $password
+     * @return bool
+     */
+    public function validatePassword(UserInterface $user, $password) {
+        return $this->auth->getUserRepository()->validateCredentials($user, ['password' => $password]);
+    }
+    
+    /**
+     * @param UserInterface $user
+     * @param string $password
+     */
+    public function changePassword(UserInterface $user, $password) {
+        $this->auth->getUserRepository()->update($user, ['password' => $password]);
     }
 
 	/**

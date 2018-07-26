@@ -41,6 +41,14 @@ abstract class BaseMainController extends BaseController {
 		}
     	return $this->user;
 	}
+    
+    /**
+     * @param string $name
+     * @return Form
+     */
+	public function createForm($name) {
+        return $this->getContainer('form')->createForm($name);
+    }
 
     /**
      * @param string $template

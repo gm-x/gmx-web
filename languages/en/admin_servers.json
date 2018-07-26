@@ -1,0 +1,12 @@
+{
+	"name": "Server name",
+	"ip": "IP",
+	"port": "Port",
+	"address": "Server address",
+	"token": "Server token",
+	"groups": "Privileges groups",
+	"already_exists": "Server already exists",
+	"created": "Server created successfully",
+	"updated": "Server updated successfully",
+	"removed": "Server removed successfully"
+}
