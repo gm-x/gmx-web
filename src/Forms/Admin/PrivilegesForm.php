@@ -96,7 +96,7 @@ class PrivilegesForm extends BaseForm {
             ]))
             ->add(new Text('expired', $this->privilege->expired_at, [
                 'title' => 'Expired',
-                'required' => true,
+                'required' => false,
             ]))
 //            ->add(new DateElement('expired', $this->privilege->expired_at, [
 //                'title' => 'Expired',
@@ -111,11 +111,15 @@ class PrivilegesForm extends BaseForm {
             ->addRule('group', new Required())
             ->addRule('group', new Number(1))
             ->addRule('group', new Callback([$this, 'checkGroupExists'], 'Group doesn\'t exists'))
-            ->addRule('group', new Callback([$this, 'checkPrivilegeExists'], 'Privilege already exists'))
             ->addRule('prefix', new Trim())
             ->addRule('expired', new Required())
             ->addRule('expired', new DateRule())
             ->addRule('active', new Boolean());
+		
+		if (!$this->privilege->exists) {
+		    $this->form
+                ->addRule('group', new Callback([$this, 'checkPrivilegeExists'], 'Privilege already exists'));
+        }
 	}
     
     /**

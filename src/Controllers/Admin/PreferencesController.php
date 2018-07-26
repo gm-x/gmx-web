@@ -5,17 +5,14 @@ use \GameX\Core\BaseAdminController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Forms\Admin\Preferences\MainForm;
+use \GameX\Forms\Admin\Preferences\MailForm;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Node;
 use \GameX\Core\Mail\Email;
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Elements\Text;
-use \GameX\Core\Forms\Elements\Email;
-use \GameX\Core\Forms\Elements\Select;
-use \GameX\Core\Forms\Elements\Number;
-use \GameX\Core\Forms\Elements\Password;
+use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 
 class PreferencesController extends BaseAdminController {
@@ -29,87 +26,63 @@ class PreferencesController extends BaseAdminController {
 
 	/**
 	 * @param Request $request
-	 * @param Response $response
+	 * @param ResponseInterface $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function indexAction(Request $request, Response $response, array $args = []) {
-		/** @var Config $config */
-		$config = $this->getContainer('config');
-		$main = $config->get('main');
-		$language = $config->get('language');
-        $languages = $language->get('list')->toArray();
-
-		/** @var Form $form */
-		$form = $this->createForm('admin_preferences_main')
-			->add(new Text('title', $main->get('title'), [
-				'title' => $this->getTranslate('admin_preferences', 'title'),
-				'required' => true,
-			]))
-			->add(new Select('language', $language->get('default'), $languages, [
-				'title' => $this->getTranslate('admin_preferences', 'language'),
-				'required' => true,
-			]))
-			->setRules('title', ['required', 'trim', 'min_length' => 1])
-			->setRules('language', ['required', 'trim', 'in' => array_keys($languages)])
-			->setAction((string)$request->getUri())
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-                    $main->set('title', $form->getValue('title'));
-					$language->set('default', $form->getValue('language'));
-					$config->save();
-                    $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-					return $this->redirect('admin_preferences_index');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
+    public function indexAction(Request $request, ResponseInterface $response, array $args = []) {
+        $form = new MainForm($this->getContainer('config'));
+        try {
+            $form->create();
+        
+            if ($form->process($request)) {
+                $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+                return $this->redirect('admin_preferences_index');
+            }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 
 		return $this->render('admin/preferences/index.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
-			'form' => $form,
+			'form' => $form->getForm(),
 		]);
     }
 
 	/**
 	 * @param Request $request
-	 * @param Response $response
+	 * @param ResponseInterface $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function emailAction(Request $request, Response $response, array $args = []) {
-        /** @var Config $config */
-        $config = $this->getContainer('config');
-        $mail = $config->get('mail');
-
-		$form = $this->getMailForm($mail)
-			->setAction((string)$request->getUri())
-			->processRequest($request);
-
-		if ($form->getIsSubmitted()) {
-			if (!$form->getIsValid()) {
-				return $this->redirectTo($form->getAction());
-			} else {
-				try {
-				    $this->setMailConfig($mail, $form);
-				    $config->save();
-                    $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-					return $this->redirect('admin_preferences_email');
-				} catch (Exception $e) {
-					return $this->failRedirect($e, $form);
-				}
-			}
-		}
+    public function emailAction(Request $request, ResponseInterface $response, array $args = []) {
+        $form = new MailForm($this->getContainer('config'));
+        try {
+            $form->create();
+        
+            if ($form->process($request)) {
+                $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+                return $this->redirect('admin_preferences_email');
+            }
+        } catch (FormException $e) {
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            return $this->redirectTo($form->getForm()->getAction());
+        } catch (ValidationException $e) {
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            return $this->redirectTo($form->getForm()->getAction());
+        }
 
 		return $this->render('admin/preferences/email.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
-			'form' => $form,
+			'form' => $form->getForm(),
 		]);
     }
 
