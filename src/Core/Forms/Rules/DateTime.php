@@ -3,6 +3,7 @@ namespace GameX\Core\Forms\Rules;
 
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Element;
+use \GameX\Core\Forms\Elements\DateTimeInput;
 
 class DateTime extends BaseRule {
     
@@ -17,8 +18,12 @@ class DateTime extends BaseRule {
      * @return bool
      */
     protected function isValid(Form $form, Element $element) {
-        $date = date_parse_from_format($this->format, $element->getValue());
-        return $date['error_count'] === 0;
+        if ($element instanceof DateTimeInput) {
+            return $element->getValue() !== null;
+        } else {
+            $date = date_parse_from_format($this->format, $element->getValue());
+            return $date['error_count'] === 0;
+        }
     }
     
     /**

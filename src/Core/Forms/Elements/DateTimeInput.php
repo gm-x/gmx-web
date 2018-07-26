@@ -16,7 +16,7 @@ class DateTimeInput extends BaseElement {
 	 * @inheritdoc
 	 */
 	public function getType() {
-		return 'date';
+		return 'datetime';
 	}
     
     /**
@@ -35,10 +35,14 @@ class DateTimeInput extends BaseElement {
 	        $this->value = $value;
         } elseif($value !== null && !empty($value)) {
 	        $date = DateTime::createFromFormat($this->format, $value);
-	        $this->value = ($date !== false) ? $value : null;
+	        $this->value = ($date !== false) ? $date : null;
         } else {
 	        $this->value = null;
         }
 		return $this;
 	}
+	
+	public function format($format) {
+	    return $this->value !== null ? $this->value->format($format) : '';
+    }
 }

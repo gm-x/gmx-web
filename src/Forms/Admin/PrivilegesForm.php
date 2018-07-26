@@ -77,7 +77,7 @@ class PrivilegesForm extends BaseForm {
 		if (!count($groups)) {
 			throw new PrivilegeFormException('Add privileges groups before adding privilege', 'admin_servers_groups_list', ['server' => $server->id]);
 		}
-        
+		
 		$this->form
             ->add(new Select('server', $server->id, $servers, [
                 'id' => 'input_admin_server',
@@ -94,14 +94,10 @@ class PrivilegesForm extends BaseForm {
             ->add(new Text('prefix', $this->privilege->prefix, [
                 'title' => 'Prefix',
             ]))
-            ->add(new Text('expired', $this->privilege->expired_at, [
+            ->add(new DateElement('expired', $this->privilege->expired_at, [
                 'title' => 'Expired',
-                'required' => false,
+                'required' => true,
             ]))
-//            ->add(new DateElement('expired', $this->privilege->expired_at, [
-//                'title' => 'Expired',
-//                'required' => true,
-//            ]))
             ->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
                 'title' => 'Active',
             ]))
@@ -126,10 +122,12 @@ class PrivilegesForm extends BaseForm {
      * @return boolean
      */
     protected function processForm() {
-        $this->privilege->group_id = $this->form->get('group')->getValue();
-        $this->privilege->prefix = $this->form->get('prefix')->getValue();
-        $this->privilege->expired_at = $this->form->get('expired')->getDate();
-        $this->privilege->active = $this->form->get('active')->getValue() ? 1 : 0;
+        /** @var \DateTime $expired */
+        $expired = $this->form->get('expired');
+        $this->privilege->group_id = $this->form->getValue('group');
+        $this->privilege->prefix = $this->form->getValue('prefix');
+        $this->privilege->expired_at = $expired->format('Y-m-d H:i:s');
+        $this->privilege->active = $this->form->getValue('active') ? 1 : 0;
         return $this->privilege->save();
     }
     
