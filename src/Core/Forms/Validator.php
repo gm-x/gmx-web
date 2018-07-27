@@ -38,7 +38,10 @@ class Validator {
         return $this;
     }
     
-    
+    /**
+     * @param array $values
+     * @return ValidationResult
+     */
     public function validate(array $values) {
         $isValid = true;
         $errors = array_fill_keys(array_keys($this->rules), null);

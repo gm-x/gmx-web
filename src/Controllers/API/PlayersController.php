@@ -7,9 +7,13 @@ use \Slim\Http\Response;
 use \GameX\Models\Player;
 use \GameX\Models\Punishment;
 use \Carbon\Carbon;
-use \Form\Validator;
+use \GameX\Core\Forms\Validator;
+use \GameX\Core\Forms\Rules\Trim;
+use \GameX\Core\Forms\Rules\Regexp;
+use \GameX\Core\Forms\Rules\Required;
+use \GameX\Core\Forms\Rules\Number;
+use \GameX\Core\Forms\Rules\Callback;
 use \GameX\Core\Exceptions\ApiException;
-use \Exception;
 
 class PlayersController extends BaseApiController {
 
@@ -21,20 +25,25 @@ class PlayersController extends BaseApiController {
      * @throws ApiException
      */
     public function playerAction(Request $request, Response $response, array $args) {
-        $validator = new Validator([
-            'steamid' => ['required', 'trim', 'min_length' => 1, 'regexp' => '/^(?:STEAM|VALVE)_\d:\d:\d+$/'],
-            'nick' => ['required', 'trim', 'min_length' => 1],
-        ]);
-
-        if (!$validator->validate($this->getBody($request))) {
+        $validator = new Validator($this->getContainer('lang'));
+        $validator
+            ->add('steamid', new Trim())
+            ->add('steamid', new Required())
+            ->add('steamid', new Regexp('/^(?:STEAM|VALVE)_\d:\d:\d+$/'))
+            ->add('nick', new Trim())
+            ->add('nick', new Required());
+        
+        $result = $validator->validate($this->getBody($request));
+        
+        if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
 
-        $player = Player::where('steamid', '=', $validator->getValue('steamid'))->first();
+        $player = Player::where('steamid', '=', $result->getValue('steamid'))->first();
         if (!$player) {
             $player = new Player();
-            $player->steamid = $validator->getValue('steamid');
-            $player->nick = $validator->getValue('nick');
+            $player->steamid = $result->getValue('steamid');
+            $player->nick = $result->getValue('nick');
             $player->auth_type = Player::AUTH_TYPE_STEAM;
             $player->save();
         }
@@ -73,27 +82,39 @@ class PlayersController extends BaseApiController {
      * @throws ApiException
      */
     public function punishAction(Request $request, Response $response, array $args) {
-        $playerExists = function ($id) {
-            return Player::where('id', '=', $id)->exists();
+        $playerExists = function ($value, array $values) {
+            return Player::where('id', $value)->exists() ? $value : null;
         };
 
-        $punisherExists = function ($id) {
-            return ($id == 0 || Player::where('id', '=', $id)->exists());
+        $punisherExists = function ($value, array $values) {
+            return ($value == 0 || Player::where('id', $value)->exists()) ? $value : null;
         };
-
-        $validator = new Validator([
-            'player_id' => ['required', 'integer', 'min' => 1, 'exists' => $playerExists],
-            'punisher_id' => ['required', 'integer', 'min' => 0, 'exists' => $punisherExists],
-            'type' => ['required', 'integer'],
-            'reason' => ['required', 'min_length' => 1],
-            'expired_at' => ['required', 'integer']
-        ]);
-
-        if (!$validator->validate($this->getBody($request))) {
+    
+        $validator = new Validator($this->getContainer('lang'));
+        $validator
+            ->add('player_id', new Trim())
+            ->add('player_id', new Required())
+            ->add('player_id', new Number(1))
+            ->add('player_id', new Callback($playerExists))
+            ->add('punisher_id', new Trim())
+            ->add('punisher_id', new Required())
+            ->add('punisher_id', new Number(1))
+            ->add('punisher_id', new Callback($punisherExists))
+            ->add('type', new Trim())
+            ->add('type', new Required())
+            ->add('type', new Number())
+            ->add('reason', new Trim())
+            ->add('reason', new Required())
+            ->add('expired_at', new Trim())
+            ->add('expired_at', new Required());
+    
+        $result = $validator->validate($this->getBody($request));
+    
+        if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
 
-        $punishment = new Punishment($validator->getValues());
+        $punishment = new Punishment($result->getValues());
         $punishment->server_id = $request->getAttribute('server_id');
         $punishment->status = Punishment::STATUS_PUNISHED;
         $punishment->save();
