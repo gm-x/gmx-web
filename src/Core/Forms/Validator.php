@@ -46,7 +46,7 @@ class Validator {
             $value = array_key_exists($key, $values) ? $values[$key] : null;
             foreach ($rules as $rule) {
                 $value = $rule->validate($value, $values);
-                if ($value == null) {
+                if ($value === null) {
                     $errors[$key] = $rule->getError($this->language);
                     $isValid = false;
                     break;
