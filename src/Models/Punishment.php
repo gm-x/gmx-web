@@ -72,6 +72,14 @@ class Punishment extends BaseModel {
 	}
 
 	public function setExpiredAtAttribute($value) {
-		$this->attributes['expired_at'] = Carbon::createFromTimestamp($value, 'UTC')->toDateTimeString();
+	    if ($value === null) {
+	        $this->attributes['expired_at'] = null;
+        } elseif ($value instanceof \DateTime) {
+	        $this->attributes['expired_at'] = $value->format('Y-m-d H:i:s');
+        } elseif (is_null($value)) {
+            $this->attributes['expired_at'] = Carbon::createFromTimestamp($value, 'UTC')->toDateTimeString();
+        } else {
+            $this->attributes['expired_at'] = $value;
+        }
 	}
 }

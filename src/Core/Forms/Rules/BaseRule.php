@@ -15,7 +15,8 @@ abstract class BaseRule implements Rule {
         if ($message === null) {
         	return '';
 		}
-		list ($key, $args) = $message;
+		$key = isset($message[0]) ? $message[0]: null;
+		$args = isset($message[1]) ? $message[1]: null;
         return $language->format($this->getErrorSection(), $key, $args);
     }
     

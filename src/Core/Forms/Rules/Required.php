@@ -7,7 +7,7 @@ class Required extends BaseRule {
      * @inheritdoc
      */
     public function validate($value, array $values) {
-        return $value !== null && !empty($value) ? $value : null;
+        return $value !== null && strlen($value) > 0 ? $value : null;
     }
     
     /**

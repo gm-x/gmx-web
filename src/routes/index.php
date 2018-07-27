@@ -91,7 +91,7 @@ $app->group('/api', function () {
 		throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
 	}
 	return $next($request->withAttribute('server_id', $data->server_id), $response);
-})->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
+})->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
     try {
         return $next($request, $response);
     } catch (\GameX\Core\Exceptions\ApiException $e) {
@@ -104,12 +104,13 @@ $app->group('/api', function () {
                 ],
             ]);
     } catch (\Exception $e) {
+        $container->get('log')->error((string)$e);
         return $response
             ->withJson([
                 'success' => false,
                 'error' => [
                     'code' => \GameX\Core\Exceptions\ApiException::ERROR_GENERIC,
-                    'message' => 'Error',
+                    'message' => 'Server Error',
                 ],
             ]);
     }

@@ -64,6 +64,19 @@ class ValidationResult {
     }
     
     /**
+     * @return string|null
+     */
+    public function getFirstError() {
+        foreach ($this->errors as $key => $error) {
+            if ($error !== null) {
+                return $key . ': ' . $error;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
      * @return bool
      */
     public function getIsValid() {

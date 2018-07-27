@@ -58,6 +58,7 @@ class PlayersController extends BaseApiController {
         foreach ($punishmentsCollection as $punishment) {
             $punishments[] = [
                 'id' => $punishment->id,
+                'type' => $punishment->type,
                 'reason' => $punishment->reason,
                 'expired_at' => $punishment->expired_at,
             ];
@@ -105,16 +106,19 @@ class PlayersController extends BaseApiController {
             ->add('type', new Number())
             ->add('reason', new Trim())
             ->add('reason', new Required())
-            ->add('expired_at', new Trim())
-            ->add('expired_at', new Required());
+            ->add('time', new Trim())
+            ->add('time', new Required())
+            ->add('time', new Number(0));
     
         $result = $validator->validate($this->getBody($request));
     
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
         }
 
         $punishment = new Punishment($result->getValues());
+        $time = $result->getValue('time');
+        $punishment->expired_at = $time > 0 ? time() + ($result->getValue('time') * 60) : null;
         $punishment->server_id = $request->getAttribute('server_id');
         $punishment->status = Punishment::STATUS_PUNISHED;
         $punishment->save();
