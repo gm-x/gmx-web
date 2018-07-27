@@ -27,12 +27,10 @@ class Callback implements Rule {
     }
     
     /**
-     * @param Form $form
-     * @param string $key
-     * @return bool
+     * @inheritdoc
      */
-    public function validate(Form $form, $key) {
-        return call_user_func($this->callback, $form, $key);
+    public function validate($value, array $values) {
+        return call_user_func($this->callback, $value, $values);
     }
     
     /**

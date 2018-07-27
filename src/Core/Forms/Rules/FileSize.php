@@ -18,20 +18,18 @@ class FileSize extends BaseRule {
 	public function __construct($size) {
 		$this->size = $this->convertToBytes($size);
 	}
-
-	/**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+    
+    /**
+     * @param UploadedFile|null $value
+     * @param array $values
+     * @return UploadedFile|null
      */
-    protected function isValid(Form $form, Element $element) {
-        /** @var UploadedFile|null $file */
-        $file = $element->getValue();
-        if ($file === null) {
-            return true;
+    public function validate($value, array $values) {
+        if ($value === null) {
+            return null;
         }
 
-		return filesize($file->file) <= $this->size;
+		return filesize($value->file) <= $this->size ? $value : null;
     }
     
     /**

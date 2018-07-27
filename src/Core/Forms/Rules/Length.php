@@ -1,9 +1,6 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
-
 class Length extends BaseRule {
     
     /**
@@ -26,22 +23,20 @@ class Length extends BaseRule {
     }
     
     /**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+     * @inheritdoc
      */
-    protected function isValid(Form $form, Element $element) {
-        $len = mb_strlen($element->getValue());
+    public function validate($value, array $values) {
+        $len = mb_strlen($value);
 
         if ($this->min !== null && $len < $this->min) {
-            return false;
+            return null;
         }
     
         if ($this->max !== null && $len > $this->max) {
-            return false;
+            return null;
         }
         
-        return true;
+        return $value;
     }
     
     /**

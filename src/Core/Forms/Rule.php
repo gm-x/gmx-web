@@ -6,11 +6,11 @@ use \GameX\Core\Lang\Language;
 interface Rule {
     
     /**
-     * @param Form $form
-     * @param string $key
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function validate(Form $form, $key);
+    public function validate($value, array $values);
     
     /**
      * @param Language $language

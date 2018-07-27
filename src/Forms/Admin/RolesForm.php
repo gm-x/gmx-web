@@ -30,11 +30,12 @@ class RolesForm extends BaseForm {
 	}
     
     /**
-     * @param Form $form
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkExists(Form $form) {
-        return !RoleModel::where('slug', $form->getValue('slug'))->exists();
+    public function checkExists($value, array $values) {
+        return !RoleModel::where('slug', $value)->exists() ? $value : null;
     }
 
 	/**

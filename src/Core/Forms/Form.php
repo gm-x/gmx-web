@@ -155,7 +155,7 @@ class Form implements ArrayAccess {
         }
 
         $body = $request->getParsedBody();
-        $values = array_key_exists($this->name, $body) && is_array($body[$this->name])
+        $data = array_key_exists($this->name, $body) && is_array($body[$this->name])
             ? $body[$this->name]
             : [];
 
@@ -165,30 +165,19 @@ class Form implements ArrayAccess {
             : [];
 
         $this->isSubmitted = true;
-        $this->isValid = true;
+        $values = array_merge($data, $files);
+        $result = $this->validator->validate($values);
+        
+        $this->isValid = $result->getIsValid();
         foreach ($this->elements as $element) {
-            if ($element instanceof File) {
-                if (array_key_exists($element->getName(), $files)) {
-                    /** @var \Slim\Http\UploadedFile $file */
-                    $file = $files[$element->getName()];
-                    if ($file->getError() !== UPLOAD_ERR_OK) {
-                        $element->setValue(null);
-                    } else {
-                        $element->setValue($file);
-                    }
-                } else {
-                    $element->setValue(null);
-                }
+            $key = $element->getName();
+            $element->setValue($result->getValue($key));
+            if ($result->hasError($key)) {
+                $element->setHasError(true)->setError($result->getError($key));
             } else {
-                if (array_key_exists($element->getName(), $values)) {
-                    $element->setValue($values[$element->getName()]);
-                } else {
-                    $element->setValue('');
-                }
+                $element->setHasError(false);
             }
         }
-    
-        $this->isValid = $this->validator->validate($this);
         
         return $this;
     }

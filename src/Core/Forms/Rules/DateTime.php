@@ -13,16 +13,14 @@ class DateTime extends BaseRule {
     protected $format = 'Y-m-d H:i:s';
     
     /**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+     * @inheritdoc
      */
-    protected function isValid(Form $form, Element $element) {
-        if ($element instanceof DateTimeInput) {
-            return $element->getValue() !== null;
+    public function validate($value, array $values) {
+        if ($value instanceof DateTimeInput) {
+            return $value;
         } else {
-            $date = date_parse_from_format($this->format, $element->getValue());
-            return $date['error_count'] === 0;
+            $date = date_parse_from_format($this->format, $value);
+            return $date['error_count'] === 0 ? $date : null;
         }
     }
     

@@ -24,21 +24,15 @@ class CreateServerForm extends ServerForm {
     }
     
     /**
-     * @param Form $form
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkExists(Form $form) {
-        $ip = $form->get('ip');
-        $port = $form->get('port');
-        
-        if ($ip->getHasError() || $port->getHasError()) {
-            return true;
-        }
-        
+    public function checkExists($value, array $values) {
         return !Server::where([
-            'ip' => $ip->getValue(),
-            'port' => $port->getValue()
-        ])->exists();
+            'ip' => $values['ip'],
+            'port' => $values['port']
+        ])->exists() ? $value : null;
     }
 	
     /**

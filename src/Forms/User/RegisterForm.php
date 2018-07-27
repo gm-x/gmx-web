@@ -54,11 +54,12 @@ class RegisterForm extends BaseForm {
     }
     
     /**
-     * @param Form $form
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkExists(Form $form) {
-        return !$this->authHelper->exists($form->getValue('login'), $form->getValue('email'));
+    public function checkExists($value, array $values) {
+        return !$this->authHelper->exists($values['login'], $values['email']) ? $value : null;
     }
 
 	/**

@@ -35,21 +35,21 @@ class PlayersForm extends BaseForm {
 	}
     
     /**
-     * @param Form $form
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-	public function checkPassword(Form $form) {
-	    $authType = $form->get('auth_type')->getValue();
-        $password = $form->get('password')->getValue();
-        return $authType !== Player::AUTH_TYPE_STEAM  && empty($password) ? false : true;
+	public function checkPassword($value, array $values) {
+        return $values['auth_type'] !== Player::AUTH_TYPE_STEAM  && empty($values['password']) ? $value : null;
     }
     
     /**
-     * @param Form $form
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkExists(Form $form) {
-        return !Player::where('steamid', $form->getValue('steamid'))->exists();
+    public function checkExists($value, array $values) {
+        return !Player::where('steamid', $value)->exists() ? $value : null;
     }
 
 	/**

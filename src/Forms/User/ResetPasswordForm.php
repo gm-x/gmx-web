@@ -54,19 +54,22 @@ class ResetPasswordForm extends BaseForm {
     }
     
     /**
-     * @param Form $form
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkExists(Form $form) {
-	    $this->user = $this->authHelper->findUser($form->getValue('login'));
-	    return (bool) $this->user;
+    public function checkExists($value, array $values) {
+	    $this->user = $this->authHelper->findUser($value);
+	    return $this->user ? $value : null;
     }
     
     /**
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkActivation() {
-	    return $this->authHelper->checkActivationCompleted($this->user);
+    public function checkActivation($value, array $values) {
+	    return $this->authHelper->checkActivationCompleted($this->user) ? $value : null;
     }
 
 	/**

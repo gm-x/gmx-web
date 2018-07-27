@@ -39,25 +39,25 @@ class PrivilegesForm extends BaseForm {
 	}
     
     /**
-     * @param Form $form
-     * @param string $key
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkGroupExists(Form $form, $key) {
-        return Group::where('id', $form->getValue($key))->exists();
+    public function checkGroupExists($value, array $values) {
+        return Group::where('id', $value)->exists() ? $value : null;
     }
-
-
+    
+    
     /**
-     * @param Form $form
-     * @param string $key
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkPrivilegeExists(Form $form, $key) {
+    public function checkPrivilegeExists($value, array $values) {
         return !Privilege::where([
         	'player_id' => $this->privilege->player_id,
-        	'group_id' => $form->getValue($key),
-		])->exists();
+        	'group_id' => $value,
+		])->exists() ? $value : null;
     }
 
 	/**

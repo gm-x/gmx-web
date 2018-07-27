@@ -9,10 +9,13 @@ class Validator {
      * @var Language
      */
     protected $language;
+    
     /**
      * @var Rule[][]
      */
     protected $rules = [];
+    
+    protected $isValid = true;
     
     /**
      * @param Language $language
@@ -35,29 +38,23 @@ class Validator {
         return $this;
     }
     
-    /**
-     * @param Form $form
-     * @return bool
-     */
-    public function validate(Form $form) {
-        $elements = $form->getElements();
+    
+    public function validate(array $values) {
         $isValid = true;
-        foreach ($elements as $element) {
-            if (!array_key_exists($element->getName(), $this->rules)) {
-                continue;
-            }
-            $name = $element->getName();
-            foreach ($this->rules[$name] as $rule) {
-                if(!$rule->validate($form, $name)) {
+        $errors = array_fill_keys(array_keys($this->rules), null);
+        foreach ($this->rules as $key => $rules) {
+            $value = array_key_exists($key, $values) ? $values[$key] : null;
+            foreach ($rules as $rule) {
+                $value = $rule->validate($value, $values);
+                if ($value == null) {
+                    $errors[$key] = $rule->getError($this->language);
                     $isValid = false;
-                    $element
-                        ->setHasError(true)
-                        ->setError($rule->getError($this->language));
                     break;
                 }
+                $values[$key] = $value;
             }
         }
         
-        return $isValid;
+        return new ValidationResult($values, $errors, $isValid);
     }
 }
