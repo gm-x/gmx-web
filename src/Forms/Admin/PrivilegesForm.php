@@ -122,11 +122,9 @@ class PrivilegesForm extends BaseForm {
      * @return boolean
      */
     protected function processForm() {
-        /** @var \DateTime $expired */
-        $expired = $this->form->get('expired');
         $this->privilege->group_id = $this->form->getValue('group');
         $this->privilege->prefix = $this->form->getValue('prefix');
-        $this->privilege->expired_at = $expired->format('Y-m-d H:i:s');
+        $this->privilege->expired_at = $this->form->getValue('expired');
         $this->privilege->active = $this->form->getValue('active') ? 1 : 0;
         return $this->privilege->save();
     }

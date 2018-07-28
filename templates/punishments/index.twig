@@ -23,7 +23,7 @@
 					<td class="text-nowrap">{{ punishment.punisher.nick }}</td>
 					<td class="text-nowrap">{{ punishment.type }}</td>
 					<td class="text-nowrap">{{ punishment.reason }}</td>
-					{% if punishment.expired_at == null %}
+					{% if punishment.permanent %}
 						<td>Never</td>
 					{% else %}
 						<td>{{ punishment.expired_at | date('d.m.Y H:i') }}</td>
