@@ -11,7 +11,7 @@ use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\Flags as FlagsRule;
 
-class GroupForm extends BaseForm {
+class GroupsForm extends BaseForm {
 
 	/**
 	 * @var string
@@ -49,10 +49,10 @@ class GroupForm extends BaseForm {
                 'title' => 'Priority',
                 'required' => false,
             ]))
-			->addRule('title', new Required())
-			->addRule('title', new Trim())
-			->addRule('flags', new Required())
-			->addRule('flags', new Trim())
+            ->addRule('title', new Trim())
+            ->addRule('title', new Required())
+            ->addRule('flags', new Trim())
+            ->addRule('flags', new Required())
 			->addRule('flags', new FlagsRule())
 			->addRule('priority', new Required())
 			->addRule('priority', new NumberRule(0));

@@ -47,8 +47,8 @@ class UsersForm extends BaseForm {
                 'required' => true,
                 'empty_option' => 'Choose role'
             ]))
-			->addRule('title', new Required())
-			->addRule('title', new Trim())
+            ->addRule('title', new Trim())
+            ->addRule('title', new Required())
 			->addRule('title', new InArray(array_keys($roles)));
 	}
     

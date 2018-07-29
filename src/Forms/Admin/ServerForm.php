@@ -46,10 +46,12 @@ abstract class ServerForm extends BaseForm {
 				'title' => $this->getTranslate('admin_servers', 'port'),
 				'required' => true,
 			]))
-			->addRule('name', new Required())
-			->addRule('name', new Trim())
+            ->addRule('name', new Trim())
+            ->addRule('name', new Required())
+			->addRule('ip', new Trim())
 			->addRule('ip', new Required())
 			->addRule('ip', new IPv4())
+			->addRule('port', new Trim())
 			->addRule('port', new Required())
 			->addRule('port', new NumberRule(1024, 65535));
 	}

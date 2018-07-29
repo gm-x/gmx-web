@@ -12,12 +12,15 @@ use \Carbon\Carbon;
  * @property integer $player_id
  * @property integer $punisher_id
  * @property integer $server_id
- * @property string $reason
+ * @property integer $reason_id
+ * @property string $comment
  * @property integer $type
  * @property string $expired_at
  * @property string $status
  * @property Player $player
  * @property Player $punisher
+ * @property Server $server
+ * @property Reason $reason
  * @property bool $permanent
  */
 class Punishment extends BaseModel {
@@ -42,7 +45,7 @@ class Punishment extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['player_id', 'punisher_id', 'server_id', 'reason', 'type', 'expired_at'];
+	protected $fillable = ['player_id', 'punisher_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at'];
     
     /**
      * @var array
@@ -73,6 +76,13 @@ class Punishment extends BaseModel {
 	public function server() {
 		return $this->belongsTo(Server::class, 'server_id', 'id');
 	}
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+	public function reason() {
+	    return $this->belongsTo(Reason::class, 'reason_id', 'id');
+    }
     
     /**
      * @return bool

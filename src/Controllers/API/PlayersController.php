@@ -2,6 +2,7 @@
 namespace GameX\Controllers\API;
 
 use \GameX\Core\BaseApiController;
+use GameX\Models\Reason;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Models\Player;
@@ -59,7 +60,7 @@ class PlayersController extends BaseApiController {
             $punishments[] = [
                 'id' => $punishment->id,
                 'type' => $punishment->type,
-                'reason' => $punishment->reason,
+                'reason' => $punishment->reason->title,
                 'expired_at' => $punishment->expired_at,
             ];
         }
@@ -83,6 +84,8 @@ class PlayersController extends BaseApiController {
      * @throws ApiException
      */
     public function punishAction(Request $request, Response $response, array $args) {
+        $serverId = (int) $request->getAttribute('server_id');
+        
         $playerExists = function ($value, array $values) {
             return Player::where('id', $value)->exists() ? $value : null;
         };
@@ -106,6 +109,7 @@ class PlayersController extends BaseApiController {
             ->add('type', new Number())
             ->add('reason', new Trim())
             ->add('reason', new Required())
+            ->add('comment', new Trim())
             ->add('time', new Trim())
             ->add('time', new Required())
             ->add('time', new Number(0));
@@ -115,12 +119,31 @@ class PlayersController extends BaseApiController {
         if (!$result->getIsValid()) {
             throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
         }
-
-        $punishment = new Punishment($result->getValues());
+        
+        $reason = Reason::firstOrCreate([
+            'server_id' =>$serverId,
+            'title' => $result->getValue('reason')
+        ], [
+            'server_id' => $serverId,
+            'title' => $result->getValue('reason'),
+            'time' => null,
+            'overall' => 0,
+            'menu' => 0,
+            'active' => 1
+        ]);
+    
         $time = $result->getValue('time');
-        $punishment->expired_at = $time > 0 ? time() + ($result->getValue('time') * 60) : null;
-        $punishment->server_id = $request->getAttribute('server_id');
-        $punishment->status = Punishment::STATUS_PUNISHED;
+
+        $punishment = new Punishment([
+            'player_id' => $result->getValue('player_id'),
+            'punisher_id' => $result->getValue('punisher_id'),
+            'server_id' => $serverId,
+            'type' => $result->getValue('type'),
+            'reason_id' => $reason->id,
+            'comment' => $result->getValue('comment'),
+            'expired_at' => $time > 0 ? time() + ($time * 60) : null,
+            'status' => Punishment::STATUS_PUNISHED
+        ]);
         $punishment->save();
         return $response->withJson([
             'success' => true,

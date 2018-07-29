@@ -15,7 +15,8 @@ class Punishments extends Migration {
 				$table->unsignedInteger('player_id')->references('id')->on('players');
 				$table->unsignedInteger('punisher_id')->references('id')->on('players');
 				$table->unsignedInteger('server_id')->references('id')->on('servers');
-				$table->string('reason', 255);
+				$table->unsignedInteger('reason_id')->references('id')->on('reasons');
+				$table->string('comment', 250);
 				$table->unsignedTinyInteger('type');
 				$table->timestamp('expired_at')->nullable();
 				$table->enum('status', [

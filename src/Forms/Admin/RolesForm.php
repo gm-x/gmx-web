@@ -55,10 +55,10 @@ class RolesForm extends BaseForm {
                 'required' => true,
                 'attributes' => [],
             ]))
-            ->addRule('name', new Required())
             ->addRule('name', new Trim())
-            ->addRule('slug', new Required())
-            ->addRule('slug', new Trim());
+            ->addRule('name', new Required())
+            ->addRule('slug', new Trim())
+            ->addRule('slug', new Required());
         
         if (!$this->role->exists) {
             $this->form->addRule('slug', new Callback([$this, 'checkExists'], 'Role already exists'));

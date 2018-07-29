@@ -5,12 +5,10 @@ use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Pagination\Pagination;
-use \GameX\Core\Auth\Helpers\RoleHelper;
 use \GameX\Core\Auth\Models\RoleModel;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Forms\Admin\RolesForm;
-use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 use \Slim\Exception\NotFoundException;
 use \Exception;
@@ -25,6 +23,7 @@ class RolesController extends BaseAdminController {
         'admin.user.role' => 'Admin User Set Role',
         'admin.players' => 'Admin Players Role',
 		'admin.servers.groups' => 'Admin Privileges Groups CRUD',
+		'admin.servers.reasons' => 'Admin Reasons Groups CRUD',
 		'admin.players.privileges' => 'Admin Players Privileges CRUD',
     ];
 

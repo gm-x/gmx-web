@@ -2,6 +2,7 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\Admin\ServersController;
 use \GameX\Controllers\Admin\GroupsController;
+use \GameX\Controllers\Admin\ReasonsController;
 
 return function () {
     /** @var \Slim\App $this */
@@ -46,5 +47,28 @@ return function () {
             ->post('/{group}/delete', BaseController::action(GroupsController::class, 'delete'))
             ->setName('admin_servers_groups_delete')
 			->setArgument('permission', 'admin.servers.groups');
+    });
+    
+    $this->group('/{server}/reasons', function () {
+        /** @var \Slim\App $this */
+        $this
+            ->get('', BaseController::action(ReasonsController::class, 'index'))
+            ->setName('admin_servers_reasons_list')
+            ->setArgument('permission', 'admin.servers.reasons');
+        
+        $this
+            ->map(['GET', 'POST'], '/create', ReasonsController::action(GroupsController::class, 'create'))
+            ->setName('admin_servers_reasons_create')
+            ->setArgument('permission', 'admin.servers.reasons');
+        
+        $this
+            ->map(['GET', 'POST'], '/{reason}/edit', ReasonsController::action(GroupsController::class, 'edit'))
+            ->setName('admin_servers_reasons_edit')
+            ->setArgument('permission', 'admin.servers.reasons');
+        
+        $this
+            ->post('/{reason}/delete', ReasonsController::action(GroupsController::class, 'delete'))
+            ->setName('admin_servers_reasons_delete')
+            ->setArgument('permission', 'admin.servers.reasons');
     });
 };

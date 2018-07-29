@@ -10,8 +10,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Auth\Helpers\RoleHelper;
 use \Slim\Exception\NotFoundException;
-use \GameX\Core\Exceptions\FormException;
-use \GameX\Core\Exceptions\ValidationException;
 
 class UsersController extends BaseAdminController {
 

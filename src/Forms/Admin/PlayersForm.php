@@ -40,7 +40,7 @@ class PlayersForm extends BaseForm {
      * @return mixed|null
      */
 	public function checkPassword($value, array $values) {
-        return $values['auth_type'] !== Player::AUTH_TYPE_STEAM  && empty($values['password']) ? $value : null;
+        return $values['auth_type'] !== Player::AUTH_TYPE_STEAM  && empty($values['password']) ? null : $value;
     }
     
     /**

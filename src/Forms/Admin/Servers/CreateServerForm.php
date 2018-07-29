@@ -50,6 +50,7 @@ class CreateServerForm extends ServerForm {
 	 */
 	protected function processForm() {
 		$this->server->fill($this->form->getValues());
+        $this->server->save();
 		$this->server->token = JWT::encode([
 			'server_id' => $this->server->id
 		], $this->secret, 'HS512');

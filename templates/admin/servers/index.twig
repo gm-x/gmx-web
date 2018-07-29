@@ -24,6 +24,9 @@
 								<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="dropdown-item">
 									<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'groups') }}
 								</a>
+								<a href="{{ path_for('admin_servers_reasons_list', {'server': server.id}) }}" class="dropdown-item">
+									<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'reasons') }}
+								</a>
 								<a
 										href="#"
 										class="dropdown-item"

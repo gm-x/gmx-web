@@ -2,7 +2,6 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
-use GameX\Core\Forms\Validator;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
@@ -12,7 +11,6 @@ use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Node;
 use \GameX\Core\Mail\Email;
-use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 

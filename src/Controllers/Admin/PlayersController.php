@@ -8,8 +8,6 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Forms\Admin\PlayersForm;
 use \GameX\Core\Pagination\Pagination;
 use \Slim\Exception\NotFoundException;
-use \GameX\Core\Exceptions\FormException;
-use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 
 class PlayersController extends BaseAdminController {
