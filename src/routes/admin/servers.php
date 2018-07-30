@@ -57,17 +57,17 @@ return function () {
             ->setArgument('permission', 'admin.servers.reasons');
         
         $this
-            ->map(['GET', 'POST'], '/create', ReasonsController::action(GroupsController::class, 'create'))
+            ->map(['GET', 'POST'], '/create', BaseController::action(ReasonsController::class, 'create'))
             ->setName('admin_servers_reasons_create')
             ->setArgument('permission', 'admin.servers.reasons');
         
         $this
-            ->map(['GET', 'POST'], '/{reason}/edit', ReasonsController::action(GroupsController::class, 'edit'))
+            ->map(['GET', 'POST'], '/{reason}/edit', BaseController::action(ReasonsController::class, 'edit'))
             ->setName('admin_servers_reasons_edit')
             ->setArgument('permission', 'admin.servers.reasons');
         
         $this
-            ->post('/{reason}/delete', ReasonsController::action(GroupsController::class, 'delete'))
+            ->post('/{reason}/delete', BaseController::action(ReasonsController::class, 'delete'))
             ->setName('admin_servers_reasons_delete')
             ->setArgument('permission', 'admin.servers.reasons');
     });

@@ -26,12 +26,15 @@ class Number extends BaseRule {
      * @inheritdoc
      */
     public function validate($value, array $values) {
+        if (empty($value) && $value !== '0' && $value !== 0) {
+            return 0;
+        }
     	$options = [];
     	if ($this->min !== null) {
     		$options['min_range'] = (int) $this->min;
 		}
     	if ($this->max !== null) {
-    		$options['max_range'] = (int) $this->max;
+    		$options['max_range'] = (int) $this->maxs;
 		}
 
         $value = filter_var($value, FILTER_VALIDATE_INT, ['options' => $options]);

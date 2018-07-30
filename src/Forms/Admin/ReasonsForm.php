@@ -16,7 +16,7 @@ class ReasonsForm extends BaseForm {
 	/**
 	 * @var string
 	 */
-	protected $name = 'admin_group';
+	protected $name = 'admin_reason';
 
 	/**
 	 * @var Reason
@@ -34,16 +34,27 @@ class ReasonsForm extends BaseForm {
 	 * @noreturn
 	 */
 	protected function createForm() {
+        $timeEnabled = $this->reason->time !== null;
+        $timeAttributes = $timeEnabled ? [] : [
+            'disabled' => 'disabled'
+        ];
 		$this->form
 			->add(new Text('title', $this->reason->title, [
                 'title' => 'Title',
                 'error' => 'Required',
                 'required' => true,
             ]))
+            ->add(new Checkbox('time_enabled', $timeEnabled, [
+                'id' => 'reason-time-enabled',
+                'title' => 'Admin can choose time',
+                'required' => false,
+            ]))
             ->add(new NumberElement('time', $this->reason->time, [
+                'id' => 'reason-time',
                 'title' => 'Time',
                 'error' => 'Required',
-                'required' => true,
+                'required' => false,
+                'attributes' => $timeAttributes
             ]))
             ->add(new Checkbox('overall', $this->reason->overall, [
                 'title' => 'Punish at all servers',
@@ -59,10 +70,9 @@ class ReasonsForm extends BaseForm {
             ]))
             ->addRule('title', new Trim())
             ->addRule('title', new Required())
-			->addRule('time', new Required())
+			->addRule('time_enabled', new Boolean())
 			->addRule('time', new NumberRule(0))
 			->addRule('overall', new Boolean())
-			->addRule('menu', new Boolean())
 			->addRule('menu', new Boolean())
 			->addRule('active', new Boolean());
 	}
@@ -71,9 +81,13 @@ class ReasonsForm extends BaseForm {
      * @return boolean
      */
     protected function processForm() {
-        $this->group->title = $this->form->get('title')->getValue();
-        $this->group->flags = $this->form->get('flags')->getFlagsInt();
-        $this->group->priority = $this->form->get('priority')->getValue();
-        return $this->group->save();
+        $this->reason->title = $this->form->getValue('title');
+        $this->reason->time = $this->form->getValue('time_enabled')
+            ? $this->form->getValue('time')
+            : null;
+        $this->reason->overall = $this->form->getValue('overall') ? 1 : 0;
+        $this->reason->menu = $this->form->getValue('menu') ? 1 : 0;
+        $this->reason->active = $this->form->getValue('active') ? 1 : 0;
+        return $this->reason->save();
     }
 }

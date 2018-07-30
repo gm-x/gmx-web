@@ -44,14 +44,14 @@ class ReasonsController extends BaseAdminController {
      */
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
-        $group = $this->getReason($request, $response, $args, $server);
+        $reason = $this->getReason($request, $response, $args, $server);
         
-        $form = new ReasonsForm($group);
+        $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_groups_edit', [
+            return $this->redirect('admin_servers_reasons_edit', [
                 'server' => $server->id,
-                'group' => $group->id
+                'reason' => $reason->id
             ]);
         }
         
@@ -70,14 +70,14 @@ class ReasonsController extends BaseAdminController {
      */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
-        $group = $this->getReason($request, $response, $args, $server);
+        $reason = $this->getReason($request, $response, $args, $server);
         
-        $form = new GroupForm($group);
+        $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_groups_edit', [
+            return $this->redirect('admin_servers_reasons_edit', [
                 'server' => $server->id,
-                'group' => $group->id
+                'reason' => $reason->id
             ]);
         }
         
