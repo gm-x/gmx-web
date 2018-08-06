@@ -6,8 +6,6 @@ use \GameX\Models\Reason;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\Boolean;
 
@@ -67,14 +65,25 @@ class ReasonsForm extends BaseForm {
             ->add(new Checkbox('active', $this->reason->active, [
                 'title' => 'Active',
                 'required' => false,
-            ]))
-            ->addRule('title', new Trim())
-            ->addRule('title', new Required())
-			->addRule('time_enabled', new Boolean())
-			->addRule('time', new NumberRule(0))
-			->addRule('overall', new Boolean())
-			->addRule('menu', new Boolean())
-			->addRule('active', new Boolean());
+            ]));
+		
+		$this->form->getValidator()
+            ->set('title', true)
+            ->set('time_enabled', false, [
+                new Boolean()
+            ])
+            ->set('time', false, [
+                new NumberRule(0)
+            ])
+            ->set('overall', false, [
+                new Boolean()
+            ])
+            ->set('menu', false, [
+                new Boolean()
+            ])
+            ->set('active', false, [
+                new Boolean()
+            ]);
 	}
     
     /**

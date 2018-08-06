@@ -5,8 +5,6 @@ use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\RoleHelper;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Select;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\InArray;
 
 class UsersForm extends BaseForm {
@@ -46,10 +44,12 @@ class UsersForm extends BaseForm {
                 'error' => 'Required',
                 'required' => true,
                 'empty_option' => 'Choose role'
-            ]))
-            ->addRule('title', new Trim())
-            ->addRule('title', new Required())
-			->addRule('title', new InArray(array_keys($roles)));
+            ]));
+        
+        $this->form->getValidator()
+            ->set('title', true, [
+                new InArray(array_keys($roles))
+            ]);
 	}
     
     /**

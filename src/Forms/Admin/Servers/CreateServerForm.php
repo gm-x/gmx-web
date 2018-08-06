@@ -4,7 +4,6 @@ namespace GameX\Forms\Admin\Servers;
 use \GameX\Forms\Admin\ServerForm;
 use \Firebase\JWT\JWT;
 use \GameX\Core\Forms\Rules\Callback;
-use \GameX\Core\Forms\Form;
 use \GameX\Models\Server;
 
 class CreateServerForm extends ServerForm {
@@ -40,9 +39,10 @@ class CreateServerForm extends ServerForm {
      */
 	protected function createForm() {
         parent::createForm();
-        $this->form->addRule('port', new Callback(
-            [$this, 'checkExists'], $this->getTranslate('admin_servers', 'already_exists')
-        ));
+        $this->form->getValidator()
+            ->add('port', new Callback(
+                [$this, 'checkExists'], $this->getTranslate('admin_servers', 'already_exists')
+            ));
     }
     
     /**

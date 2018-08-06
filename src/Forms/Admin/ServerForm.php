@@ -5,8 +5,6 @@ use \GameX\Core\BaseForm;
 use \GameX\Models\Server;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\IPv4;
 
@@ -45,14 +43,15 @@ abstract class ServerForm extends BaseForm {
 			->add(new NumberElement('port', $this->server->port, [
 				'title' => $this->getTranslate('admin_servers', 'port'),
 				'required' => true,
-			]))
-            ->addRule('name', new Trim())
-            ->addRule('name', new Required())
-			->addRule('ip', new Trim())
-			->addRule('ip', new Required())
-			->addRule('ip', new IPv4())
-			->addRule('port', new Trim())
-			->addRule('port', new Required())
-			->addRule('port', new NumberRule(1024, 65535));
+			]));
+        
+        $this->form->getValidator()
+            ->set('name', true)
+            ->set('ip', true, [
+                new IPv4()
+            ])
+            ->set('port', true, [
+                new NumberRule(1024, 65535)
+            ]);
 	}
 }

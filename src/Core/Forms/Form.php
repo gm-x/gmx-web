@@ -242,6 +242,13 @@ class Form implements ArrayAccess {
     }
     
     /**
+     * @return Validator
+     */
+    public function getValidator() {
+        return $this->validator;
+    }
+    
+    /**
      * @param $key
      * @param Rule $rule
      * @return Form
