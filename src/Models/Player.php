@@ -2,18 +2,21 @@
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
+use \GameX\Core\Auth\Models\UserModel;
 
 /**
  * Class Server
  * @package GameX\Models
  *
  * @property integer $id
+ * @property integer $user_id
+ * @property integer $emulator
  * @property string $steamid
  * @property string $nick
- * @property boolean $is_steam
  * @property string $auth_type
  * @property string $password
  * @property integer $access
+ * @property UserModel $user
  * @property Privilege[] $privileges
  * @property Punishment[] $punishments
  */
@@ -43,7 +46,14 @@ class Player extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['steamid', 'nick', 'is_steam', 'auth_type', 'password', 'access'];
+	protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'auth_type', 'password', 'access'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+	public function user() {
+        return $this->belongsTo(UserModel::class, 'user_id', 'id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

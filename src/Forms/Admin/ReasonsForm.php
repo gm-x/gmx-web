@@ -91,7 +91,7 @@ class ReasonsForm extends BaseForm {
      */
     protected function processForm() {
         $this->reason->title = $this->form->getValue('title');
-        $this->reason->time = $this->form->getValue('time_enabled')
+        $this->reason->time = !$this->form->getValue('time_enabled')
             ? $this->form->getValue('time')
             : null;
         $this->reason->overall = $this->form->getValue('overall') ? 1 : 0;

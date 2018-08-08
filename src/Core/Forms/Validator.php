@@ -46,7 +46,7 @@ class Validator {
             }
         }
         
-        $this->required = (bool) $required;
+        $this->required[$key] = (bool) $required;
         $this->rules[$key] = $rules;
         
         return $this;

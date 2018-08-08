@@ -39,7 +39,7 @@ class UsersForm extends BaseForm {
 	protected function createForm() {
 	    $roles = $this->roleHelper->getRolesAsArray();
 		$this->form
-            ->add(new Select('role', $this->user->role->slug, $roles, [
+            ->add(new Select('role', $this->user->role ? $this->user->role->slug : '', $roles, [
                 'title' => 'Role',
                 'error' => 'Required',
                 'required' => true,
@@ -47,7 +47,7 @@ class UsersForm extends BaseForm {
             ]));
         
         $this->form->getValidator()
-            ->set('title', true, [
+            ->set('role', true, [
                 new InArray(array_keys($roles))
             ]);
 	}

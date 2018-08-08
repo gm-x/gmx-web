@@ -28,7 +28,7 @@
 <script>
     $(document).ready(function () {
         $('#reason-time-enabled').on('change', function (e) {
-            $('#reason-time').prop('disabled', !this.checked);
+            $('#reason-time').prop('disabled', this.checked);
         });
     });
 </script>
