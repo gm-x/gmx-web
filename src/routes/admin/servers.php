@@ -10,6 +10,11 @@ return function () {
         ->get('', BaseController::action(ServersController::class, 'index'))
         ->setName('admin_servers_list')
         ->setArgument('permission', 'admin.servers');
+    
+    $this
+        ->get('/token', BaseController::action(ServersController::class, 'token'))
+        ->setName('admin_servers_token')
+        ->setArgument('permission', 'admin.servers');
 
     $this
         ->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))

@@ -47,4 +47,15 @@ class Server extends BaseModel {
     public function reasons() {
         return $this->hasMany(Reason::class, 'server_id');
     }
+    
+    /**
+     * @return string
+     */
+    public function generateNewToken() {
+        $tries = 0;
+        do {
+            $token = bin2hex(random_bytes(32));
+        } while (++$tries < 3 && Server::where('token', $token)->exists());
+        return $token;
+    }
 }

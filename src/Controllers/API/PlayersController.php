@@ -9,9 +9,7 @@ use \GameX\Models\Punishment;
 use \GameX\Models\Reason;
 use \Carbon\Carbon;
 use \GameX\Core\Forms\Validator;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Regexp;
-use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\Callback;
 use \GameX\Core\Exceptions\ApiException;
@@ -71,6 +69,7 @@ class PlayersController extends BaseApiController {
             $punishments[] = [
                 'id' => $punishment->id,
                 'type' => $punishment->type,
+                'reason' => $punishment->reason->title,
                 'reason' => $punishment->reason->title,
                 'expired_at' => $punishment->expired_at,
             ];

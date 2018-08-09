@@ -8,7 +8,7 @@ use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\IPv4;
 
-abstract class ServerForm extends BaseForm {
+class ServersForm extends BaseForm {
 
 	/**
 	 * @var string
@@ -26,6 +26,18 @@ abstract class ServerForm extends BaseForm {
 	public function __construct(Server $server) {
 		$this->server = $server;
 	}
+    
+    /**
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
+     */
+    public function checkExists($value, array $values) {
+        return !Server::where([
+            'ip' => $values['ip'],
+            'port' => $values['port']
+        ])->exists() ? $value : null;
+    }
 
 	/**
 	 * @noreturn
@@ -53,5 +65,20 @@ abstract class ServerForm extends BaseForm {
             ->set('port', true, [
                 new NumberRule(1024, 65535)
             ]);
+        
+        if (!$this->server->exists) {
+            $this->form->getValidator()
+                ->add('port', new Callback(
+                    [$this, 'checkExists'], $this->getTranslate('admin_servers', 'already_exists')
+                ));
+        }
 	}
+    
+    /**
+     * @return boolean
+     */
+    protected function processForm() {
+        $this->server->fill($this->form->getValues());
+        return $this->server->save();
+    }
 }

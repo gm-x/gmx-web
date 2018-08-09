@@ -32,7 +32,7 @@
 										class="dropdown-item"
 										data-toggle="modal"
 										data-target="#tokenModel"
-										data-token="{{ server.token }}"
+										data-server-id="{{ server.id }}"
 								>
 									<span class="oi oi-info"></span>&nbsp;{{ trans('admin_servers', 'token') }}
 								</a>
@@ -87,7 +87,17 @@
 	<script>
 		$(document).ready(function () {
 			$('#tokenModel').on('show.bs.modal', function(e) {
-				  $(this).find('.modal-body input').val($(e.relatedTarget).data('token'));
+				var serverId = $(e.relatedTarget).data('server-id');
+				var modal = $(this);
+				$.getJSON('{{ path_for('admin_servers_token') }}', {server: serverId})
+					.done(function(data) {
+                        if (data.success) {
+                            modal.find('.modal-body input').val(data.token);
+                        }
+					})
+                    .fail(function() {
+                        console.log("error");
+                    });
 			});
         });
 	</script>

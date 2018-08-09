@@ -90,4 +90,8 @@ class Punishment extends BaseModel {
 	public function getPermanentAttribute() {
 	    return $this->attributes['expired_at'] === null;
     }
+    
+    public function jsonSerialize() {
+	   
+    }
 }
