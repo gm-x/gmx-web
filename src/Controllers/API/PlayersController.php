@@ -2,11 +2,11 @@
 namespace GameX\Controllers\API;
 
 use \GameX\Core\BaseApiController;
-use GameX\Models\Reason;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Models\Player;
 use \GameX\Models\Punishment;
+use \GameX\Models\Reason;
 use \Carbon\Carbon;
 use \GameX\Core\Forms\Validator;
 use \GameX\Core\Forms\Rules\Trim;
@@ -28,22 +28,29 @@ class PlayersController extends BaseApiController {
     public function playerAction(Request $request, Response $response, array $args) {
         $validator = new Validator($this->getContainer('lang'));
         $validator
-            ->add('steamid', new Trim())
-            ->add('steamid', new Required())
-            ->add('steamid', new Regexp('/^(?:STEAM|VALVE)_\d:\d:\d+$/'))
-            ->add('nick', new Trim())
-            ->add('nick', new Required());
-        
+            ->set('steamid', true, [
+                new Regexp('/^(?:STEAM|VALVE)_\d:\d:\d+$/')
+            ])
+            ->set('emulator', true, [
+                new Number()
+            ])
+            ->set('nick', true);
+            
+    
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
 
-        $player = Player::where('steamid', '=', $result->getValue('steamid'))->first();
+        $player = Player::where([
+            'steamid' => $result->getValue('steamid'),
+            'emulator' => $result->getValue('emulator')
+        ])->first();
         if (!$player) {
             $player = new Player();
             $player->steamid = $result->getValue('steamid');
+            $player->emulator = $result->getValue('emulator');
             $player->nick = $result->getValue('nick');
             $player->auth_type = Player::AUTH_TYPE_STEAM;
             $player->save();
@@ -57,6 +64,10 @@ class PlayersController extends BaseApiController {
         $punishments = [];
         /** @var Punishment $punishment */
         foreach ($punishmentsCollection as $punishment) {
+            // TODO: Move it to sql
+            if ($punishment->server_id != $request->getAttribute('server_id') && !$punishment->reason->overall) {
+                continue;
+            }
             $punishments[] = [
                 'id' => $punishment->id,
                 'type' => $punishment->type,
@@ -71,6 +82,7 @@ class PlayersController extends BaseApiController {
                 'player' => [
                     'id' => $player->id,
                 ],
+                'user' => null,
                 'punishments' => $punishments
             ]
         ]);
@@ -96,23 +108,22 @@ class PlayersController extends BaseApiController {
     
         $validator = new Validator($this->getContainer('lang'));
         $validator
-            ->add('player_id', new Trim())
-            ->add('player_id', new Required())
-            ->add('player_id', new Number(1))
-            ->add('player_id', new Callback($playerExists))
-            ->add('punisher_id', new Trim())
-            ->add('punisher_id', new Required())
-            ->add('punisher_id', new Number(1))
-            ->add('punisher_id', new Callback($punisherExists))
-            ->add('type', new Trim())
-            ->add('type', new Required())
-            ->add('type', new Number())
-            ->add('reason', new Trim())
-            ->add('reason', new Required())
-            ->add('comment', new Trim())
-            ->add('time', new Trim())
-            ->add('time', new Required())
-            ->add('time', new Number(0));
+            ->set('player_id', true, [
+                new Number(1),
+                new Callback($playerExists)
+            ])
+            ->set('punisher_id', true, [
+                new Number(1),
+                new Callback($punisherExists)
+            ])
+            ->set('type', true, [
+                new Number(0),
+            ])
+            ->set('reason', true)
+            ->set('comment', false)
+            ->set('time', true, [
+                new Number(0)
+            ]);
     
         $result = $validator->validate($this->getBody($request));
     
