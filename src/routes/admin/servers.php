@@ -14,7 +14,7 @@ return function () {
     $this
         ->get('/token', BaseController::action(ServersController::class, 'token'))
         ->setName('admin_servers_token')
-        ->setArgument('permission', 'admin.servers');
+        ->setArgument('permission', 'admin.servers'); // TODO: need another permission
 
     $this
         ->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))

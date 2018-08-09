@@ -80,17 +80,16 @@ $app->group('/api', function () {
 	if (!preg_match('/Basic\s+(?P<token>.+)$/i', $request->getHeaderLine('Authorization'), $matches)) {
 		throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
 	}
-	$config = $container->get('config');
 	$token = base64_decode($matches['token']);
 	if ($token === false) {
         throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
     }
-    $token = trim($token, ':');
-	$data = \Firebase\JWT\JWT::decode($token, $config->get('secret'), ['HS512']);
-	if (empty($data->server_id)) {
+    $server = \GameX\Models\Server::where('token', $token);
+	if (!$server) {
 		throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
 	}
-	return $next($request->withAttribute('server_id', $data->server_id), $response);
+	// TODO: return $server
+	return $next($request->withAttribute('server_id', $server->id), $response);
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
     try {
         return $next($request, $response);
