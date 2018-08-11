@@ -80,11 +80,13 @@ class ResetPasswordForm extends BaseForm {
 			->add(new Text('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'required' => true,
-			]))
-			->addRule('login', new Trim())
-			->addRule('login', new Required())
-            ->addRule('login', new Callback([$this, 'checkExists'], 'User not found'))
-            ->addRule('login', new Callback([$this, 'checkActivation'], 'User is not activated'));
+			]));
+		
+		$this->form->getValidator()
+			->set('login', true, [
+                new Callback([$this, 'checkExists'], 'User not found'),
+                new Callback([$this, 'checkActivation'], 'User is not activated')
+            ]);
 	}
 
 	/**

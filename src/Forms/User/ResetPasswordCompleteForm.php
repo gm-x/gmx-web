@@ -88,15 +88,17 @@ class ResetPasswordCompleteForm extends BaseForm {
 				'title' => $this->getTranslate('inputs', 'password_repeat'),
 				'error' => 'Passwords does not match',
 				'required' => true,
-			]))
-			->addRule('login', new Trim())
-			->addRule('login', new Required())
-            ->addRule('login', new Callback([$this, 'checkExists'], 'User not found'))
-            ->addRule('login', new Callback([$this, 'checkCode'], 'Bad code'))
-			->addRule('password', new Trim())
-			->addRule('password', new Required())
-			->addRule('password_repeat', new Trim())
-			->addRule('password_repeat', new PasswordRepeat('password'));
+			]));
+		
+		$this->form->getValidator()
+			->set('login', true, [
+                new Callback([$this, 'checkExists'], 'User not found'),
+                new Callback([$this, 'checkCode'], 'Bad code')
+            ])
+            ->set('password', true)
+            ->set('password_repeat', true, [
+                new PasswordRepeat('password')
+            ]);
 	}
 
 	/**

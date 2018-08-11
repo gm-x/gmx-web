@@ -7,6 +7,7 @@ use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\IPv4;
+use \GameX\Core\Forms\Rules\Callback;
 
 class ServersForm extends BaseForm {
 

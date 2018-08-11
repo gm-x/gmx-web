@@ -82,17 +82,20 @@ class RegisterForm extends BaseForm {
 			->add(new Password('password_repeat', '', [
 				'title' => $this->getTranslate('inputs', 'password_repeat'),
 				'required' => true,
-			]))
-			->addRule('login', new Trim())
-			->addRule('login', new Required())
-			->addRule('email', new Trim())
-			->addRule('email', new Required())
-			->addRule('email', new EmailRule())
-			->addRule('email', new Callback([$this, 'checkExists'], 'User already exists'))
-			->addRule('password', new Trim())
-			->addRule('password', new Length(AuthHelper::MIN_PASSWORD_LENGTH))
-			->addRule('password_repeat', new Trim())
-			->addRule('password_repeat', new PasswordRepeat('password'));
+			]));
+		
+		$this->form->getValidator()
+			->set('login', true)
+			->set('email', true, [
+                new EmailRule(),
+                new Callback([$this, 'checkExists'], 'User already exists')
+            ])
+            ->set('password', true, [
+                new Length(AuthHelper::MIN_PASSWORD_LENGTH)
+            ])
+            ->set('password_repeat', true, [
+                new PasswordRepeat('password')
+            ]);
 	}
 
 	/**
