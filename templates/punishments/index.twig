@@ -13,6 +13,7 @@
 					<th>Punisher</th>
 					<th>Type</th>
 					<th>Reason</th>
+					<th>Comment</th>
 					<th>Expired at</th>
 				</tr>
 			</thead>
@@ -21,20 +22,22 @@
 				<tr>
 					<td class="text-nowrap">{{ punishment.player.nick }}</td>
 					<td class="text-nowrap">
-					{% if punishment.punisher_id %}
-                        {{ punishment.punisher.nick }}
-                    {% else %}
-						{{ punishment.server.name }}
-                    {% endif %}
+						{% if punishment.punisher_id %}
+							{{ punishment.punisher.nick }}
+						{% else %}
+							{{ punishment.server.name }}
+						{% endif %}
 					</td>
 					<td class="text-nowrap">{{ punishment.type }}</td>
 					<td class="text-nowrap">{{ punishment.reason.title }}</td>
 					<td class="text-nowrap">{{ punishment.comment }}</td>
-					{% if punishment.expired_at %}
-						<td>{{ punishment.expired_at | date('d.m.Y H:i') }}</td>
-                    {% else %}
-						<td>Never</td>
-                    {% endif %}
+					<td>
+						{% if punishment.expired_at %}
+							{{ punishment.expired_at | date('d.m.Y H:i') }}
+						{% else %}
+							Never
+						{% endif %}
+					</td>
 				</tr>
 			{% endfor %}
 			</tbody>
