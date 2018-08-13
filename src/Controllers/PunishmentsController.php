@@ -26,9 +26,11 @@ class PunishmentsController extends BaseMainController {
         $filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
         
         if ($filter === null) {
-            $punishments = Punishment::get();
+            $punishments = Punishment::with('server', 'reason')
+                ->get();
         } else {
-            $punishments = Punishment::where('steamid', 'LIKE', '%' . $filter . '%')
+            $punishments = Punishment::with('server', 'reason')
+                ->where('steamid', 'LIKE', '%' . $filter . '%')
                 ->orWhere('nick', 'LIKE', '%' . $filter . '%')
                 ->get();
         }

@@ -110,7 +110,7 @@ class PlayersController extends BaseApiController {
                 new Callback($playerExists)
             ])
             ->set('punisher_id', true, [
-                new Number(1),
+                new Number(0),
                 new Callback($punisherExists)
             ])
             ->set('type', true, [
@@ -141,10 +141,11 @@ class PlayersController extends BaseApiController {
         ]);
     
         $time = $result->getValue('time');
+        $punisherId = $result->getValue('punisher_id');
 
         $punishment = new Punishment([
             'player_id' => $result->getValue('player_id'),
-            'punisher_id' => $result->getValue('punisher_id'),
+            'punisher_id' => $punisherId > 0 ? $punisherId : null,
             'server_id' => $serverId,
             'type' => $result->getValue('type'),
             'reason_id' => $reason->id,

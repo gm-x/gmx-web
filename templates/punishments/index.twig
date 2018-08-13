@@ -20,14 +20,21 @@
 			{% for punishment in punishments %}
 				<tr>
 					<td class="text-nowrap">{{ punishment.player.nick }}</td>
-					<td class="text-nowrap">{{ punishment.punisher.nick }}</td>
+					<td class="text-nowrap">
+					{% if punishment.punisher_id %}
+                        {{ punishment.punisher.nick }}
+                    {% else %}
+						{{ punishment.server.name }}
+                    {% endif %}
+					</td>
 					<td class="text-nowrap">{{ punishment.type }}</td>
-					<td class="text-nowrap">{{ punishment.reason }}</td>
-					{% if punishment.permanent %}
-						<td>Never</td>
-					{% else %}
+					<td class="text-nowrap">{{ punishment.reason.title }}</td>
+					<td class="text-nowrap">{{ punishment.comment }}</td>
+					{% if punishment.expired_at %}
 						<td>{{ punishment.expired_at | date('d.m.Y H:i') }}</td>
-					{% endif %}
+                    {% else %}
+						<td>Never</td>
+                    {% endif %}
 				</tr>
 			{% endfor %}
 			</tbody>
