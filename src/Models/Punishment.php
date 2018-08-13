@@ -55,6 +55,8 @@ class Punishment extends BaseModel {
         'updated_at',
         'expired_at'
     ];
+    
+    protected $hidden = ['reason_id'];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -89,9 +91,5 @@ class Punishment extends BaseModel {
      */
 	public function getPermanentAttribute() {
 	    return $this->attributes['expired_at'] === null;
-    }
-    
-    public function jsonSerialize() {
-	   
     }
 }

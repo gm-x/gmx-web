@@ -76,20 +76,37 @@ $app->group('/api', function () {
     $this->post('/privileges', BaseController::action(PrivilegesController::class, 'index'));
     $this->post('/player', BaseController::action(PlayersController::class, 'player'));
     $this->post('/punish', BaseController::action(PlayersController::class, 'punish'));
-})->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
-	if (!preg_match('/Basic\s+(?P<token>.+)$/i', $request->getHeaderLine('Authorization'), $matches)) {
-		throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
-	}
-	$token = base64_decode($matches['token']);
-	if ($token === false) {
-        throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
+})->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
+    try {
+        if (!preg_match('/Basic\s+(?P<token>.+?)$/i', $request->getHeaderLine('Authorization'), $matches)) {
+            throw new \GameX\Core\Exceptions\NotAllowedException();
+        }
+    
+        $token = base64_decode($matches['token']);
+        if (!$token) {
+            throw new \GameX\Core\Exceptions\NotAllowedException();
+        }
+        
+        list ($token) = explode(':', $token);
+        if (empty($token)) {
+            throw new \GameX\Core\Exceptions\NotAllowedException();
+        }
+    
+        $server = \GameX\Models\Server::where('token', $token)->first();
+        if (!$server || $server->ip !== $request->getAttribute('ip_address')) {
+            throw new \GameX\Core\Exceptions\NotAllowedException();
+        }
+        return $next($request->withAttribute('server_id', $server->id), $response);
+    } catch (\GameX\Core\Exceptions\NotAllowedException $e) {
+        return $response
+            ->withJson([
+                'success' => false,
+                'error' => [
+                    'code' => 403,
+                    'message' => 'Bad token',
+                ],
+            ]);
     }
-    $server = \GameX\Models\Server::where('token', $token);
-	if (!$server) {
-		throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
-	}
-	// TODO: return $server
-	return $next($request->withAttribute('server_id', $server->id), $response);
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
     try {
         return $next($request, $response);

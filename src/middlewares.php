@@ -1,19 +1,19 @@
 <?php
 $app->add(new \RKA\Middleware\IpAddress(true));
 
-//$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) use ($app) {
-//    $response = $next($request, $response);
-//    /** @var \Monolog\Logger $log */
-//    $log = $app->getContainer()->get('log');
-//    /** @var \Illuminate\Database\Capsule\Manager $db */
-//    $db = $app->getContainer()->get('db');
-//
-//    $log->debug('queries', $db->getConnection()->getQueryLog());
-//
-//    return $response;
-//});
+$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) use ($app) {
+    $response = $next($request, $response);
+    /** @var \Monolog\Logger $log */
+    $log = $app->getContainer()->get('log');
+    /** @var \Illuminate\Database\Capsule\Manager $db */
+    $db = $app->getContainer()->get('db');
 
-$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) {
+    $log->debug('queries', $db->getConnection()->getQueryLog());
+
+    return $response;
+});
+
+$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) use ($container) {
     try {
         return $next($request, $response);
     } catch (\GameX\Core\Exceptions\RedirectException $e) {

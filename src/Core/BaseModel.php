@@ -3,6 +3,8 @@ namespace GameX\Core;
 
 use \Illuminate\Database\Eloquent\Model;
 use \Psr\Container\ContainerInterface;
+use \Carbon\Carbon;
+use \DateTimeInterface;
 
 abstract class BaseModel extends Model {
 
@@ -25,6 +27,10 @@ abstract class BaseModel extends Model {
 		// TODO: WTF ??? It's need for create connection
 		self::$container['db'];
 	}
+    
+    protected function serializeDate(DateTimeInterface $date) {
+        return $date->getTimestamp();
+    }
 
 	/**
 	 * @param ContainerInterface $container
