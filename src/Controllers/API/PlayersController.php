@@ -7,7 +7,6 @@ use \Slim\Http\Response;
 use \GameX\Models\Player;
 use \GameX\Models\Punishment;
 use \GameX\Models\Reason;
-use \Carbon\Carbon;
 use \GameX\Core\Forms\Validator;
 use \GameX\Core\Forms\Rules\Regexp;
 use \GameX\Core\Forms\Rules\Number;
@@ -54,24 +53,7 @@ class PlayersController extends BaseApiController {
             $player->save();
         }
     
-        $punishments = $player->punishments()
-            ->with('reason')
-            ->leftJoin('reasons', 'punishments.reason_id', '=', 'reasons.id')
-            ->where('status', '=', Punishment::STATUS_PUNISHED)
-            ->where(function (\Illuminate\Database\Eloquent\Builder $query) {
-                $query->where('expired_at', '>', Carbon::now()->toDateTimeString())
-                    ->orWhereNull('expired_at');
-            })
-            ->where(function (\Illuminate\Database\Eloquent\Builder $query) use ($request) {
-                $query->where('reasons.overall', 1)
-                    ->orWhere(function (\Illuminate\Database\Eloquent\Builder $query) use ($request) {
-                        $query->where([
-                            'reasons.overall' => 0,
-                            'punishments.server_id' => $request->getAttribute('server_id')
-                        ]);
-                    });
-            })
-            ->get();
+        $punishments = $player->getActivePunishments($request->getAttribute('server_id'));
 
         return $response->withJson([
             'success' => true,

@@ -3,6 +3,8 @@ namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
 use \GameX\Core\Auth\Models\UserModel;
+use \Illuminate\Database\Eloquent\Builder;
+use \Carbon\Carbon;
 
 /**
  * Class Server
@@ -82,6 +84,32 @@ class Player extends BaseModel {
      */
     public function hasAccess($access) {
         return ($this->access & $access) === $access;
+    }
+    
+    /**
+     * @param $serverId
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
+    public function getActivePunishments($serverId) {
+        return $this->punishments()
+            ->select('punishments.*')
+            ->with('reason')
+            ->leftJoin('reasons', 'punishments.reason_id', '=', 'reasons.id')
+            ->where('status', '=', Punishment::STATUS_PUNISHED)
+            ->where(function (Builder $query) {
+                $query->where('expired_at', '>', Carbon::now()->toDateTimeString())
+                    ->orWhereNull('expired_at');
+            })
+            ->where(function (Builder $query) use ($serverId) {
+                $query->where('reasons.overall', 1)
+                    ->orWhere(function (Builder $query) use ($serverId) {
+                        $query->where([
+                            'reasons.overall' => 0,
+                            'punishments.server_id' => $serverId
+                        ]);
+                    });
+            })
+            ->get();
     }
 
     /**
