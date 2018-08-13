@@ -45,7 +45,7 @@ class Punishment extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['player_id', 'punisher_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at'];
+	protected $fillable = ['player_id', 'punisher_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at', 'status'];
     
     /**
      * @var array

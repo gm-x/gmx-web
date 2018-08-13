@@ -65,8 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$db->set('database', $_POST['db']['name']);
 				$db->set('prefix', $_POST['db']['prefix']);
 
-				$config->set('secret', generateSecretKey());
-
 				$config->setPath(BASE_DIR . 'config.json');
 				$config->save();
 				json([

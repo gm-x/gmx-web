@@ -6,8 +6,8 @@ use \GameX\Controllers\API\PrivilegesController;
 use \GameX\Controllers\API\PlayersController;
 use \GameX\Controllers\Admin\AdminController;
 
-$authMiddleware = new \GameX\Core\Auth\AuthMiddleware($container);
-$csrfMiddleware = new \GameX\Core\CSRF\Middleware($container->get('csrf'));
+$authMiddleware = new \GameX\Core\Auth\AuthMiddleware($app->getContainer());
+$csrfMiddleware = new \GameX\Core\CSRF\Middleware($app->getContainer()->get('csrf'));
 
 $app->group('', function () {
     /** @var \Slim\App $this */
@@ -107,7 +107,7 @@ $app->group('/api', function () {
                 ],
             ]);
     }
-})->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
+})->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($app) {
     try {
         return $next($request, $response);
     } catch (\GameX\Core\Exceptions\ApiException $e) {
@@ -120,7 +120,7 @@ $app->group('/api', function () {
                 ],
             ]);
     } catch (\Exception $e) {
-        $container->get('log')->error((string)$e);
+        $app->getContainer()->get('log')->error((string)$e);
         return $response
             ->withJson([
                 'success' => false,

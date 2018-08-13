@@ -26,6 +26,8 @@ class Punishments extends Migration {
 					'amnestied',
 				])->default('none');
 				$table->timestamps();
+				$table->index('player_id');
+				$table->index('expired_at');
 			});
 	}
 

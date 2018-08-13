@@ -56,37 +56,22 @@ class PlayersController extends BaseApiController {
     
         $punishments = $player->punishments()
             ->with('reason')
+            ->leftJoin('reasons', 'punishments.reason_id', '=', 'reasons.id')
             ->where('status', '=', Punishment::STATUS_PUNISHED)
             ->where(function (\Illuminate\Database\Eloquent\Builder $query) {
                 $query->where('expired_at', '>', Carbon::now()->toDateTimeString())
                     ->orWhereNull('expired_at');
             })
-            // TODO: Fix it
-//            ->where(function (\Illuminate\Database\Eloquent\Builder $query) {
-//                $query->where('reason.overall', 1)
-//                    ->orWhere([
-//                        'reason.overall' => 0,
-//                        'reason.server_id' => 1
-//                    ]);
-//            })
+            ->where(function (\Illuminate\Database\Eloquent\Builder $query) use ($request) {
+                $query->where('reasons.overall', 1)
+                    ->orWhere(function (\Illuminate\Database\Eloquent\Builder $query) use ($request) {
+                        $query->where([
+                            'reasons.overall' => 0,
+                            'punishments.server_id' => $request->getAttribute('server_id')
+                        ]);
+                    });
+            })
             ->get();
-
-//        $punishments = [];
-//        /** @var Punishment $punishment */
-//        foreach ($punishmentsCollection as $punishment) {
-//            // TODO: Move it to sql
-//            if ($punishment->server_id != $request->getAttribute('server_id') && !$punishment->reason->overall) {
-//                continue;
-//            }
-//
-//            $punishments[] = $punishment->toArray();
-//            $punishments[] = [
-//                'id' => $punishment->id,
-//                'type' => $punishment->type,
-//                'reason' => $punishment->reason->title,
-//                'expired_at' => $punishment->expired_at,
-//            ];
-//        }
 
         return $response->withJson([
             'success' => true,

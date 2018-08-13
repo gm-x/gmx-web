@@ -3,17 +3,27 @@ $app->add(new \RKA\Middleware\IpAddress(true));
 
 $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) use ($app) {
     $response = $next($request, $response);
-    /** @var \Monolog\Logger $log */
-    $log = $app->getContainer()->get('log');
-    /** @var \Illuminate\Database\Capsule\Manager $db */
-    $db = $app->getContainer()->get('db');
+    
+    /** @var GameX\Core\Configuration\Config $config */
+    $config = $app->getContainer()->get('config');
 
-    $log->debug('queries', $db->getConnection()->getQueryLog());
+    if ($config->get('log')->get('queries', false)) {
+        /** @var \Monolog\Logger $log */
+        $logger = $app->getContainer()->get('log');
+        /** @var \Illuminate\Database\Capsule\Manager $db */
+        $db = $app->getContainer()->get('db');
+        
+        $queries = $db->getConnection()->getQueryLog();
+        foreach ($queries as $query) {
+            $log = sprintf('Query (%s): %s', $query['time'], $query['query']);
+            $logger->debug($log, $query['bindings']);
+        }
+    }
 
     return $response;
 });
 
-$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) use ($container) {
+$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) {
     try {
         return $next($request, $response);
     } catch (\GameX\Core\Exceptions\RedirectException $e) {
