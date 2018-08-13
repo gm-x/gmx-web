@@ -41,53 +41,51 @@ class Image extends BaseRule {
 		$this->width = $width;
 		$this->height = $height;
 	}
-
-	/**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+    
+    /**
+     * @param UploadedFile|null $value
+     * @param array $values
+     * @return UploadedFile|null
      */
-    protected function isValid(Form $form, Element $element) {
-        /** @var UploadedFile|null $file */
-        $file = $element->getValue();
-        if ($file === null) {
-            return true;
+    public function validate($value, array $values) {
+        if ($value === null) {
+            return null;
         }
-
-		$size = getimagesize($file->file);
+    
+        $size = getimagesize($value->file);
         if ($size === false) {
         	$this->message = ['image'];
-        	return false;
+        	return null;
 		}
 
 		if ($this->types !== null && !in_array($size[self::SIZE_TYPE], $this->types)) {
 			$this->message = ['image'];
-			return false;
+			return null;
 		}
 
 		if ($this->width !== null) {
         	if (is_array($this->width)) {
         		if (!$this->validateSize($size[self::SIZE_WIDTH], $this->width, 'width')) {
-					return false;
+					return null;
 				}
 			} elseif ($size[self::SIZE_WIDTH] !== $this->width) {
 				$this->message = ['image_width', [$this->width]];
-        		return false;
+        		return null;
 			}
 		}
 
 		if ($this->height !== null) {
 			if (is_array($this->height)) {
 				if (!$this->validateSize($size[self::SIZE_HEIGHT], $this->height, 'height')) {
-					return false;
+					return null;
 				}
 			} elseif ($size[self::SIZE_HEIGHT] !== $this->height) {
 				$this->message = ['image_height', [$this->height]];
-				return false;
+				return null;
 			}
 		}
 
-		return true;
+		return $value;
     }
     
     /**

@@ -1,23 +1,13 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
-
 class Boolean extends BaseRule {
     
     /**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+     * @inheritdoc
      */
-    protected function isValid(Form $form, Element $element) {
-        $value = filter_var($element->getValue(), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-        if ($value === null) {
-        	return false;
-		}
-        $element->setValue($value);
-        return true;
+    public function validate($value, array $values) {
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
     
     /**

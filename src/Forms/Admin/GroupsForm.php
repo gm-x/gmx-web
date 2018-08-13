@@ -6,12 +6,10 @@ use \GameX\Models\Group;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Flags as FlagsElement;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\Flags as FlagsRule;
 
-class GroupForm extends BaseForm {
+class GroupsForm extends BaseForm {
 
 	/**
 	 * @var string
@@ -48,14 +46,16 @@ class GroupForm extends BaseForm {
             ->add(new NumberElement('priority', $this->group->priority, [
                 'title' => 'Priority',
                 'required' => false,
-            ]))
-			->addRule('title', new Required())
-			->addRule('title', new Trim())
-			->addRule('flags', new Required())
-			->addRule('flags', new Trim())
-			->addRule('flags', new FlagsRule())
-			->addRule('priority', new Required())
-			->addRule('priority', new NumberRule(0));
+            ]));
+		
+		$this->form->getValidator()
+            ->set('title', true)
+            ->set('flags', true, [
+                new FlagsRule()
+            ])
+			->set('priority', true, [
+			    new NumberRule(0)
+            ]);
 	}
     
     /**

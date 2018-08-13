@@ -2,6 +2,7 @@
 namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
+use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Auth\Models\UserModel;
 use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
@@ -9,6 +10,7 @@ use \GameX\Core\Menu\MenuItem;
 use \GameX\Core\Forms\Form;
 use \GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Exceptions\RedirectException;
 use \Exception;
 
 abstract class BaseMainController extends BaseController {
@@ -98,13 +100,15 @@ abstract class BaseMainController extends BaseController {
 
         return $this->redirectTo($form->getAction());
     }
-
+    
+    /**
+     * Menu initialization
+     */
 	protected function initMenu() {
 		/** @var Twig $view */
 		$view = $this->getContainer('view');
 
 		$menu = new Menu();
-
 		$menu
 			->setActiveRoute($this->getActiveMenu())
 			->add(new MenuItem('Index', 'index', [], null))
@@ -121,4 +125,48 @@ abstract class BaseMainController extends BaseController {
 
 		$view->getEnvironment()->addGlobal('menu', $menu);
 	}
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param BaseForm $form
+     * @param bool $withTransaction
+     * @return bool
+     * @throws RedirectException
+     */
+	protected function processForm(ServerRequestInterface $request, BaseForm $form, $withTransaction = false) {
+        /** @var \Illuminate\Database\Connection|null $connection */
+        $connection = $withTransaction ? $this->getContainer('db')->getConnection() : null;
+        
+        try {
+            $form->create();
+            
+            if ($withTransaction) {
+                $connection->beginTransaction();
+            }
+            
+            $form->process($request);
+            $result = $form->getIsSubmitted() && $form->getIsValid();
+            if ($withTransaction) {
+                $connection->commit();
+            }
+            
+            return $result;
+        } catch (FormException $e) {
+            if ($withTransaction) {
+                $connection->rollBack();
+            }
+            $form->getForm()->setError($e->getField(), $e->getMessage());
+            $form->getForm()->saveValues();
+            throw new RedirectException($form->getForm()->getAction(), 302);
+        } catch (ValidationException $e) {
+            if ($withTransaction) {
+                $connection->rollBack();
+            }
+            if ($e->hasMessage()) {
+                $this->addErrorMessage($e->getMessage());
+            }
+            $form->getForm()->saveValues();
+            throw new RedirectException($form->getForm()->getAction(), 302);
+        }
+    }
 }

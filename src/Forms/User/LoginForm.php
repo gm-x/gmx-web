@@ -6,8 +6,6 @@ use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Boolean;
 
 class LoginForm extends BaseForm {
@@ -45,11 +43,14 @@ class LoginForm extends BaseForm {
 			->add(new Checkbox('remember_me', true, [
 				'title' => $this->getTranslate('inputs', 'remember_me'),
 				'required' => false,
-			]))
-			->addRule('login', new Required())
-			->addRule('password', new Trim())
-			->addRule('password', new Required())
-			->addRule('remember_me', new Boolean());
+			]));
+        
+        $this->form->getValidator()
+			->set('login', true)
+			->set('password', true)
+			->set('remember_me', false, [
+                new Boolean()
+            ]);
 	}
 
 	/**

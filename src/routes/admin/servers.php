@@ -2,6 +2,7 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\Admin\ServersController;
 use \GameX\Controllers\Admin\GroupsController;
+use \GameX\Controllers\Admin\ReasonsController;
 
 return function () {
     /** @var \Slim\App $this */
@@ -9,6 +10,11 @@ return function () {
         ->get('', BaseController::action(ServersController::class, 'index'))
         ->setName('admin_servers_list')
         ->setArgument('permission', 'admin.servers');
+    
+    $this
+        ->get('/token', BaseController::action(ServersController::class, 'token'))
+        ->setName('admin_servers_token')
+        ->setArgument('permission', 'admin.servers'); // TODO: need another permission
 
     $this
         ->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))
@@ -46,5 +52,28 @@ return function () {
             ->post('/{group}/delete', BaseController::action(GroupsController::class, 'delete'))
             ->setName('admin_servers_groups_delete')
 			->setArgument('permission', 'admin.servers.groups');
+    });
+    
+    $this->group('/{server}/reasons', function () {
+        /** @var \Slim\App $this */
+        $this
+            ->get('', BaseController::action(ReasonsController::class, 'index'))
+            ->setName('admin_servers_reasons_list')
+            ->setArgument('permission', 'admin.servers.reasons');
+        
+        $this
+            ->map(['GET', 'POST'], '/create', BaseController::action(ReasonsController::class, 'create'))
+            ->setName('admin_servers_reasons_create')
+            ->setArgument('permission', 'admin.servers.reasons');
+        
+        $this
+            ->map(['GET', 'POST'], '/{reason}/edit', BaseController::action(ReasonsController::class, 'edit'))
+            ->setName('admin_servers_reasons_edit')
+            ->setArgument('permission', 'admin.servers.reasons');
+        
+        $this
+            ->post('/{reason}/delete', BaseController::action(ReasonsController::class, 'delete'))
+            ->setName('admin_servers_reasons_delete')
+            ->setArgument('permission', 'admin.servers.reasons');
     });
 };

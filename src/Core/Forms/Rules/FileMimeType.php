@@ -26,21 +26,19 @@ class FileMimeType extends BaseRule {
 			$this->types[] = strtolower(trim($type));
 		}
 	}
-
-	/**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+    
+    /**
+     * @param UploadedFile|null $value
+     * @param array $values
+     * @return UploadedFile|null
      */
-    protected function isValid(Form $form, Element $element) {
-        /** @var UploadedFile|null $file */
-        $file = $element->getValue();
-        if ($file === null) {
-            return true;
+    public function validate($value, array $values) {
+        if ($value === null) {
+            return null;
         }
 
-		$this->type = mime_content_type($file->file);
-        return in_array(strtolower($this->type), $this->types, true);
+		$this->type = mime_content_type($value->file);
+        return in_array(strtolower($this->type), $this->types, true) ? $value : null;
     }
     
     /**

@@ -11,9 +11,10 @@ class Players extends Migration {
         $this->getSchema()
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('steamid', 26)->unique();
+                $table->unsignedInteger('user_id')->nullable()->references('id')->on('users');
+                $table->string('steamid', 26);
+                $table->unsignedTinyInteger('emulator')->default('0');
                 $table->string('nick', 32)->default('');
-                $table->unsignedTinyInteger('is_steam')->default('0');
                 $table->enum('auth_type', [
                     'steamid',
                     'steamid_pass',
@@ -24,6 +25,8 @@ class Players extends Migration {
                 $table->string('password', 255)->nullable();
                 $table->unsignedInteger('access')->default('0');
                 $table->timestamps();
+                
+                $table->unique(['steamid', 'emulator'], 'steamid_idx');
             });
     }
 

@@ -3,6 +3,8 @@ namespace GameX\Forms\User;
 
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
+use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\Email as EmailElement;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
@@ -11,7 +13,7 @@ use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Email as EmailRule;
 use \GameX\Core\Forms\Rules\Length;
 use \GameX\Core\Forms\Rules\PasswordRepeat;
-use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Forms\Rules\Callback;
 
 class RegisterForm extends BaseForm {
 
@@ -28,16 +30,37 @@ class RegisterForm extends BaseForm {
 	/**
 	 * @var boolean
 	 */
-	protected $emailEnabled;
+	protected $activate;
+    
+    /**
+     * @var UserModel
+     */
+	protected $user;
 
 	/**
 	 * @param AuthHelper $authHelper
-	 * @param boolean $emailEnabled
+	 * @param boolean $activate
 	 */
-	public function __construct(AuthHelper $authHelper, $emailEnabled) {
+	public function __construct(AuthHelper $authHelper, $activate) {
 		$this->authHelper = $authHelper;
-		$this->emailEnabled = $emailEnabled;
+		$this->activate = $activate;
 	}
+    
+    /**
+     * @return UserModel
+     */
+	public function getUser() {
+	    return $this->user;
+    }
+    
+    /**
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
+     */
+    public function checkExists($value, array $values) {
+        return !$this->authHelper->exists($values['login'], $values['email']) ? $value : null;
+    }
 
 	/**
 	 * @noreturn
@@ -59,33 +82,34 @@ class RegisterForm extends BaseForm {
 			->add(new Password('password_repeat', '', [
 				'title' => $this->getTranslate('inputs', 'password_repeat'),
 				'required' => true,
-			]))
-			->addRule('login', new Trim())
-			->addRule('login', new Required())
-			->addRule('email', new Required())
-			->addRule('email', new EmailRule())
-			->addRule('password', new Trim())
-			->addRule('password', new Length(AuthHelper::MIN_PASSWORD_LENGTH))
-			->addRule('password_repeat', new Trim())
-			->addRule('password_repeat', new PasswordRepeat('password'));
+			]));
+		
+		$this->form->getValidator()
+			->set('login', true)
+			->set('email', true, [
+                new EmailRule(),
+                new Callback([$this, 'checkExists'], 'User already exists')
+            ])
+            ->set('password', true, [
+                new Length(AuthHelper::MIN_PASSWORD_LENGTH)
+            ])
+            ->set('password_repeat', true, [
+                new PasswordRepeat('password')
+            ]);
 	}
 
 	/**
-	 * @return \GameX\Core\Auth\Models\UserModel
-	 * @throws ValidationException
+	 * @return bool
 	 */
 	protected function processForm() {
-		if ($this->authHelper->exists($this->form->getValue('login'), $this->form->getValue('email'))) {
-			throw new ValidationException('User already exists');
-		}
 
-		$user = $this->authHelper->registerUser(
+		$this->user = $this->authHelper->registerUser(
 			$this->form->getValue('login'),
 			$this->form->getValue('email'),
 			$this->form->getValue('password'),
-			!$this->emailEnabled
+			$this->activate
 		);
 
-		return $user;
+		return (bool) $this->user;
 	}
 }

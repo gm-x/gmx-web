@@ -34,6 +34,15 @@ class Privilege extends BaseModel {
 	 * @var array
 	 */
 	protected $fillable = ['player_id', 'group_id', 'prefix', 'expired_at', 'active'];
+    
+    /**
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'expired_at'
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

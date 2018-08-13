@@ -3,10 +3,12 @@ namespace GameX\Forms\User;
 
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
+use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Core\Forms\Form;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Trim;
-use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Forms\Rules\Callback;
 
 class ResetPasswordForm extends BaseForm {
 
@@ -19,6 +21,16 @@ class ResetPasswordForm extends BaseForm {
 	 * @var AuthHelper
 	 */
 	protected $authHelper;
+    
+    /**
+     * @var UserModel
+     */
+	protected $user;
+    
+    /**
+     * @var string
+     */
+	protected $code;
 
 	/**
 	 * @param AuthHelper $authHelper
@@ -26,6 +38,39 @@ class ResetPasswordForm extends BaseForm {
 	public function __construct(AuthHelper $authHelper) {
 		$this->authHelper = $authHelper;
 	}
+    
+    /**
+     * @return UserModel
+     */
+	public function getUser() {
+	    return $this->user;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getCode() {
+	    return $this->code;
+    }
+    
+    /**
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
+     */
+    public function checkExists($value, array $values) {
+	    $this->user = $this->authHelper->findUser($value);
+	    return $this->user ? $value : null;
+    }
+    
+    /**
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
+     */
+    public function checkActivation($value, array $values) {
+	    return $this->authHelper->checkActivationCompleted($this->user) ? $value : null;
+    }
 
 	/**
 	 * @noreturn
@@ -35,24 +80,23 @@ class ResetPasswordForm extends BaseForm {
 			->add(new Text('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'required' => true,
-			]))
-			->addRule('login', new Trim())
-			->addRule('login', new Required());
+			]));
+		
+		$this->form->getValidator()
+			->set('login', true, [
+                new Callback([$this, 'checkExists'], 'User not found'),
+                new Callback([$this, 'checkActivation'], 'User is not activated')
+            ]);
 	}
 
 	/**
-	 * @return array
-	 * @throws FormException
+	 * @return bool
 	 */
 	protected function processForm() {
-		$user = $this->authHelper->findUser($this->form->getValue('login'));
-		if (!$user) {
-			throw new FormException('login', 'User not found');
-		}
-		$code = $this->authHelper->resetPassword($user);
-		return [
-			'user' => $user,
-			'code' => $code,
-		];
+	    if (!$this->user) {
+	        return false;
+        }
+		$this->code = $this->authHelper->resetPassword($this->user);
+		return true;
 	}
 }
