@@ -37,21 +37,9 @@ class SettingsController extends BaseMainController {
 	 */
 	public function emailAction(Request $request, ResponseInterface $response, array $args) {
 		$form = new EmailForm($this->getUser());
-		try {
-			$form->create();
-
-			if ($form->process($request)) {
-				$this->addSuccessMessage('Email saved successfully');
-				return $this->redirect('user_settings_email');
-			}
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+		if ($this->processForm($request, $form, true)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('user_settings_email');
         }
 
 		return $this->render('settings/email.twig', [
@@ -68,21 +56,9 @@ class SettingsController extends BaseMainController {
 	 */
 	public function passwordAction(Request $request, ResponseInterface $response, array $args) {
         $form = new PasswordForm($this->getUser(), new AuthHelper($this->container));
-        try {
-            $form->create();
-            
-            if ($form->process($request)) {
-                $this->addSuccessMessage('Password updated successfully');
-                return $this->redirect('user_settings_password');
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form, true)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('user_settings_password');
         }
 
 		return $this->render('settings/password.twig', [
@@ -98,25 +74,12 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function avatarAction(Request $request, ResponseInterface $response, array $args) {
-	    
-	    
         $form = new AvatarForm($this->getUser(), $this->getContainer('root') . 'upload' . DIRECTORY_SEPARATOR);
-        try {
-            $form->create();
-            
-            if ($form->process($request)) {
-                $this->addSuccessMessage('Avatar updated successfully');
-                return $this->redirect('user_settings_avatar');
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form, true)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('user_settings_avatar');
         }
+        
 		return $this->render('settings/avatar.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
 			'form' => $form->getForm(),

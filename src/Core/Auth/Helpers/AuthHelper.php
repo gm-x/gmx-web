@@ -171,6 +171,23 @@ class AuthHelper {
     public function changePassword(UserInterface $user, $password) {
         $this->auth->getUserRepository()->update($user, ['password' => $password]);
     }
+    
+    /**
+     * @param UserInterface $user
+     * @param $code
+     * @return bool|\Cartalyst\Sentinel\Activations\ActivationInterface
+     */
+    public function checkActivationExists(UserInterface $user, $code) {
+        return $this->auth->getActivationRepository()->exists($user, $code);
+    }
+    
+    /**
+     * @param UserInterface $user
+     * @return bool|\Cartalyst\Sentinel\Activations\ActivationInterface
+     */
+    public function checkActivationCompleted(UserInterface $user) {
+        return $this->auth->getActivationRepository()->completed($user);
+    }
 
 	/**
 	 * @param $name

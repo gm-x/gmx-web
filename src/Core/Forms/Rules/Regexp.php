@@ -1,9 +1,6 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
-
 class Regexp extends BaseRule {
     
     /**
@@ -19,12 +16,10 @@ class Regexp extends BaseRule {
     }
     
     /**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+     * @inheritdoc
      */
-    protected function isValid(Form $form, Element $element) {
-        return (bool) preg_match($this->regexp, $element->getValue());
+    public function validate($value, array $values) {
+        return preg_match($this->regexp, $value) ? $value : null;
     }
     
     /**

@@ -1,9 +1,6 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
-
 class Number extends BaseRule {
 
 	/**
@@ -24,13 +21,11 @@ class Number extends BaseRule {
 		$this->min = $min;
 		$this->max = $max;
 	}
-
-	/**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+    
+    /**
+     * @inheritdoc
      */
-    protected function isValid(Form $form, Element $element) {
+    public function validate($value, array $values) {
     	$options = [];
     	if ($this->min !== null) {
     		$options['min_range'] = (int) $this->min;
@@ -39,12 +34,8 @@ class Number extends BaseRule {
     		$options['max_range'] = (int) $this->max;
 		}
 
-        $value = filter_var($element->getValue(), FILTER_VALIDATE_INT, ['options' => $options]);
-    	if ($value === false) {
-    		return false;
-		}
-		$element->setValue($value);
-		return true;
+        $value = filter_var($value, FILTER_VALIDATE_INT, ['options' => $options]);
+    	return $value !== false ? $value : null;
     }
     
     /**

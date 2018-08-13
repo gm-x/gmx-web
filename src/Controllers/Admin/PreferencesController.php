@@ -2,7 +2,6 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
-use GameX\Core\Forms\Validator;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
@@ -12,7 +11,6 @@ use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Node;
 use \GameX\Core\Mail\Email;
-use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 
@@ -33,21 +31,9 @@ class PreferencesController extends BaseAdminController {
 	 */
     public function indexAction(Request $request, ResponseInterface $response, array $args = []) {
         $form = new MainForm($this->getContainer('config'));
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect('admin_preferences_index');
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_preferences_index');
         }
 
 		return $this->render('admin/preferences/index.twig', [
@@ -66,22 +52,10 @@ class PreferencesController extends BaseAdminController {
         /** @var Config $config */
         $config = clone $this->getContainer('config');
         $form = new MailForm($config->get('mail'));
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $config->save();
-                $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect('admin_preferences_email');
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $config->save();
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_preferences_email');
         }
 
 		return $this->render('admin/preferences/email.twig', [

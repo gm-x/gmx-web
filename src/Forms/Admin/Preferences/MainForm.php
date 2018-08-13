@@ -43,10 +43,10 @@ class MainForm extends BaseForm {
                 'title' => $this->getTranslate('admin_preferences', 'language'),
                 'required' => true,
             ]))
-            ->addRule('title', new Required())
             ->addRule('title', new Trim())
-            ->addRule('language', new Required())
+            ->addRule('title', new Required())
             ->addRule('language', new Trim())
+            ->addRule('language', new Required())
             ->addRule('language', new InArray(array_keys($languages)));
 	}
     

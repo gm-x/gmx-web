@@ -1,18 +1,15 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
-
 class IPv4 extends BaseRule {
     
     /**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+     * @inheritdoc
      */
-    protected function isValid(Form $form, Element $element) {
-        return filter_var($element->getValue(), FILTER_VALIDATE_IP, ['flags' => FILTER_FLAG_IPV4]) !== false;
+    public function validate($value, array $values) {
+        return filter_var($value, FILTER_VALIDATE_IP, ['flags' => FILTER_FLAG_IPV4]) !== false
+            ? $value
+            : null;
     }
     
     /**
