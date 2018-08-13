@@ -56,6 +56,9 @@ class Punishment extends BaseModel {
         'expired_at'
     ];
     
+    /**
+     * @var array
+     */
     protected $hidden = ['reason_id'];
 
 	/**

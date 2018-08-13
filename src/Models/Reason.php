@@ -37,6 +37,19 @@ class Reason extends BaseModel {
 	protected $fillable = ['server_id', 'title', 'time', 'overall', 'menu', 'active'];
     
     /**
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at'
+    ];
+    
+    /**
+     * @var array
+     */
+    protected $hidden = ['server_id', 'time', 'overall', 'menu', 'active', 'created_at', 'updated_at'];
+    
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function server() {
