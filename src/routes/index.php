@@ -79,31 +79,32 @@ $app->group('/api', function () {
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
     try {
         if (!preg_match('/Basic\s+(?P<token>.+?)$/i', $request->getHeaderLine('Authorization'), $matches)) {
-            throw new \GameX\Core\Exceptions\NotAllowedException();
+            throw new \GameX\Core\Exceptions\ApiException('Token required');
         }
     
         $token = base64_decode($matches['token']);
         if (!$token) {
-            throw new \GameX\Core\Exceptions\NotAllowedException();
+            throw new \GameX\Core\Exceptions\ApiException('Token required');
         }
         
         list ($token) = explode(':', $token);
         if (empty($token)) {
-            throw new \GameX\Core\Exceptions\NotAllowedException();
+            throw new \GameX\Core\Exceptions\ApiException('Token required');
         }
     
         $server = \GameX\Models\Server::where('token', $token)->first();
-        if (!$server || $server->ip !== $request->getAttribute('ip_address')) {
-            throw new \GameX\Core\Exceptions\NotAllowedException();
+        if (!$server) {
+            throw new \GameX\Core\Exceptions\ApiException('Invalid token');
         }
         return $next($request->withAttribute('server_id', $server->id), $response);
     } catch (\GameX\Core\Exceptions\NotAllowedException $e) {
         return $response
+            ->withStatus(403)
             ->withJson([
                 'success' => false,
                 'error' => [
-                    'code' => 403,
-                    'message' => 'Bad token',
+                    'code' => \GameX\Core\Exceptions\ApiException::ERROR_INVALID_TOKEN,
+                    'message' => $e->getMessage(),
                 ],
             ]);
     }
@@ -112,6 +113,7 @@ $app->group('/api', function () {
         return $next($request, $response);
     } catch (\GameX\Core\Exceptions\ApiException $e) {
         return $response
+            ->withStatus(500) // TODO: set status code
             ->withJson([
                 'success' => false,
                 'error' => [
@@ -122,11 +124,12 @@ $app->group('/api', function () {
     } catch (\Exception $e) {
         $app->getContainer()->get('log')->error((string)$e);
         return $response
+            ->withStatus(500)
             ->withJson([
                 'success' => false,
                 'error' => [
-                    'code' => \GameX\Core\Exceptions\ApiException::ERROR_GENERIC,
-                    'message' => 'Server Error',
+                    'code' => \GameX\Core\Exceptions\ApiException::ERROR_SERVER,
+                    'message' => 'Something was wrong. Please try again later',
                 ],
             ]);
     }

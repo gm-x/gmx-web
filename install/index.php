@@ -51,9 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 'config': {
 			try {
-				if (!checkDbConnection($_POST['db'])) {
-					throw new Exception('Can\'t connect to database');
-				}
+				checkDbConnection($_POST['db']);
 
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
 				$config = new GameX\Core\Configuration\Config();
