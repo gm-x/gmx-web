@@ -2,7 +2,7 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\IndexController;
 use \GameX\Controllers\PunishmentsController;
-use \GameX\Controllers\API\PrivilegesController;
+use \GameX\Controllers\API\InfoController;
 use \GameX\Controllers\API\PlayersController;
 use \GameX\Controllers\Admin\AdminController;
 
@@ -73,7 +73,7 @@ $app->group('/admin', function () {
     ->add($csrfMiddleware);
 
 $app->group('/api', function () {
-    $this->post('/privileges', BaseController::action(PrivilegesController::class, 'index'));
+    $this->post('/info', BaseController::action(InfoController::class, 'index'));
     $this->post('/player', BaseController::action(PlayersController::class, 'player'));
     $this->post('/punish', BaseController::action(PlayersController::class, 'punish'));
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
@@ -96,7 +96,7 @@ $app->group('/api', function () {
         if (!$server) {
             throw new \GameX\Core\Exceptions\ApiException('Invalid token');
         }
-        return $next($request->withAttribute('server_id', $server->id), $response);
+        return $next($request->withAttribute('server', $server), $response);
     } catch (\GameX\Core\Exceptions\NotAllowedException $e) {
         return $response
             ->withStatus(403)

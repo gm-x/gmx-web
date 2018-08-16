@@ -155,3 +155,26 @@ function checkDirectories(array $directories) {
         
     }
 }
+
+function cronjobExists($command){
+    $cronjob_exists = false;
+    exec('crontab -l', $crontab);
+    if (isset($crontab) && is_array($crontab)) {
+
+        $crontab = array_flip($crontab);
+
+        if (isset($crontab[$command])) {
+            $cronjob_exists=true;
+        }
+    }
+    return $cronjob_exists;
+}
+
+function cronjobAppend($command){
+    if (!empty($command) && !cronjobExists($command)) {
+		exec('echo -e "`crontab -l`\n'.$command.'" | crontab -', $output);
+		return true;
+    }
+
+    return false;
+}

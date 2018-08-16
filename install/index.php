@@ -123,6 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				\GameX\Core\Jobs\JobHelper::createTask('monitoring');
 				\GameX\Core\Jobs\JobHelper::createTask('punishments');
 
+				cronjobAppend('* * * * * php -f ' . BASE_DIR . 'cron.php');
+
 				json([
 					'success' => true
 				]);

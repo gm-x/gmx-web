@@ -53,7 +53,7 @@ class PlayersController extends BaseApiController {
             $player->save();
         }
     
-        $punishments = $player->getActivePunishments($request->getAttribute('server_id'));
+        $punishments = $player->getActivePunishments($this->getServer($request));
 
         return $response->withJson([
             'success' => true,
@@ -75,7 +75,7 @@ class PlayersController extends BaseApiController {
      * @throws ApiException
      */
     public function punishAction(Request $request, Response $response, array $args) {
-        $serverId = (int) $request->getAttribute('server_id');
+        $serverId = $this->getServer($request)->id;
         
         $playerExists = function ($value, array $values) {
             return Player::where('id', $value)->exists() ? $value : null;
@@ -111,7 +111,7 @@ class PlayersController extends BaseApiController {
         }
         
         $reason = Reason::firstOrCreate([
-            'server_id' =>$serverId,
+            'server_id' => $serverId,
             'title' => $result->getValue('reason')
         ], [
             'server_id' => $serverId,
@@ -138,7 +138,7 @@ class PlayersController extends BaseApiController {
         $punishment->save();
         return $response->withJson([
             'success' => true,
-            'data' => $punishment->toArray()
+            'data' => $punishment
         ]);
     }
 }
