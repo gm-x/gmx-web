@@ -5,12 +5,10 @@ use \GameX\Core\BaseApiController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Models\Player;
-use \GameX\Models\Punishment;
-use \GameX\Models\Reason;
 use \GameX\Core\Forms\Validator;
-use \GameX\Core\Forms\Rules\Regexp;
+use \GameX\Core\Forms\Rules\SteamID;
 use \GameX\Core\Forms\Rules\Number;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Forms\Rules\IPv4;
 use \GameX\Core\Exceptions\ApiException;
 
 class PlayersController extends BaseApiController {
@@ -22,16 +20,19 @@ class PlayersController extends BaseApiController {
      * @return Response
      * @throws ApiException
      */
-    public function playerAction(Request $request, Response $response, array $args) {
+    public function indexAction(Request $request, Response $response, array $args) {
         $validator = new Validator($this->getContainer('lang'));
         $validator
             ->set('steamid', true, [
-                new Regexp('/^(?:STEAM|VALVE)_\d:\d:\d+$/')
+                new SteamID()
             ])
             ->set('emulator', true, [
                 new Number()
             ])
-            ->set('nick', true);
+            ->set('nick', true)
+            ->set('ip', true, [
+                new IPv4()
+            ]);
             
     
         $result = $validator->validate($this->getBody($request));
@@ -64,81 +65,6 @@ class PlayersController extends BaseApiController {
                 'user' => null,
                 'punishments' => $punishments
             ]
-        ]);
-    }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     * @throws ApiException
-     */
-    public function punishAction(Request $request, Response $response, array $args) {
-        $serverId = $this->getServer($request)->id;
-        
-        $playerExists = function ($value, array $values) {
-            return Player::where('id', $value)->exists() ? $value : null;
-        };
-
-        $punisherExists = function ($value, array $values) {
-            return ($value == 0 || Player::where('id', $value)->exists()) ? $value : null;
-        };
-    
-        $validator = new Validator($this->getContainer('lang'));
-        $validator
-            ->set('player_id', true, [
-                new Number(1),
-                new Callback($playerExists)
-            ])
-            ->set('punisher_id', true, [
-                new Number(0),
-                new Callback($punisherExists)
-            ])
-            ->set('type', true, [
-                new Number(0),
-            ])
-            ->set('reason', true)
-            ->set('comment', false)
-            ->set('time', true, [
-                new Number(0)
-            ]);
-    
-        $result = $validator->validate($this->getBody($request));
-    
-        if (!$result->getIsValid()) {
-            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
-        }
-        
-        $reason = Reason::firstOrCreate([
-            'server_id' => $serverId,
-            'title' => $result->getValue('reason')
-        ], [
-            'server_id' => $serverId,
-            'title' => $result->getValue('reason'),
-            'time' => null,
-            'overall' => 0,
-            'menu' => 0,
-            'active' => 1
-        ]);
-    
-        $time = $result->getValue('time');
-        $punisherId = $result->getValue('punisher_id');
-
-        $punishment = new Punishment([
-            'player_id' => $result->getValue('player_id'),
-            'punisher_id' => $punisherId > 0 ? $punisherId : null,
-            'server_id' => $serverId,
-            'type' => $result->getValue('type'),
-            'reason_id' => $reason->id,
-            'comment' => $result->getValue('comment'),
-            'expired_at' => $time > 0 ? time() + ($time * 60) : null,
-            'status' => Punishment::STATUS_PUNISHED
-        ]);
-        $punishment->save();
-        return $response->withJson([
-            'success' => true,
-            'data' => $punishment
         ]);
     }
 }

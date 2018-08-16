@@ -2,8 +2,9 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\IndexController;
 use \GameX\Controllers\PunishmentsController;
-use \GameX\Controllers\API\InfoController;
+use \GameX\Controllers\API\ServerController;
 use \GameX\Controllers\API\PlayersController;
+use \GameX\Controllers\API\PunishController;
 use \GameX\Controllers\Admin\AdminController;
 
 $authMiddleware = new \GameX\Core\Auth\AuthMiddleware($app->getContainer());
@@ -73,9 +74,10 @@ $app->group('/admin', function () {
     ->add($csrfMiddleware);
 
 $app->group('/api', function () {
-    $this->post('/info', BaseController::action(InfoController::class, 'index'));
-    $this->post('/player', BaseController::action(PlayersController::class, 'player'));
-    $this->post('/punish', BaseController::action(PlayersController::class, 'punish'));
+    $this->post('/info', BaseController::action(ServerController::class, 'index'));
+    $this->post('/player', BaseController::action(PlayersController::class, 'index'));
+    $this->post('/punish', BaseController::action(PunishController::class, 'index'));
+    $this->post('/punish/immediately', BaseController::action(PunishController::class, 'immediately'));
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
     try {
         if (!preg_match('/Basic\s+(?P<token>.+?)$/i', $request->getHeaderLine('Authorization'), $matches)) {
@@ -92,8 +94,9 @@ $app->group('/api', function () {
             throw new \GameX\Core\Exceptions\ApiException('Token required');
         }
     
+        /** @var \GameX\Models\Server $server */
         $server = \GameX\Models\Server::where('token', $token)->first();
-        if (!$server) {
+        if (!$server || !$server->active) {
             throw new \GameX\Core\Exceptions\ApiException('Invalid token');
         }
         return $next($request->withAttribute('server', $server), $response);
