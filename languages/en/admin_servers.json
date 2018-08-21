@@ -5,6 +5,7 @@
 	"address": "Server address",
 	"token": "Server token",
 	"groups": "Privileges groups",
+	"reasons": "Bans reasons",
 	"already_exists": "Server already exists",
 	"created": "Server created successfully",
 	"updated": "Server updated successfully",

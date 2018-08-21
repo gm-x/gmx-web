@@ -4,7 +4,7 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
-	<div class="uk-child-width-1-2@m" uk-grid>
+	<div class="uk-child-width-1-2@s" uk-grid>
         {% for server in servers %}
 			<div>
 				<div class="uk-card uk-card-default">
@@ -21,17 +21,17 @@
                             {% block actions %}
 								<li>
 									<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="dropdown-item">
-										<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'groups') }}
+										<span class="uk-margin-small-right" uk-icon="icon: users"></span> &nbsp;{{ trans('admin_servers', 'groups') }}
 									</a>
 								</li>
 								<li>
 									<a href="{{ path_for('admin_servers_reasons_list', {'server': server.id}) }}" class="dropdown-item">
-										<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'reasons') }}
+										<span class="uk-margin-small-right" uk-icon="icon: bell"></span> &nbsp;{{ trans('admin_servers', 'reasons') }}
 									</a>
 								</li>
 								<li>
 									<a href="#tokenModel" data-server-id="{{ server.id }}" uk-toggle>
-										<span class="oi oi-info"></span>&nbsp;{{ trans('admin_servers', 'token') }}
+										<span class="uk-margin-small-right" uk-icon="icon: tag"></span> &nbsp;{{ trans('admin_servers', 'token') }}
 									</a>
 								</li>
                             {% endblock %}
