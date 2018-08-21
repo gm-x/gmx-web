@@ -8,6 +8,7 @@
     <link rel="icon" href="/favicon.ico">
     <title>GameX™</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit-icons.js"></script>
     {% block style %}{% endblock %}
@@ -15,7 +16,7 @@
 <body>
     <div class="uk-container">
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
-            <nav class="uk-navbar-container uk-visible@m" uk-navbar>
+            <nav class="uk-navbar-container uk-visible@m uk-navbar-transparent" uk-navbar>
                 <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}"><img src="{{ base_url() }}/assets/images/gxlogo-xs.png"></a>
                 <div class="uk-navbar-left nav-overlay">
                     <ul class="uk-navbar-nav">

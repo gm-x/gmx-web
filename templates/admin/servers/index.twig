@@ -4,49 +4,45 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
-<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-	<div class="uk-overflow-auto">
-		<table class="uk-table uk-table-divider">
-			<thead>
-				<tr>
-					<th>{{ trans('admin_servers', 'name') }}</th>
-					<th>{{ trans('admin_servers', 'address') }}</th>
-					<th>&nbsp;</th>
-				</tr>
-			</thead>
-			<tbody>
-			{% for server in servers %}
-				<tr>
-					<td class="text-nowrap">{{ server.name }}</td>
-					<td class="text-nowrap">{{ server.ip }}:{{ server.port }}</td>
-					<td class="text-nowrap">
+	<div class="uk-child-width-1-2@m" uk-grid>
+        {% for server in servers %}
+			<div>
+				<div class="uk-card uk-card-default">
+					<div class="uk-card-header">
+						<div class="uk-grid-small uk-flex-middle" uk-grid>
+							<div class="uk-width-expand">
+								<h3 class="uk-card-title uk-margin-remove-bottom">{{ server.name }}</h3>
+								<p class="uk-text-meta uk-margin-remove-top">{{ server.ip }}:{{ server.port }}</p>
+							</div>
+						</div>
+					</div>
+					<div class="uk-card-body">
                         {% embed "admin/actions.twig" with {'actionId': server.id} %}
-                        	{% block actions %}
-								<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="dropdown-item">
-									<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'groups') }}
-								</a>
-								<a href="{{ path_for('admin_servers_reasons_list', {'server': server.id}) }}" class="dropdown-item">
-									<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'reasons') }}
-								</a>
-								<a
-										href="#"
-										class="dropdown-item"
-										data-toggle="modal"
-										data-target="#tokenModel"
-										data-server-id="{{ server.id }}"
-								>
-									<span class="oi oi-info"></span>&nbsp;{{ trans('admin_servers', 'token') }}
-								</a>
-							{% endblock %}
+                            {% block actions %}
+								<li>
+									<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="dropdown-item">
+										<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'groups') }}
+									</a>
+								</li>
+								<li>
+									<a href="{{ path_for('admin_servers_reasons_list', {'server': server.id}) }}" class="dropdown-item">
+										<span class="oi oi-grid-two-up"></span>&nbsp;{{ trans('admin_servers', 'reasons') }}
+									</a>
+								</li>
+								<li>
+									<a href="#tokenModel" data-server-id="{{ server.id }}" uk-toggle>
+										<span class="oi oi-info"></span>&nbsp;{{ trans('admin_servers', 'token') }}
+									</a>
+								</li>
+                            {% endblock %}
                         {% endembed %}
 
-						{{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id})) }}
-						{{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id})) }}
-					</td>
-				</tr>
-			{% endfor %}
-			</tbody>
-		</table>
+                        {{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id})) }}
+                        {{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id})) }}
+					</div>
+				</div>
+			</div>
+        {% endfor %}
 	</div>
 	{{ paginator.render(pagination) }}
 	<a href="{{ path_for('admin_servers_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
@@ -55,31 +51,13 @@
 
 {% block modals %}
     {{ parent() }}
-	<div
-			class="modal fade"
-			id="tokenModel"
-			tabindex="-1"
-			role="dialog"
-			aria-labelledby="tokenModalLabel"
-			aria-hidden="true"
-	>
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="tokenModalLabel">{{ trans('admin_servers', 'token') }}</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<input type="text" class="form-control" readonly>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('buttons', 'close') }}</button>
-				</div>
-			</div>
+	<div id="tokenModel" uk-modal>
+		<div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+			<h2 class="uk-modal-title">{{ trans('admin_servers', 'token') }}</h2>
+			<input type="text" class="uk-input" disabled>
+			<p class="uk-text-right">
+				<button class="uk-button uk-button-default uk-modal-close" type="button">{{ trans('buttons', 'close') }}</button>
+			</p>
 		</div>
 	</div>
 {% endblock %}
@@ -88,13 +66,13 @@
     {{ parent() }}
 	<script>
 		$(document).ready(function () {
-			$('#tokenModel').on('show.bs.modal', function(e) {
+			$('#tokenModel').on('show', function(e) {
 				var serverId = $(e.relatedTarget).data('server-id');
 				var modal = $(this);
 				$.getJSON('{{ path_for('admin_servers_token') }}', {server: serverId})
 					.done(function(data) {
                         if (data.success) {
-                            modal.find('.modal-body input').val(data.token);
+                            modal.find('.uk-modal-body input').val(data.token);
                         }
 					})
                     .fail(function() {

@@ -1,0 +1,82 @@
+html {
+    background: #191919;
+    color: #949494;
+}
+
+.uk-card-default {
+    background: rgb(16, 16, 16);
+    color: #666;
+}
+
+.uk-icon-button {
+    border: 1px solid #404040;
+    color: #404040;
+    background: transparent;
+}
+
+.uk-table-divider > tr:not(:first-child), .uk-table-divider > :not(:first-child) > tr, .uk-table-divider > :first-child > tr:not(:first-child) {
+    border-top: 1px solid #191919;
+}
+
+.uk-navbar-dropdown, .uk-dropdown {
+    background: rgba(0, 0, 0, 0.4);
+    color: #666;
+}
+
+.uk-navbar-dropdown-nav .uk-nav-divider {
+    border-top: 1px solid #212121;
+}
+
+a, .uk-link {
+    color: #b3b3b3;
+}
+
+a:hover, .uk-link:hover {
+    color: #e0e0e0;
+    text-decoration: none;
+}
+
+.uk-modal-dialog {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.uk-modal-footer {
+    padding: 15px 30px;
+    background: #000;
+    border-top: 10px solid transparent;
+    border-image: 10 repeating-linear-gradient(45deg, rgba(76, 3, 0, 0.43), rgba(76, 3, 0, 0.43) 10px, transparent 10px, transparent 20px, #4c0300 20px, #4c0300 30px,transparent 30px, transparent 40px);
+}
+
+.uk-button-primary {
+    background-color: transparent;
+    color: #4b5b79;
+    border: 1px solid #1a1a1a;
+}
+
+.uk-button-primary:active, .uk-button-primary.uk-active, .uk-button-primary:hover, .uk-button-primary:focus {
+    background-color: rgba(14, 109, 205, 0.1);
+    color: #fff;
+    border: 1px solid #2a2a2a;
+}
+
+.uk-button-default {
+    background-color: transparent;
+    color: #1a1a1a;
+    border: 1px solid #1a1a1a;
+}
+
+.uk-button-default:hover, .uk-button-default:focus {
+    background-color: transparent;
+    color: #404040;
+    border-color: #404040;
+}
+
+.uk-card-default .uk-card-header {
+    border-bottom: 2px solid #191919;
+}
+
+.uk-input:disabled, .uk-select:disabled, .uk-textarea:disabled {
+    background-color: #0a0a0a;
+    color: #9E9E9E;
+    border: 1px dashed #131313;
+}
