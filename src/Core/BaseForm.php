@@ -38,6 +38,18 @@ abstract class BaseForm {
     }
     
     /**
+     * @return bool
+     */
+    public function getIsSubmitted() {
+        return $this->form->getIsSubmitted();
+    }
+    
+    
+    public function getIsValid() {
+        return $this->form->getIsValid();
+    }
+    
+    /**
      * @return $this
      */
     public function create() {

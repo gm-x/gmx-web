@@ -1,10 +1,6 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
-use \GameX\Core\Forms\Elements\DateTimeInput;
-
 class DateTime extends BaseRule {
     
     /**
@@ -13,17 +9,11 @@ class DateTime extends BaseRule {
     protected $format = 'Y-m-d H:i:s';
     
     /**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+     * @inheritdoc
      */
-    protected function isValid(Form $form, Element $element) {
-        if ($element instanceof DateTimeInput) {
-            return $element->getValue() !== null;
-        } else {
-            $date = date_parse_from_format($this->format, $element->getValue());
-            return $date['error_count'] === 0;
-        }
+    public function validate($value, array $values) {
+        $date = \DateTime::createFromFormat($this->format, $value);
+        return($date !== false) ? $date : null;
     }
     
     /**

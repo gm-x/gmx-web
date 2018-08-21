@@ -1,0 +1,43 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/admin.twig' as admin %}
+{% import 'macros/paginator.twig' as paginator %}
+
+{% block content %}
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Time</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for reason in reasons %}
+				<tr>
+					<td class="text-nowrap">{{ reason.title }}</td>
+					<td class="text-nowrap">
+						{% if reason.time is null %}
+							Not setted
+						{% else %}
+							{{ reason.time }} minutes
+						{% endif %}
+					</td>
+					<td class="text-nowrap">
+                        {{ admin.edit_btn(path_for('admin_servers_reasons_edit', {'server': server.id, 'reason': reason.id})) }}
+                        {{ admin.delete_btn(path_for('admin_servers_reasons_delete', {'server': server.id, 'reason': reason.id})) }}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{{ paginator.render(pagination) }}
+	<a href="{{ path_for('admin_servers_reasons_create', {'server': server.id}) }}" class="btn btn-primary">
+		{{ trans('buttons', 'create') }}
+	</a>
+	<a href="{{ path_for('admin_servers_list', {'server': server.id}) }}" class="btn btn-secondary">
+		{{ trans('buttons', 'cancel') }}
+	</a>
+{% endblock %}

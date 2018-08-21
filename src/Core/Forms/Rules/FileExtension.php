@@ -1,9 +1,6 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
 use \Psr\Http\Message\UploadedFileInterface;
 
 class FileExtension extends BaseRule {
@@ -27,21 +24,19 @@ class FileExtension extends BaseRule {
 			$this->extensions[] = strtolower(trim($extension));
 		}
 	}
-
-	/**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+    
+    /**
+     * @param UploadedFileInterface|null $value
+     * @param array $values
+     * @return UploadedFileInterface|null
      */
-    protected function isValid(Form $form, Element $element) {
-        /** @var UploadedFileInterface|null $file */
-        $file = $element->getValue();
-        if ($file === null) {
-            return true;
+    public function validate($value, array $values) {
+        if ($value === null) {
+            return null;
         }
 
-		$this->extension = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
-        return in_array(strtolower($element->getExtension()), $this->extensions, true);
+		$this->extension = pathinfo($value->getClientFilename(), PATHINFO_EXTENSION);
+        return in_array(strtolower($this->extension), $this->extensions, true) ? $value : null;
     }
     
     /**

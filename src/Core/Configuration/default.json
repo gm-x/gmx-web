@@ -35,5 +35,7 @@
 		"email": "test@example.com",
 		"type": "mail"
 	},
-	"secret": "secret_key"
+	"log": {
+		"queries": false
+	}
 }

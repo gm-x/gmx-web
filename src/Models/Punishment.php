@@ -12,12 +12,16 @@ use \Carbon\Carbon;
  * @property integer $player_id
  * @property integer $punisher_id
  * @property integer $server_id
- * @property string $reason
+ * @property integer $reason_id
+ * @property string $comment
  * @property integer $type
  * @property string $expired_at
  * @property string $status
  * @property Player $player
  * @property Player $punisher
+ * @property Server $server
+ * @property Reason $reason
+ * @property bool $permanent
  */
 class Punishment extends BaseModel {
 
@@ -41,7 +45,21 @@ class Punishment extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['player_id', 'punisher_id', 'server_id', 'reason', 'type', 'expired_at'];
+	protected $fillable = ['player_id', 'punisher_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at', 'status'];
+    
+    /**
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'expired_at'
+    ];
+    
+    /**
+     * @var array
+     */
+    protected $hidden = ['reason_id'];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -63,15 +81,18 @@ class Punishment extends BaseModel {
 	public function server() {
 		return $this->belongsTo(Server::class, 'server_id', 'id');
 	}
-
-	/**
-	 * @return int
-	 */
-	public function getExpiredAtAttribute($value) {
-		return Carbon::parse($value, 'UTC')->getTimestamp();
-	}
-
-	public function setExpiredAtAttribute($value) {
-		$this->attributes['expired_at'] = Carbon::createFromTimestamp($value, 'UTC')->toDateTimeString();
-	}
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+	public function reason() {
+	    return $this->belongsTo(Reason::class, 'reason_id', 'id');
+    }
+    
+    /**
+     * @return bool
+     */
+	public function getPermanentAttribute() {
+	    return $this->attributes['expired_at'] === null;
+    }
 }

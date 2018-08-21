@@ -46,7 +46,9 @@ $container['db'] = function (\Psr\Container\ContainerInterface $container) {
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 
-    $capsule->getConnection()->enableQueryLog();
+    if ($config->get('log')->get('queries', false)) {
+        $capsule->getConnection()->enableQueryLog();
+    }
 
     return $capsule;
 };
@@ -113,3 +115,4 @@ $container['modules'] = function (\Psr\Container\ContainerInterface $container) 
 
 \GameX\Core\BaseModel::setContainer($container);
 \GameX\Core\BaseForm::setContainer($container);
+date_default_timezone_set('UTC');

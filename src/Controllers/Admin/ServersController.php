@@ -1,15 +1,14 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-use \GameX\Models\Server;
+
 use \GameX\Core\BaseAdminController;
-use \GameX\Core\Pagination\Pagination;
-use \Psr\Http\Message\ServerRequestInterface;
+use \Slim\Http\Request;
+use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Forms\Admin\Servers\CreateServerForm;
-use \GameX\Forms\Admin\Servers\UpdateServerForm;
-use \GameX\Core\Exceptions\ValidationException;
-use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Pagination\Pagination;
+use \GameX\Models\Server;
+use \GameX\Forms\Admin\ServersForm;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -23,12 +22,12 @@ class ServersController extends BaseAdminController {
 	}
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
+	 * @param Request $request
+	 * @param Response $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function indexAction(Request $request, Response $response, array $args = []) {
 		$pagination = new Pagination(Server::get(), $request);
 		return $this->render('admin/servers/index.twig', [
 			'servers' => $pagination->getCollection(),
@@ -37,31 +36,21 @@ class ServersController extends BaseAdminController {
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      */
-	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+	public function createAction(Request $request, Response $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
 
-		$form = new CreateServerForm($server, $this->getConfig('secret', ''));
-		try {
-			$form->create();
-
-			if ($form->process($request)) {
-			    $this->addSuccessMessage($this->getTranslate('admins_servers', 'created'));
-				return $this->redirect('admin_servers_edit', ['server' => $server->id]);
-			}
-		} catch (FormException $e) {
-			$form->getForm()->setError($e->getField(), $e->getMessage());
-			return $this->redirectTo($form->getForm()->getAction());
-		} catch (ValidationException $e) {
-			if ($e->hasMessage()) {
-				$this->addErrorMessage($e->getMessage());
-			}
-			return $this->redirectTo($form->getForm()->getAction());
-		}
+		$form = new ServersForm($server);
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_servers_edit', [
+                'server' => $server->id,
+            ]);
+        }
 
 		return $this->render('admin/servers/form.twig', [
 			'form' => $form->getForm(),
@@ -70,30 +59,20 @@ class ServersController extends BaseAdminController {
 	}
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      */
-	public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+	public function editAction(Request $request, Response $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
         
-        $form = new UpdateServerForm($server);
-		try {
-            $form->create();
-            
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_servers', 'updated'));
-                return $this->redirect('admin_servers_edit', ['server' => $server->id]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        $form = new ServersForm($server);
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_servers_edit', [
+                'server' => $server->id,
+            ]);
         }
 
 		return $this->render('admin/servers/form.twig', [
@@ -103,12 +82,12 @@ class ServersController extends BaseAdminController {
 	}
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      */
-	public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+	public function deleteAction(Request $request, Response $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
 
 		try {
@@ -123,20 +102,52 @@ class ServersController extends BaseAdminController {
 
 		return $this->redirect('admin_servers_list');
 	}
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+	public function tokenAction(Request $request, Response $response, array $args = []) {
+        try {
+            $server = $this->getServer($request, $response, $args);
+            $server->token = $server->generateNewToken();
+            $server->save();
+            return $response->withJson([
+                'success' => true,
+                'token' => $server->token
+            ]);
+        } catch (Exception $e) {
+            /** @var \Monolog\Logger $logger */
+            $logger = $this->getContainer('log');
+            $logger->error((string) $e);
+            return $response->withJson([
+                'success' => false,
+                'error' => $this->getTranslate('labels', 'exception')
+            ]);
+        }
+    }
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
+	 * @param Request $request
+	 * @param Response $response
 	 * @param array $args
 	 * @return Server
 	 * @throws NotFoundException
 	 */
-	protected function getServer(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-	    if (!array_key_exists('server', $args)) {
+	protected function getServer(Request $request, Response $response, array $args) {
+	    if (array_key_exists('server', $args)) {
+            $serverId = $args['server'];
+        } else {
+	        $serverId = $request->getParam('server');
+        }
+        
+	    if (!$serverId) {
 	        return new Server();
         }
 
-		$server = Server::find($args['server']);
+		$server = Server::find($serverId);
 		if (!$server) {
 			throw new NotFoundException($request, $response);
 		}

@@ -5,12 +5,10 @@ use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Pagination\Pagination;
-use \GameX\Core\Auth\Helpers\RoleHelper;
 use \GameX\Core\Auth\Models\RoleModel;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Forms\Admin\RolesForm;
-use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 use \Slim\Exception\NotFoundException;
 use \Exception;
@@ -25,6 +23,7 @@ class RolesController extends BaseAdminController {
         'admin.user.role' => 'Admin User Set Role',
         'admin.players' => 'Admin Players Role',
 		'admin.servers.groups' => 'Admin Privileges Groups CRUD',
+		'admin.servers.reasons' => 'Admin Reasons Groups CRUD',
 		'admin.players.privileges' => 'Admin Players Privileges CRUD',
     ];
 
@@ -67,23 +66,11 @@ class RolesController extends BaseAdminController {
         $role = $this->getRole($request, $response, $args);
     
         $form = new RolesForm($role);
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_roles', 'created'));
-                return $this->redirect('admin_roles_edit', [
-                    'role' => $role->id,
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_roles_edit', [
+                'role' => $role->id,
+            ]);
         }
 
         return $this->render('admin/roles/form.twig', [
@@ -101,23 +88,11 @@ class RolesController extends BaseAdminController {
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
         $form = new RolesForm($role);
-        try {
-            $form->create();
-        
-            if ($form->process($request)) {
-                $this->addSuccessMessage($this->getTranslate('admins_roles', 'updated'));
-                return $this->redirect('admin_roles_edit', [
-                    'role' => $role->id,
-                ]);
-            }
-        } catch (FormException $e) {
-            $form->getForm()->setError($e->getField(), $e->getMessage());
-            return $this->redirectTo($form->getForm()->getAction());
-        } catch (ValidationException $e) {
-            if ($e->hasMessage()) {
-                $this->addErrorMessage($e->getMessage());
-            }
-            return $this->redirectTo($form->getForm()->getAction());
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_roles_edit', [
+                'role' => $role->id,
+            ]);
         }
 
         return $this->render('admin/roles/form.twig', [

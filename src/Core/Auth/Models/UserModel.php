@@ -2,6 +2,7 @@
 namespace GameX\Core\Auth\Models;
 
 use \GameX\Core\BaseModel;
+use \GameX\Models\Player;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
@@ -22,6 +23,7 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \DateTime $created_at
  * @property \DateTime $update_at
  * @property RoleModel $role
+ * @property Player[] players
  */
 class UserModel extends BaseModel implements UserInterface, PersistableInterface, PermissibleInterface {
 
@@ -156,6 +158,13 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	public function hasAnyAccess($permissions) {
 		return $this->getPermissionsInstance()->hasAnyAccess($permissions);
 	}
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+	public function players() {
+        return $this->hasMany(EloquentPersistence::class, 'user_id', 'id');
+    }
 
 	/**
 	 * Creates a permissions object.
@@ -163,6 +172,6 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 * @return \Cartalyst\Sentinel\Permissions\PermissionsInterface
 	 */
 	protected function createPermissions() {
-		return new PermissionsModel(null, $this->role->permissions);
+		return new PermissionsModel(null, $this->role ? $this->role->permissions : null);
 	}
 }

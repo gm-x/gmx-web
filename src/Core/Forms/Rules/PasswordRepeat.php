@@ -1,9 +1,6 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
-
 class PasswordRepeat extends BaseRule {
     
     /**
@@ -19,16 +16,14 @@ class PasswordRepeat extends BaseRule {
     }
     
     /**
-     * @param Form $form
-     * @param Element $element
-     * @return bool
+     * @inheritdoc
      */
-    protected function isValid(Form $form, Element $element) {
-        if (!$form->exists($this->field)) {
-            return false;
+    public function validate($value, array $values) {
+        if (!array_key_exists($this->field, $values)) {
+            return null;
         }
         
-        return $element->getValue() === $form->get($this->field)->getValue();
+        return ($value === $values[$this->field]) ? $value : null;
     }
     
     /**

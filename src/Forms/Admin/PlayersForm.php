@@ -2,20 +2,25 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
-use \GameX\Core\Forms\Form;
 use \GameX\Models\Player;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\InArray;
 use \GameX\Core\Forms\Rules\Boolean;
 use \GameX\Core\Forms\Rules\Regexp;
 use \GameX\Core\Forms\Rules\Callback;
 
 class PlayersForm extends BaseForm {
+    
+    const VALID_AUTH_TYPES = [
+        Player::AUTH_TYPE_STEAM ,
+        Player::AUTH_TYPE_STEAM_AND_PASS,
+        Player::AUTH_TYPE_NICK_AND_PASS,
+        Player::AUTH_TYPE_STEAM_AND_HASH,
+        Player::AUTH_TYPE_NICK_AND_HASH,
+    ];
 
 	/**
 	 * @var string
@@ -35,21 +40,21 @@ class PlayersForm extends BaseForm {
 	}
     
     /**
-     * @param Form $form
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-	public function checkPassword(Form $form) {
-	    $authType = $form->get('auth_type')->getValue();
-        $password = $form->get('password')->getValue();
-        return $authType !== Player::AUTH_TYPE_STEAM  && empty($password) ? false : true;
+	public function checkPassword($value, array $values) {
+        return $values['auth_type'] !== Player::AUTH_TYPE_STEAM  && empty($values['password']) ? null : $value;
     }
     
     /**
-     * @param Form $form
-     * @return bool
+     * @param mixed $value
+     * @param array $values
+     * @return mixed|null
      */
-    public function checkExists(Form $form) {
-        return !Player::where('steamid', $form->getValue('steamid'))->exists();
+    public function checkExists($value, array $values) {
+        return !Player::where('steamid', $value)->exists() ? $value : null;
     }
 
 	/**
@@ -89,23 +94,24 @@ class PlayersForm extends BaseForm {
             ->add(new Checkbox('access_block_change_nick', $this->player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK), [
                 'title' => 'Block change nick',
                 'required' => false,
-            ]))
-            ->addRule('steamid', new Trim())
-            ->addRule('steamid', new Required())
-            ->addRule('steamid', new Regexp('/^(?:STEAM|VALVE)_\d:\d:\d+$/'))
-            ->addRule('auth_type', new Trim())
-            ->addRule('auth_type', new Required())
-            ->addRule('auth_type', new InArray( [
-                Player::AUTH_TYPE_STEAM ,
-                Player::AUTH_TYPE_STEAM_AND_PASS,
-                Player::AUTH_TYPE_NICK_AND_PASS,
-                Player::AUTH_TYPE_STEAM_AND_HASH,
-                Player::AUTH_TYPE_NICK_AND_HASH,
-            ]))
-            ->addRule('password', new Trim())
-            ->addRule('password', new Callback([$this, 'checkPassword'], 'Password must be provided'))
-            ->addRule('access_reserve_nick', new Boolean())
-            ->addRule('access_block_change_nick', new Boolean());
+            ]));
+		
+		$this->form->getValidator()
+            ->set('steamid', true, [
+                new Regexp('/^(?:STEAM|VALVE)_\d:\d:\d+$/')
+            ])
+            ->set('auth_type', true, [
+                new InArray(self::VALID_AUTH_TYPES)
+            ])
+            ->set('password', false, [
+                new Callback([$this, 'checkPassword'], 'Password must be provided')
+            ])
+            ->set('access_reserve_nick', false, [
+                new Boolean()
+            ])
+            ->set('access_block_change_nick', false, [
+                new Boolean()
+            ]);
         
         if (!$this->player->exists) {
             $this->form->addRule('steamid', new Callback([$this, 'checkExists'], 'Player already exists'));
