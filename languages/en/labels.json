@@ -1,8 +1,9 @@
 {
 	"required": "Required",
 	"are_you_sure": "Are you sure?",
-	"search": "Search",
 	"saved": "Saved successfully",
+	"exception": "Something wrong. Please Try again later."
+	"search": "Search",
 	"index": "Index",
 	"punishments": "Punishments"
 }

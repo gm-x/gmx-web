@@ -8,10 +8,7 @@ use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Exception\NotFoundException;
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\FormInputText;
-use \GameX\Core\Forms\Elements\FormInputFlags;
-use \GameX\Core\Forms\Elements\FormInputNumber;
+use \GameX\Forms\Admin\GroupsForm;
 use \Exception;
 
 class GroupsController extends BaseAdminController {
@@ -47,33 +44,20 @@ class GroupsController extends BaseAdminController {
      */
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args);
-        $form = $this
-            ->getForm($group)
-            ->setAction((string)$request->getUri())
-            ->processRequest($request);
-
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-                    $group->server_id = $server->id;
-                    $group->title = $form->get('title')->getValue();
-                    $group->flags = $form->get('flags')->getFlagsInt();
-                    $group->priority = $form->get('priority')->getValue();
-                    $group->save();
-                    return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
-                } catch (Exception $e) {
-                	var_dump($e); die();
-                    return $this->failRedirect($e, $form);
-                }
-            }
+        $group = $this->getGroup($request, $response, $args, $server);
+    
+        $form = new GroupsForm($group);
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_servers_groups_edit', [
+                'server' => $server->id,
+                'group' => $group->id
+            ]);
         }
 
         return $this->render('admin/servers/groups/form.twig', [
             'server' => $server,
-            'form' => $form,
+            'form' => $form->getForm(),
             'create' => true,
         ]);
     }
@@ -86,31 +70,20 @@ class GroupsController extends BaseAdminController {
      */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args);
-        $form = $this
-            ->getForm($group)
-            ->setAction((string)$request->getUri())
-            ->processRequest($request);
-
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-                    $group->title = $form->get('title')->getValue();
-                    $group->flags = $form->get('flags')->getFlagsInt();
-                    $group->priority = $form->get('priority')->getValue();
-					$group->save();
-                    return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
-                } catch (Exception $e) {
-                    return $this->failRedirect($e, $form);
-                }
-            }
+        $group = $this->getGroup($request, $response, $args, $server);
+    
+        $form = new GroupsForm($group);
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_servers_groups_edit', [
+                'server' => $server->id,
+                'group' => $group->id
+            ]);
         }
 
         return $this->render('admin/servers/groups/form.twig', [
             'server' => $server,
-            'form' => $form,
+            'form' => $form->getForm(),
             'create' => false,
         ]);
     }
@@ -123,12 +96,13 @@ class GroupsController extends BaseAdminController {
      */
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args);
+        $group = $this->getGroup($request, $response, $args, $server);
 
         try {
             $group->delete();
+            $this->addSuccessMessage($this->getTranslate('admins_players', 'removed'));
         } catch (Exception $e) {
-            $this->addErrorMessage('Something wrong. Please Try again later.');
+            $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             /** @var \Monolog\Logger $logger */
             $logger = $this->getContainer('log');
             $logger->error((string) $e);
@@ -161,48 +135,23 @@ class GroupsController extends BaseAdminController {
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
+     * @param Server $server
      * @return Group
      * @throws NotFoundException
      */
-	protected function getGroup(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+	protected function getGroup(ServerRequestInterface $request, ResponseInterface $response, array $args, Server $server) {
         if (!array_key_exists('group', $args)) {
-            return new Group();
+            $group = new Group();
+            $group->server_id = $server->id;
+        } else {
+            $group = Group::find($args['group']);
         }
-
-        $group = Group::find($args['group']);
+        
         if (!$group) {
             throw new NotFoundException($request, $response);
         }
 
+        
         return $group;
-    }
-
-    /**
-     * @param Group $group
-     * @return Form
-     */
-    protected function getForm(Group $group) {
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_server_group');
-        $form
-            ->add(new FormInputText('title', $group->title, [
-                'title' => 'Title',
-                'error' => 'Required',
-                'required' => true,
-            ]))
-            ->add(new FormInputFlags('flags', $group->flags, [
-                'title' => 'Flags',
-                'error' => 'Required',
-                'required' => true,
-            ]))
-            ->add(new FormInputNumber('priority', $group->priority, [
-                'title' => 'Priority',
-                'required' => false,
-            ]))
-            ->setRules('title', ['required', 'trim', 'min_length' => 1])
-            ->setRules('flags', ['required', 'trim', 'min_length' => 1])
-            ->setRules('priority', ['integer', 'min' => 0]);
-
-        return $form;
     }
 }

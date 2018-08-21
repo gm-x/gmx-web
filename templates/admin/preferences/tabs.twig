@@ -1,8 +1,8 @@
-<ul class="uk-subnav uk-subnav-divider" uk-margin>
-	<li class="{{ activeTab == 'admin_preferences_index' ? 'uk-active' : '' }}">
-		<a href="{{ path_for('admin_preferences_index') }}">Index</a>
-	</li>
-	<li class="{{ activeTab == 'admin_preferences_email' ? 'uk-active' : '' }}">
-		<a href="{{ path_for('admin_preferences_email') }}">Email</a>
-	</li>
-</ul>
+{% import 'macros/tabs.twig' as tabs %}
+{{ tabs.render([{
+	'href': path_for('admin_preferences_index'),
+	'title': trans('admin_preferences', 'tab_main')
+}, {
+    'href': path_for('admin_preferences_email'),
+    'title': trans('admin_preferences', 'tab_email')
+}], href) }}

@@ -1,18 +1,16 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-use \Cartalyst\Sentinel\Roles\RoleInterface;
-use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
-use \GameX\Core\Auth\Helpers\RoleHelper;
-use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\BaseAdminController;
-use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Elements\FormInputText;
-use \Slim\Exception\NotFoundException;
+use \GameX\Core\Pagination\Pagination;
+use \GameX\Core\Auth\Models\RoleModel;
+use \Cartalyst\Sentinel\Roles\RoleInterface;
+use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
+use \GameX\Forms\Admin\RolesForm;
 use \GameX\Core\Exceptions\ValidationException;
+use \Slim\Exception\NotFoundException;
 use \Exception;
 
 class RolesController extends BaseAdminController {
@@ -25,6 +23,7 @@ class RolesController extends BaseAdminController {
         'admin.user.role' => 'Admin User Set Role',
         'admin.players' => 'Admin Players Role',
 		'admin.servers.groups' => 'Admin Privileges Groups CRUD',
+		'admin.servers.reasons' => 'Admin Reasons Groups CRUD',
 		'admin.players.privileges' => 'Admin Players Privileges CRUD',
     ];
 
@@ -37,77 +36,86 @@ class RolesController extends BaseAdminController {
 	protected function getActiveMenu() {
 		return 'admin_roles_list';
 	}
-
+    
+    /**
+     * Init RolesController
+     */
 	public function init() {
         $this->roleRepository = $this->getContainer('auth')->getRoleRepository();
     }
-
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         return $this->render('admin/roles/index.twig', [
             'roles' => $this->roleRepository->get()
         ]);
     }
-
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        $form = $this->getForm(new RoleModel())
-            ->setAction((string)$request->getUri())
-            ->processRequest($request);
-
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-                    $roleHelper = new RoleHelper($this->container);
-                    $roleHelper->createRole(
-                        $form->getValue('name'),
-                        $form->getValue('slug')
-                    );
-                    return $this->redirect('admin_roles_list');
-                } catch (Exception $e) {
-                    return $this->failRedirect($e, $form);
-                }
-            }
+        $role = $this->getRole($request, $response, $args);
+    
+        $form = new RolesForm($role);
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_roles_edit', [
+                'role' => $role->id,
+            ]);
         }
 
         return $this->render('admin/roles/form.twig', [
-            'form' => $form,
+            'form' => $form->getForm(),
             'create' => true,
         ]);
     }
-
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
-
-        $form = $this->getForm($role)
-            ->setAction((string)$request->getUri())
-            ->processRequest($request);
-
-        if ($form->getIsSubmitted()) {
-            if (!$form->getIsValid()) {
-                return $this->redirectTo($form->getAction());
-            } else {
-                try {
-                    $role->fill($form->getValues());
-                    $role->save();
-                    return $this->redirect('admin_roles_list');
-                } catch (Exception $e) {
-                    return $this->failRedirect($e, $form);
-                }
-            }
+        $form = new RolesForm($role);
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect('admin_roles_edit', [
+                'role' => $role->id,
+            ]);
         }
 
         return $this->render('admin/roles/form.twig', [
-            'form' => $form,
+            'form' => $form->getForm(),
             'create' => false,
         ]);
     }
-
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
 
         try {
-            $role->delete();
+            if ($role->users()->count() > 0) {
+                $this->addErrorMessage('There users attached to role');
+            } else {
+                $role->delete();
+            }
         } catch (Exception $e) {
             $this->addErrorMessage('Something wrong. Please Try again later.');
             /** @var \Monolog\Logger $logger */
@@ -117,7 +125,13 @@ class RolesController extends BaseAdminController {
 
         return $this->redirect('admin_roles_list');
     }
-
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function usersAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
 
@@ -129,7 +143,13 @@ class RolesController extends BaseAdminController {
             'pagination' => $pagination,
         ]);
     }
-
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function permissionsAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
 
@@ -167,37 +187,15 @@ class RolesController extends BaseAdminController {
      * @throws NotFoundException
      */
     protected function getRole(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+        if (!array_key_exists('role', $args)) {
+            return new RoleModel();
+        }
+        
         $role = $this->roleRepository->findById($args['role']);
         if (!$role) {
             throw new NotFoundException($request, $response);
         }
 
         return $role;
-    }
-
-    /**
-     * @param RoleModel $role
-     * @return Form
-     */
-    protected function getForm(RoleModel $role) {
-        /** @var Form $form */
-        $form = $this->getContainer('form')->createForm('admin_role');
-        $form
-            ->add(new FormInputText('name', $role->name, [
-                'title' => 'Name',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ]))
-            ->add(new FormInputText('slug', $role->slug, [
-                'title' => 'Slug',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
-            ]))
-			->setRules('name', ['required', 'trim', 'min_length' => 1])
-			->setRules('slug', ['required', 'trim', 'min_length' => 1]);
-
-        return $form;
     }
 }

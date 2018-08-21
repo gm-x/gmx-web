@@ -6,8 +6,8 @@ use \GameX\Controllers\API\PrivilegesController;
 use \GameX\Controllers\API\PlayersController;
 use \GameX\Controllers\Admin\AdminController;
 
-$authMiddleware = new \GameX\Core\Auth\AuthMiddleware($container);
-$csrfMiddleware = new \GameX\Core\CSRF\Middleware($container->get('csrf'));
+$authMiddleware = new \GameX\Core\Auth\AuthMiddleware($app->getContainer());
+$csrfMiddleware = new \GameX\Core\CSRF\Middleware($app->getContainer()->get('csrf'));
 
 $app->group('', function () {
     /** @var \Slim\App $this */
@@ -24,6 +24,7 @@ $app->group('', function () {
         ->setName('punishments');
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
+    include __DIR__ . DIRECTORY_SEPARATOR . 'settings.php';
 
     $modules = $this->getContainer()->get('modules');
     /** @var \GameX\Core\Module\ModuleInterface $module */
@@ -75,22 +76,38 @@ $app->group('/api', function () {
     $this->post('/privileges', BaseController::action(PrivilegesController::class, 'index'));
     $this->post('/player', BaseController::action(PlayersController::class, 'player'));
     $this->post('/punish', BaseController::action(PlayersController::class, 'punish'));
-})->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($container) {
-	if (!preg_match('/Basic\s+(?P<token>.+)$/i', $request->getHeaderLine('Authorization'), $matches)) {
-		throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
-	}
-	$config = $container->get('config');
-	$token = base64_decode($matches['token']);
-	if ($token === false) {
-        throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
-    }
-    $token = trim($token, ':');
-	$data = \Firebase\JWT\JWT::decode($token, $config['secret'], ['HS512']);
-	if (empty($data->server_id)) {
-		throw new \GameX\Core\Exceptions\NotAllowedException($request, $response);
-	}
-	return $next($request->withAttribute('server_id', $data->server_id), $response);
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
+    try {
+        if (!preg_match('/Basic\s+(?P<token>.+?)$/i', $request->getHeaderLine('Authorization'), $matches)) {
+            throw new \GameX\Core\Exceptions\NotAllowedException();
+        }
+    
+        $token = base64_decode($matches['token']);
+        if (!$token) {
+            throw new \GameX\Core\Exceptions\NotAllowedException();
+        }
+        
+        list ($token) = explode(':', $token);
+        if (empty($token)) {
+            throw new \GameX\Core\Exceptions\NotAllowedException();
+        }
+    
+        $server = \GameX\Models\Server::where('token', $token)->first();
+        if (!$server || $server->ip !== $request->getAttribute('ip_address')) {
+            throw new \GameX\Core\Exceptions\NotAllowedException();
+        }
+        return $next($request->withAttribute('server_id', $server->id), $response);
+    } catch (\GameX\Core\Exceptions\NotAllowedException $e) {
+        return $response
+            ->withJson([
+                'success' => false,
+                'error' => [
+                    'code' => 403,
+                    'message' => 'Bad token',
+                ],
+            ]);
+    }
+})->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) use ($app) {
     try {
         return $next($request, $response);
     } catch (\GameX\Core\Exceptions\ApiException $e) {
@@ -103,12 +120,13 @@ $app->group('/api', function () {
                 ],
             ]);
     } catch (\Exception $e) {
+        $app->getContainer()->get('log')->error((string)$e);
         return $response
             ->withJson([
                 'success' => false,
                 'error' => [
                     'code' => \GameX\Core\Exceptions\ApiException::ERROR_GENERIC,
-                    'message' => 'Error',
+                    'message' => 'Server Error',
                 ],
             ]);
     }

@@ -13,6 +13,7 @@ use \GameX\Core\BaseModel;
  * @property integer $port
  * @property string $token
  * @property Group[] $groups
+ * @property Reason[] $reasons
  */
 class Server extends BaseModel {
 
@@ -32,12 +33,29 @@ class Server extends BaseModel {
 	 * @var array
 	 */
 	protected $fillable = ['name', 'ip', 'port', 'token'];
-
+    
     /**
-     * Get the comments for the blog post.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function groups()
-    {
+    public function groups() {
         return $this->hasMany(Group::class, 'server_id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reasons() {
+        return $this->hasMany(Reason::class, 'server_id');
+    }
+    
+    /**
+     * @return string
+     */
+    public function generateNewToken() {
+        $tries = 0;
+        do {
+            $token = bin2hex(random_bytes(32));
+        } while (++$tries < 3 && Server::where('token', $token)->exists());
+        return $token;
     }
 }

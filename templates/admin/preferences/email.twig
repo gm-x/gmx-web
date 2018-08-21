@@ -62,7 +62,7 @@
 				e.stopPropagation();
 				e.preventDefault();
 
-				$.post('{{ path_for('admin_preferences_email_test') }}')
+				$.post('{{ path_for('admin_preferences_email_test') }}', $('#mailConfigForm').serialize())
 					.done(function (data) {
 						if (data.success) {
 							$('#testMailModalLabel').text('Success');
@@ -80,9 +80,9 @@
 
 			$('#email_pref_transport').on('change', function () {
 				if ($(this).val() === 'smtp') {
-				    $('#email_pref_smtp').show();
+				    $('#email_pref_smtp').removeClass('d-none');
 				} else {
-                    $('#email_pref_smtp').hide();
+                    $('#email_pref_smtp').addClass('d-none');
 				}
             });
 		});

@@ -53,19 +53,6 @@ class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public function delete() {
-		$isSoftDeleted = array_key_exists('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this));
-
-		if ($this->exists && ! $isSoftDeleted) {
-			$this->users()->detach();
-		}
-
-		return parent::delete();
-	}
-
-	/**
 	 * Get mutator for the "permissions" attribute.
 	 *
 	 * @param  mixed  $permissions

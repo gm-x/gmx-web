@@ -1,7 +1,7 @@
 <?php
 namespace GameX\Core\Forms\Elements;
 
-class FormInputNumber extends FormInput {
+class Number extends Input {
 
     /**
      * @inheritdoc

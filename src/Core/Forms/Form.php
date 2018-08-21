@@ -1,10 +1,11 @@
 <?php
-
 namespace GameX\Core\Forms;
 
+use GameX\Core\Forms\Elements\Password;
 use \Psr\Http\Message\ServerRequestInterface;
-use \Form\Validator;
 use \GameX\Core\Session\Session;
+use \GameX\Core\Lang\Language;
+use \GameX\Core\Forms\Elements\File;
 use \ArrayAccess;
 use \Exception;
 
@@ -13,7 +14,7 @@ class Form implements ArrayAccess {
      * @var Session
      */
     protected $session;
-
+    
     /**
      * @var Validator
      */
@@ -55,19 +56,25 @@ class Form implements ArrayAccess {
     protected $action;
 
     /**
-     * @var FormElement[]
+     * @var Element[]
      */
     protected $elements = [];
+    
+    /**
+     * @var bool
+     */
+    protected $isSaved = false;
 
     /**
      * Form constructor.
      * @param Session $session
+     * @param Language $language
      * @param $name
      */
-    public function __construct(Session $session, $name) {
+    public function __construct(Session $session, Language $language, $name) {
         $this->session = $session;
+        $this->validator = new Validator($language);
         $this->name = $name;
-        $this->validator = new Validator([], ['stop_on_error' => false]);
 
         $this->loadValues();
     }
@@ -86,7 +93,7 @@ class Form implements ArrayAccess {
      * @return $this
      */
     public function setAction($action) {
-        $this->action = (string) $action;
+		$this->action = (string) $action;
         return $this;
     }
 
@@ -98,10 +105,10 @@ class Form implements ArrayAccess {
     }
 
     /**
-     * @param FormElement $element
+     * @param Element $element
      * @return $this
      */
-    public function add(FormElement $element) {
+    public function add(Element $element) {
         $this->elements[$element->getName()] = $element;
 
         if (array_key_exists($element->getName(), $this->values)) {
@@ -119,7 +126,7 @@ class Form implements ArrayAccess {
 
     /**
      * @param string $name
-     * @return FormElement
+     * @return Element
      * @throws Exception
      */
     public function get($name) {
@@ -148,27 +155,30 @@ class Form implements ArrayAccess {
         }
 
         $body = $request->getParsedBody();
-        if (!array_key_exists($this->name, $body) || !is_array($body[$this->name])) {
-            return $this;
-        }
+        $data = array_key_exists($this->name, $body) && is_array($body[$this->name])
+            ? $body[$this->name]
+            : [];
 
-        $values = $body[$this->name];
+        $body = $request->getUploadedFiles();
+        $files = array_key_exists($this->name, $body) && is_array($body[$this->name])
+            ? $body[$this->name]
+            : [];
 
         $this->isSubmitted = true;
-        $this->isValid = $this->validator->validate($values);
-        $values = $this->validator->getValues();
-        foreach ($values as $key => $value) {
-            if (array_key_exists($key, $this->elements)) {
-                $this->elements[$key]->setValue($value);
+        $values = array_merge($data, $files);
+        $result = $this->validator->validate($values);
+        
+        $this->isValid = $result->getIsValid();
+        foreach ($this->elements as $element) {
+            $key = $element->getName();
+            $element->setValue($result->getValue($key));
+            if ($result->hasError($key)) {
+                $element->setHasError(true)->setError($result->getError($key));
+            } else {
+                $element->setHasError(false);
             }
         }
-        $errors = $this->validator->getErrors();
-        foreach ($errors as $key => $error) {
-            if ($this->exists($key)) {
-                $this->get($key)->setHasError(true);
-            }
-        }
-
+        
         return $this;
     }
 
@@ -209,6 +219,13 @@ class Form implements ArrayAccess {
     public function getValue($name) {
         return $this->get($name)->getValue();
     }
+    
+    /**
+     * @return Element[]
+     */
+    public function getElements() {
+        return $this->elements;
+    }
 
     /**
      * @param $name
@@ -223,33 +240,21 @@ class Form implements ArrayAccess {
         $this->isValid = false;
         return $this;
     }
-
+    
     /**
      * @return Validator
      */
     public function getValidator() {
         return $this->validator;
     }
-
+    
     /**
-     * @param string $name
-     * @param array $rules
-     * @return $this;
+     * @param $key
+     * @param Rule $rule
+     * @return Form
      */
-    public function setRules($name, array $rules) {
-        $this->validator->setRules($name, $rules);
-        return $this;
-    }
-
-    /**
-     * @param string $field
-     * @param array $rules
-     * @return $this
-     */
-    public function addRules($field, array $rules) {
-        $this->validator->addRules([
-            $field => $rules
-        ]);
+    public function addRule($key, Rule $rule) {
+        $this->validator->add($key, $rule);
         return $this;
     }
 
@@ -281,9 +286,12 @@ class Form implements ArrayAccess {
      * Save values and errors to session
      */
     protected function writeValues() {
+        if ($this->isSaved) {
+            return;
+        }
         $values = []; $errors = [];
         foreach ($this->elements as $element) {
-            if ($element->getType() != 'password') {
+            if (!($element instanceof Password)) {
                 $values[$element->getName()] = $element->getValue();
             }
             if ($element->getHasError()) {
@@ -295,8 +303,12 @@ class Form implements ArrayAccess {
         	'values' => $values,
         	'errors' => $errors,
 		]);
+        $this->isSaved = true;
     }
-
+    
+    /**
+     * @return string
+     */
     protected function getSessionKey() {
         return 'form_' . $this->name;
     }

@@ -31,13 +31,11 @@
 	},
 	"mail": {
 		"enabled": false,
-		"from": {
-			"name": "test",
-			"email": "test@example.com"
-		},
-		"transport": {
-			"type": "mail"
-		}
+		"name": "test",
+		"email": "test@example.com",
+		"type": "mail"
 	},
-	"secret": "secret_key"
+	"log": {
+		"queries": false
+	}
 }
