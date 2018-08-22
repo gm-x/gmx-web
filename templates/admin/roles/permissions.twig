@@ -3,26 +3,31 @@
 {% block content %}
     <form action="{{ path_for('admin_roles_permissions', {'role': role.id}) }}" method="post">
         {{ csrf_token() }}
-        <div class="form-group">
+        <div class="uk-child-width-1-3@m" uk-grid>
         {% for permission, title in permissions %}
-            <div class="custom-control custom-checkbox">
-                <input
-                        type="checkbox"
-                        class="custom-control-input"
-                        name="permissions[{{ permission }}]"
-                        value="1"
-                        id="permission_{{ permission }}"
-                        {% if role_has_access(role, permission) %}checked{% endif %}
-                />
-                <label class="custom-control-label" for="permission_{{ permission }}">{{ title }}</label>
+        <div>
+            <div class="uk-card uk-card-default">
+                <div class="inputGroup">
+                    <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            name="permissions[{{ permission }}]"
+                            value="1"
+                            id="permission_{{ permission }}"
+                            {% if role_has_access(role, permission) %}checked{% endif %}
+                    />
+                    <label class="custom-control-label" for="permission_{{ permission }}">{{ title }}</label>
+                </div>
             </div>
+        </div>
         {% endfor %}
         </div>
-        <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="{{ trans('buttons', 'save') }}">
-            <a href="{{ path_for('admin_roles_list') }}" class="btn btn-secondary">
+        <div class="uk-margin-small-top">
+            <input type="submit" class="uk-button uk-button-primary uk-width-1-3 uk-margin-small-bottom" value="{{ trans('buttons', 'save') }}">
+            <a href="{{ path_for('admin_roles_list') }}" class="uk-button uk-button-secondary uk-width-1-3 uk-margin-small-bottom">
 				{{ trans('buttons', 'cancel') }}
             </a>
         </div>
     </form>
+
 {% endblock %}

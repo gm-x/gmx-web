@@ -5,12 +5,12 @@ html {
 
 .uk-card-default {
     background: rgb(16, 16, 16);
-    color: #666;
+    color: #949494;
 }
 
 .uk-icon-button {
-    border: 1px solid #404040;
-    color: #404040;
+    border: 1px solid #757575;
+    color: #757575;
     background: transparent;
 }
 
@@ -34,6 +34,10 @@ a, .uk-link {
 a:hover, .uk-link:hover {
     color: #e0e0e0;
     text-decoration: none;
+}
+
+.uk-navbar-nav > li.uk-active > a {
+    color: #b53838;
 }
 
 .uk-modal-dialog {
@@ -79,4 +83,82 @@ a:hover, .uk-link:hover {
     background-color: #0a0a0a;
     color: #9E9E9E;
     border: 1px dashed #131313;
+}
+
+.uk-card-default .uk-card-title {
+    color: #b53838;
+}
+
+.inputGroup {
+    position: relative;
+}
+
+.inputGroup label {
+    padding: 12px 30px;
+    display: block;
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: color 200ms ease-in;
+    overflow: hidden;
+}
+
+.inputGroup label:before {
+     width: 10px;
+     height: 10px;
+     border-radius: 50%;
+     content: '';
+     background-color: #a94b48;
+     position: absolute;
+     left: 50%;
+     top: 50%;
+     transform: translate(-50%, -50%) scale3d(1, 1, 1);
+     transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+     opacity: 0;
+     z-index: -1;
+}
+
+.inputGroup label:after {
+     width: 32px;
+     height: 32px;
+     content: '';
+     border: 2px solid #D1D7DC;
+    background: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ") no-repeat 5px 5px;
+    border-radius: 50%;
+     z-index: 2;
+     position: absolute;
+     right: 30px;
+     top: 50%;
+     transform: translateY(-50%);
+     cursor: pointer;
+     transition: all 200ms ease-in;
+}
+
+
+.inputGroup input:checked ~ label {
+    color: #fff;
+}
+
+.inputGroup input:checked ~ label:before {
+     transform: translate(-50%, -50%) scale3d(56, 56, 1);
+     opacity: 1;
+ }
+
+.inputGroup input:checked ~ label:after {
+     background-color: #673333;
+     border-color: #673333;
+ }
+
+.inputGroup input {
+    width: 32px;
+    height: 32px;
+    order: 1;
+    z-index: 2;
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    visibility: hidden;
 }
