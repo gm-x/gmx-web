@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Auth\Models;
 
+use \Carbon\Carbon;
 use \Cartalyst\Sentinel\Permissions\PermissibleInterface;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \Cartalyst\Sentinel\Permissions\PermissibleTrait;
@@ -13,14 +14,15 @@ use \GameX\Core\BaseModel;
  * @property int $id
  * @property string $name
  * @property string $slug
- * @property array $permissions
- * @property \DateTime $completed_at
- * @property \DateTime $created_at
- * @property \DateTime $updated_at
+ * @property Carbon $completed_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property UserModel[] $users
+ * @property RolesPermissionsModel[] $permissions
  */
-class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface {
-
-	use PermissibleTrait;
+class RoleModel extends BaseModel implements RoleInterface {
+    
+    protected $cachedPermissions = null;
 
 	/**
 	 * The Eloquent users model name.
@@ -49,28 +51,37 @@ class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function users() {
-		return $this->hasMany(UserModel::class, 'role_id');
+		return $this->hasMany(UserModel::class, 'role_id', 'id');
 	}
 
 	/**
-	 * Get mutator for the "permissions" attribute.
+	 * The Users relationship.
 	 *
-	 * @param  mixed  $permissions
-	 * @return array
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function getPermissionsAttribute($permissions) {
-		return $permissions ? json_decode($permissions, true) : [];
+	public function permissions() {
+		return $this->hasMany(RolesPermissionsModel::class, 'role_id', 'id');
 	}
 
-	/**
-	 * Set mutator for the "permissions" attribute.
-	 *
-	 * @param  mixed  $permissions
-	 * @return void
-	 */
-	public function setPermissionsAttribute(array $permissions) {
-		$this->attributes['permissions'] = $permissions ? json_encode($permissions) : '';
-	}
+//	/**
+//	 * Get mutator for the "permissions" attribute.
+//	 *
+//	 * @param  mixed  $permissions
+//	 * @return array
+//	 */
+//	public function getPermissionsAttribute($permissions) {
+//		return $permissions ? json_decode($permissions, true) : [];
+//	}
+//
+//	/**
+//	 * Set mutator for the "permissions" attribute.
+//	 *
+//	 * @param  mixed  $permissions
+//	 * @return void
+//	 */
+//	public function setPermissionsAttribute(array $permissions) {
+//		$this->attributes['permissions'] = $permissions ? json_encode($permissions) : '';
+//	}
 
 	/**
 	 * {@inheritDoc}
@@ -94,11 +105,12 @@ class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface
 	}
 
 	/**
-	 * @param $permissions
+	 * @param $permission
 	 * @return bool
 	 */
-	public function hasAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAccess($permissions);
+	public function hasAccess($permission) {
+	    $this->getPermissionsList();
+	    return array_key_exists($permission, $this->cachedPermissions) && $this->cachedPermissions[$permission];
 	}
 
 	/**
@@ -106,11 +118,13 @@ class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface
 	 * @return bool
 	 */
 	public function hasAnyAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAnyAccess($permissions);
-	}
-
-	protected function createPermissions() {
-		return new PermissionsModel(null, $this->permissions);
+	    foreach ($permissions as $permission) {
+	        if ($this->hasAccess($permission)) {
+	            return true;
+            }
+        }
+        
+        return false;
 	}
 
 	/**
@@ -128,4 +142,17 @@ class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface
 	{
 		static::$usersModel = $usersModel;
 	}
+	
+	
+	protected function getPermissionsList() {
+	    if ($this->cachedPermissions === null) {
+	        /** @var RolesPermissionsModel[] $permissions */
+	        $permissions = $this->permissions()->with('permission')->get();
+	        foreach ($permissions as $permission) {
+	            $this->cachedPermissions[$permission->permission->key] = true;
+            }
+        }
+        
+        return $this->cachedPermissions;
+    }
 }

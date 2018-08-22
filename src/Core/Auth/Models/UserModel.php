@@ -25,9 +25,7 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property RoleModel $role
  * @property Player[] players
  */
-class UserModel extends BaseModel implements UserInterface, PersistableInterface, PermissibleInterface {
-
-	use PermissibleTrait;
+class UserModel extends BaseModel implements UserInterface, PersistableInterface {
 
 	protected $table = 'users';
 
@@ -146,7 +144,7 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 * @return bool
 	 */
 	public function hasAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAccess($permissions);
+	    return $this->role->hasAccess($permissions);
 	}
 
 	/**
@@ -156,7 +154,7 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 * @return bool
 	 */
 	public function hasAnyAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAnyAccess($permissions);
+	    return $this->role->hasAccess($permissions);
 	}
     
     /**
@@ -165,13 +163,4 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	public function players() {
         return $this->hasMany(EloquentPersistence::class, 'user_id', 'id');
     }
-
-	/**
-	 * Creates a permissions object.
-	 *
-	 * @return \Cartalyst\Sentinel\Permissions\PermissionsInterface
-	 */
-	protected function createPermissions() {
-		return new PermissionsModel(null, $this->role ? $this->role->permissions : null);
-	}
 }

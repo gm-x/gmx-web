@@ -9,7 +9,7 @@ return function () {
     $this
         ->get('', BaseController::action(ServersController::class, 'index'))
         ->setName('admin_servers_list')
-        ->setArgument('permission', 'admin.servers');
+        ->setArgument('permission', 'servers');
     
     $this
         ->get('/token', BaseController::action(ServersController::class, 'token'))
