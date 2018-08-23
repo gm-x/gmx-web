@@ -37,46 +37,4 @@ class PermissionsModel extends BaseModel {
     public function roles() {
         return $this->hasMany(RoleModel::class, 'role_id', 'id');
     }
-//
-//	/**
-//	 * @return array
-//	 */
-//	protected function createPreparedPermissions() {
-//		$prepared = [];
-//
-//		foreach ($this->secondaryPermissions as $keys => $value) {
-//			foreach ($this->extractClassPermissions($keys) as $key) {
-//				// If the value is not in the array, we're opting in
-//				if (! array_key_exists($key, $prepared)) {
-//					$prepared[$key] = $value;
-//
-//					continue;
-//				}
-//
-//				// If our value is in the array and equals false, it will override
-//				if ($value === false) {
-//					$prepared[$key] = $value;
-//				}
-//			}
-//		}
-//
-//		return $prepared;
-//	}
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    public function updatePermission($permission, $value = true, $create = false) {
-//        if (array_key_exists($permission, $this->permissions)) {
-//            $permissions = $this->permissions;
-//
-//            $permissions[$permission] = $value;
-//
-//            $this->permissions = $permissions;
-//        } elseif ($create) {
-//            $this->addPermission($permission, $value);
-//        }
-//
-//        return $this;
-//    }
 }

@@ -45,7 +45,7 @@ class AuthMiddleware {
             return $next($request, $response);
         }
 
-        if (!$user || !$user->hasAccess($permission)) {
+        if (!$user || !call_user_func_array([$user, 'hasAccess'], (array) $permission)) {
             throw new NotAllowedException();
         }
 		return $next($request, $response);

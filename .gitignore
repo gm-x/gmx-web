@@ -10,3 +10,4 @@ upload/
 !upload/.gitkeep
 config.json
 .idea/
+.vscode/

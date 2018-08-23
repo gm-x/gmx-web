@@ -6,8 +6,7 @@ use \GameX\Models\Player;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
-use \Cartalyst\Sentinel\Permissions\PermissibleInterface;
-use \Cartalyst\Sentinel\Permissions\PermissibleTrait;
+use \GameX\Core\Auth\Interfaces\PermissionsInterface;
 use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -25,7 +24,7 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property RoleModel $role
  * @property Player[] players
  */
-class UserModel extends BaseModel implements UserInterface, PersistableInterface {
+class UserModel extends BaseModel implements UserInterface, PersistableInterface, PermissionsInterface {
 
 	protected $table = 'users';
 
@@ -137,24 +136,11 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 		return $this->belongsTo(RoleModel::class);
 	}
 
-	/**
-	 * Returns if access is available for all given permissions.
-	 *
-	 * @param  array|string  $permissions
-	 * @return bool
-	 */
-	public function hasAccess($permissions) {
-	    return $this->role->hasAccess($permissions);
-	}
-
-	/**
-	 * Returns if access is available for any given permissions.
-	 *
-	 * @param  array|string  $permissions
-	 * @return bool
-	 */
-	public function hasAnyAccess($permissions) {
-	    return $this->role->hasAccess($permissions);
+    /**
+     * @inheritdoc
+     */
+	public function hasAccess($group, $permission = null, $access = null, $serverId = 0) {
+	    return $this->role->hasAccess($group, $permission, $access, $serverId);
 	}
     
     /**

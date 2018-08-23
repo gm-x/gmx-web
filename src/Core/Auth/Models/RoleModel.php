@@ -2,9 +2,8 @@
 namespace GameX\Core\Auth\Models;
 
 use \Carbon\Carbon;
-use \Cartalyst\Sentinel\Permissions\PermissibleInterface;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
-use \Cartalyst\Sentinel\Permissions\PermissibleTrait;
+use \GameX\Core\Auth\Interfaces\PermissionsInterface;
 use \GameX\Core\BaseModel;
 
 /**
@@ -63,26 +62,6 @@ class RoleModel extends BaseModel implements RoleInterface {
 		return $this->hasMany(RolesPermissionsModel::class, 'role_id', 'id');
 	}
 
-//	/**
-//	 * Get mutator for the "permissions" attribute.
-//	 *
-//	 * @param  mixed  $permissions
-//	 * @return array
-//	 */
-//	public function getPermissionsAttribute($permissions) {
-//		return $permissions ? json_decode($permissions, true) : [];
-//	}
-//
-//	/**
-//	 * Set mutator for the "permissions" attribute.
-//	 *
-//	 * @param  mixed  $permissions
-//	 * @return void
-//	 */
-//	public function setPermissionsAttribute(array $permissions) {
-//		$this->attributes['permissions'] = $permissions ? json_encode($permissions) : '';
-//	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -104,52 +83,65 @@ class RoleModel extends BaseModel implements RoleInterface {
 		return $this->users;
 	}
 
-	/**
-	 * @param $permission
-	 * @return bool
-	 */
-	public function hasAccess($permission) {
-	    $this->getPermissionsList();
-	    return array_key_exists($permission, $this->cachedPermissions) && $this->cachedPermissions[$permission];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function hasAccess($group, $permission = null, $access = null, $serverId = 0) {
+	    $permissions = $this->getPermissionsList();
 
-	/**
-	 * @param $permissions
-	 * @return bool
-	 */
-	public function hasAnyAccess($permissions) {
-	    foreach ($permissions as $permission) {
-	        if ($this->hasAccess($permission)) {
-	            return true;
-            }
+	    // TODO: Refactor this shit
+	    if (!array_key_exists($group, $permissions)) {
+	        return false;
         }
-        
-        return false;
+
+        if ($permission === null) {
+            return false;
+        }
+
+        if (!array_key_exists($permission, $permissions[$group])) {
+            return false;
+        }
+
+        if (!array_key_exists($serverId, $permissions[$group][$permission])) {
+            return false;
+        }
+
+        if ($access === null) {
+            return true;
+        }
+
+        $data = $permissions[$group][$permission][$serverId];
+        return ($data & $access) === $access;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public static function getUsersModel()
-	{
+	public static function getUsersModel() {
 		return static::$usersModel;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public static function setUsersModel($usersModel)
-	{
+	public static function setUsersModel($usersModel) {
 		static::$usersModel = $usersModel;
 	}
-	
-	
+
+    /**
+     * @return array
+     */
 	protected function getPermissionsList() {
 	    if ($this->cachedPermissions === null) {
+            $this->cachedPermissions = [];
 	        /** @var RolesPermissionsModel[] $permissions */
 	        $permissions = $this->permissions()->with('permission')->get();
 	        foreach ($permissions as $permission) {
-	            $this->cachedPermissions[$permission->permission->key] = true;
+	            $p = $permission->permission;
+	            if (!array_key_exists($p->group, $this->cachedPermissions)) {
+	                $this->cachedPermissions[$p->group] = [];
+                }
+	            $this->cachedPermissions[$p->group][$p->key] = $permission->access;
             }
         }
         

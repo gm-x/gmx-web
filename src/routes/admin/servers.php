@@ -1,5 +1,6 @@
 <?php
 use \GameX\Core\BaseController;
+use \GameX\Core\Auth\Permissions\Manager;
 use \GameX\Controllers\Admin\ServersController;
 use \GameX\Controllers\Admin\GroupsController;
 use \GameX\Controllers\Admin\ReasonsController;
@@ -9,7 +10,7 @@ return function () {
     $this
         ->get('', BaseController::action(ServersController::class, 'index'))
         ->setName('admin_servers_list')
-        ->setArgument('permission', 'servers');
+        ->setArgument('permission', ['admin', 'server', Manager::ACCESS_VIEW]);
     
     $this
         ->get('/token', BaseController::action(ServersController::class, 'token'))
