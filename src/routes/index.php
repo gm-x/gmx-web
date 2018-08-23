@@ -6,7 +6,7 @@ use \GameX\Controllers\API\PrivilegesController;
 use \GameX\Controllers\API\PlayersController;
 use \GameX\Controllers\Admin\AdminController;
 
-$authMiddleware = new \GameX\Core\Auth\AuthMiddleware($app->getContainer());
+$authMiddleware = new \GameX\Core\Auth\Middlewares\AuthMiddleware($app->getContainer());
 $csrfMiddleware = new \GameX\Core\CSRF\Middleware($app->getContainer()->get('csrf'));
 
 $app->group('', function () {

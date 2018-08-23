@@ -29,12 +29,12 @@
         <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
 				{% for item in menu %}
-				    {% if has_access(item.permission) %}
+				    {#{% if has_access(item.permission) %}#}
 						{% set isActive = menu.getActiveRoute() == item.route %}
                         <li class="nav-item {% if isActive %}active{% endif %}">
                             <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
                         </li>
-                    {% endif %}
+                    {#{% endif %}#}
                 {% endfor %}
             </ul>
             <form class="form-inline my-2 my-lg-0">
@@ -64,9 +64,9 @@
                             </a>
                         {% else %}
                             <h6 class="dropdown-header">{{ get_user_name() }}</h6>
-                            {% if has_access('admin.*') %}
+                            {#{% if has_access('admin.*') %}#}
                                 <a class="dropdown-item" href="{{ path_for('admin_index') }}">Admin</a>
-                            {% endif %}
+                            {#{% endif %}#}
                             <a class="dropdown-item" href="{{ path_for('user_settings_index') }}">Settings</a>
                             <a class="dropdown-item" href="{{ path_for('logout') }}">{{ trans('buttons', 'logout') }}</a>
                         {% endif %}

@@ -4,6 +4,7 @@ namespace GameX\Core\Auth\Models;
 use \Carbon\Carbon;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \GameX\Core\Auth\Interfaces\PermissionsInterface;
+use \GameX\Core\Auth\Permissions\Manager;
 use \GameX\Core\BaseModel;
 
 /**
@@ -19,7 +20,12 @@ use \GameX\Core\BaseModel;
  * @property UserModel[] $users
  * @property RolesPermissionsModel[] $permissions
  */
-class RoleModel extends BaseModel implements RoleInterface {
+class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface {
+    
+    /**
+     * @var Manager|null
+     */
+    protected static $manager = null;
     
     protected $cachedPermissions = null;
 
@@ -43,6 +49,20 @@ class RoleModel extends BaseModel implements RoleInterface {
 		'slug',
 		'permissions',
 	];
+    
+    /**
+     * @param Manager $manager
+     */
+	public static function setManager(Manager $manager) {
+	    self::$manager = $manager;
+    }
+    
+    /**
+     * @return Manager|null
+     */
+    public static function getManager() {
+	    return self::$manager;
+    }
 
 	/**
 	 * The Users relationship.
@@ -82,37 +102,33 @@ class RoleModel extends BaseModel implements RoleInterface {
 	public function getUsers() {
 		return $this->users;
 	}
+    
+    /**
+     * @inheritdoc
+     */
+    public function hasAccessToGroup($group) {
+        return self::$manager !== null
+            ? self::$manager->hasAccessToGroup($this, $group)
+            : false;
+    }
 
     /**
      * @inheritdoc
      */
-    public function hasAccess($group, $permission = null, $access = null, $serverId = 0) {
-	    $permissions = $this->getPermissionsList();
-
-	    // TODO: Refactor this shit
-	    if (!array_key_exists($group, $permissions)) {
-	        return false;
-        }
-
-        if ($permission === null) {
-            return false;
-        }
-
-        if (!array_key_exists($permission, $permissions[$group])) {
-            return false;
-        }
-
-        if (!array_key_exists($serverId, $permissions[$group][$permission])) {
-            return false;
-        }
-
-        if ($access === null) {
-            return true;
-        }
-
-        $data = $permissions[$group][$permission][$serverId];
-        return ($data & $access) === $access;
+    public function hasAccessToPermission($group, $permission = null, $access = null) {
+        return self::$manager !== null
+            ? self::$manager->hasAccessToPermission($this, $group, $permission, $access)
+            : false;
 	}
+    
+    /**
+     * @inheritdoc
+     */
+    public function hasAccessToResource($group, $permission, $resource, $access = null) {
+        return self::$manager !== null
+            ? self::$manager->hasAccessToResource($this, $group, $permission, $resource, $access)
+            : false;
+    }
 
 	/**
 	 * {@inheritDoc}

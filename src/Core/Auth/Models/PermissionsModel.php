@@ -8,6 +8,7 @@ use \GameX\Core\BaseModel;
  * @property integer $id
  * @property string $group
  * @property string $key
+ * @property string|null $type
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property RolesPermissionsModel[] $roles

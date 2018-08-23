@@ -53,9 +53,17 @@ $container['db'] = function (\Psr\Container\ContainerInterface $container) {
     return $capsule;
 };
 
+$container['permissions'] = function () {
+    return new \GameX\Core\Auth\Permissions\Manager();
+};
+
 $container['auth'] = function (\Psr\Container\ContainerInterface $container) {
     $container->get('db');
-    $bootsrap = new \GameX\Core\Auth\SentinelBootstrapper($container->get('request'), $container->get('session'));
+    $bootsrap = new \GameX\Core\Auth\SentinelBootstrapper(
+        $container->get('request'),
+        $container->get('session'),
+        $container->get('permissions')
+    );
     return $bootsrap->createSentinel();
 };
 

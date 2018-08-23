@@ -14,11 +14,9 @@ class Permissions extends Migration {
                 $table->enum('group', [
                     'user',
                     'admin',
-                    'nick_pass',
-                    'steamid_hash',
-                    'nick_hash',
-                ])->default('steamid');
+                ]);
                 $table->string('key', 255);
+                $table->string('type', 64)->nullable();
                 $table->timestamps();
             });
     }

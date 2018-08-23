@@ -12,8 +12,8 @@ class RolesPermissions extends Migration {
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->unsignedInteger('role_id')->references('id')->on('roles');
                 $table->unsignedInteger('permission_id')->references('id')->on('permissions');
+                $table->unsignedInteger('resource')->nullable();
                 $table->unsignedTinyInteger('access')->nullable()->default('0');
-                $table->json('servers')->nullable();
                 $table->timestamps();
                 $table->unique(['role_id', 'permission_id']);
             });

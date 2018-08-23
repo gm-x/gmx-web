@@ -8,7 +8,8 @@ use \GameX\Core\BaseModel;
  * @property integer $id
  * @property integer $role_id
  * @property integer $permission_id
- * @property string $access
+ * @property integer $resource
+ * @property integer $access
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property RoleModel $role
@@ -45,20 +46,5 @@ class RolesPermissionsModel extends BaseModel {
      */
     public function permission() {
         return $this->belongsTo(PermissionsModel::class, 'permission_id', 'id');
-    }
-
-    /**
-     * @param  mixed  $access
-     * @return array
-     */
-    public function getAccessAttribute($access) {
-        return $access ? json_decode($access, true) : [];
-    }
-
-    /**
-     * @param  array  $access
-     */
-    public function setAccessAttribute(array $access) {
-        $this->attributes['access'] = $access ? json_encode($access) : '';
     }
 }
