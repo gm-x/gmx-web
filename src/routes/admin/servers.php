@@ -10,7 +10,7 @@ return function () {
     $this
         ->get('', BaseController::action(ServersController::class, 'index'))
         ->setName('admin_servers_list')
-        ->setArgument('permission', ['admin', 'server', Manager::ACCESS_VIEW]);
+        ->setArgument('permission', [Manager::GROUP_ADMIN, 'server', Manager::ACCESS_VIEW]);
     
     $this
         ->get('/token', BaseController::action(ServersController::class, 'token'))

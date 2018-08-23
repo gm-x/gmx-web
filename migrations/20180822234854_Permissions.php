@@ -11,7 +11,13 @@ class Permissions extends Migration {
         $this->getSchema()
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('group', 255);
+                $table->enum('group', [
+                    'user',
+                    'admin',
+                    'nick_pass',
+                    'steamid_hash',
+                    'nick_hash',
+                ])->default('steamid');
                 $table->string('key', 255);
                 $table->timestamps();
             });
