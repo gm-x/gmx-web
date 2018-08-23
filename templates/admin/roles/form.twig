@@ -10,11 +10,11 @@
 		{{ forms.element_input(form.slug) }}
         <div class="form-group">
             {% if create %}
-                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
             {% else %}
-                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
             {% endif %}
-            <a href="{{ path_for('admin_roles_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
+            <a href="{{ path_for('admin_roles_list') }}" class="uk-button uk-button-secondary">{{ trans('buttons', 'cancel') }}</a>
         </div>
     </form>
 </div>

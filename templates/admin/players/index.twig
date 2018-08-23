@@ -6,8 +6,12 @@
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ path_for('admin_players_list') }}" method="get">
-        <input type="text" name="filter" value="{{ filter }}">
-        <button type="submit"><span class="oi oi-magnifying-glass"></span></button>
+        <div class="uk-button-group uk-width-1-2@m">
+        <input class="uk-input uk-width-3-4" type="text" name="filter" value="{{ filter }}">
+            <div class="uk-inline">
+                 <button type="submit" class="uk-button uk-button-secondary"><span uk-icon="icon: search" class="uk-icon"></span></button>
+            </div>
+        </div>
     </form>
     <div class="uk-overflow-auto">
         <table class="uk-table uk-table-divider">
@@ -41,6 +45,6 @@
         </table>
     </div>
 	{{ paginator.render(pagination) }}
-    <a href="{{ path_for('admin_players_create') }}" class="btn btn-primary btn-sm">{{ trans('buttons', 'create') }}</a>
+    <a href="{{ path_for('admin_players_create') }}" class="uk-button uk-button-primary">{{ trans('buttons', 'create') }}</a>
 </div>
 {% endblock %}

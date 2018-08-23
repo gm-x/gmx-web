@@ -10,9 +10,15 @@ html {
 }
 
 .uk-icon-button {
-    border: 1px solid #757575;
+    //border: 1px solid #757575;
     color: #757575;
-    background: transparent;
+    background: rgba(158, 158, 158, 0.1);
+}
+
+.uk-icon-button:hover, .uk-icon-button:focus {
+    background-color: rgba(158, 158, 158, 0.2);
+    color: #757575;
+    outline: none;
 }
 
 .uk-table-divider > tr:not(:first-child), .uk-table-divider > :not(:first-child) > tr, .uk-table-divider > :first-child > tr:not(:first-child) {
@@ -39,6 +45,7 @@ a:hover, .uk-link:hover {
 
 .uk-navbar-nav > li.uk-active > a {
     color: #b53838;
+    border-bottom: 1px solid #b53838;
 }
 
 .uk-modal-dialog {
@@ -54,14 +61,14 @@ a:hover, .uk-link:hover {
 
 .uk-button-primary {
     background-color: transparent;
-    color: #4b5b79;
-    border: 1px solid #1a1a1a;
+    color: #b9b9b9;
+    border: 1px solid #b9b9b9;
 }
 
 .uk-button-primary:active, .uk-button-primary.uk-active, .uk-button-primary:hover, .uk-button-primary:focus {
-    background-color: rgba(14, 109, 205, 0.1);
-    color: #fff;
-    border: 1px solid #2a2a2a;
+    background-color: transparent;
+    color: #b53838;
+    border: 1px solid #b53838;
 }
 
 .uk-button-default {
@@ -80,10 +87,46 @@ a:hover, .uk-link:hover {
     border-bottom: 2px solid #191919;
 }
 
+.uk-button-secondary {
+    background-color: transparent;
+    color: #565656;
+    border: 1px solid #565656;
+}
+
+.uk-button-secondary:hover, .uk-button-secondary:focus {
+    color: #6c6c6c;
+    background-color: transparent;
+    border: 1px solid #6c6c6c;
+}
+
 .uk-input:disabled, .uk-select:disabled, .uk-textarea:disabled {
     background-color: #0a0a0a;
     color: #9E9E9E;
     border: 1px dashed #131313;
+}
+
+.uk-input, .uk-select, .uk-textarea {
+    background: #0a0a0a;
+    color: #a0a0a0;
+    border: 1px solid #313131;
+}
+
+.uk-form-label {
+    color: #b7b7b7;
+    font-size: 0.875rem;
+}
+
+fieldset {
+    border: 1px dashed #3a3a3a;
+}
+
+
+
+.uk-input:focus, .uk-select:focus, .uk-textarea:focus {
+    outline: none;
+    background-color: #000;
+    color: #999;
+    border-color: #313131;
 }
 
 .uk-card-default .uk-card-title {
@@ -99,6 +142,7 @@ a:hover, .uk-link:hover {
     display: block;
     text-align: left;
     cursor: pointer;
+    border-radius: 4px;
     position: relative;
     z-index: 2;
     transition: color 200ms ease-in;
@@ -124,9 +168,6 @@ a:hover, .uk-link:hover {
      width: 32px;
      height: 32px;
      content: '';
-     border: 2px solid #D1D7DC;
-    background: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ") no-repeat 5px 5px;
-    border-radius: 50%;
      z-index: 2;
      position: absolute;
      right: 30px;
@@ -149,6 +190,7 @@ a:hover, .uk-link:hover {
 .inputGroup input:checked ~ label:after {
      background-color: #673333;
      border-color: #673333;
+    background: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ") no-repeat 5px 5px;
  }
 
 .inputGroup input {

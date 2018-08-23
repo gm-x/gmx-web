@@ -1,4 +1,4 @@
-{% macro element_input(element) %}
+{% macro element_input(element, label = false) %}
 	{% set classes = ['uk-input'] %}
 	{% if element.getHasError() %}
 		{% set classes = classes|merge(['is-invalid']) %}
@@ -9,7 +9,11 @@
 		{% set attributes = attributes|merge({'required': 'required'}) %}
 	{% endif %}
 
-	<div class="uk-inline uk-width-1-1">
+	<div class="uk-margin uk-inline uk-width-1-1">
+        {% if label %}
+        <label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+        <div class="uk-form-controls">
+        {% endif %}
 		{% if element.getIcon() %}
 			<span class="uk-form-icon" uk-icon="icon: {{ element.getIcon() }}"></span>
 		{% endif %}
@@ -27,6 +31,9 @@
 		{% if element.getHasError() %}
 			<span class="invalid-feedback">{{ element.getError() }}</span>
 		{% endif %}
+        {% if label %}
+            </div>
+        {% endif %}
 	</div>
 {% endmacro %}
 
@@ -40,22 +47,23 @@
     {% if element.getIsRequired() %}
         {% set attributes = attributes|merge({'required': 'required'}) %}
     {% endif %}
-
-	<div class="form-group">
+	<div class="uk-margin uk-inline uk-width-1-1">
 		<label for="{{ element.getId() }}">{{ element.getTitle() }}</label>
-		<input
-				type="{{ element.getType() }}"
-				id="{{ element.getId() }}"
-				name="{{ element.getFormName() }}[{{ element.getName() }}]"
-				value="{{ element.format(format) }}"
-				class="{{ classes | join(' ') }}"
-        {% for key, value in attributes %}
-            {{ key }}="{{ value }}"
-        {% endfor %}
-		/>
-        {% if element.getHasError() %}
-			<span class="invalid-feedback">{{ element.getError() }}</span>
-        {% endif %}
+		<div class="uk-form-controls">
+			<input
+					type="{{ element.getType() }}"
+					id="{{ element.getId() }}"
+					name="{{ element.getFormName() }}[{{ element.getName() }}]"
+					value="{{ element.format(format) }}"
+					class="{{ classes | join(' ') }}"
+			{% for key, value in attributes %}
+				{{ key }}="{{ value }}"
+			{% endfor %}
+			/>
+			{% if element.getHasError() %}
+				<span class="invalid-feedback">{{ element.getError() }}</span>
+			{% endif %}
+		</div>
 	</div>
 {% endmacro %}
 
@@ -70,7 +78,7 @@
 		{% set attributes = attributes|merge({'required': 'required'}) %}
 	{% endif %}
 
-	<div class="form-group">
+	<div class="uk-margin uk-inline uk-width-1-1">
 		<div class="custom-control custom-checkbox">
 			<input
 				type="checkbox"
@@ -91,7 +99,7 @@
 {% endmacro %}
 
 {% macro element_select(element) %}
-	{% set classes = ['form-control'] %}
+	{% set classes = ['uk-select','uk-form-width-large'] %}
 	{% if element.getHasError() %}
 		{% set classes = classes|merge(['is-invalid']) %}
 	{% endif %}
@@ -100,30 +108,32 @@
 	{% if element.getIsRequired() %}
 		{% set attributes = attributes|merge({'required': 'required'}) %}
 	{% endif %}
-	<div class="form-group">
+	<div class="uk-margin uk-inline uk-width-1-1">
 		<label for="{{ element.getId() }}">{{ element.getTitle() }}</label>
-		<select
-			id="{{ element.getId() }}"
-			name="{{ element.getFormName() }}[{{ element.getName() }}]"
-			class="{{ classes | join(' ') }}"
-			{% for key, value in attributes %}
-				{{ key }}="{{ value }}"
-			{% endfor %}
-		>
-		{% if element.getEmptyOption() %}
-			<option value="">{{ element.getEmptyOption() }}</option>
-		{% endif %}
-		{% for key, value in element.getOptions() %}
-			{% if key == element.getValue() %}
-				<option value="{{ key }}" selected="selected">{{ value }}</option>
-			{% else %}
-				<option value="{{ key }}">{{ value }}</option>
+		<div class="uk-form-controls">
+			<select
+				id="{{ element.getId() }}"
+				name="{{ element.getFormName() }}[{{ element.getName() }}]"
+				class="{{ classes | join(' ') }}"
+				{% for key, value in attributes %}
+					{{ key }}="{{ value }}"
+				{% endfor %}
+			>
+			{% if element.getEmptyOption() %}
+				<option value="">{{ element.getEmptyOption() }}</option>
 			{% endif %}
-		{% endfor %}
-		</select>
-		{% if element.getHasError() %}
-			<span class="invalid-feedback">{{ element.getError() }}</span>
-		{% endif %}
+			{% for key, value in element.getOptions() %}
+				{% if key == element.getValue() %}
+					<option value="{{ key }}" selected="selected">{{ value }}</option>
+				{% else %}
+					<option value="{{ key }}">{{ value }}</option>
+				{% endif %}
+			{% endfor %}
+			</select>
+			{% if element.getHasError() %}
+				<span class="invalid-feedback">{{ element.getError() }}</span>
+			{% endif %}
+		</div>
 	</div>
 {% endmacro %}
 
