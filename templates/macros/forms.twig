@@ -77,24 +77,23 @@
 	{% if element.getIsRequired() %}
 		{% set attributes = attributes|merge({'required': 'required'}) %}
 	{% endif %}
-
 	<div class="uk-margin uk-inline uk-width-1-1">
-		<div class="custom-control custom-checkbox">
+		<label class="switcher">
 			<input
-				type="checkbox"
-				id="{{ element.getId() }}"
-				name="{{ element.getFormName() }}[{{ element.getName() }}]"
-				value="1"
-				class="{{ classes | join(' ') }}"
-				{% for key, value in attributes %}
-					{{ key }}="{{ value }}"
-				{% endfor %}
-				{% if element.getValue() %}
-					checked="checked"
-				{% endif %}
+					type="checkbox"
+					id="{{ element.getId() }}"
+					name="{{ element.getFormName() }}[{{ element.getName() }}]"
+					value="1"
+					class="{{ classes | join(' ') }}"
+			{% for key, value in attributes %}
+				{{ key }}="{{ value }}"
+			{% endfor %}
+			{% if element.getValue() %}
+				checked="checked"
+			{% endif %}
 			/>
-			<label for="{{ element.getId() }}" class="custom-control-label">{{ element.getTitle() }}</label>
-		</div>
+			<div class="switcher__indicator"></div><span>{{ element.getTitle() }}</span>
+		</label>
 	</div>
 {% endmacro %}
 

@@ -45,8 +45,29 @@ a:hover, .uk-link:hover {
 
 .uk-navbar-nav > li.uk-active > a {
     color: #b53838;
-    border-bottom: 1px solid #b53838;
+    position: relative;
 }
+
+.uk-navbar-nav > li.uk-active > a:after {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    top: 22px;
+    border-right: 10px solid #b53838;
+    border-bottom: 10px solid transparent;
+}
+.uk-navbar-nav > li.uk-active > a:before {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 48px;
+    border-left: 10px solid #b53838;
+    border-top: 10px solid transparent;
+}
+
+
 
 .uk-modal-dialog {
     background: rgba(0, 0, 0, 0.5);
@@ -118,6 +139,7 @@ a:hover, .uk-link:hover {
 
 fieldset {
     border: 1px dashed #3a3a3a;
+    min-width: 100%;
 }
 
 
@@ -205,3 +227,105 @@ fieldset {
     cursor: pointer;
     visibility: hidden;
 }
+
+.switcher {
+    position: relative;
+    display: inline-block;
+    padding-left: 54px;
+}
+.switcher input {
+    display: none;
+}
+
+.switcher__indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #9a9a9a;
+    border-radius: 50%;
+    transition: all .3s ease;
+    -webkit-animation-name: pulsein;
+    animation-name: pulsein;
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+}
+.switcher__indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 20px;
+    background-color: #333333;
+    border-radius: 10px;
+    transition: all .3s ease;
+}
+input:checked + .switcher__indicator::after {
+    background-color: #b53838;
+    -webkit-transform: translateX(20px);
+    transform: translateX(20px);
+    -webkit-animation-name: pulseout;
+    animation-name: pulseout;
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+}
+input:checked + .switcher__indicator::before {
+    background-color: #333333;
+}
+input:disabled + .switcher__indicator::after, input:disabled + .switcher__indicator::before {
+    background-color: #6e6e6e;
+}
+
+@-webkit-keyframes pulsein {
+    0%, 100% {
+        top: 0px;
+        height: 20px;
+        width: 20px;
+    }
+    50% {
+        top: 3px;
+        height: 14px;
+        width: 26px;
+    }
+}
+
+@keyframes pulsein {
+    0%, 100% {
+        top: 0px;
+        height: 20px;
+        width: 20px;
+    }
+    50% {
+        top: 3px;
+        height: 14px;
+        width: 26px;
+    }
+}
+@-webkit-keyframes pulseout {
+    0%, 100% {
+        top: 0px;
+        height: 20px;
+        width: 20px;
+    }
+    50% {
+        top: 3px;
+        height: 14px;
+        width: 26px;
+    }
+}
+@keyframes pulseout {
+    0%, 100% {
+        top: 0px;
+        height: 20px;
+        width: 20px;
+    }
+    50% {
+        top: 3px;
+        height: 14px;
+        width: 26px;
+    }
+}
+

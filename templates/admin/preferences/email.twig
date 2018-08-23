@@ -12,7 +12,7 @@
 		{{ forms.element_input(form.from_email, true) }}
 		{{ forms.element_select(form.transport_type) }}
 		<div id="email_pref_smtp" class="{{ form.transport_type.getValue() != "smtp" ? 'd-none' : ''}}">
-			<fieldset>
+			<fieldset class="uk-width-1-1@m">
 				<legend>SMTP</legend>
                 {{ forms.element_input(form.smtp_host, true) }}
                 {{ forms.element_input(form.smtp_port, true) }}
