@@ -4,9 +4,14 @@ html {
     font-size: 14px;
 }
 
+.uk-navbar-container:not(.uk-navbar-transparent) {
+    background: #191919;
+}
+
 .uk-card-default {
     background: rgb(16, 16, 16);
     color: #949494;
+    border-radius: 4px;
 }
 
 .uk-icon-button {

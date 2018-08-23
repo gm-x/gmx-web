@@ -16,7 +16,7 @@
 <body>
     <div class="uk-container">
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
-            <nav class="uk-navbar-container uk-visible@m uk-navbar-transparent" uk-navbar>
+            <nav class="uk-navbar-container uk-visible@m" uk-navbar>
                 <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}"><img src="{{ base_url() }}/assets/images/gxlogo-xs.png"></a>
                 <div class="uk-navbar-left nav-overlay">
                     <ul class="uk-navbar-nav">
@@ -80,7 +80,7 @@
                     </ul>
                 </div>
             </nav>
-            <nav class="uk-navbar-container uk-hidden@m uk-navbar-transparent" uk-navbar>
+            <nav class="uk-navbar-container uk-hidden@m" uk-navbar>
                 <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}"><img src="{{ base_url() }}/assets/images/gxlogo-xs.png"></a>
                 <div class="uk-navbar-left">
                     <a class="uk-navbar-toggle" uk-navbar-toggle-icon href="#" uk-toggle="target: #offcanvas-nav"></a>
