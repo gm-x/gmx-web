@@ -1,6 +1,7 @@
 <?php
 use \GameX\Core\BaseController;
 use \GameX\Controllers\Admin\RolesController;
+use \GameX\Controllers\Admin\PermissionsController;
 use \GameX\Core\Auth\Permissions\Manager;
 use \GameX\Core\Auth\Middlewares\HasAccessToPermission;
 
@@ -31,8 +32,10 @@ return function () {
         ->setName('admin_roles_users')
         ->add(new HasAccessToPermission('admin', 'user_role', Manager::ACCESS_LIST));
 
-    $this
-        ->map(['GET', 'POST'], '/{role}/permissions', BaseController::action(RolesController::class, 'permissions'))
-        ->setName('admin_roles_permissions')
-        ->setArgument('permission', 'admin.roles');
+    $this->group('/{role}/permissions', function () {
+        /** @var \Slim\App $this */
+        $this->get('', BaseController::action(PermissionsController::class, 'index'))
+            ->setName('admin_role_permissions_list')
+            ->add(new HasAccessToPermission('admin', 'role_permission', Manager::ACCESS_LIST));
+    });
 };

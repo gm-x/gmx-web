@@ -2,6 +2,7 @@
 namespace GameX\Core\Auth\Permissions;
 
 use \GameX\Core\Auth\Models\RoleModel;
+use \GameX\Core\Auth\Models\PermissionsModel;
 
 class Manager {
     const GROUP_USER = 'user';
@@ -12,6 +13,11 @@ class Manager {
     const ACCESS_CREATE = 4;
     const ACCESS_EDIT = 8;
     const ACCESS_DELETE = 16;
+    
+    /**
+     * @var PermissionsModel[]|null
+     */
+    protected $permissions = null;
     
     /**
      * @var int
@@ -32,6 +38,22 @@ class Manager {
      * @var array
      */
     protected $cachedResources = [];
+    
+    /**
+     * @return PermissionsModel[]
+     */
+    public function getPermissionsList() {
+        if ($this->permissions === null) {
+            /** @var PermissionsModel[] $permissions */
+            $permissions = PermissionsModel::get();
+            $this->permissions = [];
+            foreach ($permissions as $permission) {
+                $this->permissions[$permission->id] = $permission;
+            }
+        }
+        
+        return $this->permissions;
+    }
     
     /**
      * @param RoleModel $role

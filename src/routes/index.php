@@ -78,8 +78,7 @@ $app->group('/admin', function () {
 //	}
 })
     ->add($authMiddleware)
-    ->add($csrfMiddleware)
-    ->add(new HasAccessToGroup('admin'));
+    ->add($csrfMiddleware);
 
 $app->group('/api', function () {
     $this->post('/info', BaseController::action(ServerController::class, 'index'));
