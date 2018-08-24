@@ -5,7 +5,7 @@ html {
 }
 
 .uk-navbar-container:not(.uk-navbar-transparent) {
-    background: #191919;
+    background: #151d20;
 }
 
 .uk-card-default {
@@ -173,7 +173,7 @@ fieldset {
      height: 10px;
      border-radius: 50%;
      content: '';
-     background-color: #f5ebb8;
+     background-color: #a94b48;
      position: absolute;
      left: 50%;
      top: 50%;
@@ -260,7 +260,7 @@ fieldset {
     border-radius: 10px;
     transition: all .3s ease;
 }
-input:checked + .switcher__indicator::after {
+.switcher input:checked + .switcher__indicator::after {
     background-color: #f5ebb8;
     -webkit-transform: translateX(20px);
     transform: translateX(20px);
@@ -270,7 +270,7 @@ input:checked + .switcher__indicator::after {
     animation-duration: .3s;
 }
 
-input:disabled + .switcher__indicator::after, input:disabled + .switcher__indicator::before {
+.switcher input:disabled + .switcher__indicator::after, input:disabled + .switcher__indicator::before {
     background-color: #6e6e6e;
 }
 
