@@ -8,9 +8,6 @@ use \GameX\Core\Menu\MenuItem;
 abstract class BaseAdminController extends BaseMainController {
 
 	protected function initMenu() {
-		/** @var Twig $view */
-		$view = $this->getContainer('view');
-
 		/** @var \GameX\Core\Lang\Language $lang */
 		$lang = $this->getContainer('lang');
 
@@ -45,6 +42,8 @@ abstract class BaseAdminController extends BaseMainController {
             ));
 
 		// TODO: Make refactoring for this
+//        /** @var Twig $view */
+//        $view = $this->getContainer('view');
 //		$modules = $this->getContainer('modules');
 //		/** @var \GameX\Core\Module\ModuleInterface $module */
 //		foreach ($modules as $module) {
