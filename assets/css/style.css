@@ -1,6 +1,6 @@
 html {
-    background: #191919;
-    color: #949494;
+    background: #151d20;
+    color: #cac5b6;
     font-size: 14px;
 }
 
@@ -9,8 +9,8 @@ html {
 }
 
 .uk-card-default {
-    background: rgb(16, 16, 16);
-    color: #949494;
+    background: #263137;
+    color: #cac5b6;
     border-radius: 4px;
 }
 
@@ -27,7 +27,8 @@ html {
 }
 
 .uk-table-divider > tr:not(:first-child), .uk-table-divider > :not(:first-child) > tr, .uk-table-divider > :first-child > tr:not(:first-child) {
-    border-top: 1px solid #191919;
+    border-top: 1px solid #38464e;
+    box-shadow: 0px -1px #151d20;
 }
 
 .uk-navbar-dropdown, .uk-dropdown {
@@ -49,19 +50,10 @@ a:hover, .uk-link:hover {
 }
 
 .uk-navbar-nav > li.uk-active > a {
-    color: #b53838;
+    color: #f5ebb8;
     position: relative;
 }
 
-.uk-navbar-nav > li.uk-active > a:after {
-    content: '';
-    position: absolute;
-    z-index: 2;
-    right: 0;
-    top: 22px;
-    border-right: 10px solid #b53838;
-    border-bottom: 10px solid transparent;
-}
 .uk-navbar-nav > li.uk-active > a:before {
     content: '';
     position: absolute;
@@ -75,15 +67,15 @@ a:hover, .uk-link:hover {
 
 
 .uk-modal-dialog {
-    background: rgba(0, 0, 0, 0.5);
+    background: #263137;
 }
 
 .uk-modal-footer {
     padding: 15px 30px;
-    background: #000;
-    border-top: 10px solid transparent;
-    border-image: 10 repeating-linear-gradient(45deg, rgba(76, 3, 0, 0.43), rgba(76, 3, 0, 0.43) 10px, transparent 10px, transparent 20px, #4c0300 20px, #4c0300 30px,transparent 30px, transparent 40px);
-}
+    background: #263137;
+    border-top: 1px solid #38464e;
+    box-shadow: 0px -1px #151d20;
+    }
 
 .uk-button-primary {
     background-color: transparent;
@@ -93,8 +85,8 @@ a:hover, .uk-link:hover {
 
 .uk-button-primary:active, .uk-button-primary.uk-active, .uk-button-primary:hover, .uk-button-primary:focus {
     background-color: transparent;
-    color: #b53838;
-    border: 1px solid #b53838;
+    color: #f5ebb8;
+    border: 1px solid #f5ebb8;
 }
 
 .uk-button-default {
@@ -126,15 +118,15 @@ a:hover, .uk-link:hover {
 }
 
 .uk-input:disabled, .uk-select:disabled, .uk-textarea:disabled {
-    background-color: #0a0a0a;
+    background-color: transparent;
     color: #9E9E9E;
-    border: 1px dashed #131313;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
 .uk-input, .uk-select, .uk-textarea {
-    background: #0a0a0a;
+    background: transparent;
     color: #a0a0a0;
-    border: 1px solid #313131;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .uk-form-label {
@@ -143,7 +135,7 @@ a:hover, .uk-link:hover {
 }
 
 fieldset {
-    border: 1px dashed #3a3a3a;
+    border: 1px dashed rgba(255,255,255,0.1);
     min-width: 100%;
 }
 
@@ -151,13 +143,13 @@ fieldset {
 
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
     outline: none;
-    background-color: #000;
+    background-color: transparent;
     color: #999;
-    border-color: #313131;
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 .uk-card-default .uk-card-title {
-    color: #b53838;
+    color: #f5ebb8;
 }
 
 .inputGroup {
@@ -181,7 +173,7 @@ fieldset {
      height: 10px;
      border-radius: 50%;
      content: '';
-     background-color: #a94b48;
+     background-color: #f5ebb8;
      position: absolute;
      left: 50%;
      top: 50%;
@@ -215,8 +207,8 @@ fieldset {
  }
 
 .inputGroup input:checked ~ label:after {
-     background-color: #673333;
-     border-color: #673333;
+     background-color: #f5ebb8;
+     border-color: #f5ebb8;
     background: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ") no-repeat 5px 5px;
  }
 
@@ -264,12 +256,12 @@ fieldset {
     left: 0;
     width: 40px;
     height: 20px;
-    background-color: #333333;
+    background-color: #40525d;
     border-radius: 10px;
     transition: all .3s ease;
 }
 input:checked + .switcher__indicator::after {
-    background-color: #b53838;
+    background-color: #f5ebb8;
     -webkit-transform: translateX(20px);
     transform: translateX(20px);
     -webkit-animation-name: pulseout;
@@ -277,9 +269,7 @@ input:checked + .switcher__indicator::after {
     -webkit-animation-duration: .3s;
     animation-duration: .3s;
 }
-input:checked + .switcher__indicator::before {
-    background-color: #333333;
-}
+
 input:disabled + .switcher__indicator::after, input:disabled + .switcher__indicator::before {
     background-color: #6e6e6e;
 }
