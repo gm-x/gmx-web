@@ -2,8 +2,9 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\IndexController;
 use \GameX\Controllers\PunishmentsController;
-use \GameX\Controllers\API\PrivilegesController;
+use \GameX\Controllers\API\ServerController;
 use \GameX\Controllers\API\PlayersController;
+use \GameX\Controllers\API\PunishController;
 use \GameX\Controllers\Admin\AdminController;
 
 $authMiddleware = new \GameX\Core\Auth\Middlewares\AuthMiddleware($app->getContainer());
@@ -73,37 +74,40 @@ $app->group('/admin', function () {
     ->add($csrfMiddleware);
 
 $app->group('/api', function () {
-    $this->post('/privileges', BaseController::action(PrivilegesController::class, 'index'));
-    $this->post('/player', BaseController::action(PlayersController::class, 'player'));
-    $this->post('/punish', BaseController::action(PlayersController::class, 'punish'));
+    $this->post('/info', BaseController::action(ServerController::class, 'index'));
+    $this->post('/player', BaseController::action(PlayersController::class, 'index'));
+    $this->post('/punish', BaseController::action(PunishController::class, 'index'));
+    $this->post('/punish/immediately', BaseController::action(PunishController::class, 'immediately'));
 })->add(function (\Slim\Http\Request $request, \Slim\Http\Response $response, callable $next) {
     try {
         if (!preg_match('/Basic\s+(?P<token>.+?)$/i', $request->getHeaderLine('Authorization'), $matches)) {
-            throw new \GameX\Core\Exceptions\NotAllowedException();
+            throw new \GameX\Core\Exceptions\ApiException('Token required');
         }
     
         $token = base64_decode($matches['token']);
         if (!$token) {
-            throw new \GameX\Core\Exceptions\NotAllowedException();
+            throw new \GameX\Core\Exceptions\ApiException('Token required');
         }
         
         list ($token) = explode(':', $token);
         if (empty($token)) {
-            throw new \GameX\Core\Exceptions\NotAllowedException();
+            throw new \GameX\Core\Exceptions\ApiException('Token required');
         }
     
+        /** @var \GameX\Models\Server $server */
         $server = \GameX\Models\Server::where('token', $token)->first();
-        if (!$server || $server->ip !== $request->getAttribute('ip_address')) {
-            throw new \GameX\Core\Exceptions\NotAllowedException();
+        if (!$server || !$server->active) {
+            throw new \GameX\Core\Exceptions\ApiException('Invalid token');
         }
-        return $next($request->withAttribute('server_id', $server->id), $response);
+        return $next($request->withAttribute('server', $server), $response);
     } catch (\GameX\Core\Exceptions\NotAllowedException $e) {
         return $response
+            ->withStatus(403)
             ->withJson([
                 'success' => false,
                 'error' => [
-                    'code' => 403,
-                    'message' => 'Bad token',
+                    'code' => \GameX\Core\Exceptions\ApiException::ERROR_INVALID_TOKEN,
+                    'message' => $e->getMessage(),
                 ],
             ]);
     }
@@ -112,6 +116,7 @@ $app->group('/api', function () {
         return $next($request, $response);
     } catch (\GameX\Core\Exceptions\ApiException $e) {
         return $response
+            ->withStatus(500) // TODO: set status code
             ->withJson([
                 'success' => false,
                 'error' => [
@@ -122,11 +127,12 @@ $app->group('/api', function () {
     } catch (\Exception $e) {
         $app->getContainer()->get('log')->error((string)$e);
         return $response
+            ->withStatus(500)
             ->withJson([
                 'success' => false,
                 'error' => [
-                    'code' => \GameX\Core\Exceptions\ApiException::ERROR_GENERIC,
-                    'message' => 'Server Error',
+                    'code' => \GameX\Core\Exceptions\ApiException::ERROR_SERVER,
+                    'message' => 'Something was wrong. Please try again later',
                 ],
             ]);
     }

@@ -79,14 +79,9 @@ function composerInstall() {
 }
 
 function checkDbConnection($config) {
-	try {
-		$dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
-		$dbh = new PDO($dsn, $config['user'], $config['pass']);
-		$dbh = null;
-		return true;
-	} catch (PDOException $e) {
-		return false;
-	}
+	$dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
+	$dbh = new PDO($dsn, $config['user'], $config['pass']);
+	$dbh = null;
 }
 
 function generateSecretKey() {
@@ -138,8 +133,12 @@ function getContainer($phpmig = false) {
 	return $container;
 }
 
+function logMessage($message) {
+	file_put_contents(__DIR__ . DS . 'install.log', message . PHP_EOL . PHP_EOL, FILE_APPEND);
+}
+
 function logException(\Exception $e) {
-	file_put_contents(__DIR__ . DS . 'install.log', (string) $e . PHP_EOL . PHP_EOL, FILE_APPEND);
+	logMessage((string) $e);
 }
 
 function checkDirectories(array $directories) {
@@ -155,4 +154,27 @@ function checkDirectories(array $directories) {
         }
         
     }
+}
+
+function cronjobExists($command){
+    $cronjob_exists = false;
+    exec('crontab -l', $crontab);
+    if (isset($crontab) && is_array($crontab)) {
+
+        $crontab = array_flip($crontab);
+
+        if (isset($crontab[$command])) {
+            $cronjob_exists=true;
+        }
+    }
+    return $cronjob_exists;
+}
+
+function cronjobAppend($command){
+    if (!empty($command) && !cronjobExists($command)) {
+		exec('echo -e "`crontab -l`\n'.$command.'" | crontab -', $output);
+		return true;
+    }
+
+    return false;
 }

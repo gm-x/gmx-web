@@ -50,16 +50,12 @@ class Punishment extends BaseModel {
     /**
      * @var array
      */
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'expired_at'
-    ];
+    protected $dates = ['created_at', 'updated_at', 'expired_at'];
     
     /**
      * @var array
      */
-    protected $hidden = ['reason_id'];
+    protected $hidden = ['reason_id', 'updated_at'];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

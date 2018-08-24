@@ -33,6 +33,16 @@ class Group extends BaseModel {
 	 * @var array
 	 */
 	protected $fillable = ['server_id', 'title', 'flags', 'priority'];
+    
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
+    
+    /**
+     * @var array
+     */
+    protected $hidden = ['server_id', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

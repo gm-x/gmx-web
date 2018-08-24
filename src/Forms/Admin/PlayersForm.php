@@ -9,7 +9,7 @@ use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Forms\Rules\InArray;
 use \GameX\Core\Forms\Rules\Boolean;
-use \GameX\Core\Forms\Rules\Regexp;
+use \GameX\Core\Forms\Rules\SteamID;
 use \GameX\Core\Forms\Rules\Callback;
 
 class PlayersForm extends BaseForm {
@@ -98,7 +98,7 @@ class PlayersForm extends BaseForm {
 		
 		$this->form->getValidator()
             ->set('steamid', true, [
-                new Regexp('/^(?:STEAM|VALVE)_\d:\d:\d+$/')
+                new SteamID()
             ])
             ->set('auth_type', true, [
                 new InArray(self::VALID_AUTH_TYPES)

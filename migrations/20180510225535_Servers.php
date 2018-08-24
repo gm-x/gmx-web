@@ -16,7 +16,7 @@ class Servers extends Migration {
                 $table->string('ip', 32);
                 $table->integer('port');
                 $table->string('rcon', 128)->nullable();
-                $table->unsignedTinyInteger('active')->default('0');
+                $table->unsignedTinyInteger('active')->default('1');
                 $table->string('token', 255)->nullable();
                 $table->timestamps();
             });
