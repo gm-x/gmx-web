@@ -64,9 +64,9 @@
                             </a>
                         {% else %}
                             <h6 class="dropdown-header">{{ get_user_name() }}</h6>
-                            {#{% if has_access('admin.*') %}#}
+                            {% if has_access_group('admin') %}
                                 <a class="dropdown-item" href="{{ path_for('admin_index') }}">Admin</a>
-                            {#{% endif %}#}
+                            {% endif %}
                             <a class="dropdown-item" href="{{ path_for('user_settings_index') }}">Settings</a>
                             <a class="dropdown-item" href="{{ path_for('logout') }}">{{ trans('buttons', 'logout') }}</a>
                         {% endif %}

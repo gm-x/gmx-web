@@ -32,6 +32,7 @@ class ApiRequestMiddleware {
             return $next($request, $response);
         } catch (ApiException $e) {
             return $response
+                ->withStatus(500) // TODO: set status code
                 ->withJson([
                     'success' => false,
                     'error' => [
@@ -42,11 +43,12 @@ class ApiRequestMiddleware {
         } catch (Exception $e) {
             $this->logger->error((string)$e);
             return $response
+                ->withStatus(500)
                 ->withJson([
                     'success' => false,
                     'error' => [
-                        'code' => \GameX\Core\Exceptions\ApiException::ERROR_GENERIC,
-                        'message' => 'Server Error',
+                        'code' => \GameX\Core\Exceptions\ApiException::ERROR_SERVER,
+                        'message' => 'Something was wrong. Please try again later',
                     ],
                 ]);
         }

@@ -140,21 +140,27 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
      * @inheritdoc
      */
 	public function hasAccessToGroup($group) {
-	    return $this->role->hasAccessToGroup($group);
+	    return $this->role
+            ? $this->role->hasAccessToGroup($group)
+            : false;
 	}
 
     /**
      * @inheritdoc
      */
 	public function hasAccessToPermission($group, $permission, $access = null) {
-	    return $this->role->hasAccessToPermission($group, $permission, $access);
+	    return $this->role
+            ? $this->role->hasAccessToPermission($group, $permission, $access)
+	        : false;
 	}
 
     /**
      * @inheritdoc
      */
 	public function hasAccessToResource($group, $permission, $resource, $access = null) {
-	    return $this->role->hasAccessToResource($group, $permission, $resource, $access);
+        return $this->role
+            ? $this->role->hasAccessToResource($group, $permission, $resource, $access)
+            : false;
 	}
     
     /**
