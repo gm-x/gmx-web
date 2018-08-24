@@ -117,7 +117,7 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 
 $container['modules'] = function (\Psr\Container\ContainerInterface $container) {
 	$modules = new \GameX\Core\Module\Module();
-	$modules->addModule(new \GameX\Modules\TestModule\Module());
+//	$modules->addModule(new \GameX\Modules\TestModule\Module());
 	return $modules;
 };
 

@@ -30,17 +30,7 @@ class AuthMiddleware {
      * @throws NotAllowedException
 	 */
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
-	    /** @var \Slim\Route $route */
-	    $route = $request->getAttribute('route');
-	    if ($route === null) {
-			return $next($request->withAttribute('user', null), $response);
-		}
-        
         $user = $this->auth->getUser();
-        if ($route->getArgument('is_authorized') && !$user) {
-            throw new NotAllowedException();
-        }
-        
         return $next($request->withAttribute('user', $user), $response);
 	}
 }

@@ -62,21 +62,21 @@ return function () {
         $this
             ->get('', BaseController::action(ReasonsController::class, 'index'))
             ->setName('admin_servers_reasons_list')
-            ->setArgument('permission', 'admin.servers.reasons');
+            ->add(new HasAccessToResource('server', 'admin', 'server_reason', Manager::ACCESS_LIST));
         
         $this
             ->map(['GET', 'POST'], '/create', BaseController::action(ReasonsController::class, 'create'))
             ->setName('admin_servers_reasons_create')
-            ->setArgument('permission', 'admin.servers.reasons');
+            ->add(new HasAccessToResource('server', 'admin', 'server_reason', Manager::ACCESS_CREATE));
         
         $this
             ->map(['GET', 'POST'], '/{reason}/edit', BaseController::action(ReasonsController::class, 'edit'))
             ->setName('admin_servers_reasons_edit')
-            ->setArgument('permission', 'admin.servers.reasons');
+            ->add(new HasAccessToResource('server', 'admin', 'server_reason', Manager::ACCESS_EDIT));
         
         $this
             ->post('/{reason}/delete', BaseController::action(ReasonsController::class, 'delete'))
             ->setName('admin_servers_reasons_delete')
-            ->setArgument('permission', 'admin.servers.reasons');
+            ->add(new HasAccessToResource('server', 'admin', 'server_reason', Manager::ACCESS_DELETE));
     });
 };
