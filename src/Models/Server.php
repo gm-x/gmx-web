@@ -12,6 +12,8 @@ use \GameX\Core\BaseModel;
  * @property string $ip
  * @property integer $port
  * @property string $token
+ * @property string $rcon
+ * @property bool $active
  * @property Group[] $groups
  * @property Reason[] $reasons
  */
@@ -32,7 +34,17 @@ class Server extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['name', 'ip', 'port', 'token'];
+	protected $fillable = ['name', 'ip', 'port', 'token', 'rcon', 'active'];
+    
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
+    
+    /**
+     * @var array
+     */
+    protected $hidden = ['rcon', 'token', 'created_at', 'updated_at'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

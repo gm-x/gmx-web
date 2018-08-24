@@ -28,7 +28,7 @@ class JobHelper {
      * @return Task|null
      */
     public static function getTask() {
-        return Task::where('status', '=', Task::STATUS_WAITING)
+        return Task::where('status', Task::STATUS_WAITING)
             ->where('execute_at', '<', time())
             ->orderBy('execute_at', 'desc')
             ->first();
@@ -47,5 +47,5 @@ class JobHelper {
 		} else {
 			self::markTask($task, Task::STATUS_WAITING);
 		}
-	}
+    }
 }

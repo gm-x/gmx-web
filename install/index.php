@@ -51,9 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 'config': {
 			try {
-				if (!checkDbConnection($_POST['db'])) {
-					throw new Exception('Can\'t connect to database');
-				}
+				checkDbConnection($_POST['db']);
 
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
 				$config = new GameX\Core\Configuration\Config();
@@ -124,6 +122,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				\GameX\Models\Task::truncate();
 				\GameX\Core\Jobs\JobHelper::createTask('monitoring');
 				\GameX\Core\Jobs\JobHelper::createTask('punishments');
+
+				cronjobAppend('* * * * * php -f ' . BASE_DIR . 'cron.php');
 
 				json([
 					'success' => true
