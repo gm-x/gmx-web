@@ -4,25 +4,46 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Email</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-                <tr>
-                    <td class="text-nowrap">{{ user.email }}</td>
-                    <td class="text-nowrap">
-                        {{ admin.edit_btn(path_for('admin_users_edit', {'user': user.id})) }}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+<div class="uk-child-width-1-2@s" uk-grid>
+    <div>
+        <div class="uk-card uk-card-default">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">Users for role</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <div uk-sortable="group: role-users">
+                {% for user in users %}
+                    <div class="uk-margin">
+                        <div class="uk-card uk-card-default uk-card-body uk-card-small">
+                            <span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
+                            {{ user.email }} {{ admin.edit_btn(path_for('admin_users_edit', {'user': user.id})) }}
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
+    <div>
+        <div class="uk-card uk-card-default">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">All users</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <div uk-sortable="group: role-users">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 	{{ paginator.render(pagination) }}
 {% endblock %}

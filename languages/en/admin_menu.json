@@ -3,5 +3,8 @@
 	"users": "Users",
 	"roles": "Roles",
 	"servers": "Servers",
-	"players": "Players"
+	"players": "Players",
+	"permissions": "Permissions",
+	"role": "Role",
+	"name": "Name"
 }

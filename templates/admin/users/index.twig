@@ -4,8 +4,9 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block content %}
-    <div class="table-responsive">
-        <table class="table table-hover">
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <div class="uk-overflow-auto">
+        <table class="uk-table uk-table-divider">
             <thead>
             <tr>
                 <th>Login</th>
@@ -27,4 +28,5 @@
         </table>
     </div>
 	{{ paginator.render(pagination) }}
+</div>
 {% endblock %}

@@ -95,4 +95,15 @@ interface Element {
      * @return Element
      */
     public function setError($error);
+
+    /**
+     * @return string
+     */
+    public function getIcon();
+
+    /**
+     * @param string $icon
+     * @return $this
+     */
+    public function setIcon($icon);
 }
