@@ -38,7 +38,7 @@ class RolesController extends BaseAdminController {
 	}
     
     /**
-     * Init RolesController
+     * Init
      */
 	public function init() {
         $this->roleRepository = $this->getContainer('auth')->getRoleRepository();

@@ -42,15 +42,11 @@ class RolesForm extends BaseForm {
 		$this->form
             ->add(new Text('name', $this->role->name, [
                 'title' => 'Name',
-                'error' => 'Required',
                 'required' => true,
-                'attributes' => [],
             ]))
             ->add(new Text('slug', $this->role->slug, [
                 'title' => 'Slug',
-                'error' => 'Required',
                 'required' => true,
-                'attributes' => [],
             ]));
 		
 		$this->form->getValidator()

@@ -42,8 +42,8 @@ abstract class BaseAdminController extends BaseMainController {
             ));
 
 		// TODO: Make refactoring for this
-//        /** @var Twig $view */
-//        $view = $this->getContainer('view');
+        /** @var Twig $view */
+        $view = $this->getContainer('view');
 //		$modules = $this->getContainer('modules');
 //		/** @var \GameX\Core\Module\ModuleInterface $module */
 //		foreach ($modules as $module) {
@@ -53,6 +53,6 @@ abstract class BaseAdminController extends BaseMainController {
 //			}
 //		}
 //
-//		$view->getEnvironment()->addGlobal('menu', $menu);
+		$view->getEnvironment()->addGlobal('menu', $menu);
 	}
 }

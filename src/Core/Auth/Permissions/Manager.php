@@ -40,22 +40,6 @@ class Manager {
     protected $cachedResources = [];
     
     /**
-     * @return PermissionsModel[]
-     */
-    public function getPermissionsList() {
-        if ($this->permissions === null) {
-            /** @var PermissionsModel[] $permissions */
-            $permissions = PermissionsModel::get();
-            $this->permissions = [];
-            foreach ($permissions as $permission) {
-                $this->permissions[$permission->id] = $permission;
-            }
-        }
-        
-        return $this->permissions;
-    }
-    
-    /**
      * @param RoleModel $role
      * @param string $group
      * @return bool
