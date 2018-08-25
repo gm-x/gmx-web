@@ -3,6 +3,7 @@ namespace GameX\Core\Auth\Models;
 
 use \Carbon\Carbon;
 use \GameX\Core\BaseModel;
+use \Illuminate\Database\Eloquent\Builder;
 
 /**
  * @property integer $id
@@ -25,14 +26,9 @@ class RolesPermissionsModel extends BaseModel {
     protected $table = 'roles_permissions';
     
     /**
-     * @var string
-     */
-    protected $primaryKey = 'id';
-    
-    /**
      * @var array
      */
-    protected $fillable = ['role_id', 'permission_id', 'access'];
+    protected $fillable = ['role_id', 'permission_id', 'resource', 'access'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -47,4 +43,18 @@ class RolesPermissionsModel extends BaseModel {
     public function permission() {
         return $this->belongsTo(PermissionsModel::class, 'permission_id', 'id');
     }
+    
+    /**
+     * Set the keys for a save update query.
+     *
+     * @param  Builder  $query
+     * @return Builder
+     */
+    protected function setKeysForSaveQuery(Builder $query) {
+        return $query->where([
+            'role_id' => $this->getAttribute('role_id'),
+            'permission_id' => $this->getAttribute('permission_id'),
+        ]);
+    }
+    
 }

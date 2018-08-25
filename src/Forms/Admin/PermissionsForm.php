@@ -5,8 +5,10 @@ use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Permissions\Manager;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Auth\Models\PermissionsModel;
+use \GameX\Core\Auth\Models\RolesPermissionsModel;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Forms\Rules\Boolean;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class PermissionsForm extends BaseForm {
     
@@ -39,11 +41,10 @@ class PermissionsForm extends BaseForm {
 	protected $permissions = null;
 
 	/**
-	 * @param Manager $manager
 	 * @param RoleModel $role
 	 */
-	public function __construct(Manager $manager, RoleModel $role) {
-		$this->manager = $manager;
+	public function __construct(RoleModel $role) {
+	    $this->manager = static::$container->get('permissions');
 		$this->role = $role;
 	}
     
@@ -79,13 +80,46 @@ class PermissionsForm extends BaseForm {
      * @return boolean
      */
     protected function processForm() {
-//        $this->role->fill($this->form->getValues());
-//
-//        if (!$this->role->exists) {
-//            $this->role->permissions = [];
-//        }
-//        return $this->role->save();
-        return true;
+        /** @var \Illuminate\Database\Connection$db */
+        $db = static::$container->get('db')->getConnection();
+        $db->beginTransaction();
+        try {
+            foreach ($this->getPermissions() as $permission) {
+                $access = 0;
+                foreach (self::ACCESS_LIST as $a => $v) {
+                    $val = $this->form->getValue($this->getElementKey($permission, $a));
+                    if ($val) {
+                        $access |= $a;
+                    }
+                }
+        
+                if ($access === 0) {
+                    RolesPermissionsModel::where([
+                        'role_id' => $this->role->id,
+                        'permission_id' => $permission->id
+                    ])->delete();
+                } else {
+                    $model = RolesPermissionsModel::where([
+                        'role_id' => $this->role->id,
+                        'permission_id' => $permission->id
+                    ])->first();
+                    if (!$model) {
+                        $model = new RolesPermissionsModel();
+                        $model->fill([
+                            'role_id' => $this->role->id,
+                            'permission_id' => $permission->id
+                        ]);
+                    }
+                    $model->access = $access;
+                    $model->save();
+                }
+            }
+            $db->commit();
+            return true;
+        } catch (Exception $e) {
+            $db->rollBack();
+            return false;
+        }
     }
     
     /**
