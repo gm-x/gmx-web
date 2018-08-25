@@ -141,5 +141,7 @@ class Manager {
                 $this->cachedGroups[$p->group] = true;
             }
         }
+    
+        $this->cachedRole = $role->id;
     }
 }
