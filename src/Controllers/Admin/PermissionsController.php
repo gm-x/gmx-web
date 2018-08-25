@@ -47,7 +47,7 @@ class PermissionsController extends BaseAdminController {
         $form = new PermissionsForm($this->manager, $role);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_roles_edit', [
+            return $this->redirect('admin_role_permissions', [
                 'role' => $role->id,
             ]);
         }

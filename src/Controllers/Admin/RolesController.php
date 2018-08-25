@@ -14,18 +14,6 @@ use \Slim\Exception\NotFoundException;
 use \Exception;
 
 class RolesController extends BaseAdminController {
-    const PERMISSIONS = [
-        'index' => 'Index',
-        'admin.preferences' => 'Site Preferences',
-        'admin.users' => 'Admin Users CRUD',
-        'admin.roles' => 'Admin Roles CRUD',
-        'admin.servers' => 'Admin Servers CRUD',
-        'admin.user.role' => 'Admin User Set Role',
-        'admin.players' => 'Admin Players Role',
-		'admin.servers.groups' => 'Admin Privileges Groups CRUD',
-		'admin.servers.reasons' => 'Admin Reasons Groups CRUD',
-		'admin.players.privileges' => 'Admin Players Privileges CRUD',
-    ];
 
     /** @var  RoleRepositoryInterface */
     protected $roleRepository;
@@ -141,41 +129,6 @@ class RolesController extends BaseAdminController {
         return $this->render('admin/roles/users.twig', [
             'users' => $users,
             'pagination' => $pagination,
-        ]);
-    }
-    
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
-     * @return ResponseInterface
-     */
-    public function permissionsAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        $role = $this->getRole($request, $response, $args);
-
-        if ($request->isPost()) {
-            try {
-                $data = $request->getParsedBody();
-                if (!array_key_exists('permissions', $data) || !is_array($data['permissions'])) {
-                    throw new ValidationException('Bad values');
-                }
-                $permissions = filter_var_array($data['permissions'], FILTER_VALIDATE_BOOLEAN, false);
-                $role->permissions = $permissions;
-                $role->save();
-                return $this->redirect('admin_roles_list');
-            } catch (Exception $e) {
-                $this->addErrorMessage('Something wrong. Please Try again later.');
-                /** @var \Monolog\Logger $logger */
-                $logger = $this->getContainer('log');
-                $logger->error((string) $e);
-
-                return $this->redirect('admin_roles_permissions', ['role' => $role->getRoleId()]);
-            }
-        }
-
-        return $this->render('admin/roles/permissions.twig', [
-            'role' => $role,
-            'permissions' => self::PERMISSIONS
         ]);
     }
 

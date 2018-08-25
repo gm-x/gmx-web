@@ -34,8 +34,8 @@ return function () {
 
     $this->group('/{role}/permissions', function () {
         /** @var \Slim\App $this */
-        $this->get('', BaseController::action(PermissionsController::class, 'index'))
-            ->setName('admin_role_permissions_list')
+        $this->map(['GET', 'POST'], '', BaseController::action(PermissionsController::class, 'index'))
+            ->setName('admin_role_permissions')
             ->add(new HasAccessToPermission('admin', 'role_permission', Manager::ACCESS_LIST));
     });
 };

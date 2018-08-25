@@ -11,11 +11,11 @@ use \GameX\Core\Forms\Rules\Boolean;
 class PermissionsForm extends BaseForm {
     
     const ACCESS_LIST = [
-        Manager::ACCESS_LIST => 'List',
-        Manager::ACCESS_VIEW => 'View',
-        Manager::ACCESS_CREATE => 'Create',
-        Manager::ACCESS_EDIT => 'Edit',
-        Manager::ACCESS_DELETE => 'Delete',
+        Manager::ACCESS_LIST => 'list',
+        Manager::ACCESS_VIEW => 'view',
+        Manager::ACCESS_CREATE => 'create',
+        Manager::ACCESS_EDIT => 'edit',
+        Manager::ACCESS_DELETE => 'delete',
     ];
 
 	/**
@@ -57,7 +57,10 @@ class PermissionsForm extends BaseForm {
             foreach (self::ACCESS_LIST as $access => $v) {
                 $tmp[] = $this->getElementKey($permission, $access);
             }
-            $result[] = $tmp;
+            $result[] = [
+                'title' => $this->getTranslate('permissions', $permission->group . '_' . $permission->key),
+                'items' => $tmp
+            ];
         }
         return $result;
     }
@@ -91,8 +94,7 @@ class PermissionsForm extends BaseForm {
     protected function getPermissions() {
         if ($this->permissions === null) {
             /** @var PermissionsModel[] $permissions */
-            $this->permissions = PermissionsModel::where('group', 'admin')
-                ->whereNull('type')
+            $this->permissions = PermissionsModel::whereNull('type')
                 ->get();
         }
         
@@ -107,7 +109,7 @@ class PermissionsForm extends BaseForm {
         $key = $this->getElementKey($permission, $access);
         $this->form
             ->add(new Checkbox($key, $this->hasAccessToPermission($permission, $access), [
-                'title' => self::ACCESS_LIST[$access],
+                'title' => $this->getTranslate('permissions', self::ACCESS_LIST[$access]),
             ]));
         
         $this->form->getValidator()

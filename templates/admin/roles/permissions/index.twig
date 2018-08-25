@@ -1,35 +1,26 @@
 {% extends 'admin/admin.twig' %}
 
-{% macro element_permission(form, name) %}
-    {% set element = form.get(name) %}
-    <div>
-        <div class="uk-card uk-card-secondary">
-            <div class="inputGroup">
-                <input
-                        type="checkbox"
-                        id="{{ element.getId() }}"
-                        class="custom-control-input"
-                        name="{{ element.getFormName() }}[{{ element.getName() }}]"
-                        value="1"
-                        {% if element.getValue() %}checked{% endif %}
-                />
-                <label class="custom-control-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
-            </div>
-        </div>
-    </div>
-{% endmacro %}
-
-{% import _self as macros %}
+{% import 'macros/permissions.twig' as permissions %}
 
 {% block content %}
+    {# TODO: Remove this #}
+    <style>
+        .inputGroup label:before {
+            background-color: #b6b6b4 !important;
+        }
+    </style>
     <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
         <form action="{{ form.getAction() }}" method="post">
             {{ csrf_token() }}
-            {% for items in list %}
-                <div class="uk-child-width-1-5@m" uk-grid>
-                    {% for key in items %}
-                        {{ macros.element_permission(form, key) }}
-                    {% endfor %}
+            {% for item in list %}
+                <div style="margin-bottom: 20px">
+                    <h3 style="color: #007bff">{{ item.title }}</h3>
+                    <div class="uk-child-width-1-5@m" uk-grid>
+                        {% for key in item.items %}
+                            {{ permissions.permission_checkbox(form, key) }}
+                        {% endfor %}
+                    </div>
+                    <hr>
                 </div>
             {% endfor %}
             <div class="form-group">
