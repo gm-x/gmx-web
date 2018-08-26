@@ -125,4 +125,5 @@ $container['modules'] = function (ContainerInterface $container) {
 
 \GameX\Core\BaseModel::setContainer($container);
 \GameX\Core\BaseForm::setContainer($container);
+\GameX\Core\Auth\Middlewares\BaseMiddleware::setContainer($container);
 date_default_timezone_set('UTC');

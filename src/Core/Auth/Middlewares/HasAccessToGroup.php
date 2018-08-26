@@ -1,13 +1,10 @@
 <?php
-
 namespace GameX\Core\Auth\Middlewares;
 
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
-use \GameX\Core\Exceptions\NotAllowedException;
+use \Slim\Http\Request;
 use \GameX\Core\Auth\Models\UserModel;
 
-class HasAccessToGroup {
+class HasAccessToGroup extends BaseMiddleware {
     
     /**
      * @var string
@@ -22,23 +19,9 @@ class HasAccessToGroup {
     }
     
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
-     * @return ResponseInterface
-     * @throws NotAllowedException
+     * @inheritdoc
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
-        /** @var UserModel|null $user */
-        $user = $request->getAttribute('user');
-        if (!$user) {
-            throw new NotAllowedException();
-        }
-        
-        if (!$user->hasAccessToGroup($this->group)) {
-            throw new NotAllowedException();
-        }
-        
-        return $next($request, $response);
+    protected function checkAccess(Request $request, UserModel $user) {
+        return $user->hasAccessToGroup($this->group);
     }
 }

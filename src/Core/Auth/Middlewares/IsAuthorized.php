@@ -1,25 +1,15 @@
 <?php
 namespace GameX\Core\Auth\Middlewares;
 
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
-use \GameX\Core\Exceptions\NotAllowedException;
+use \Slim\Http\Request;
+use \GameX\Core\Auth\Models\UserModel;
 
-class IsAuthorized {
- 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param callable $next
-	 * @return ResponseInterface
-     * @throws NotAllowedException
-	 */
-	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
-        $user = $request->getAttribute('user');
-        if (!$request->getAttribute('user')) {
-            throw new NotAllowedException();
-        }
-        
-        return $next($request, $response);
+class IsAuthorized extends BaseMiddleware {
+    
+    /**
+     * @inheritdoc
+     */
+    protected function checkAccess(Request $request, UserModel $user) {
+        return true;
 	}
 }
