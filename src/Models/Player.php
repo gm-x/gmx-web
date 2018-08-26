@@ -49,6 +49,16 @@ class Player extends BaseModel {
 	 * @var array
 	 */
 	protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'auth_type', 'password', 'access'];
+    
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
+    
+    /**
+     * @var array
+     */
+    protected $hidden = ['updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -87,10 +97,10 @@ class Player extends BaseModel {
     }
     
     /**
-     * @param $serverId
+     * @param Server $server
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public function getActivePunishments($serverId) {
+    public function getActivePunishments(Server $server) {
         return $this->punishments()
             ->select('punishments.*')
             ->with('reason')
@@ -100,12 +110,12 @@ class Player extends BaseModel {
                 $query->where('expired_at', '>', Carbon::now()->toDateTimeString())
                     ->orWhereNull('expired_at');
             })
-            ->where(function (Builder $query) use ($serverId) {
+            ->where(function (Builder $query) use ($server) {
                 $query->where('reasons.overall', 1)
-                    ->orWhere(function (Builder $query) use ($serverId) {
+                    ->orWhere(function (Builder $query) use ($server) {
                         $query->where([
                             'reasons.overall' => 0,
-                            'punishments.server_id' => $serverId
+                            'punishments.server_id' => $server->id
                         ]);
                     });
             })

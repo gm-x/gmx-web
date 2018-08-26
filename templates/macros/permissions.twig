@@ -1,0 +1,18 @@
+{% macro permission_checkbox(form, name) %}
+    {% set element = form.get(name) %}
+	<div>
+		<div class="uk-card uk-card-secondary">
+			<div class="inputGroup">
+				<input
+						type="checkbox"
+						id="{{ element.getId() }}"
+						class="custom-control-input"
+						name="{{ element.getFormName() }}[{{ element.getName() }}]"
+						value="1"
+                        {% if element.getValue() %}checked{% endif %}
+				/>
+				<label class="custom-control-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+			</div>
+		</div>
+	</div>
+{% endmacro %}

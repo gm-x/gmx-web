@@ -23,18 +23,18 @@
                     {{ admin.delete_btn(path_for('admin_roles_delete', {'role': role.id})) }}
 
                     {% embed "admin/actions.twig" with {'actionId': role.id} %}
-                    {% block actions %}
-                    <li>
-                        <a href="{{ path_for('admin_roles_users', {'role': role.id}) }}" class="dropdown-item">
-                            <span class="uk-margin-small-right" uk-icon="icon: users"></span> {{ trans('admin_menu', 'users') }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path_for('admin_roles_permissions', {'role': role.id}) }}" class="dropdown-item">
-                            <span class="uk-margin-small-right" uk-icon="icon: lock"></span> {{ trans('admin_menu', 'permissions') }}
-                        </a>
-                    </li>
-                    {% endblock %}
+                        {% block actions %}
+                            <li>
+                                <a href="{{ path_for('admin_roles_users', {'role': role.id}) }}" class="dropdown-item">
+                                    <span class="uk-margin-small-right" uk-icon="icon: users"></span> {{ trans('admin_menu', 'users') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path_for('admin_role_permissions', {'role': role.id}) }}" class="dropdown-item">
+                                    <span class="uk-margin-small-right" uk-icon="icon: lock"></span> {{ trans('admin_menu', 'permissions') }}
+                                </a>
+                            </li>
+                        {% endblock %}
                     {% endembed %}
                 </li>
             </ul>

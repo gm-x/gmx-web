@@ -6,8 +6,7 @@ use \GameX\Models\Player;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
-use \Cartalyst\Sentinel\Permissions\PermissibleInterface;
-use \Cartalyst\Sentinel\Permissions\PermissibleTrait;
+use \GameX\Core\Auth\Interfaces\PermissionsInterface;
 use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -25,9 +24,7 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property RoleModel $role
  * @property Player[] players
  */
-class UserModel extends BaseModel implements UserInterface, PersistableInterface, PermissibleInterface {
-
-	use PermissibleTrait;
+class UserModel extends BaseModel implements UserInterface, PersistableInterface, PermissionsInterface {
 
 	protected $table = 'users';
 
@@ -139,24 +136,31 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 		return $this->belongsTo(RoleModel::class);
 	}
 
-	/**
-	 * Returns if access is available for all given permissions.
-	 *
-	 * @param  array|string  $permissions
-	 * @return bool
-	 */
-	public function hasAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAccess($permissions);
+    /**
+     * @inheritdoc
+     */
+	public function hasAccessToGroup($group) {
+	    return $this->role
+            ? $this->role->hasAccessToGroup($group)
+            : false;
 	}
 
-	/**
-	 * Returns if access is available for any given permissions.
-	 *
-	 * @param  array|string  $permissions
-	 * @return bool
-	 */
-	public function hasAnyAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAnyAccess($permissions);
+    /**
+     * @inheritdoc
+     */
+	public function hasAccessToPermission($group, $permission, $access = null) {
+	    return $this->role
+            ? $this->role->hasAccessToPermission($group, $permission, $access)
+	        : false;
+	}
+
+    /**
+     * @inheritdoc
+     */
+	public function hasAccessToResource($group, $permission, $resource, $access = null) {
+        return $this->role
+            ? $this->role->hasAccessToResource($group, $permission, $resource, $access)
+            : false;
 	}
     
     /**
@@ -165,13 +169,4 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	public function players() {
         return $this->hasMany(EloquentPersistence::class, 'user_id', 'id');
     }
-
-	/**
-	 * Creates a permissions object.
-	 *
-	 * @return \Cartalyst\Sentinel\Permissions\PermissionsInterface
-	 */
-	protected function createPermissions() {
-		return new PermissionsModel(null, $this->role ? $this->role->permissions : null);
-	}
 }

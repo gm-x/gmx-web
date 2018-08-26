@@ -354,3 +354,7 @@ fieldset {
     }
 }
 
+.uk-tab > .uk-active > a {
+    color: #FFFFFF;
+    border-color: #1e87f0;
+}

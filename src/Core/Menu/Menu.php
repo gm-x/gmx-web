@@ -19,7 +19,10 @@ class Menu implements Iterator {
 	 * @var MenuItem[]
 	 */
 	protected $items = [];
-
+    
+    /**
+     * Menu constructor.
+     */
 	public function __construct() {
 		$this->position = 0;
 	}

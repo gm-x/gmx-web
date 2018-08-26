@@ -1,0 +1,15 @@
+{
+	"list": "List",
+	"view": "View",
+	"create": "Create",
+	"edit": "Edit",
+	"delete": "Delete",
+	"user_index": "Index",
+	"user_punishment": "Punishments",
+	"admin_server": "Servers",
+	"admin_user": "Users",
+	"admin_user_role": "User roles",
+	"admin_role": "Roles",
+	"admin_player": "Players",
+	"admin_role_permission": "Role permissions"
+}

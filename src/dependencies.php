@@ -1,21 +1,23 @@
 <?php
-$container['config'] = function (\Psr\Container\ContainerInterface $container) {
+use \Psr\Container\ContainerInterface;
+
+$container['config'] = function (ContainerInterface $container) {
     return new \GameX\Core\Configuration\Config($container->get('root') . '/config.json');
 };
 
-$container['session'] = function (\Psr\Container\ContainerInterface $container) {
+$container['session'] = function (ContainerInterface $container) {
     return new \GameX\Core\Session\Session();
 };
 
-$container['flash'] = function (\Psr\Container\ContainerInterface $container) {
+$container['flash'] = function (ContainerInterface $container) {
     return new \GameX\Core\FlashMessages($container->get('session'), 'flash_messages');
 };
 
-$container['csrf'] = function (\Psr\Container\ContainerInterface $container) {
+$container['csrf'] = function (ContainerInterface $container) {
     return new \GameX\Core\CSRF\Token($container->get('session'));
 };
 
-$container['cache'] = function (\Psr\Container\ContainerInterface $container) {
+$container['cache'] = function (ContainerInterface $container) {
 	$driver = new \Stash\Driver\FileSystem([
 		'path' => $container['root'] . 'runtime' . DIRECTORY_SEPARATOR . 'cache',
 		'encoder' => 'Serializer'
@@ -23,7 +25,7 @@ $container['cache'] = function (\Psr\Container\ContainerInterface $container) {
 	return new \Stash\Pool($driver);
 };
 
-$container['lang'] = function (\Psr\Container\ContainerInterface $container) {
+$container['lang'] = function (ContainerInterface $container) {
     /** @var GameX\Core\Configuration\Config $config */
     $config = $container->get('config');
 
@@ -36,7 +38,7 @@ $container['lang'] = function (\Psr\Container\ContainerInterface $container) {
     );
 };
 
-$container['db'] = function (\Psr\Container\ContainerInterface $container) {
+$container['db'] = function (ContainerInterface $container) {
     /** @var GameX\Core\Configuration\Config $config */
     $config = $container->get('config');
 
@@ -53,13 +55,21 @@ $container['db'] = function (\Psr\Container\ContainerInterface $container) {
     return $capsule;
 };
 
+$container['permissions'] = function () {
+    return new \GameX\Core\Auth\Permissions\Manager();
+};
+
 $container['auth'] = function (\Psr\Container\ContainerInterface $container) {
     $container->get('db');
-    $bootsrap = new \GameX\Core\Auth\SentinelBootstrapper($container->get('request'), $container->get('session'));
+    $bootsrap = new \GameX\Core\Auth\SentinelBootstrapper(
+        $container->get('request'),
+        $container->get('session'),
+        $container->get('permissions')
+    );
     return $bootsrap->createSentinel();
 };
 
-$container['mail'] = function (\Psr\Container\ContainerInterface $container) {
+$container['mail'] = function (ContainerInterface $container) {
     /** @var GameX\Core\Configuration\Config $config */
     $config = $container->get('config');
 
@@ -67,7 +77,7 @@ $container['mail'] = function (\Psr\Container\ContainerInterface $container) {
     return new \GameX\Core\Mail\Helpers\MailHelper($container->get('view'), $config->get('mail'));
 };
 
-$container['log'] = function (\Psr\Container\ContainerInterface $container) {
+$container['log'] = function (ContainerInterface $container) {
 	$log = new \Monolog\Logger('name');
 	$logPath = $container['root'] . 'runtime' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'log.log';
 	$log->pushHandler(new \Monolog\Handler\RotatingFileHandler($logPath, 10, \Monolog\Logger::DEBUG));
@@ -75,11 +85,11 @@ $container['log'] = function (\Psr\Container\ContainerInterface $container) {
 	return $log;
 };
 
-$container['form'] = function (\Psr\Container\ContainerInterface $container) {
+$container['form'] = function (ContainerInterface $container) {
     return new \GameX\Core\Forms\FormFactory($container->get('session'), $container->get('lang'));
 };
 
-$container['view'] = function (\Psr\Container\ContainerInterface $container) {
+$container['view'] = function (ContainerInterface $container) {
     /** @var GameX\Core\Configuration\Config $config */
     $config = $container->get('config');
 
@@ -107,9 +117,9 @@ $container['view'] = function (\Psr\Container\ContainerInterface $container) {
 	return $view;
 };
 
-$container['modules'] = function (\Psr\Container\ContainerInterface $container) {
+$container['modules'] = function (ContainerInterface $container) {
 	$modules = new \GameX\Core\Module\Module();
-	$modules->addModule(new \GameX\Modules\TestModule\Module());
+//	$modules->addModule(new \GameX\Modules\TestModule\Module());
 	return $modules;
 };
 

@@ -13,7 +13,6 @@ class Roles extends Migration {
 				$table->increments('id');
 				$table->string('slug', 255)->unique();
 				$table->string('name', 255);
-				$table->text('permissions');
 				$table->timestamp('completed_at')->nullable();
 				$table->timestamps();
 			});

@@ -4,7 +4,6 @@ namespace GameX\Core\Auth;
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 use \Cartalyst\Sentinel\Sentinel;
-use \Cartalyst\Sentinel\Roles\RoleInterface;
 
 class ViewExtension extends Twig_Extension {
 
@@ -35,12 +34,16 @@ class ViewExtension extends Twig_Extension {
                 [$this, 'getUserName']
             ),
             new Twig_SimpleFunction(
-                'has_access',
-                [$this, 'hasAccess']
+                'has_access_group',
+                [$this, 'hasAccessToGroup']
             ),
             new Twig_SimpleFunction(
-                'role_has_access',
-                [$this, 'roleHasAccess']
+                'has_access_permission',
+                [$this, 'hasAccessToPermission']
+            ),
+            new Twig_SimpleFunction(
+                'has_access_resource',
+                [$this, 'hasAccessToResource']
             ),
         ];
     }
@@ -61,23 +64,45 @@ class ViewExtension extends Twig_Extension {
 			? $user->getUserLogin()
 			: '';
 	}
-
-	/**
-	 * @param string|null $permission
-	 * @return bool
-	 */
-    public function hasAccess($permission) {
-    	return $permission !== null
-			? $this->auth->hasAccess($permission)
-			: true;
+    
+    /**
+     * @param string $group
+     * @return bool
+     */
+    public function hasAccessToGroup($group) {
+        /** @var \GameX\Core\Auth\Models\UserModel $user */
+        $user = $this->auth->getUser();
+        return $user
+            ? $user->hasAccessToGroup($group)
+            : false;
 	}
-
-	/**
-	 * @param RoleInterface $role
-	 * @param string $permission
-	 * @return bool
-	 */
-    public function roleHasAccess(RoleInterface $role, $permission) {
-        return $role->hasAccess($permission);
+    
+    /**
+     * @param string $group
+     * @param string $permission
+     * @param int|null $access
+     * @return bool
+     */
+    public function hasAccessToPermission($group, $permission, $access = null) {
+        /** @var \GameX\Core\Auth\Models\UserModel $user */
+        $user = $this->auth->getUser();
+        return $user
+            ? $user->hasAccessToPermission($group, $permission, $access)
+            : false;
+    }
+    
+    /**
+     * @param string $group
+     * @param string $permission
+     * @param int $resource
+     * @param int|null $access
+     * @return bool
+     */
+    public function hasAccessToResource($group, $permission, $resource, $access = null) {
+        /** @var \GameX\Core\Auth\Models\UserModel $user */
+        $user = $this->auth->getUser();
+        return $user
+            ? $user->hasAccessToResource($group, $permission, $resource, $access)
+            : false;
     }
 }

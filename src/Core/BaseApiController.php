@@ -2,6 +2,7 @@
 namespace GameX\Core;
 
 use \Slim\Http\Request;
+use \Gamex\Models\Server;
 
 abstract class BaseApiController extends BaseController {
 
@@ -12,5 +13,13 @@ abstract class BaseApiController extends BaseController {
     public function getBody(Request $request) {
         $body = $request->getParsedBody();
         return $body !== null ? $body : [];
+    }
+
+    /**
+     * @param Request $request
+     * @return Server
+     */
+    protected function getServer(Request $request) {
+        return $request->getAttribute('server');
     }
 }
