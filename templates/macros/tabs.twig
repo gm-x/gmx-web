@@ -1,10 +1,8 @@
 {% macro render(tabs, href) %}
-    <ul class="nav nav-tabs">
+    <ul class="uk-tab">
     {% for tab in tabs %}
-        <li class="nav-item">
-            <a class="nav-link {{ tab.href == href ? 'active' : '' }}" href="{{ tab.href }}">
-                {{ tab.title }}
-            </a>
+        <li {% if tab.href == href %}class="uk-active"{% endif %}>
+            <a href="{{ tab.href }}">{{ tab.title }}</a>
         </li>
     {% endfor %}
     </ul>

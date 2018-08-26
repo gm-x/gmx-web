@@ -324,3 +324,7 @@ input:disabled + .switcher__indicator::after, input:disabled + .switcher__indica
     }
 }
 
+.uk-tab > .uk-active > a {
+    color: #FFFFFF;
+    border-color: #1e87f0;
+}

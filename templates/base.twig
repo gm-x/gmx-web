@@ -68,11 +68,24 @@
                                 {% else %}
                                     <li class="uk-nav-header">{{ get_user_name() }}</li>
                                     {% if has_access_group('admin') %}
-                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin</a></li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path_for('admin_index') }}">
+                                                <span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin
+                                            </a>
+                                        </li>
                                     {% endif %}
-                                    <li><a class="dropdown-item" href="#"><span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path_for('user_settings_index') }}">
+                                            <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings
+                                        </a>
+                                    </li>
                                     <li class="uk-nav-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ path_for('logout') }}"><span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('buttons', 'logout') }}</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path_for('logout') }}">
+                                            <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span>
+                                            {{ trans('buttons', 'logout') }}
+                                        </a>
+                                    </li>
                                 {% endif %}
                                 </ul>
                             </div>
@@ -119,8 +132,9 @@
                                     </li>
                                 {% endif %}
                                 <li>
-                                    <a class="dropdown-item" href="#">
-                                        <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a>
+                                    <a class="dropdown-item" href="{{ path_for('user_settings_index') }}">
+                                        <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings
+                                    </a>
                                 </li>
                                 <li class="uk-nav-divider"></li>
                                 <li><a class="dropdown-item" href="{{ path_for('logout') }}">
