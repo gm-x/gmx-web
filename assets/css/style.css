@@ -31,6 +31,14 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
     font-size: 20vh;
 }
 
+.uk-width-xs {
+    width: 100px;
+}
+
+.uk-width-xxs {
+    width: 75px;
+}
+
 .uk-subnav > .uk-active > a {
     color: #f5ebb8;
 }
