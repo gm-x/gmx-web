@@ -136,8 +136,8 @@
 	</div>
 {% endmacro %}
 
-{% macro element_file(element) %}
-    {% set classes = ['custom-file-input'] %}
+{% macro element_file(element, holder = '') %}
+    {% set classes = [''] %}
     {% if element.getHasError() %}
         {% set classes = classes|merge(['is-invalid']) %}
     {% endif %}
@@ -147,22 +147,24 @@
         {% set attributes = attributes|merge({'required': 'required'}) %}
     {% endif %}
 
-	<div class="form-group">
-		<div class="custom-control custom-file">
-			<input
-					type="file"
-					id="{{ element.getId() }}"
-					name="{{ element.getFormName() }}[{{ element.getName() }}]"
-					value="1"
-					class="{{ classes | join(' ') }}"
-            {% for key, value in attributes %}
-                {{ key }}="{{ value }}"
-            {% endfor %}
-			/>
-			<label for="{{ element.getId() }}" class="custom-file-label">{{ element.getTitle() }}</label>
-            {% if element.getHasError() %}
-				<span class="invalid-feedback">{{ element.getError() }}</span>
-            {% endif %}
-		</div>
+	<div uk-form-custom="target: true" class="uk-margin">
+		<input
+				type="file"
+				id="{{ element.getId() }}"
+				name="{{ element.getFormName() }}[{{ element.getName() }}]"
+				value="1"
+				class="{{ classes | join(' ') }}"
+		{% for key, value in attributes %}
+			{{ key }}="{{ value }}"
+		{% endfor %}
+		/>
+        {% if holder %}
+			{{ holder|raw }}
+		{% else %}
+			<input class="uk-input uk-form-width-medium" type="text" placeholder="Select {{ element.getTitle() }}" disabled>
+		{% endif %}
+		{% if element.getHasError() %}
+			<span class="invalid-feedback">{{ element.getError() }}</span>
+		{% endif %}
 	</div>
 {% endmacro %}

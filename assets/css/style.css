@@ -4,6 +4,37 @@ html {
     font-size: 14px;
 }
 
+h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
+    color: #cac5b6;
+}
+
+.avatar__holder {
+    width: 200px;
+    height: 200px;
+    background: no-repeat center;
+    background-size: contain;
+    border: 1px dashed #38464e;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.avatar__holder:after {
+    content: '+';
+    position: absolute;
+    bottom: 10px;
+    left: 6px;
+    font-weight: 700;
+    font-size: 50px;
+}
+
+.xxl {
+    font-size: 20vh;
+}
+
+.uk-subnav > .uk-active > a {
+    color: #f5ebb8;
+}
+
 .uk-navbar-container:not(.uk-navbar-transparent) {
     background: #151d20;
 }
@@ -195,7 +226,6 @@ fieldset {
      cursor: pointer;
      transition: all 200ms ease-in;
 }
-
 
 .inputGroup input:checked ~ label {
     color: #fff;

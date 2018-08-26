@@ -29,9 +29,9 @@
                     </div>
                         <input type="submit" class="uk-button uk-button-default" value="{{ trans('buttons', 'login') }}">
                         {% if enabledEmail %}
-                            <a href="{{ path_for('reset_password') }}" class="btn btn-warning">{{ trans('buttons', 'reset_password') }}</a>
+                            <a href="{{ path_for('reset_password') }}" class="uk-button uk-button-warning">{{ trans('buttons', 'reset_password') }}</a>
                         {% endif %}
-                        <a href="{{ path_for('register') }}" class="btn btn-success">{{ trans('buttons', 'register') }}</a>
+                        <a href="{{ path_for('register') }}" class="uk-button uk-button-success">{{ trans('buttons', 'register') }}</a>
 
                 </form>
             </div>
