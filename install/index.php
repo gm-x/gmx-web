@@ -4,6 +4,10 @@ define('BASE_DIR', dirname(__DIR__) . DS);
 
 include __DIR__ . DS . 'functions.php';
 
+if(file_exists(BASE_DIR . 'config.json')) {
+    header("Location: ".getBaseUrl());
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	echo render('template', [
 		'baseUrl' => getBaseUrl()
