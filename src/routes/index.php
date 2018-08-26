@@ -19,8 +19,7 @@ $app->group('', function () {
     /** @var \Slim\App $this */
     $this
         ->get('/', BaseController::action(IndexController::class, 'index'))
-        ->setName('index')
-        ->add(new HasAccessToPermission('user', 'index'));
+        ->setName('index');
 
     $this
         ->get('/lang', BaseController::action(IndexController::class, 'language'))
@@ -28,8 +27,7 @@ $app->group('', function () {
 
     $this
         ->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))
-        ->setName('punishments')
-        ->add(new HasAccessToPermission('user', 'punishment', Manager::ACCESS_LIST));
+        ->setName('punishments');
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
     include __DIR__ . DIRECTORY_SEPARATOR . 'settings.php';
