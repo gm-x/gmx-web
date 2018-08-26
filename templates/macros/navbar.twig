@@ -4,7 +4,7 @@
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
                 {% for item in menu %}
-                    {% if has_access(item.permission) %}
+                    {#{% if has_access(item.permission) %}#}
                         {% if menu.getActiveRoute() == item.route %}
                             <li class="uk-active">
                         {% else %}
@@ -12,7 +12,7 @@
                         {% endif %}
                         <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
                         </li>
-                    {% endif %}
+                    {#{% endif %}#}
                 {% endfor %}
             </ul>
         </div>
@@ -50,9 +50,9 @@
                                     </a></li>
                             {% else %}
                                 <li class="uk-nav-header">{{ get_user_name() }}</li>
-                                {% if has_access('admin.*') %}
+                                {#{% if has_access(item.permission) %}#}
                                     <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin</a></li>
-                                {% endif %}
+                                {#{% endif %}#}
                                 <li><a class="dropdown-item" href="{{ path_for('user_settings_index') }}"><span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a></li>
                                 <li class="uk-nav-divider"></li>
                                 <li><a class="dropdown-item" href="{{ path_for('logout') }}"><span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('buttons', 'logout') }}</a></li>
@@ -72,7 +72,7 @@
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
                     {% for item in menu %}
-                        {% if has_access(item.permission) %}
+                        {#{% if has_access(item.permission) %}#}
                             {% if menu.getActiveRoute() == item.route %}
                                 <li class="uk-active">
                             {% else %}
@@ -80,7 +80,7 @@
                             {% endif %}
                             <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
                             </li>
-                        {% endif %}
+                        {#{% endif %}#}
                     {% endfor %}
                 </ul>
 
@@ -98,13 +98,13 @@
                             </a></li>
                     {% else %}
                         <li class="uk-nav-header">{{ get_user_name() }}</li>
-                        {% if has_access('admin.*') %}
+                        {#{% if has_access(item.permission) %}#}
                             <li>
                                 <a class="dropdown-item" href="{{ path_for('admin_index') }}">
                                     <span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin
                                 </a>
                             </li>
-                        {% endif %}
+                        {#{% endif %}#}
                         <li>
                             <a class="dropdown-item" href="#">
                                 <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a>
