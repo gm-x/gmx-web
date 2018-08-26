@@ -27,8 +27,15 @@ $errorHandler = function ($c) {
 	};
 };
 
+$notFoundHandler = function ($c) {
+    return function ($request, $response) use ($c) {
+        return $c['view']->render($response->withStatus(404), 'errors/404.twig');
+    };
+};
+
 $container['errorHandler'] = $errorHandler;
 $container['phpErrorHandler'] = $errorHandler;
+$container['notFoundHandler'] = $notFoundHandler;
 
 $app = new \Slim\App($container);
 
