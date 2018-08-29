@@ -5,6 +5,7 @@ use \Psr\Container\ContainerInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Slim\Router;
+use \GameX\Core\Configuration\Node;
 use \GameX\Core\Lang\Language;
 use \GameX\Core\FlashMessages;
 use \GameX\Core\Auth\Models\UserModel;
@@ -41,6 +42,12 @@ abstract class BaseMiddleware {
             /** @var Router $router */
             $router = self::$container->get('router');
             return $response->withRedirect($router->pathFor('login'));
+        }
+        
+        /** @var Node $config */
+        $config = self::$container->get('config')->get('permissions');
+        if ((int) $user->id === $config->get('root_user')) {
+            return $next($request, $response);
         }
         
         if (!$this->checkAccess($request, $user)) {
