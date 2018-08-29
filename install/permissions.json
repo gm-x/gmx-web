@@ -1,0 +1,33 @@
+[{
+	"group": "admin",
+	"key": "server",
+	"type": null
+}, {
+	"group": "admin",
+	"key": "server_group",
+	"type": "server"
+}, {
+	"group": "admin",
+	"key": "server_reason",
+	"type": "server"
+}, {
+	"group": "admin",
+	"key": "user",
+	"type": null
+}, {
+	"group": "admin",
+	"key": "user_role",
+	"type": null
+}, {
+	"group": "admin",
+	"key": "role",
+	"type": null
+}, {
+	"group": "admin",
+	"key": "player",
+	"type": null
+}, {
+	"group": "admin",
+	"key": "role_permission",
+	"type": null
+}]

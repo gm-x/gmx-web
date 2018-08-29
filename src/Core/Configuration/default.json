@@ -37,5 +37,8 @@
 	},
 	"log": {
 		"queries": false
+	},
+	"permissions": {
+		"root_user": null
 	}
 }

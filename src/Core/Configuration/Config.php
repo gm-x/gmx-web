@@ -1,6 +1,8 @@
 <?php
 namespace GameX\Core\Configuration;
 
+use GameX\Core\Configuration\Exceptions\ConfigNotFoundException;
+
 class Config {
 
     /**
@@ -79,21 +81,21 @@ class Config {
      */
 	protected function loadFromFile() {
 		if (!is_readable($this->path)) {
-			throw new \Exception('Couldn\'t open file ' . $this->path);
+			throw new ConfigNotFoundException('Couldn\'t open file ' . $this->path);
 		}
 
 		$content = file_get_contents($this->path);
 		if (!$content) {
-			throw new \Exception('Couldn\'t read from file ' . $this->path);
+			throw new ConfigNotFoundException('Couldn\'t read from file ' . $this->path);
 		}
 
 		$data = json_decode($content, true);
 		if (json_last_error() != JSON_ERROR_NONE) {
-			throw new \Exception(json_last_error_msg());
+			throw new ConfigNotFoundException(json_last_error_msg());
 		}
 
 		if (!is_array($data)) {
-			throw new \Exception('Bad format of file ' . $this->path);
+			throw new ConfigNotFoundException('Bad format of file ' . $this->path);
 		}
 
 		return new Node($data);
