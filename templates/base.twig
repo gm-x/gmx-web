@@ -1,3 +1,4 @@
+{% import 'macros/navbar.twig' as navbar %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,153 +17,23 @@
 <body>
     <div class="uk-container">
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
-            <nav class="uk-navbar-container uk-visible@m" uk-navbar>
-                <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}"><img src="{{ base_url() }}/assets/images/gxlogo-xs.png"></a>
-                <div class="uk-navbar-left nav-overlay">
-                    <ul class="uk-navbar-nav">
-                        {% for item in menu %}
-                            {#{% if has_access(item.permission) %}#}
-                                {% if menu.getActiveRoute() == item.route %}
-                                    <li class="uk-active">
-                                {% else %}
-                                    <li>
-                                {% endif %}
-                                        <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
-                                    </li>
-                            {#{% endif %}#}
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="nav-overlay uk-navbar-left uk-flex-1" hidden>
-
-                    <div class="uk-navbar-item uk-width-expand">
-                        <form class="uk-search uk-search-navbar uk-width-1-1">
-                            <input class="uk-search-input" type="search" placeholder="{{ trans('labels', 'search') }}..." autofocus>
-                        </form>
-                    </div>
-
-                    <a class="uk-navbar-toggle" uk-close uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#"></a>
-
-                </div>
-                <div class="nav-overlay uk-navbar-right">
-                    <a class="uk-navbar-toggle" uk-search-icon uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#"></a>
-                    <ul class="uk-navbar-nav">
-                        <li>
-                            <a href="#">{{ userLangName }}</a>
-                            <div class="uk-navbar-dropdown">
-                                <ul class="uk-nav uk-navbar-dropdown-nav">
-                                    {% for key,value in siteLanguages %}
-                                        <li><a href="{{ path_for('language', {}, {'lang': key, 'r': currentUri}) }}">{{ value }}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="#" uk-icon="grid"></a>
-                            <div class="uk-navbar-dropdown">
-                                <ul class="uk-nav uk-navbar-dropdown-nav">
-                                {% if not is_user() %}
-                                    <li><a class="dropdown-item" href="{{ path_for('login') }}">
-                                        {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
-                                    </a></li>
-                                {% else %}
-                                    <li class="uk-nav-header">{{ get_user_name() }}</li>
-                                    {% if has_access_group('admin') %}
-                                        <li>
-                                            <a class="dropdown-item" href="{{ path_for('admin_index') }}">
-                                                <span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path_for('user_settings_index') }}">
-                                            <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings
-                                        </a>
-                                    </li>
-                                    <li class="uk-nav-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path_for('logout') }}">
-                                            <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span>
-                                            {{ trans('buttons', 'logout') }}
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <nav class="uk-navbar-container uk-hidden@m" uk-navbar>
-                <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}"><img src="{{ base_url() }}/assets/images/gxlogo-xs.png"></a>
-                <div class="uk-navbar-left">
-                    <a class="uk-navbar-toggle" uk-navbar-toggle-icon href="#" uk-toggle="target: #offcanvas-nav"></a>
-                </div>
-                <div id="offcanvas-nav" uk-offcanvas="overlay: true">
-                    <div class="uk-offcanvas-bar">
-                        <ul class="uk-nav uk-nav-default">
-                            {% for item in menu %}
-                                {#{% if has_access(item.permission) %}#}
-                                    <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                                        <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
-                                    </li>
-                                {#{% endif %}#}
-                            {% endfor %}
-                        </ul>
-
-                    </div>
-                </div>
-                <div class="uk-navbar-right">
-                    <a class="uk-navbar-toggle" uk-icon="grid" href="#" uk-toggle="target: #offcanvas-nav2"></a>
-                </div>
-                <div id="offcanvas-nav2" uk-offcanvas="overlay: true">
-                    <div class="uk-offcanvas-bar">
-                        <ul class="uk-nav uk-nav-default">
-                            {% if not is_user() %}
-                                <li><a class="dropdown-item" href="{{ path_for('login') }}">
-                                        {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
-                                    </a></li>
-                            {% else %}
-                                <li class="uk-nav-header">{{ get_user_name() }}</li>
-                                {% if has_access_group('admin') %}
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path_for('admin_index') }}">
-                                            <span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                <li>
-                                    <a class="dropdown-item" href="{{ path_for('user_settings_index') }}">
-                                        <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings
-                                    </a>
-                                </li>
-                                <li class="uk-nav-divider"></li>
-                                <li><a class="dropdown-item" href="{{ path_for('logout') }}">
-                                        <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('buttons', 'logout') }}
-                                    </a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+            {{ navbar.mainbar(menu) }}
         </div>
+        {% if submenu %}
+            <!--Submenu here-->
+        {% endif %}
+        <main role="main" class="container">
+            {% for message in flash_messages.success %}
+                <div class="alert alert-success" role="alert">{{ message }}</div>
+            {% endfor %}
 
-<main role="main" class="container">
-    {% for message in flash_messages.success %}
-        <div class="alert alert-success" role="alert">{{ message }}</div>
-    {% endfor %}
+            {% for message in flash_messages.error %}
+                <div class="alert alert-danger" role="alert">{{ message }}</div>
+            {% endfor %}
 
-    {% for message in flash_messages.error %}
-        <div class="alert alert-danger" role="alert">{{ message }}</div>
-    {% endfor %}
-
-    {% block content %}{% endblock %}
-</main>
-
+            {% block content %}{% endblock %}
+        </main>
         {% block modals %}{% endblock %}
-
-
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         {% block javascript %}{% endblock %}
     </div>
