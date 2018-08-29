@@ -63,10 +63,6 @@ class RolesForm extends BaseForm {
      */
     protected function processForm() {
         $this->role->fill($this->form->getValues());
-        
-        if (!$this->role->exists) {
-            $this->role->permissions = [];
-        }
         return $this->role->save();
     }
 }
