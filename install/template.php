@@ -41,7 +41,7 @@
                         </div>
                         <div class="form-group">
                             <label>Prefix:</label>
-                            <input type="text" class="form-control" id="formDatabasePrefix" value="gamex_">
+                            <input type="text" class="form-control" id="formDatabasePrefix" value="gmx_">
                         </div>
                     </fieldset>
                 </div>
@@ -77,7 +77,7 @@
 		el.addClass('list-group-item').text('Install ' + step + ': installing ...');
 		statusList.append(el);
 		return function (data) {
-			if (data.success) {
+			if (data.status) {
 				el.text('Install ' + step + ': installed');
 				nextCall();
 			} else {
@@ -129,8 +129,15 @@
 	}
 
 	function installMigrations() {
-        var nextFunc = result('migrations', installAdmin);
+        var nextFunc = result('migrations', installPermissions);
 		$.post('?step=migrations')
+            .done(nextFunc)
+            .fail(fail(nextFunc));
+	}
+
+	function installPermissions() {
+        var nextFunc = result('permissions', installAdmin);
+		$.post('?step=permissions')
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}
@@ -156,6 +163,8 @@
 
 	function finish() {
         $('#formSubmitButton').prop('disabled', false);
+        alert("Successfully installed");
+        location.href = '../';
 	}
 
 	$('#installForm').on('submit', function (e) {
