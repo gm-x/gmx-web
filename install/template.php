@@ -77,7 +77,7 @@
 		el.addClass('list-group-item').text('Install ' + step + ': installing ...');
 		statusList.append(el);
 		return function (data) {
-			if (data.success) {
+			if (data.status) {
 				el.text('Install ' + step + ': installed');
 				nextCall();
 			} else {

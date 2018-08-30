@@ -6,8 +6,14 @@ function render($template, array $data = []) {
 	return ob_get_clean();
 }
 
-function json($data) {
-	header('Content-type:application/json;charset=utf-8');
+function json($status, $message = '') {
+	header('Content-type:application/json;charset=utf-8', true, 200);
+	$data = [
+	    'status' => (bool) $status
+    ];
+	if (!$status) {
+	    $data['message'] = (string) $message;
+    }
 	echo json_encode($data);
 	die();
 }
