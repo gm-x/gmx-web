@@ -75,16 +75,14 @@
             <div class="uk-width-1-1@m uk-margin">
                 <button type="submit" class="uk-button uk-button-secondary uk-button-large" id="formSubmitButton">Install</button>
             </div>
-            <div class="uk-width-1-1@m uk-margin">
-                <ul class="uk-list uk-width-1-1@m uk-list-divider" id="status"></ul>
-            </div>
+
         </div>
     </form>
 
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
-    var statusList = $('#status');
+    var statusList;
 	function result(step, nextCall) {
 		var el= $('<li/>');
 		el.addClass('list-group-item').text('Install ' + step + ': installing ...');
@@ -96,6 +94,7 @@
 			} else {
 				el.text('Install ' + step + ': error ' + data.message);
                 el.addClass('uk-text-danger');
+                $('#close-btn').prop('disabled', false);
                 $('#formSubmitButton').prop('disabled', false);
 			}
 		};
@@ -112,7 +111,7 @@
     }
 
     function installChecks() {
-        var nextFunc = result('composer', installComposer);
+        var nextFunc = result('checks', installComposer);
         $.post('?step=checks')
             .done(nextFunc)
             .fail(fail(nextFunc));
@@ -181,13 +180,20 @@
         location.href = '../';
 	}
 
-	$('#installForm').on('submit', function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		statusList.empty();
-		$('#formSubmitButton').prop('disabled', true);
-        installChecks();
-	});
+    UIkit.util.on('#installForm', 'submit', function (e) {
+        e.preventDefault();
+        e.target.blur();
+        UIkit.modal.dialog('<ul class="uk-modal-body uk-list uk-width-1-1@m uk-list-divider" id="status"></ul><br><button id="close-btn" class="uk-button uk-button-secondary uk-modal-close" disabled>Close</button>', {
+            container: true,
+            bgClose: false,
+            escClose: false
+        });
+        statusList = $('#status');
+        statusList.empty();
+        $('#formSubmitButton').prop('disabled', true);
+        setTimeout(installChecks, 1000);
+    });
+
 </script>
 </body>
 </html>
