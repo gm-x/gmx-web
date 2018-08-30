@@ -71,12 +71,12 @@
                 </div>
             </div>
         </div>
-        <div class="uk-flex uk-flex-center uk-margin">
-            <div class="uk-margin">
+        <div class="uk-flex uk-flex-center uk-flex-wrap uk-margin">
+            <div class="uk-width-1-1@m uk-margin">
                 <button type="submit" class="uk-button uk-button-secondary uk-button-large" id="formSubmitButton">Install</button>
             </div>
-            <div class="uk-width-1-1@m">
-                <ul class="list-group col-8 w-100" id="status"></ul>
+            <div class="uk-width-1-1@m uk-margin">
+                <ul class="uk-list uk-width-1-1@m uk-list-divider" id="status"></ul>
             </div>
         </div>
     </form>
@@ -95,6 +95,7 @@
 				nextCall();
 			} else {
 				el.text('Install ' + step + ': error ' + data.message);
+                el.addClass('uk-text-danger');
                 $('#formSubmitButton').prop('disabled', false);
 			}
 		};
