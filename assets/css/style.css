@@ -157,13 +157,13 @@ a:hover, .uk-link:hover {
 }
 
 .uk-input:disabled, .uk-select:disabled, .uk-textarea:disabled {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.2);
     color: #9E9E9E;
     border: 1px solid rgba(255,255,255,0.05);
 }
 
 .uk-input, .uk-select, .uk-textarea {
-    background: transparent;
+    background: rgba(0, 0, 0, 0.2);
     color: #a0a0a0;
     border: 1px solid rgba(255,255,255,0.1);
 }
@@ -182,7 +182,7 @@ fieldset {
 
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
     outline: none;
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.3);
     color: #999;
     border: 1px solid rgba(255,255,255,0.2);
 }
