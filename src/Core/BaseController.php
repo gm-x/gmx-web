@@ -50,15 +50,14 @@ abstract class BaseController {
 
 	/**
 	 * @param string $key
-	 * @param mixed|null $default
-	 * @return Node|mixed|null
+	 * @return Node
 	 */
-    public function getConfig($key, $default = null) {
+    public function getConfig($key) {
         if ($this->config === null) {
             $this->config = $this->getContainer('config');
         }
 
-        return $this->config->get($key, $default);
+        return $this->config->getNode($key);
 	}
 
 	/**

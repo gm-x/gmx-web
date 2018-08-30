@@ -51,7 +51,7 @@ class PreferencesController extends BaseAdminController {
     public function emailAction(Request $request, ResponseInterface $response, array $args = []) {
         /** @var Config $config */
         $config = clone $this->getContainer('config');
-        $form = new MailForm($config->get('mail'));
+        $form = new MailForm($config->getNode('mail'));
         if ($this->processForm($request, $form)) {
             $config->save();
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -74,7 +74,7 @@ class PreferencesController extends BaseAdminController {
     	try {
             /** @var Config $config */
             $config = $this->getContainer('config');
-            $form = new MailForm($config->get('mail'));
+            $form = new MailForm($config->getNode('mail'));
              $form->create();
         
             if (!$form->process($request)) {
@@ -83,7 +83,7 @@ class PreferencesController extends BaseAdminController {
         
             /** @var \GameX\Core\Mail\Helper $mail */
             $mail = $this->getContainer('mail');
-            $mail->setConfiguration($config->get('mail'));
+            $mail->setConfiguration($config->getNode('mail'));
             $to = new Email($this->getUser()->email, $this->getUser()->login);
             $mail->send($to, 'test', 'Test Email');
             return $response->withJson([

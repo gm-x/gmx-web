@@ -114,7 +114,7 @@ function createUser($container, $login, $email, $password) {
 	
 	/** @var \GameX\Core\Configuration\Config $config */
 	$config = $container['config'];
-	$config->get('permissions')->set('root_user', $user->id);
+	$config->getNode('permissions')->set('root_user', $user->id);
 	$config->save();
 }
 

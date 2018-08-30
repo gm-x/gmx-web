@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
 				$config = new GameX\Core\Configuration\Config();
-				$db = $config->get('db');
+				$db = $config->getNode('db');
 				$db->set('host', $_POST['db']['host']);
 				$db->set('port', (int) $_POST['db']['port']);
 				$db->set('username', $_POST['db']['user']);

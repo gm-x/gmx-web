@@ -45,7 +45,7 @@ abstract class BaseMiddleware {
         }
         
         /** @var Node $config */
-        $config = self::$container->get('config')->get('permissions');
+        $config = self::$container->get('config')->getNode('permissions');
         if ((int) $user->id === $config->get('root_user')) {
             return $next($request, $response);
         }

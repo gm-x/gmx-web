@@ -1,7 +1,8 @@
 <?php
 namespace GameX\Core\Configuration;
 
-use GameX\Core\Configuration\Exceptions\ConfigNotFoundException;
+use \GameX\Core\Configuration\Exceptions\ConfigNotFoundException;
+use \GameX\Core\Configuration\Exceptions\ConfigNodeNotFoundException;
 
 class Config {
 
@@ -26,19 +27,22 @@ class Config {
 
     /**
      * @param string $key
-     * @param mixed|null $default
-     * @return Node|mixed|null
+     * @return Node
+     * @throws ConfigNodeNotFoundException
      */
-	public function get($key, $default = null) {
-	    return $this->config->get($key, $default);
+	public function getNode($key) {
+	    if (!$this->existsNode($key)) {
+	       throw new ConfigNodeNotFoundException();
+        }
+	    return $this->config->get($key);
     }
 
 	/**
 	 * @param string $key
-	 * @param string $value
+	 * @param Node $value
 	 * @return Node
 	 */
-    public function set($key, $value) {
+    public function setNode($key, Node $value) {
 	    return $this->config->set($key, $value);
     }
 
@@ -46,7 +50,7 @@ class Config {
 	 * @param string $key
 	 * @return bool
 	 */
-    public function exists($key) {
+    public function existsNode($key) {
 		return $this->config->exists($key);
 	}
 
@@ -54,7 +58,7 @@ class Config {
 	 * @param string $key
 	 * @return Node
 	 */
-    public function remove($key) {
+    public function removeNode($key) {
 		return $this->config->remove($key);
 	}
 

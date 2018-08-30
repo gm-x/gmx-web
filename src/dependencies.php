@@ -26,15 +26,15 @@ $container['cache'] = function (ContainerInterface $container) {
 };
 
 $container['lang'] = function (ContainerInterface $container) {
-    /** @var GameX\Core\Configuration\Config $config */
-    $config = $container->get('config');
+    /** @var GameX\Core\Configuration\Node $config */
+    $config = $container->get('config')->getNode('language');
 
     $loader = new \GameX\Core\Lang\Loaders\JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
     $provider = new \GameX\Core\Lang\Providers\SlimProvider($container->get('request'));
     return new \GameX\Core\Lang\Language(
         $loader, $provider,
-        $config->get('language')->get('list')->toArray(),
-        $config->get('language')->get('default')
+        $config->getNode('list')->toArray(),
+        $config->get('default')
     );
 };
 
@@ -43,12 +43,12 @@ $container['db'] = function (ContainerInterface $container) {
     $config = $container->get('config');
 
     $capsule = new \Illuminate\Database\Capsule\Manager;
-    $capsule->addConnection($config->get('db')->toArray());
+    $capsule->addConnection($config->getNode('db')->toArray());
 
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 
-    if ($config->get('log')->get('queries', false)) {
+    if ($config->getNode('log')->get('queries', false)) {
         $capsule->getConnection()->enableQueryLog();
     }
 
@@ -74,7 +74,7 @@ $container['mail'] = function (ContainerInterface $container) {
     $config = $container->get('config');
 
 //    return new \GameX\Core\Mail\Helpers\SwiftMailer($container->get('view'), $config->get('mail'));
-    return new \GameX\Core\Mail\Helpers\MailHelper($container->get('view'), $config->get('mail'));
+    return new \GameX\Core\Mail\Helpers\MailHelper($container->get('view'), $config->getNode('mail'));
 };
 
 $container['log'] = function (ContainerInterface $container) {
@@ -93,7 +93,7 @@ $container['view'] = function (ContainerInterface $container) {
     /** @var GameX\Core\Configuration\Config $config */
     $config = $container->get('config');
 
-    $settings = $config->get('view')->toArray();
+    $settings = $config->getNode('view')->toArray();
     $settings['cache'] = $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache';
 
 	$view = new \Slim\Views\Twig($container->get('root') . 'templates', $settings);
@@ -112,7 +112,7 @@ $container['view'] = function (ContainerInterface $container) {
 
 	$view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
 	$view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
-	$view->getEnvironment()->addGlobal('title', $config->get('main')->get('title'));
+	$view->getEnvironment()->addGlobal('title', $config->getNode('main')->get('title'));
 
 	return $view;
 };

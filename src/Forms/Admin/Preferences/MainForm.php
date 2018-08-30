@@ -32,10 +32,10 @@ class MainForm extends BaseForm {
 	 * @noreturn
 	 */
 	protected function createForm() {
-        $language = $this->config->get('language');
+        $language = $this->config->getNode('language');
         $languages = $language->get('list')->toArray();
 		$this->form
-            ->add(new Text('title', $this->config->get('main')->get('title'), [
+            ->add(new Text('title', $this->config->getNode('main')->get('title'), [
                 'title' => $this->getTranslate('admin_preferences', 'title'),
                 'required' => true,
             ]))
@@ -54,8 +54,8 @@ class MainForm extends BaseForm {
      * @return boolean
      */
     protected function processForm() {
-        $this->config->get('main')->set('title', $this->form->getValue('title'));
-        $this->config->get('language')->set('default', $this->form->getValue('language'));
+        $this->config->getNode('main')->set('title', $this->form->getValue('title'));
+        $this->config->getNode('language')->set('default', $this->form->getValue('language'));
         $this->config->save();
         return true;
     }
