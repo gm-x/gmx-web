@@ -105,7 +105,10 @@ $container['view'] = function (ContainerInterface $container) {
 	$basePath = rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
 	$view->addExtension(new \Slim\Views\TwigExtension($container->get('router'), $basePath));
 	$view->addExtension(new \GameX\Core\CSRF\Extension($container->get('csrf')));
-	$view->addExtension(new \GameX\Core\Auth\ViewExtension($container->get('auth')));
+	$view->addExtension(new \GameX\Core\Auth\ViewExtension(
+	    $container->get('auth'),
+        $config->getNode('permissions')->get('root_user')
+    ));
 	$view->addExtension(new \GameX\Core\Lang\Extension\ViewExtension($container->get('lang')));
 	$view->addExtension(new \GameX\Core\AccessFlags\ViewExtension());
 	$view->addExtension(new \GameX\Core\Twig_Dump());

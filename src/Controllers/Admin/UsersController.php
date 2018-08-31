@@ -27,6 +27,12 @@ class UsersController extends BaseAdminController {
         $this->userRepository = $this->getContainer('auth')->getUserRepository();
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $pagination = new Pagination($this->userRepository->get(), $request);
         return $this->render('admin/users/index.twig', [
@@ -35,6 +41,28 @@ class UsersController extends BaseAdminController {
         ]);
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     */
+    public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        $user = $this->getUserFromRequest($request, $response, $args);
+        return $this->render('admin/users/view.twig', [
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
+     */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$user = $this->getUserFromRequest($request, $response, $args);
         $roleHelper = new RoleHelper($this->container);

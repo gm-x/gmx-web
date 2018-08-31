@@ -19,7 +19,13 @@
         {% for user in users %}
         <ul>
             <li class="uk-width-1-6@m uk-visible@m"><span uk-icon="icon: user" class="avatar"></span></li>
-            <li class="uk-width-1-3@m uk-width-2-3@s">{{ user.login }}</li>
+            <li class="uk-width-1-3@m uk-width-2-3@s">
+                {% if has_access_permission('admin', 'user', 'view') %}
+                    <a href="{{ path_for('admin_users_view', {'user': user.id}) }}">{{ user.login }}</a>
+                {% else %}
+                    {{ user.login }}
+                {% endif %}
+            </li>
             <li class="uk-width-1-3@m uk-width-1-3@s">{{ user.email }}</li>
             <li class="uk-width-1-6@m">{{ admin.edit_btn(path_for('admin_users_edit', {'user': user.id})) }}</li>
         </ul>

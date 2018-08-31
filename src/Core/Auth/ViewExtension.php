@@ -4,20 +4,39 @@ namespace GameX\Core\Auth;
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 use \Cartalyst\Sentinel\Sentinel;
+use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Core\Auth\Permissions\Manager;
 
 class ViewExtension extends Twig_Extension {
 
+    const ACCESS_LIST = [
+        'list' => Manager::ACCESS_LIST,
+        'view' => Manager::ACCESS_VIEW,
+        'create' => Manager::ACCESS_CREATE,
+        'edit' => Manager::ACCESS_EDIT,
+        'delete' => Manager::ACCESS_DELETE,
+    ];
+
 	/**
-	 * @var Sentinel
+	 * @var UserModel|null
 	 */
-	protected $auth;
+	protected $user;
+
+    /**
+     * @var bool
+     */
+	protected $isRootUser = false;
 
 	/**
 	 * ViewExtention constructor.
 	 * @param Sentinel $auth
+	 * @param int $rootId
 	 */
-	public function __construct(Sentinel $auth) {
-		$this->auth = $auth;
+	public function __construct(Sentinel $auth, $rootId = null) {
+		$this->user = $auth->getUser();
+		$this->isRootUser = $this->user
+            ? ((int)$this->user->id === $rootId)
+            : false;
 	}
 
 	/**
@@ -52,16 +71,15 @@ class ViewExtension extends Twig_Extension {
 	 * @return bool
 	 */
     public function isUser() {
-		return ($this->auth->check() !== false);
+		return (bool) $this->user;
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getUserName() {
-    	$user = $this->auth->getUser();
-		return $user
-			? $user->getUserLogin()
+		return $this->user
+			? $this->user->getUserLogin()
 			: '';
 	}
     
@@ -70,11 +88,12 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToGroup($group) {
-        /** @var \GameX\Core\Auth\Models\UserModel $user */
-        $user = $this->auth->getUser();
-        return $user
-            ? $user->hasAccessToGroup($group)
-            : false;
+        if (!$this->user) {
+            return false;
+        }
+        return !$this->isRootUser
+            ? $this->user->hasAccessToGroup($group)
+            : true;
 	}
     
     /**
@@ -84,11 +103,12 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToPermission($group, $permission, $access = null) {
-        /** @var \GameX\Core\Auth\Models\UserModel $user */
-        $user = $this->auth->getUser();
-        return $user
-            ? $user->hasAccessToPermission($group, $permission, $access)
-            : false;
+        if (!$this->user) {
+            return false;
+        }
+        return !$this->isRootUser
+            ? $this->user->hasAccessToPermission($group, $permission, $this->getAccess($access))
+            : true;
     }
     
     /**
@@ -99,10 +119,36 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        /** @var \GameX\Core\Auth\Models\UserModel $user */
-        $user = $this->auth->getUser();
-        return $user
-            ? $user->hasAccessToResource($group, $permission, $resource, $access)
-            : false;
+        if (!$this->user) {
+            return false;
+        }
+        return !$this->isRootUser
+            ? $this->user->hasAccessToResource($group, $permission, $resource, $this->getAccess($access))
+            : true;
+    }
+
+    /**
+     * @param int|string|int[]|string[]|null $access
+     * @return int|null
+     */
+    protected function getAccess($access) {
+        if ($access === null) {
+            return null;
+        }
+
+        if (!is_array($access)) {
+            $access = [$access];
+        }
+
+        $result = 0;
+        foreach ($access as $val) {
+            if (!is_numeric($val)) {
+                $val = isset(self::ACCESS_LIST[$val]) ? self::ACCESS_LIST[$val] : 0;
+            }
+
+            $result |= $val;
+        }
+
+        return $result;
     }
 }

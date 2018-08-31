@@ -12,6 +12,11 @@ return function () {
         ->add(new HasAccessToPermission('admin', 'user', Manager::ACCESS_LIST));
 
     $this
+        ->get('/{user}', BaseController::action(UsersController::class, 'view'))
+        ->setName('admin_users_view')
+        ->add(new HasAccessToPermission('admin', 'user', Manager::ACCESS_VIEW));
+
+    $this
         ->map(['GET', 'POST'], '/{user}/edit', BaseController::action(UsersController::class, 'edit'))
         ->setName('admin_users_edit')
         ->add(new HasAccessToPermission('admin', 'user_role', Manager::ACCESS_VIEW | Manager::ACCESS_EDIT));
