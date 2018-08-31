@@ -1,0 +1,45 @@
+{% extends 'admin/admin.twig' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block content %}
+<a href="{{ path_for('admin_servers_list') }}" class="uk-button uk-button-secondary">
+    {{ trans('buttons', 'back') }}
+</a>
+<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="uk-button uk-button-primary" uk-icon="pencil">
+    {{ trans('buttons', 'edit') }}
+</a>
+<form
+        action="{{ path_for('admin_servers_delete', {'server': server.id}) }}"
+        method="post"
+        class="btn-delete"
+>
+    {{ csrf_token() }}
+    <button
+            type="submit"
+            class="uk-button uk-button-primary" uk-icon="trash"
+    >{{ trans('buttons', 'delete') }}</button>
+</form>
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <div f-table f-divider>
+        <ul>
+            <li>Name</li>
+            <li>{{ server.name }}</li>
+        </ul>
+        <ul>
+            <li>Address</li>
+            <li>{{ server.ip }}:{{ server.port }}</li>
+        </ul>
+        <ul>
+            <li>Create At</li>
+            <li>{{ server.created_at }}</li>
+        </ul>
+        <ul>
+            <li>Update At</li>
+            <li>{{ server.updated_at }}</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

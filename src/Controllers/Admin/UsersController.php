@@ -70,7 +70,7 @@ class UsersController extends BaseAdminController {
         $form = new UsersForm($user, $roleHelper);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_users_edit', [
+            return $this->redirect('admin_users_view', [
                 'user' => $user->id,
             ]);
         }

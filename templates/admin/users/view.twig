@@ -5,6 +5,12 @@
 {% endblock %}
 
 {% block content %}
+<a href="{{ path_for('admin_users_list') }}" class="uk-button uk-button-secondary">
+    {{ trans('buttons', 'back') }}
+</a>
+<a href="{{ path_for('admin_users_edit', {'user': user.id}) }}" class="uk-button uk-button-primary">
+    {{ trans('buttons', 'edit') }}
+</a>
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <div f-table f-divider>
         <ul>

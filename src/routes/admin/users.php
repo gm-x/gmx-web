@@ -12,7 +12,7 @@ return function () {
         ->add(new HasAccessToPermission('admin', 'user', Manager::ACCESS_LIST));
 
     $this
-        ->get('/{user}', BaseController::action(UsersController::class, 'view'))
+        ->get('/{user}/view', BaseController::action(UsersController::class, 'view'))
         ->setName('admin_users_view')
         ->add(new HasAccessToPermission('admin', 'user', Manager::ACCESS_VIEW));
 

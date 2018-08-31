@@ -20,6 +20,11 @@ return function () {
         ->setArgument('permission', 'admin.servers'); // TODO: need another permission
 
     $this
+        ->get('/{server}/view', BaseController::action(ServersController::class, 'view'))
+        ->setName('admin_servers_view')
+        ->add(new HasAccessToPermission('admin', 'server', Manager::ACCESS_VIEW));
+
+    $this
         ->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))
         ->setName('admin_servers_create')
         ->add(new HasAccessToPermission('admin', 'server', Manager::ACCESS_CREATE));
