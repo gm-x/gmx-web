@@ -1,9 +1,10 @@
 <?php
 namespace GameX\Core\Auth\Models;
 
-use \Cartalyst\Sentinel\Permissions\PermissibleInterface;
+use \Carbon\Carbon;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
-use \Cartalyst\Sentinel\Permissions\PermissibleTrait;
+use \GameX\Core\Auth\Interfaces\PermissionsInterface;
+use \GameX\Core\Auth\Permissions\Manager;
 use \GameX\Core\BaseModel;
 
 /**
@@ -13,14 +14,20 @@ use \GameX\Core\BaseModel;
  * @property int $id
  * @property string $name
  * @property string $slug
- * @property array $permissions
- * @property \DateTime $completed_at
- * @property \DateTime $created_at
- * @property \DateTime $updated_at
+ * @property Carbon $completed_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property UserModel[] $users
+ * @property RolesPermissionsModel[] $permissions
  */
-class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface {
-
-	use PermissibleTrait;
+class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface {
+    
+    /**
+     * @var Manager|null
+     */
+    protected static $manager = null;
+    
+    protected $cachedPermissions = null;
 
 	/**
 	 * The Eloquent users model name.
@@ -42,6 +49,20 @@ class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface
 		'slug',
 		'permissions',
 	];
+    
+    /**
+     * @param Manager $manager
+     */
+	public static function setManager(Manager $manager) {
+	    self::$manager = $manager;
+    }
+    
+    /**
+     * @return Manager|null
+     */
+    public static function getManager() {
+	    return self::$manager;
+    }
 
 	/**
 	 * The Users relationship.
@@ -49,27 +70,16 @@ class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function users() {
-		return $this->hasMany(UserModel::class, 'role_id');
+		return $this->hasMany(UserModel::class, 'role_id', 'id');
 	}
 
 	/**
-	 * Get mutator for the "permissions" attribute.
+	 * The Users relationship.
 	 *
-	 * @param  mixed  $permissions
-	 * @return array
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function getPermissionsAttribute($permissions) {
-		return $permissions ? json_decode($permissions, true) : [];
-	}
-
-	/**
-	 * Set mutator for the "permissions" attribute.
-	 *
-	 * @param  mixed  $permissions
-	 * @return void
-	 */
-	public function setPermissionsAttribute(array $permissions) {
-		$this->attributes['permissions'] = $permissions ? json_encode($permissions) : '';
+	public function permissions() {
+		return $this->hasMany(RolesPermissionsModel::class, 'role_id', 'id');
 	}
 
 	/**
@@ -92,40 +102,65 @@ class RoleModel extends BaseModel implements RoleInterface, PermissibleInterface
 	public function getUsers() {
 		return $this->users;
 	}
+    
+    /**
+     * @inheritdoc
+     */
+    public function hasAccessToGroup($group) {
+        return self::$manager !== null
+            ? self::$manager->hasAccessToGroup($this, $group)
+            : false;
+    }
 
-	/**
-	 * @param $permissions
-	 * @return bool
-	 */
-	public function hasAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAccess($permissions);
+    /**
+     * @inheritdoc
+     */
+    public function hasAccessToPermission($group, $permission = null, $access = null) {
+        return self::$manager !== null
+            ? self::$manager->hasAccessToPermission($this, $group, $permission, $access)
+            : false;
 	}
-
-	/**
-	 * @param $permissions
-	 * @return bool
-	 */
-	public function hasAnyAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAnyAccess($permissions);
-	}
-
-	protected function createPermissions() {
-		return new PermissionsModel(null, $this->permissions);
-	}
+    
+    /**
+     * @inheritdoc
+     */
+    public function hasAccessToResource($group, $permission, $resource, $access = null) {
+        return self::$manager !== null
+            ? self::$manager->hasAccessToResource($this, $group, $permission, $resource, $access)
+            : false;
+    }
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public static function getUsersModel()
-	{
+	public static function getUsersModel() {
 		return static::$usersModel;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public static function setUsersModel($usersModel)
-	{
+	public static function setUsersModel($usersModel) {
 		static::$usersModel = $usersModel;
 	}
+
+    /**
+     * @return array
+     */
+	protected function getPermissionsList() {
+	    if ($this->cachedPermissions === null) {
+            $this->cachedPermissions = [];
+	        /** @var RolesPermissionsModel[] $permissions */
+	        $permissions = $this->permissions()->with('permission')->get();
+	        foreach ($permissions as $permission) {
+	            $p = $permission->permission;
+	            if (!array_key_exists($p->group, $this->cachedPermissions)) {
+	                $this->cachedPermissions[$p->group] = [];
+                }
+	            $this->cachedPermissions[$p->group][$p->key] = $permission->access;
+            }
+        }
+        
+        return $this->cachedPermissions;
+    }
 }

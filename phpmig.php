@@ -27,7 +27,7 @@ $container['db'] = function ($container) {
 	/** @var \GameX\Core\Configuration\Config $config */
 	$config = $container['config'];
     $capsule = new Capsule();
-    $capsule->addConnection($config->get('db')->toArray());
+    $capsule->addConnection($config->getNode('db')->toArray());
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 

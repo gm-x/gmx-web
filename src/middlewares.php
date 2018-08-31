@@ -7,7 +7,7 @@ $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http
     /** @var GameX\Core\Configuration\Config $config */
     $config = $app->getContainer()->get('config');
 
-    if ($config->get('log')->get('queries', false)) {
+    if ($config->getNode('log')->get('queries', false)) {
         /** @var \Monolog\Logger $log */
         $logger = $app->getContainer()->get('log');
         /** @var \Illuminate\Database\Capsule\Manager $db */
@@ -26,6 +26,8 @@ $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http
 $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) {
     try {
         return $next($request, $response);
+    } catch (GameX\Core\Configuration\Exceptions\ConfigNotFoundException $e) {
+        die(__FILE__);
     } catch (\GameX\Core\Exceptions\RedirectException $e) {
         return $response->withRedirect($e->getUrl(), $e->getStatus());
     }

@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Core\Auth;
+namespace GameX\Core\Auth\Middlewares;
 
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Sentinel;
@@ -30,24 +30,7 @@ class AuthMiddleware {
      * @throws NotAllowedException
 	 */
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
-	    /** @var \Slim\Route $route */
-	    $route = $request->getAttribute('route');
-	    if ($route === null) {
-			return $next($request, $response);
-		}
-        $permission = $route->getArgument('permission');
-		$isAuthorized = $route->getArgument('is_authorized');
-		$user = $this->auth->getUser();
-        if ($permission === null) {
-        	if ($isAuthorized === true && !$user) {
-				throw new NotAllowedException();
-			}
-            return $next($request, $response);
-        }
-
-        if (!$user || !$user->hasAccess($permission)) {
-            throw new NotAllowedException();
-        }
-		return $next($request, $response);
+        $user = $this->auth->getUser();
+        return $next($request->withAttribute('user', $user), $response);
 	}
 }

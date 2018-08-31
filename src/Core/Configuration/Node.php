@@ -1,6 +1,8 @@
 <?php
 namespace GameX\Core\Configuration;
 
+use \GameX\Core\Configuration\Exceptions\ConfigNodeNotFoundException;
+
 class Node {
     /**
      * @var array
@@ -17,12 +19,25 @@ class Node {
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param array|mixed $value
      * @return Node
      */
     public function set($key, $value) {
-        $this->data[$key] = is_array($value) ? new self($value) : $value;
+        $this->data[$key] = is_array($value) ? new Node($value) : $value;
         return $this;
+    }
+    
+    /**
+     * @param string $key
+     * @return Node
+     * @throws ConfigNodeNotFoundException
+     */
+    public function getNode($key) {
+        if (!$this->existsNode($key)) {
+            throw new ConfigNodeNotFoundException();
+        }
+        
+        return $this->data[$key];
     }
 
     /**
@@ -32,6 +47,14 @@ class Node {
      */
     public function get($key, $default = null) {
         return $this->exists($key) ? $this->data[$key] : $default;
+    }
+    
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function existsNode($key) {
+        return $this->exists($key) && $this->data[$key] instanceof Node;
     }
 
 	/**

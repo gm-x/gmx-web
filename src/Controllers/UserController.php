@@ -17,6 +17,11 @@ use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
 class UserController extends BaseMainController {
+    
+    /**
+     * @var bool
+     */
+    protected $mailEnabled = false;
 
 	/**
 	 * @return string
@@ -24,19 +29,25 @@ class UserController extends BaseMainController {
 	protected function getActiveMenu() {
 		return 'index';
 	}
-
-	/**
+    
+    /**
+     * Init UserController
+     */
+	public function init() {
+        $this->mailEnabled = (bool) $this->getConfig('mail')->get('enabled', false);
+    }
+    
+    /**
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
     public function registerAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-		$emailEnabled = (bool) $this->getConfig('mail')->get('enabled', false);
 		$authHelper = new AuthHelper($this->container);
-		$form = new RegisterForm($authHelper, !$emailEnabled);
+		$form = new RegisterForm($authHelper, !$this->mailEnabled);
 		if ($this->processForm($request, $form, true)) {
-            if ($emailEnabled) {
+            if ($this->mailEnabled) {
                 $user = $form->getUser();
                 $activationCode = $authHelper->getActivationCode($user);
                 JobHelper::createTask('sendmail', [
@@ -65,8 +76,7 @@ class UserController extends BaseMainController {
 	 * @throws NotAllowedException
 	 */
     public function activateAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-		if (!$enabledEmail) {
+		if (!$this->mailEnabled) {
 			throw new NotAllowedException();
 		}
 
@@ -88,8 +98,6 @@ class UserController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-		$enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-
         $form = new LoginForm(new AuthHelper($this->container));
         if ($this->processForm($request, $form, true)) {
             return $this->redirect('index');
@@ -97,7 +105,7 @@ class UserController extends BaseMainController {
 
 		return $this->render('user/login.twig', [
 			'form' => $form->getForm(),
-			'enabledEmail' => $enabledEmail
+			'enabledEmail' => $this->mailEnabled
 		]);
     }
 
@@ -121,8 +129,7 @@ class UserController extends BaseMainController {
 	 * @throws NotAllowedException
 	 */
 	public function resetPasswordAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-        if (!$enabledEmail) {
+        if (!$this->mailEnabled) {
             throw new NotAllowedException();
         }
 
@@ -154,8 +161,7 @@ class UserController extends BaseMainController {
 	 * @throws NotAllowedException
 	 */
 	public function resetPasswordCompleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-        if (!$enabledEmail) {
+        if (!$this->mailEnabled) {
             throw new NotAllowedException();
         }
 

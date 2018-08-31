@@ -8,9 +8,6 @@ use \GameX\Core\Menu\MenuItem;
 abstract class BaseAdminController extends BaseMainController {
 
 	protected function initMenu() {
-		/** @var Twig $view */
-		$view = $this->getContainer('view');
-
 		/** @var \GameX\Core\Lang\Language $lang */
 		$lang = $this->getContainer('lang');
 
@@ -18,21 +15,44 @@ abstract class BaseAdminController extends BaseMainController {
 
 		$menu
 			->setActiveRoute($this->getActiveMenu())
-			->add(new MenuItem($lang->format('admin_menu', 'preferences'), 'admin_preferences_index', [], 'admin.preferences'))
-			->add(new MenuItem($lang->format('admin_menu', 'users'), 'admin_users_list', [], 'admin.users'))
-			->add(new MenuItem($lang->format('admin_menu', 'roles'), 'admin_roles_list', [], 'admin.roles'))
-			->add(new MenuItem($lang->format('admin_menu', 'servers'), 'admin_servers_list', [], 'admin.servers'))
-			->add(new MenuItem($lang->format('admin_menu', 'players'), 'admin_players_list', [], 'admin.players'));
+			->add(new MenuItem(
+			    $lang->format('admin_menu','preferences'),
+                'admin_preferences_index',
+                []
+            ))
+			->add(new MenuItem(
+			    $lang->format('admin_menu','users'),
+                'admin_users_list',
+                []
+            ))
+			->add(new MenuItem(
+			    $lang->format('admin_menu','roles'),
+                'admin_roles_list',
+                []
+            ))
+			->add(new MenuItem(
+			    $lang->format('admin_menu','servers'),
+                'admin_servers_list',
+                []
+            ))
+			->add(new MenuItem(
+			    $lang->format('admin_menu','players'),
+                'admin_players_list',
+                []
+            ));
 
-		$modules = $this->getContainer('modules');
-		/** @var \GameX\Core\Module\ModuleInterface $module */
-		foreach ($modules as $module) {
-			$items = $module->getAdminMenuItems();
-			foreach ($items as $item) {
-				$menu->add($item);
-			}
-		}
-
+		// TODO: Make refactoring for this
+        /** @var Twig $view */
+        $view = $this->getContainer('view');
+//		$modules = $this->getContainer('modules');
+//		/** @var \GameX\Core\Module\ModuleInterface $module */
+//		foreach ($modules as $module) {
+//			$items = $module->getAdminMenuItems();
+//			foreach ($items as $item) {
+//				$menu->add($item);
+//			}
+//		}
+//
 		$view->getEnvironment()->addGlobal('menu', $menu);
 	}
 }

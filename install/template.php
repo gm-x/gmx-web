@@ -7,9 +7,9 @@
 <head>
     <title>GameX Install</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="<?= $baseUrl; ?>/assets/css/bootstrap.min.css">
-    <script src="<?= $baseUrl; ?>/assets/js/jquery-3.3.1.min.js"></script>
-    <script src="<?= $baseUrl; ?>/assets/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <script src="../assets/js/jquery-3.3.1.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -41,7 +41,7 @@
                         </div>
                         <div class="form-group">
                             <label>Prefix:</label>
-                            <input type="text" class="form-control" id="formDatabasePrefix" value="gamex_">
+                            <input type="text" class="form-control" id="formDatabasePrefix" value="gmx_">
                         </div>
                     </fieldset>
                 </div>
@@ -77,7 +77,7 @@
 		el.addClass('list-group-item').text('Install ' + step + ': installing ...');
 		statusList.append(el);
 		return function (data) {
-			if (data.success) {
+			if (data.status) {
 				el.text('Install ' + step + ': installed');
 				nextCall();
 			} else {
@@ -99,14 +99,14 @@
 
     function installChecks() {
         var nextFunc = result('composer', installComposer);
-        $.post('<?= $baseUrl; ?>/install/?step=checks')
+        $.post('?step=checks')
             .done(nextFunc)
             .fail(fail(nextFunc));
     }
 
 	function installComposer() {
 	    var nextFunc = result('composer', installConfig);
-		$.post('<?= $baseUrl; ?>/install/?step=composer')
+		$.post('?step=composer')
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}
@@ -123,14 +123,21 @@
 			}
 		};
         var nextFunc = result('config', installMigrations);
-		$.post('<?= $baseUrl; ?>/install/?step=config', data)
+		$.post('?step=config', data)
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}
 
 	function installMigrations() {
-        var nextFunc = result('migrations', installAdmin);
-		$.post('<?= $baseUrl; ?>/install/?step=migrations')
+        var nextFunc = result('migrations', installPermissions);
+		$.post('?step=migrations')
+            .done(nextFunc)
+            .fail(fail(nextFunc));
+	}
+
+	function installPermissions() {
+        var nextFunc = result('permissions', installAdmin);
+		$.post('?step=permissions')
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}
@@ -142,20 +149,22 @@
 			pass: $('#formAdminPass').val()
 		};
         var nextFunc = result('administrator', installTasks);
-		$.post('<?= $baseUrl; ?>/install/?step=admin', data)
+		$.post('?step=admin', data)
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}
 
 	function installTasks() {
         var nextFunc = result('tasks', finish);
-		$.post('<?= $baseUrl; ?>/install/?step=tasks')
+		$.post('?step=tasks')
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}
 
 	function finish() {
         $('#formSubmitButton').prop('disabled', false);
+        alert("Successfully installed");
+        location.href = '../';
 	}
 
 	$('#installForm').on('submit', function (e) {

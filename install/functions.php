@@ -6,8 +6,14 @@ function render($template, array $data = []) {
 	return ob_get_clean();
 }
 
-function json($data) {
-	header('Content-type:application/json;charset=utf-8');
+function json($status, $message = '') {
+	header('Content-type:application/json;charset=utf-8', true, 200);
+	$data = [
+	    'status' => (bool) $status
+    ];
+	if (!$status) {
+	    $data['message'] = (string) $message;
+    }
 	echo json_encode($data);
 	die();
 }
@@ -99,25 +105,17 @@ function createUser($container, $login, $email, $password) {
 	/** @var \Cartalyst\Sentinel\Sentinel $auth */
 	$auth = $container['auth'];
 
-	$permissions = array_fill_keys(
-        array_keys(\GameX\Controllers\Admin\RolesController::PERMISSIONS),
-        true
-    );
-
-    $role = $auth->getRoleRepository()->createModel()->create([
-        'name' => 'Admins',
-        'slug' => 'admin',
-        'permissions' => $permissions
-    ]);
-
     /** @var \GameX\Core\Auth\Models\UserModel $user */
 	$user = $auth->register([
 		'login'  => $login,
 		'email'  => $email,
 		'password' => $password,
 	], true);
-
-    $user->role()->associate($role)->save();
+	
+	/** @var \GameX\Core\Configuration\Config $config */
+	$config = $container['config'];
+	$config->getNode('permissions')->set('root_user', $user->id);
+	$config->save();
 }
 
 function getContainer($phpmig = false) {
@@ -134,7 +132,7 @@ function getContainer($phpmig = false) {
 }
 
 function logMessage($message) {
-	file_put_contents(__DIR__ . DS . 'install.log', message . PHP_EOL . PHP_EOL, FILE_APPEND);
+	file_put_contents(__DIR__ . DS . 'install.log', $message . PHP_EOL . PHP_EOL, FILE_APPEND);
 }
 
 function logException(\Exception $e) {
@@ -177,4 +175,12 @@ function cronjobAppend($command){
     }
 
     return false;
+}
+
+function insertPermissions() {
+    $permissions = json_decode(file_get_contents(__DIR__ . DS . 'permissions.json'), true);
+    foreach ($permissions as $permission) {
+        $p = new \GameX\Core\Auth\Models\PermissionsModel($permission);
+        $p->save();
+    }
 }

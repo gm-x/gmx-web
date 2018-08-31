@@ -1,4 +1,13 @@
 <?php
+if (!is_file(__DIR__ . '/vendor/autoload.php')) {
+    $url = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+    $url = str_replace('\\', '/', $url);
+    $baseUrl =  rtrim(dirname($url), '/');
+    
+    header('Location: ' . $baseUrl . '/install',true,302);
+    die();
+}
+
 require __DIR__ . '/vendor/autoload.php';
 
 $container = new \Slim\Container([
@@ -27,8 +36,15 @@ $errorHandler = function ($c) {
 	};
 };
 
+$notFoundHandler = function ($c) {
+    return function ($request, $response) use ($c) {
+        return $c['view']->render($response->withStatus(404), 'errors/404.twig');
+    };
+};
+
 $container['errorHandler'] = $errorHandler;
 $container['phpErrorHandler'] = $errorHandler;
+$container['notFoundHandler'] = $notFoundHandler;
 
 $app = new \Slim\App($container);
 

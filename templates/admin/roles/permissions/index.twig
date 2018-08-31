@@ -1,0 +1,36 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/permissions.twig' as permissions %}
+
+{% block content %}
+    {# TODO: Remove this #}
+    <style>
+        .inputGroup label:before {
+            background-color: #b6b6b4 !important;
+        }
+    </style>
+    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+        <form action="{{ form.getAction() }}" method="post">
+            {{ csrf_token() }}
+            {% for item in list %}
+                <div style="margin-bottom: 20px">
+                    <h3 style="color: #007bff">{{ item.title }}</h3>
+                    <div class="uk-child-width-1-5@m" uk-grid>
+                        {% for key in item.items %}
+                            {{ permissions.permission_checkbox(form, key) }}
+                        {% endfor %}
+                    </div>
+                    <hr>
+                </div>
+            {% endfor %}
+            <div class="form-group">
+                {% if create %}
+                    <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
+                {% else %}
+                    <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
+                {% endif %}
+                <a href="{{ path_for('admin_roles_list') }}" class="uk-button uk-button-secondary">{{ trans('buttons', 'cancel') }}</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
