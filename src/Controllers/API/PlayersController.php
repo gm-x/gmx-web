@@ -20,7 +20,7 @@ class PlayersController extends BaseApiController {
      * @return Response
      * @throws ApiException
      */
-    public function indexAction(Request $request, Response $response, array $args) {
+    public function connectAction(Request $request, Response $response, array $args) {
         $validator = new Validator($this->getContainer('lang'));
         $validator
             ->set('steamid', true, [
@@ -41,6 +41,7 @@ class PlayersController extends BaseApiController {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
 
+        // TODO: Find players where auth_type is by nick
         $player = Player::where([
             'steamid' => $result->getValue('steamid'),
             'emulator' => $result->getValue('emulator')
@@ -51,12 +52,18 @@ class PlayersController extends BaseApiController {
             $player->emulator = $result->getValue('emulator');
             $player->nick = $result->getValue('nick');
             $player->auth_type = Player::AUTH_TYPE_STEAM;
-            $player->save();
+        } else {
+            if ($player->getIsAuthByNick()) {
+                $player->nick = $result->getValue('nick');
+            }
+            $player->ip = $result->getValue('ip');
+            $player->server_id = $this->getServer($request)->id;
         }
-    
+        $player->save();
+        
         $punishments = $player->getActivePunishments($this->getServer($request));
 
-        return $response->withJson([
+        return $response->withStatus(200)->withJson([
             'success' => true,
             'data' => [
                 'player' => [

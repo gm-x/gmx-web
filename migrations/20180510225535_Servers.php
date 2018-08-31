@@ -1,5 +1,4 @@
 <?php
-
 use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
@@ -18,6 +17,9 @@ class Servers extends Migration {
                 $table->string('rcon', 128)->nullable();
                 $table->unsignedTinyInteger('active')->default('1');
                 $table->string('token', 255)->nullable();
+                $table->unsignedTinyInteger('num_players')->default(0);
+                $table->unsignedTinyInteger('max_players')->default(0);
+                $table->string('map_id')->references('id')->on('maps')->nullable();
                 $table->timestamps();
             });
     }

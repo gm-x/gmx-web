@@ -22,8 +22,10 @@ class Players extends Migration {
                     'steamid_hash',
                     'nick_hash',
                 ])->default('steamid');
+                $table->ipAddress('ip');
                 $table->string('password', 255)->nullable();
                 $table->unsignedInteger('access')->default('0');
+                $table->unsignedInteger('server_id')->nullable()->references('id')->on('servers');
                 $table->timestamps();
                 
                 $table->unique(['steamid', 'emulator'], 'steamid_idx');

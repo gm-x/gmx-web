@@ -2,19 +2,17 @@
 use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
-class RolesPermissions extends Migration {
+class Maps extends Migration {
+    
     /**
      * Do the migration
      */
     public function up() {
         $this->getSchema()
             ->create($this->getTableName(), function (Blueprint $table) {
-                $table->unsignedInteger('role_id')->references('id')->on('roles');
-                $table->unsignedInteger('permission_id')->references('id')->on('permissions');
-                $table->unsignedInteger('resource')->nullable();
-                $table->unsignedTinyInteger('access')->nullable()->default('0');
+                $table->increments('id');
+                $table->string('name', 255);
                 $table->timestamps();
-                $table->unique(['role_id', 'permission_id']);
             });
     }
     
@@ -29,6 +27,6 @@ class RolesPermissions extends Migration {
      * @return string
      */
     private function getTableName() {
-        return 'roles_permissions';
+        return 'maps';
     }
 }

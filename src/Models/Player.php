@@ -10,17 +10,20 @@ use \Carbon\Carbon;
  * Class Server
  * @package GameX\Models
  *
- * @property integer $id
- * @property integer $user_id
- * @property integer $emulator
+ * @property int $id
+ * @property int $user_id
+ * @property int $emulator
  * @property string $steamid
  * @property string $nick
+ * @property string $ip
  * @property string $auth_type
  * @property string $password
- * @property integer $access
+ * @property int $access
+ * @property int $server_id
  * @property UserModel $user
  * @property Privilege[] $privileges
  * @property Punishment[] $punishments
+ * @property Server $server
  */
 class Player extends BaseModel {
 
@@ -48,7 +51,7 @@ class Player extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'auth_type', 'password', 'access'];
+	protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'ip', 'auth_type', 'password', 'access'];
     
     /**
      * @var array
@@ -79,6 +82,13 @@ class Player extends BaseModel {
      */
     public function punishments() {
         return $this->hasMany(Punishment::class, 'player_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function server() {
+        return $this->belongsTo(Server::class, 'server_id', 'id');
     }
 
 	/**
@@ -130,4 +140,12 @@ class Player extends BaseModel {
 		return self::where('steamid', 'LIKE', '%' . $filter . '%')
             ->orWhere('nick', 'LIKE', '%' . $filter . '%');
 	}
+    
+    /**
+     * @return bool
+     */
+	public function getIsAuthByNick() {
+	    return ($this->auth_type === Player::AUTH_TYPE_NICK_AND_PASS
+            || $this->auth_type === Player::AUTH_TYPE_NICK_AND_HASH);
+    }
 }

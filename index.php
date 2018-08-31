@@ -1,11 +1,15 @@
 <?php
-if (!is_file(__DIR__ . '/vendor/autoload.php')) {
+function redirectToInstall() {
     $url = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
     $url = str_replace('\\', '/', $url);
     $baseUrl =  rtrim(dirname($url), '/');
     
     header('Location: ' . $baseUrl . '/install',true,302);
     die();
+}
+
+if (!is_file(__DIR__ . '/vendor/autoload.php')) {
+    redirectToInstall();
 }
 
 require __DIR__ . '/vendor/autoload.php';
@@ -20,8 +24,6 @@ $container = new \Slim\Container([
 
 $errorHandler = function ($c) {
 	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $e) use ($c) {
-	    $c['log']->error((string)$e);
-
         /** @var \Slim\Views\Twig $view */
         $view = $c->get('view');
 	    if ($e instanceof \GameX\Core\Exceptions\NotAllowedException) {
@@ -31,13 +33,14 @@ $errorHandler = function ($c) {
         } elseif ($e instanceof \Slim\Exception\MethodNotAllowedException) {
             return $view->render($response->withStatus(405), 'errors/405.twig');
         } else {
+            $c->get('log')->error((string)$e);
             return $view->render($response->withStatus(500), 'errors/500.twig');
         }
 	};
 };
 
 $notFoundHandler = function ($c) {
-    return function ($request, $response) use ($c) {
+    return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($c) {
         return $c['view']->render($response->withStatus(404), 'errors/404.twig');
     };
 };
@@ -45,6 +48,17 @@ $notFoundHandler = function ($c) {
 $container['errorHandler'] = $errorHandler;
 $container['phpErrorHandler'] = $errorHandler;
 $container['notFoundHandler'] = $notFoundHandler;
+
+set_exception_handler(function (Exception $e) use ($c) {
+    if ($e instanceof \GameX\Core\Configuration\Exceptions\ConfigNotFoundException) {
+        redirectToInstall();
+    } else {
+        /** @var \Slim\Views\Twig $view */
+        $view = $c->get('view');
+        $c->get('log')->error((string)$e);
+        return $view->render($c->get('response')->withStatus(500), 'errors/500.twig');
+    }
+});
 
 $app = new \Slim\App($container);
 

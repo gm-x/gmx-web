@@ -1,5 +1,4 @@
 <?php
-
 use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
