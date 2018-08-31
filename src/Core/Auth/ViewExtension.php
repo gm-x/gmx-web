@@ -143,7 +143,7 @@ class ViewExtension extends Twig_Extension {
         $result = 0;
         foreach ($access as $val) {
             if (!is_numeric($val)) {
-                $val = isset(self::ACCESS_LIST[$val]) ? self::ACCESS_LIST[$val] : 0;
+                $val = array_key_exists($val, self::ACCESS_LIST) ? self::ACCESS_LIST[$val] : 0;
             }
 
             $result |= $val;
