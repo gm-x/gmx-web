@@ -19,7 +19,7 @@ class ServerController extends BaseApiController {
 	 * @param array $args
 	 * @return Response
 	 */
-    public function indexAction(Request $request, Response $response, array $args) {
+    public function infoAction(Request $request, Response $response, array $args) {
         $server = $this->getServer($request);
     
         $groups = [];
@@ -51,7 +51,7 @@ class ServerController extends BaseApiController {
             ->set('num_players', true, [
                 new Number(0)
             ])
-            ->set('max_Players', true, [
+            ->set('max_players', true, [
                 new Number(0),
             ]);
     

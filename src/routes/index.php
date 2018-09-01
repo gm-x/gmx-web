@@ -2,13 +2,7 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\IndexController;
 use \GameX\Controllers\PunishmentsController;
-use \GameX\Controllers\API\ServerController;
-use \GameX\Controllers\API\PlayersController;
-use \GameX\Controllers\API\PunishController;
 use \GameX\Controllers\Admin\AdminController;
-use \GameX\Core\Auth\Permissions\Manager;
-use \GameX\Core\Auth\Middlewares\HasAccessToGroup;
-use \GameX\Core\Auth\Middlewares\HasAccessToPermission;
 use \GameX\Middlewares\ApiTokenMiddleware;
 use \GameX\Middlewares\ApiRequestMiddleware;
 
@@ -79,10 +73,7 @@ $app->group('/admin', function () {
     ->add($csrfMiddleware);
 
 $app->group('/api', function () {
-    $this->post('/info', BaseController::action(ServerController::class, 'index'));
-    $this->post('/player', BaseController::action(PlayersController::class, 'index'));
-    $this->post('/punish', BaseController::action(PunishController::class, 'index'));
-    $this->post('/punish/immediately', BaseController::action(PunishController::class, 'immediately'));
+    include __DIR__ . DIRECTORY_SEPARATOR . 'api.php';
 })
     ->add(new ApiTokenMiddleware())
     ->add(new ApiRequestMiddleware($app->getContainer()->get('log')));

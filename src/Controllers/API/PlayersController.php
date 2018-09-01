@@ -51,6 +51,7 @@ class PlayersController extends BaseApiController {
             $player->steamid = $result->getValue('steamid');
             $player->emulator = $result->getValue('emulator');
             $player->nick = $result->getValue('nick');
+            $player->ip = $result->getValue('ip');
             $player->auth_type = Player::AUTH_TYPE_STEAM;
         } else {
             if ($player->getIsAuthByNick()) {
@@ -72,6 +73,36 @@ class PlayersController extends BaseApiController {
                 'user' => null,
                 'punishments' => $punishments
             ]
+        ]);
+    }
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws ApiException
+     */
+    public function disconnectAction(Request $request, Response $response, array $args) {
+        $validator = new Validator($this->getContainer('lang'));
+        $validator
+            ->set('id', true, [
+                new Number(1)
+            ]);
+    
+    
+        $result = $validator->validate($this->getBody($request));
+    
+        if (!$result->getIsValid()) {
+            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+        }
+    
+        $player = Player::where('id', $result->getValue('id'))->first();
+        $player->server_id = null;
+        $player->save();
+    
+        return $response->withStatus(200)->withJson([
+            'success' => true,
         ]);
     }
 }
