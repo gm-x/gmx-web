@@ -112,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			try {
                 $container = getContainer(false);
 				\GameX\Models\Task::truncate();
-				\GameX\Core\Jobs\JobHelper::createTask('monitoring');
 				\GameX\Core\Jobs\JobHelper::createTask('punishments');
 
 				cronjobAppend('* * * * * php -f ' . BASE_DIR . 'cron.php');

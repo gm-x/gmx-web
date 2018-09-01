@@ -23,9 +23,9 @@ $container = new \Slim\Container([
 ]);
 
 $errorHandler = function (\Slim\Container $container) {
-	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, Exception $e) use ($container) {
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $e) use ($container) {
         /** @var \Slim\Views\Twig $view */
-        $view = $c->get('view');
+        $view = $container->get('view');
 	    if ($e instanceof \GameX\Core\Exceptions\NotAllowedException) {
             return $view->render($response->withStatus(403), 'errors/403.twig');
         } elseif ($e instanceof \Slim\Exception\NotFoundException) {
@@ -49,7 +49,7 @@ $container['errorHandler'] = $errorHandler;
 $container['phpErrorHandler'] = $errorHandler;
 $container['notFoundHandler'] = $notFoundHandler;
 
-set_exception_handler(function (Exception $e) use ($container) {
+set_exception_handler(function ($e) use ($container) {
     if ($e instanceof \GameX\Core\Configuration\Exceptions\ConfigNotFoundException) {
         redirectToInstall();
     } else {

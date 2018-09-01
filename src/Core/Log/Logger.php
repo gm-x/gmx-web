@@ -2,10 +2,14 @@
 namespace GameX\Core\Log;
 
 use \Monolog\Logger as MonologLogger;
-use \Exception;
 
 class Logger extends MonologLogger{
-    public function exception(Exception $e) {
+    
+    /**
+     * @param \Throwable|\Exception $e
+     * @return bool
+     */
+    public function exception($e) {
         return $this->error('Exception', ['exception' => $e]);
     }
 }

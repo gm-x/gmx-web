@@ -17,11 +17,11 @@ set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
 }, E_ALL);
 
 BaseCronController::registerKey('sendmail', \GameX\Controllers\Cron\SendMailController::class);
-BaseCronController::registerKey('monitoring', \GameX\Controllers\Cron\MonitoringlController::class);
 BaseCronController::registerKey('punishments', \GameX\Controllers\Cron\PunishmentsController::class);
 
 $task = null;
 try {
+//    return (php_sapi_name() === 'cli');
     $task = JobHelper::getTask();
     if ($task) {
         $logger->debug('Start cron task', [
