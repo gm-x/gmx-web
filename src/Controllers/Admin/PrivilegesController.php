@@ -107,9 +107,7 @@ class PrivilegesController extends BaseAdminController {
             $this->addSuccessMessage($this->getTranslate('admins_privileges', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
-            /** @var \Monolog\Logger $logger */
-            $logger = $this->getContainer('log');
-            $logger->error((string) $e);
+            $this->getLogger()->exception($e);
         }
 
 		return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);

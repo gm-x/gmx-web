@@ -115,9 +115,7 @@ class ServersController extends BaseAdminController {
             $this->addSuccessMessage($this->getTranslate('admins_servers', 'removed'));
 		} catch (Exception $e) {
 			$this->addErrorMessage($this->getTranslate('labels', 'exception'));
-			/** @var \Monolog\Logger $logger */
-			$logger = $this->getContainer('log');
-			$logger->error((string) $e);
+            $this->getLogger()->exception($e);
 		}
 
 		return $this->redirect('admin_servers_list');
@@ -139,9 +137,7 @@ class ServersController extends BaseAdminController {
                 'token' => $server->token
             ]);
         } catch (Exception $e) {
-            /** @var \Monolog\Logger $logger */
-            $logger = $this->getContainer('log');
-            $logger->error((string) $e);
+            $this->getLogger()->exception($e);
             return $response->withJson([
                 'success' => false,
                 'error' => $this->getTranslate('labels', 'exception')

@@ -22,8 +22,8 @@ $container = new \Slim\Container([
 	'root' => __DIR__ . DIRECTORY_SEPARATOR
 ]);
 
-$errorHandler = function ($c) {
-	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $e) use ($c) {
+$errorHandler = function (\Slim\Container $container) {
+	return function (\Slim\Http\Request $request, \Slim\Http\Response $response, Exception $e) use ($container) {
         /** @var \Slim\Views\Twig $view */
         $view = $c->get('view');
 	    if ($e instanceof \GameX\Core\Exceptions\NotAllowedException) {
@@ -33,15 +33,15 @@ $errorHandler = function ($c) {
         } elseif ($e instanceof \Slim\Exception\MethodNotAllowedException) {
             return $view->render($response->withStatus(405), 'errors/405.twig');
         } else {
-            $c->get('log')->error((string)$e);
+            $container->get('log')->exception($e);
             return $view->render($response->withStatus(500), 'errors/500.twig');
         }
 	};
 };
 
-$notFoundHandler = function ($c) {
-    return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($c) {
-        return $c['view']->render($response->withStatus(404), 'errors/404.twig');
+$notFoundHandler = function (\Slim\Container $container) {
+    return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($container) {
+        return $container['view']->render($response->withStatus(404), 'errors/404.twig');
     };
 };
 
@@ -49,14 +49,14 @@ $container['errorHandler'] = $errorHandler;
 $container['phpErrorHandler'] = $errorHandler;
 $container['notFoundHandler'] = $notFoundHandler;
 
-set_exception_handler(function (Exception $e) use ($c) {
+set_exception_handler(function (Exception $e) use ($container) {
     if ($e instanceof \GameX\Core\Configuration\Exceptions\ConfigNotFoundException) {
         redirectToInstall();
     } else {
         /** @var \Slim\Views\Twig $view */
-        $view = $c->get('view');
-        $c->get('log')->error((string)$e);
-        return $view->render($c->get('response')->withStatus(500), 'errors/500.twig');
+        $view = $container->get('view');
+        $container->get('log')->exception($e);
+        return $view->render($container->get('response')->withStatus(500), 'errors/500.twig');
     }
 });
 
@@ -66,11 +66,8 @@ include __DIR__ . '/src/dependencies.php';
 include __DIR__ . '/src/middlewares.php';
 include __DIR__ . '/src/routes/index.php';
 
-/** @var \Monolog\Logger $logger */
-$logger = $container->get('log');
-
-//set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
-//    $logger->error("#$errno: $error in $file:$line");
+//set_error_handler(function ($errno, $error, $file, $line) use ($container) {
+//    $container->get('log')->error("#$errno: $error in $file:$line");
 //}, E_ALL);
 
 $app->run();

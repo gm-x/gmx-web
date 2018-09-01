@@ -103,9 +103,7 @@ class GroupsController extends BaseAdminController {
             $this->addSuccessMessage($this->getTranslate('admins_players', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
-            /** @var \Monolog\Logger $logger */
-            $logger = $this->getContainer('log');
-            $logger->error((string) $e);
+            $this->getLogger()->exception($e);
         }
 
         return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);

@@ -9,7 +9,7 @@ use \GameX\Core\BaseCronController;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Models\Task;
 
-/** @var \Monolog\Logger $logger */
+/** @var \GameX\Core\Log\Logger $logger */
 $logger = $container->get('log');
 
 set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
@@ -46,7 +46,7 @@ try {
         }
     }
 } catch (Exception $e) {
-    $logger->error((string)$e);
+    $logger->exception($e);
     if ($task) {
         JobHelper::failTask($task);
     }

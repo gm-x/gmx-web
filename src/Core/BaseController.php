@@ -4,9 +4,9 @@ namespace GameX\Core;
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
+use \GameX\Core\Log\Logger;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Node;
-
 
 abstract class BaseController {
     /**
@@ -23,6 +23,12 @@ abstract class BaseController {
      * @var Language|null
      */
     protected $translate = null;
+
+
+    /**
+     * @var Logger|null
+     */
+    protected $logger = null;
 
 	/**
 	 * BaseController constructor.
@@ -71,6 +77,17 @@ abstract class BaseController {
             $this->translate = $this->getContainer('lang');
         }
         return $this->translate->format($section, $key, $args);
+    }
+    
+    /**
+     * @return Logger
+     */
+    public function getLogger() {
+        if ($this->logger === null) {
+            $this->logger = $this->getContainer('log');
+        }
+    
+        return $this->logger;
     }
 
 	/**

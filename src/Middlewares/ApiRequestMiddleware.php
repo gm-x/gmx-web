@@ -3,7 +3,7 @@ namespace GameX\Middlewares;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Monolog\Logger;
+use \GameX\Core\Log\Logger;
 use \GameX\Core\Exceptions\ApiException;
 use \Exception;
 
@@ -41,7 +41,7 @@ class ApiRequestMiddleware {
                     ],
                 ]);
         } catch (Exception $e) {
-            $this->logger->error((string)$e);
+            $this->logger->exception($e);
             return $response
                 ->withStatus(500)
                 ->withJson([

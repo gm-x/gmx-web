@@ -78,11 +78,16 @@ $container['mail'] = function (ContainerInterface $container) {
 };
 
 $container['log'] = function (ContainerInterface $container) {
-	$log = new \Monolog\Logger('name');
+    $formatter = new \Monolog\Formatter\LineFormatter(null, null, true, true);
+	
 	$logPath = $container['root'] . 'runtime' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'log.log';
-	$log->pushHandler(new \Monolog\Handler\RotatingFileHandler($logPath, 10, \Monolog\Logger::DEBUG));
-
-	return $log;
+	$handler = new \Monolog\Handler\RotatingFileHandler($logPath, 10, \Monolog\Logger::DEBUG);
+	$handler->setFormatter($formatter);
+    
+    
+    $logger = new \GameX\Core\Log\Logger('gmx');
+    $logger->pushHandler($handler);
+    return $logger;
 };
 
 $container['form'] = function (ContainerInterface $container) {

@@ -106,9 +106,7 @@ class RolesController extends BaseAdminController {
             }
         } catch (Exception $e) {
             $this->addErrorMessage('Something wrong. Please Try again later.');
-            /** @var \Monolog\Logger $logger */
-            $logger = $this->getContainer('log');
-            $logger->error((string) $e);
+            $this->getLogger()->exception($e);
         }
 
         return $this->redirect('admin_roles_list');

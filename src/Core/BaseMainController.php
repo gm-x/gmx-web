@@ -82,7 +82,12 @@ abstract class BaseMainController extends BaseController {
     public function addSuccessMessage($message) {
         $this->getContainer('flash')->addMessage('success', $message);
     }
-
+    
+    /**
+     * @param Exception $e
+     * @param Form $form
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     protected function failRedirect(Exception $e, Form $form) {
         if ($e instanceof FormException) {
             $form->setError($e->getField(), $e->getMessage());
@@ -93,10 +98,8 @@ abstract class BaseMainController extends BaseController {
         }
 
         $form->saveValues();
-
-        /** @var \Monolog\Logger $logger */
-        $logger = $this->getContainer('log');
-        $logger->error((string) $e);
+    
+        $this->getLogger()->exception($e);
 
         return $this->redirectTo($form->getAction());
     }
