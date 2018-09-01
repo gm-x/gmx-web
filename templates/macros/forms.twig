@@ -67,7 +67,7 @@
 	</div>
 {% endmacro %}
 
-{% macro element_checkbox(element) %}
+{% macro element_checkbox(element, label = true) %}
 	{% set classes = ['uk-checkbox'] %}
 	{% if element.getHasError() %}
 		{% set classes = classes|merge(['is-invalid']) %}
@@ -92,7 +92,10 @@
 				checked="checked"
 			{% endif %}
 			/>
-			<div class="switcher__indicator"></div><span>{{ element.getTitle() }}</span>
+			<div class="switcher__indicator"></div>
+            {% if label %}
+			<span>{{ element.getTitle() }}</span>
+			{% endif %}
 		</label>
 	</div>
 {% endmacro %}

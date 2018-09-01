@@ -31,6 +31,14 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
     font-size: 20vh;
 }
 
+.uk-width-xs {
+    width: 100px;
+}
+
+.uk-width-xxs {
+    width: 75px;
+}
+
 .uk-subnav > .uk-active > a {
     color: #f5ebb8;
 }
@@ -149,13 +157,13 @@ a:hover, .uk-link:hover {
 }
 
 .uk-input:disabled, .uk-select:disabled, .uk-textarea:disabled {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.2);
     color: #9E9E9E;
     border: 1px solid rgba(255,255,255,0.05);
 }
 
 .uk-input, .uk-select, .uk-textarea {
-    background: transparent;
+    background: rgba(0, 0, 0, 0.2);
     color: #a0a0a0;
     border: 1px solid rgba(255,255,255,0.1);
 }
@@ -174,7 +182,7 @@ fieldset {
 
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
     outline: none;
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.3);
     color: #999;
     border: 1px solid rgba(255,255,255,0.2);
 }

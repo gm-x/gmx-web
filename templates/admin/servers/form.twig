@@ -6,9 +6,9 @@
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
-		{{ forms.element_input(form.name) }}
-		{{ forms.element_input(form.ip) }}
-		{{ forms.element_input(form.port) }}
+		{{ forms.element_input(form.name, true) }}
+		{{ forms.element_input(form.ip, true) }}
+		{{ forms.element_input(form.port, true) }}
         <div class="form-group">
             {% if create %}
                 <input type="submit" class="uk-button uk-button-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
