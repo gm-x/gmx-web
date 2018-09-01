@@ -40,6 +40,8 @@ class PlayerController extends BaseApiController {
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
+    
+        $server = $this->getServer($request);
 
         // TODO: Find players where auth_type is by nick
         $player = Player::where([
@@ -53,17 +55,20 @@ class PlayerController extends BaseApiController {
             $player->nick = $result->getValue('nick');
             $player->ip = $result->getValue('ip');
             $player->auth_type = Player::AUTH_TYPE_STEAM;
-            $player->server_id = $this->getServer($request)->id;
+            $player->server_id = $server->id;
         } else {
             if ($player->getIsAuthByNick()) {
                 $player->nick = $result->getValue('nick');
             }
             $player->ip = $result->getValue('ip');
-            $player->server_id = $this->getServer($request)->id;
+            $player->server_id = $server->id;
         }
         $player->save();
+    
+        $server->num_players = Player::where('server_id', $server->id)->count();
+        $server->save();
         
-        $punishments = $player->getActivePunishments($this->getServer($request));
+        $punishments = $player->getActivePunishments($server);
 
         return $response->withStatus(200)->withJson([
             'success' => true,
@@ -97,10 +102,15 @@ class PlayerController extends BaseApiController {
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
+        
+        $server = $this->getServer($request);
     
         $player = Player::where('id', $result->getValue('id'))->first();
         $player->server_id = null;
         $player->save();
+        
+        $server->num_players = Player::where('server_id', $server->id)->count();
+        $server->save();
     
         return $response->withStatus(200)->withJson([
             'success' => true,
