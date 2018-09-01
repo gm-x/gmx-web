@@ -11,7 +11,7 @@ use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\IPv4;
 use \GameX\Core\Exceptions\ApiException;
 
-class PlayersController extends BaseApiController {
+class PlayerController extends BaseApiController {
 
     /**
      * @param Request $request
@@ -53,6 +53,7 @@ class PlayersController extends BaseApiController {
             $player->nick = $result->getValue('nick');
             $player->ip = $result->getValue('ip');
             $player->auth_type = Player::AUTH_TYPE_STEAM;
+            $player->server_id = $this->getServer($request)->id;
         } else {
             if ($player->getIsAuthByNick()) {
                 $player->nick = $result->getValue('nick');
