@@ -40,7 +40,7 @@
 									</a>
 								</li>
 								<li>
-									<a href="#tokenModel" data-server-id="{{ server.id }}" uk-toggle>
+									<a href="#tokenModel" id="tokenModel" data-server-id="{{ server.id }}" uk-toggle>
 										<span class="uk-margin-small-right" uk-icon="icon: tag"></span> &nbsp;{{ trans('admin_servers', 'token') }}
 									</a>
 								</li>
@@ -58,30 +58,18 @@
 </div>
 {% endblock %}
 
-{% block modals %}
-    {{ parent() }}
-	<div id="tokenModel" uk-modal>
-		<div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-			<h2 class="uk-modal-title">{{ trans('admin_servers', 'token') }}</h2>
-			<input type="text" class="uk-input" disabled>
-			<p class="uk-text-right">
-				<button class="uk-button uk-button-default uk-modal-close" type="button">{{ trans('buttons', 'close') }}</button>
-			</p>
-		</div>
-	</div>
-{% endblock %}
-
 {% block javascript %}
     {{ parent() }}
 	<script>
 		$(document).ready(function () {
-			$('#tokenModel').on('show', function(e) {
-				var serverId = $(e.relatedTarget).data('server-id');
-				var modal = $(this);
+			UIkit.util.on('#tokenModel', 'click', function (e) {
+			    e.preventDefault();
+           		e.target.blur();
+				var serverId = $(this).data('server-id');
 				$.getJSON('{{ path_for('admin_servers_token') }}', {server: serverId})
 					.done(function(data) {
                         if (data.success) {
-                            modal.find('.uk-modal-body input').val(data.token);
+                             UIkit.modal.dialog('<div class="uk-modal-header uk-light uk-background-secondary"><h2 class="uk-modal-title">{{ trans('admin_servers', 'token') }}</h2></div><p class="uk-modal-body">' + data.token + '</p>');
                         }
 					})
                     .fail(function() {
