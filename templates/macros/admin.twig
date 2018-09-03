@@ -1,11 +1,11 @@
 {% macro edit_btn(href) %}
 	<a
 			href="{{ href }}"
-			class="uk-icon-button  uk-margin-small-right" uk-icon="pencil"
+			class="uk-icon-button  uk-margin-small-right"
 			data-toggle="tooltip"
 			data-placement="top"
 			title="{{ trans('buttons', 'edit') }}"
-	></a>
+	><i class="fas fa-pen fa-sm"></i></a>
 {% endmacro %}
 
 {% macro delete_btn(href) %}
@@ -17,10 +17,10 @@
         {{ csrf_token() }}
 		<button
 				type="submit"
-				class="uk-icon-button  uk-margin-small-right" uk-icon="trash"
+				class="uk-icon-button  uk-margin-small-right"
 				data-toggle="tooltip"
 				data-placement="top"
 				title="{{ trans('buttons', 'delete') }}"
-		></button>
+		><i class="fas fa-trash fa-sm"></i></button>
 	</form>
 {% endmacro %}

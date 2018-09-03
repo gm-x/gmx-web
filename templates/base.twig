@@ -7,11 +7,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
-    <title>GameX™</title>
+    <title>{{ title }}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/all.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
-    <script src="{{ base_url() }}/assets/js/uikit-icons.js"></script>
+    <script src="{{ base_url() }}/assets/js/all.js"></script>
     {% block style %}{% endblock %}
 </head>
 <body>
@@ -24,16 +25,16 @@
         {% endif %}
         <main role="main" class="container">
             {% for message in flash_messages.success %}
-                <div uk-alert>
+                <div class="uk-alert-success" uk-alert>
                     <a class="uk-alert-close" uk-close></a>
-                    {{ message }}
+                    <h5>{{ message }}</h5>
                 </div>
             {% endfor %}
 
             {% for message in flash_messages.error %}
-                <div uk-alert>
+                <div class="uk-alert-danger" uk-alert>
                     <a class="uk-alert-close" uk-close></a>
-                    {{ message }}
+                    <h5>{{ message }}</h5>
                 </div>
             {% endfor %}
 

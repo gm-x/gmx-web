@@ -148,6 +148,24 @@ a:hover, .uk-link:hover {
     border-bottom: 2px solid #191919;
 }
 
+.uk-form-icon {
+    top: 9px;
+    left: 9px;
+}
+
+.uk-icon-button {
+    border: 0;
+}
+
+.svg-inline--fa {
+    width: 1.5em !important;
+    height: 1.5em !important;
+}
+
+.dropdown-item > .svg-inline--fa {
+    font-size: .875em;
+}
+
 .uk-button-secondary {
     background-color: transparent;
     color: #565656;

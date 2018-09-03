@@ -31,17 +31,17 @@
                             {% block actions %}
 								<li>
 									<a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="dropdown-item">
-										<span class="uk-margin-small-right" uk-icon="icon: users"></span> &nbsp;{{ trans('admin_servers', 'groups') }}
+										<i class="fas fa-users uk-margin-small-right"></i> &nbsp;{{ trans('admin_servers', 'groups') }}
 									</a>
 								</li>
 								<li>
 									<a href="{{ path_for('admin_servers_reasons_list', {'server': server.id}) }}" class="dropdown-item">
-										<span class="uk-margin-small-right" uk-icon="icon: bell"></span> &nbsp;{{ trans('admin_servers', 'reasons') }}
+										<i class="fas fa-tasks uk-margin-small-right"></i> &nbsp;{{ trans('admin_servers', 'reasons') }}
 									</a>
 								</li>
 								<li>
 									<a href="#tokenModel" id="tokenModel" data-server-id="{{ server.id }}" uk-toggle>
-										<span class="uk-margin-small-right" uk-icon="icon: tag"></span> &nbsp;{{ trans('admin_servers', 'token') }}
+										<i class="fas fa-barcode uk-margin-small-right"></i> &nbsp;{{ trans('admin_servers', 'token') }}
 									</a>
 								</li>
                             {% endblock %}
