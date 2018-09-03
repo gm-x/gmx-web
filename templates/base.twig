@@ -24,11 +24,17 @@
         {% endif %}
         <main role="main" class="container">
             {% for message in flash_messages.success %}
-                <div class="alert alert-success" role="alert">{{ message }}</div>
+                <div uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    {{ message }}
+                </div>
             {% endfor %}
 
             {% for message in flash_messages.error %}
-                <div class="alert alert-danger" role="alert">{{ message }}</div>
+                <div uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    {{ message }}
+                </div>
             {% endfor %}
 
             {% block content %}{% endblock %}

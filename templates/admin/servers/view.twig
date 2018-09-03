@@ -1,45 +1,43 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/admin.twig' as admin %}
+
 {% block style %}
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
 
 {% block content %}
-<a href="{{ path_for('admin_servers_list') }}" class="uk-button uk-button-secondary">
-    {{ trans('buttons', 'back') }}
-</a>
-<a href="{{ path_for('admin_servers_edit', {'server': server.id}) }}" class="uk-button uk-button-primary" uk-icon="pencil">
-    {{ trans('buttons', 'edit') }}
-</a>
-<form
-        action="{{ path_for('admin_servers_delete', {'server': server.id}) }}"
-        method="post"
-        class="btn-delete"
->
-    {{ csrf_token() }}
-    <button
-            type="submit"
-            class="uk-button uk-button-primary" uk-icon="trash"
-    >{{ trans('buttons', 'delete') }}</button>
-</form>
+    <div class="uk-flex uk-margin uk-flex-between">
+        <a href="{{ path_for('admin_servers_list') }}" class="uk-button uk-button-secondary">
+            {{ trans('buttons', 'back') }}
+        </a>
+        <div class="uk-flex">
+            {{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id})) }}
+            {{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id})) }}
+        </div>
+    </div>
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-    <div f-table f-divider>
-        <ul>
-            <li>Name</li>
-            <li>{{ server.name }}</li>
-        </ul>
-        <ul>
-            <li>Address</li>
-            <li>{{ server.ip }}:{{ server.port }}</li>
-        </ul>
-        <ul>
-            <li>Create At</li>
-            <li>{{ server.created_at }}</li>
-        </ul>
-        <ul>
-            <li>Update At</li>
-            <li>{{ server.updated_at }}</li>
-        </ul>
+    <div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+        <div class="uk-card-media-left uk-cover-container">
+            <img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" uk-cover>
+            <canvas width="600" height="400"></canvas>
+        </div>
+        <div>
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">{{ server.name }}</h3>
+                <h5><a href="steam://coonect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a></h5>
+                <div f-table f-divider>
+                    <ul>
+                        <li>Create At</li>
+                        <li>{{ server.created_at }}</li>
+                    </ul>
+                    <ul>
+                        <li>Update At</li>
+                        <li>{{ server.updated_at }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
