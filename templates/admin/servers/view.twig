@@ -6,16 +6,15 @@
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
 
-{% block content %}
-    <div class="uk-flex uk-margin uk-flex-between">
-        <a href="{{ path_for('admin_servers_list') }}" class="uk-button uk-button-secondary">
-            {{ trans('buttons', 'back') }}
-        </a>
-        <div class="uk-flex">
-            {{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id})) }}
-            {{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id})) }}
-        </div>
+{% block subnav %}
+    <div class="uk-float-left">
+        {{ admin.back_btn(path_for('admin_servers_list'), 'l') }}
     </div>
+        {{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id}), 'l') }}
+        {{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id}), 'l') }}
+{% endblock %}
+
+{% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
         <div class="uk-card-media-left uk-cover-container">
@@ -28,7 +27,7 @@
         <div>
             <div class="uk-card-body">
                 <h3 class="uk-card-title">{{ server.name }}</h3>
-                <h5><a href="steam://coonect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a></h5>
+                <h5><a href="steam://connect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a></h5>
                 <div f-table f-divider>
                     <ul>
                         <li>Create At</li>

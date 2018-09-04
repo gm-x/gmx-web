@@ -3,6 +3,10 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
+{% block subnav %}
+    {{ admin.add_btn(path_for('admin_players_create'), 'l') }}
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ path_for('admin_players_list') }}" method="get">
@@ -45,6 +49,5 @@
         </table>
     </div>
 	{{ paginator.render(pagination) }}
-    <a href="{{ path_for('admin_players_create') }}" class="uk-button uk-button-primary">{{ trans('buttons', 'create') }}</a>
 </div>
 {% endblock %}

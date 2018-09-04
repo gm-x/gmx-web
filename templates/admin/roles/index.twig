@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
 
+{% block subnav %}
+    {{ admin.add_btn(path_for('admin_roles_create'), 'l') }}
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <div f-table f-divider>
@@ -40,6 +44,5 @@
             </ul>
         {% endfor %}
     </div>
-    <a href="{{ path_for('admin_roles_create') }}" class="uk-button uk-button-primary">{{ trans('buttons', 'create') }}</a>
 </div>
 {% endblock %}

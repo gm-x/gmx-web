@@ -20,10 +20,10 @@
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
             {{ navbar.mainbar(menu) }}
         </div>
-        {% if submenu %}
-            <!--Submenu here-->
-        {% endif %}
         <main role="main" class="container">
+            <div class="uk-margin uk-flex uk-flex-right">
+                {% block subnav %}{% endblock %}
+            </div>
             {% for message in flash_messages.success %}
                 <div class="uk-alert-success" uk-alert>
                     <a class="uk-alert-close" uk-close></a>

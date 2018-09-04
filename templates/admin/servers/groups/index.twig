@@ -3,6 +3,13 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
+{% block subnav %}
+    {{ admin.add_btn(path_for('admin_servers_groups_create', {'server': server.id}), 'l') }}
+	<a href="{{ path_for('admin_servers_list', {'server': server.id}) }}" class="uk-button uk-button-secondary uk-float-right">
+        {{ trans('buttons', 'cancel') }}
+	</a>
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
 	<div class="uk-overflow-auto">
@@ -29,11 +36,5 @@
 		</table>
 	</div>
 	{{ paginator.render(pagination) }}
-	<a href="{{ path_for('admin_servers_groups_create', {'server': server.id}) }}" class="uk-button uk-button-primary">
-		{{ trans('buttons', 'create') }}
-	</a>
-	<a href="{{ path_for('admin_servers_list', {'server': server.id}) }}" class="uk-button uk-button-secondary">
-		{{ trans('buttons', 'cancel') }}
-	</a>
 </div>
 {% endblock %}
