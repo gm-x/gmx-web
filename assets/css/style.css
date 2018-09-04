@@ -138,6 +138,12 @@ a:hover, .uk-link:hover {
     border: 1px solid #1a1a1a;
 }
 
+.uk-alert-success {
+    text-align: center;
+    background: #1d262a;
+    color: #3d8116;
+}
+
 .uk-button-default:hover, .uk-button-default:focus {
     background-color: transparent;
     color: #404040;

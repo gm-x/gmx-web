@@ -19,10 +19,10 @@
                 <form action="{{ form.getAction() }}" method="post">
                     {{ csrf_token() }}
                     <div class="uk-margin">
-                        {{ forms.element_input(form.login) }}
+                        {{ forms.element_input(form.login, {"icon": "fas fa-user-secret"}) }}
                     </div>
                     <div class="uk-margin">
-                        {{ forms.element_input(form.password) }}
+                        {{ forms.element_input(form.password, {"icon": "fas fa-lock"}) }}
                     </div>
                     <div class="uk-margin">
                         {{ forms.element_checkbox(form.remember_me) }}

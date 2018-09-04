@@ -1,4 +1,4 @@
-{% macro element_input(element, label = false) %}
+{% macro element_input(element, config) %}
 	{% set classes = ['uk-input'] %}
 	{% if element.getHasError() %}
 		{% set classes = classes|merge(['is-invalid']) %}
@@ -10,12 +10,12 @@
 	{% endif %}
 
 	<div class="uk-margin uk-inline uk-width-1-1">
-        {% if label %}
+        {% if config.label %}
         <label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
         <div class="uk-form-controls">
         {% endif %}
-		{% if element.getIcon() %}
-			<span class="uk-form-icon" uk-icon="icon: {{ element.getIcon() }}"></span>
+		{% if config.icon %}
+			<i class="uk-form-icon {{ config.icon }}"></i>
 		{% endif %}
 		<input
 				type="{{ element.getType() }}"
@@ -31,7 +31,7 @@
 		{% if element.getHasError() %}
 			<span class="invalid-feedback">{{ element.getError() }}</span>
 		{% endif %}
-        {% if label %}
+        {% if config.label %}
             </div>
         {% endif %}
 	</div>
