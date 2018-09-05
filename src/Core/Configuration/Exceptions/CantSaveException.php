@@ -3,4 +3,4 @@ namespace GameX\Core\Configuration\Exceptions;
 
 use \Exception;
 
-class ConfigNotFoundException extends Exception {}
+class CantSaveException extends Exception {}

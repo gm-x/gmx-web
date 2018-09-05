@@ -1,13 +1,19 @@
 <?php
 namespace GameX\Core\Configuration;
 
-use \GameX\Core\Configuration\Exceptions\ConfigNodeNotFoundException;
+use \GameX\Core\Configuration\Exceptions\NotFoundException;
 
 class Node {
+
     /**
      * @var array
      */
     protected $data = [];
+
+    /**
+     * @var bool
+     */
+    protected $isModified = false;
 
     /**
      * Node constructor.
@@ -24,17 +30,18 @@ class Node {
      */
     public function set($key, $value) {
         $this->data[$key] = is_array($value) ? new Node($value) : $value;
+        $this->isModified = true;
         return $this;
     }
     
     /**
      * @param string $key
      * @return Node
-     * @throws ConfigNodeNotFoundException
+     * @throws NotFoundException
      */
     public function getNode($key) {
         if (!$this->existsNode($key)) {
-            throw new ConfigNodeNotFoundException();
+            throw new NotFoundException();
         }
         
         return $this->data[$key];
@@ -72,6 +79,7 @@ class Node {
 	public function remove($key) {
     	if ($this->exists($key)) {
     		unset($this->data[$key]);
+    		$this->isModified = true;
 		}
 
 		return $this;
@@ -86,6 +94,23 @@ class Node {
             $result[$key] = ($value instanceof Node) ? $value->toArray() : $value;
         }
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsModified() {
+        if ($this->isModified) {
+            return true;
+        }
+
+        foreach ($this->data as $value) {
+            if ($value instanceof Node && $value->getIsModified()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

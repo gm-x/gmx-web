@@ -49,9 +49,10 @@ class MainForm extends BaseForm {
             ->addRule('language', new Required())
             ->addRule('language', new InArray(array_keys($languages)));
 	}
-    
+
     /**
-     * @return boolean
+     * @return bool
+     * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
      */
     protected function processForm() {
         $this->config->getNode('main')->set('title', $this->form->getValue('title'));

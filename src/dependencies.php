@@ -2,7 +2,13 @@
 use \Psr\Container\ContainerInterface;
 
 $container['config'] = function (ContainerInterface $container) {
-    return new \GameX\Core\Configuration\Config($container->get('root') . '/config.json');
+    $provider = new \GameX\Core\Configuration\Providers\JsonProvider($container->get('root') . '/config.json');
+    return new \GameX\Core\Configuration\Config($provider);
+};
+
+$container['preferences'] = function (ContainerInterface $container) {
+    $provider = new \GameX\Core\Configuration\Providers\JsonProvider($container->get('root') . '/config.json');
+    return new \GameX\Core\Configuration\Config($provider);
 };
 
 $container['session'] = function (ContainerInterface $container) {
@@ -39,7 +45,7 @@ $container['lang'] = function (ContainerInterface $container) {
 };
 
 $container['db'] = function (ContainerInterface $container) {
-    /** @var GameX\Core\Configuration\Config $config */
+    /** @var \GameX\Core\Configuration\Config $config */
     $config = $container->get('config');
 
     $capsule = new \Illuminate\Database\Capsule\Manager;

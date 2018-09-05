@@ -50,7 +50,7 @@ $container['phpErrorHandler'] = $errorHandler;
 $container['notFoundHandler'] = $notFoundHandler;
 
 set_exception_handler(function ($e) use ($container) {
-    if ($e instanceof \GameX\Core\Configuration\Exceptions\ConfigNotFoundException) {
+    if ($e instanceof \GameX\Core\Configuration\Exceptions\CantLoadException) {
         redirectToInstall();
     } else {
         /** @var \Slim\Views\Twig $view */
