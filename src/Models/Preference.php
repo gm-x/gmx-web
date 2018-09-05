@@ -25,7 +25,17 @@ class Preference extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['value'];
+	protected $fillable = ['key', 'value'];
+    
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+    
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @param string $value
@@ -41,6 +51,6 @@ class Preference extends BaseModel {
      */
     public function setValueAttribute(array $value)
     {
-        $this->attributes['permissions'] = $value ? json_encode($value) : '';
+        $this->attributes['value'] = $value ? json_encode($value) : '';
     }
 }

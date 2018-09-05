@@ -26,6 +26,29 @@ class PreferencesList extends Migration
      * @return array
      */
     protected function getList() {
-        return [];
+        return [
+            [
+                'key' => 'main',
+                'value' => [
+                    'title' => 'GameX',
+                    'language' => 'en'
+                ]
+            ], [
+                'key' => 'mail',
+                'value' => [
+                    'enabled' => false,
+                    'type' => 'mail',
+                    'sender' => [
+                        'name' => 'test',
+                        'email' => 'test@example.com',
+                    ]
+                ]
+            ], [
+                'key' => 'languages',
+                'value' => [
+                    'en' => 'English',
+                ]
+            ]
+        ];
     }
 }

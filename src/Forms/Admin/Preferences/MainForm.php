@@ -32,14 +32,14 @@ class MainForm extends BaseForm {
 	 * @noreturn
 	 */
 	protected function createForm() {
-        $language = $this->config->getNode('language');
-        $languages = $language->get('list')->toArray();
+        $main = $this->config->getNode('main');
+        $languages = $this->config->getNode('languages')->toArray();
 		$this->form
-            ->add(new Text('title', $this->config->getNode('main')->get('title'), [
+            ->add(new Text('title', $main->get('title'), [
                 'title' => $this->getTranslate('admin_preferences', 'title'),
                 'required' => true,
             ]))
-            ->add(new Select('language', $language->get('default'), $languages, [
+            ->add(new Select('language', $main->get('language'), $languages, [
                 'title' => $this->getTranslate('admin_preferences', 'language'),
                 'required' => true,
             ]))
@@ -55,8 +55,9 @@ class MainForm extends BaseForm {
      * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
      */
     protected function processForm() {
-        $this->config->getNode('main')->set('title', $this->form->getValue('title'));
-        $this->config->getNode('language')->set('default', $this->form->getValue('language'));
+        $main = $this->config->getNode('main');
+        $main->set('title', $this->form->getValue('title'));
+        $main->set('language', $this->form->getValue('language'));
         $this->config->save();
         return true;
     }

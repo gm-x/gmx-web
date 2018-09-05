@@ -30,7 +30,9 @@ class PreferencesController extends BaseAdminController {
 	 * @return ResponseInterface
 	 */
     public function indexAction(Request $request, ResponseInterface $response, array $args = []) {
-        $form = new MainForm($this->getContainer('config'));
+        /** @var Config $preferences */
+        $preferences = $this->getContainer('preferences');
+        $form = new MainForm($preferences);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect('admin_preferences_index');

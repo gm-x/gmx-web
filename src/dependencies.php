@@ -32,15 +32,15 @@ $container['cache'] = function (ContainerInterface $container) {
 };
 
 $container['lang'] = function (ContainerInterface $container) {
-    /** @var GameX\Core\Configuration\Node $config */
-    $config = $container->get('config')->getNode('language');
+    /** @var GameX\Core\Configuration\Config $config */
+    $config = $container->get('preferences');
 
     $loader = new \GameX\Core\Lang\Loaders\JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
     $provider = new \GameX\Core\Lang\Providers\SlimProvider($container->get('request'));
     return new \GameX\Core\Lang\Language(
         $loader, $provider,
-        $config->getNode('list')->toArray(),
-        $config->get('default')
+        $config->getNode('languages')->toArray(),
+        $config->getNode('main')->get('language')
     );
 };
 
@@ -103,6 +103,8 @@ $container['form'] = function (ContainerInterface $container) {
 $container['view'] = function (ContainerInterface $container) {
     /** @var GameX\Core\Configuration\Config $config */
     $config = $container->get('config');
+    /** @var GameX\Core\Configuration\Config $config */
+    $preferences = $container->get('preferences');
 
     $settings = $config->getNode('view')->toArray();
     $settings['cache'] = $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache';
@@ -126,7 +128,7 @@ $container['view'] = function (ContainerInterface $container) {
 
 	$view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
 	$view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
-	$view->getEnvironment()->addGlobal('title', $config->getNode('main')->get('title'));
+	$view->getEnvironment()->addGlobal('title', $preferences->getNode('main')->get('title'));
 
 	return $view;
 };

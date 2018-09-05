@@ -15,7 +15,7 @@ class DatabaseProvider implements ProviderInterface {
     public function load() {
         $data = [];
         foreach (Preference::all() as $preference) {
-            $data[$preference] = $preference->value;
+            $data[$preference->getAttribute('key')] = $preference->getAttribute('value');
         }
 
         return new Node($data);
@@ -53,10 +53,9 @@ class DatabaseProvider implements ProviderInterface {
      */
     private function saveNode($key, Node $value) {
         Preference::updateOrCreate([
-            'key' => $key,
-            'value' => $value
+            'key' => $key
         ], [
-            'value' => $value
+            'value' => $value->toArray()
         ]);
     }
 }
