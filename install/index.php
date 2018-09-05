@@ -78,18 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			}
 		}
 
-		case 'permissions': {
-			try {
-				$container = getContainer(false);
-				$container['db'];
-				insertPermissions();
-                json(true);
-			} catch (Exception $e) {
-                logException($e);
-                json(false, $e->getMessage());
-			}
-		}
-
 		case 'admin': {
 			try {
                 $container = getContainer(true);

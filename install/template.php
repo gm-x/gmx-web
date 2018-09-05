@@ -142,15 +142,8 @@
 	}
 
 	function installMigrations() {
-        var nextFunc = result('migrations', installPermissions);
+        var nextFunc = result('migrations', installAdmin);
 		$.post('?step=migrations')
-            .done(nextFunc)
-            .fail(fail(nextFunc));
-	}
-
-	function installPermissions() {
-        var nextFunc = result('permissions', installAdmin);
-		$.post('?step=permissions')
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}
