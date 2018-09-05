@@ -7,11 +7,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
-    <title>GameX™</title>
+    <title>{{ title }}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/all.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
-    <script src="{{ base_url() }}/assets/js/uikit-icons.js"></script>
+    <script src="{{ base_url() }}/assets/js/all.js"></script>
     {% block style %}{% endblock %}
 </head>
 <body>
@@ -19,16 +20,22 @@
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
             {{ navbar.mainbar(menu) }}
         </div>
-        {% if submenu %}
-            <!--Submenu here-->
-        {% endif %}
         <main role="main" class="container">
+            <div class="uk-margin uk-flex uk-flex-right">
+                {% block subnav %}{% endblock %}
+            </div>
             {% for message in flash_messages.success %}
-                <div class="alert alert-success" role="alert">{{ message }}</div>
+                <div class="uk-alert-success" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <h5>{{ message }}</h5>
+                </div>
             {% endfor %}
 
             {% for message in flash_messages.error %}
-                <div class="alert alert-danger" role="alert">{{ message }}</div>
+                <div class="uk-alert-danger" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <h5>{{ message }}</h5>
+                </div>
             {% endfor %}
 
             {% block content %}{% endblock %}
