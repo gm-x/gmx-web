@@ -42,12 +42,13 @@ class MainForm extends BaseForm {
             ->add(new Select('language', $main->get('language'), $languages, [
                 'title' => $this->getTranslate('admin_preferences', 'language'),
                 'required' => true,
-            ]))
-            ->addRule('title', new Trim())
-            ->addRule('title', new Required())
-            ->addRule('language', new Trim())
-            ->addRule('language', new Required())
-            ->addRule('language', new InArray(array_keys($languages)));
+            ]));
+		
+		$this->form->getValidator()
+            ->set('title', true)
+            ->set('language', true, [
+                new InArray(array_keys($languages))
+            ]);
 	}
 
     /**

@@ -27,15 +27,17 @@ class MailHelper extends Helper {
      * @param $config
      */
     protected function configure(Node $config) {
-        $this->from = new Email($config->get('email'), $config->get('name'));
+        $sender = $config->getNode('sender');
+        $this->from = new Email($sender->get('email'), $sender->get('name'));
         switch ($config->get('type')) {
             case 'smtp': {
+                $smtp = $config->getNode('smtp');
                 $this->sender = new SMTP(
-                    $config->get('host'),
-                    $config->get('port'),
-                    $config->get('secure'),
-                    $config->get('username'),
-                    $config->get('password')
+                    $smtp->get('host'),
+                    $smtp->get('port'),
+                    $smtp->get('secure'),
+                    $smtp->get('username'),
+                    $smtp->get('password')
                 );
             } break;
             
