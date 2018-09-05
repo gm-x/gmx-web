@@ -14,9 +14,9 @@ class JsonProvider implements ProviderInterface {
     protected $path;
 
     /**
-     * @param string $path
+     * @param string|null $path
      */
-    public function __construct($path) {
+    public function __construct($path = null) {
         $this->path = $path !== null
             ? (string) $path
             : dirname(__DIR__) . DIRECTORY_SEPARATOR . 'default.json';

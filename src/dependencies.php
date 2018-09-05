@@ -7,7 +7,7 @@ $container['config'] = function (ContainerInterface $container) {
 };
 
 $container['preferences'] = function (ContainerInterface $container) {
-    $provider = new \GameX\Core\Configuration\Providers\JsonProvider($container->get('root') . '/config.json');
+    $provider = new \GameX\Core\Configuration\Providers\DatabaseProvider();
     return new \GameX\Core\Configuration\Config($provider);
 };
 

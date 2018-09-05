@@ -88,6 +88,13 @@ class Node {
     /**
      * @return array
      */
+	public function keys() {
+	    return array_keys($this->data);
+    }
+
+    /**
+     * @return array
+     */
     public function toArray() {
         $result = [];
         foreach ($this->data as $key => $value) {

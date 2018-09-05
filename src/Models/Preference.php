@@ -4,8 +4,8 @@ namespace GameX\Models;
 use \GameX\Core\BaseModel;
 
 /**
- * @property int $id
- * @property string $name
+ * @property string $key
+ * @property array $value
  * @property Server[] $servers
  */
 class Preference extends BaseModel {
@@ -26,4 +26,21 @@ class Preference extends BaseModel {
 	 * @var array
 	 */
 	protected $fillable = ['value'];
+
+    /**
+     * @param string $value
+     * @return array|mixed
+     */
+    public function getValueAttribute($value)
+    {
+        return $value ? json_decode($value, true) : [];
+    }
+
+    /**
+     * @param array $value
+     */
+    public function setValueAttribute(array $value)
+    {
+        $this->attributes['permissions'] = $value ? json_encode($value) : '';
+    }
 }
