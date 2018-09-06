@@ -22,9 +22,10 @@ class MailHelper extends Helper {
             ->setSubject($subject)
             ->setBody($body);
     }
-    
+
     /**
-     * @param $config
+     * @param Node $config
+     * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
      */
     protected function configure(Node $config) {
         $sender = $config->getNode('sender');
