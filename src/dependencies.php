@@ -7,7 +7,7 @@ $container['config'] = function (ContainerInterface $container) {
 };
 
 $container['preferences'] = function (ContainerInterface $container) {
-    $provider = new \GameX\Core\Configuration\Providers\DatabaseProvider();
+    $provider = new \GameX\Core\Configuration\Providers\DatabaseProvider($container->get('cache'));
     return new \GameX\Core\Configuration\Config($provider);
 };
 
@@ -28,7 +28,9 @@ $container['cache'] = function (ContainerInterface $container) {
 		'path' => $container['root'] . 'runtime' . DIRECTORY_SEPARATOR . 'cache',
 		'encoder' => 'Serializer'
 	]);
-	return new \Stash\Pool($driver);
+	$cache = new \GameX\Core\Cache\Cache($driver);
+	$cache->add('preferences', new \GameX\Core\Cache\Items\Preferences());
+	return $cache;
 };
 
 $container['lang'] = function (ContainerInterface $container) {
