@@ -21,7 +21,7 @@ use \GameX\Core\Log\Logger;
 use \Monolog\Formatter\LineFormatter;
 use \Monolog\Handler\RotatingFileHandler;
 
-use \Illuminate\Database\Capsule\Manager as DatBaseManager;
+use \Illuminate\Database\Capsule\Manager as DataBaseManager;
 
 use \GameX\Core\Lang\Loaders\JSONLoader;
 use \GameX\Core\Lang\Providers\SlimProvider;
@@ -30,6 +30,7 @@ use \GameX\Core\Lang\Exceptions\BadLanguageException;
 use \GameX\Core\Lang\Exceptions\CantReadException;
 
 use \GameX\Core\Auth\Permissions\Manager as PermissionsManager;
+use \GameX\Core\Auth\Permissions\Middleware as PermissionsMiddleware;
 
 use \GameX\Core\Auth\SentinelBootstrapper;
 use \Cartalyst\Sentinel\Sentinel;
@@ -79,8 +80,8 @@ class DependencyProvider  implements ServiceProviderInterface {
             return $this->getLanguage($container);
         };
 
-        $container['permissions'] = function () {
-            return $this->getPermissions();
+        $container['permissions'] = function (ContainerInterface $container) {
+            return $this->getPermissions($container);
         };
 
         $container['auth'] = function (ContainerInterface $container) {
@@ -170,14 +171,14 @@ class DependencyProvider  implements ServiceProviderInterface {
 
     /**
      * @param ContainerInterface $container
-     * @return DatBaseManager
+     * @return DataBaseManager
      * @throws NotFoundException
      */
     public function getDataBase(ContainerInterface $container) {
         /** @var Config $config */
         $config = $container->get('config');
 
-        $capsule = new DatBaseManager;
+        $capsule = new DataBaseManager;
         $capsule->addConnection($config->getNode('db')->toArray());
 
         $capsule->setAsGlobal();
@@ -211,10 +212,12 @@ class DependencyProvider  implements ServiceProviderInterface {
     }
 
     /**
+     * @param ContainerInterface $container
      * @return PermissionsManager
      */
-    public function getPermissions() {
-        return new PermissionsManager();
+    public function getPermissions(ContainerInterface $container) {
+        $middleware = new PermissionsMiddleware($container);
+        return new PermissionsManager($middleware);
     }
 
     /**

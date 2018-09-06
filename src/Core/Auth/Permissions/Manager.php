@@ -5,6 +5,7 @@ use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Auth\Models\PermissionsModel;
 
 class Manager {
+
     const GROUP_USER = 'user';
     const GROUP_ADMIN = 'admin';
 
@@ -13,6 +14,11 @@ class Manager {
     const ACCESS_CREATE = 4;
     const ACCESS_EDIT = 8;
     const ACCESS_DELETE = 16;
+
+    /**
+     * @var Middleware
+     */
+    protected $middleware;
     
     /**
      * @var PermissionsModel[]|null
@@ -38,7 +44,19 @@ class Manager {
      * @var array
      */
     protected $cachedResources = [];
-    
+
+    /**
+     * @param Middleware $middleware
+     */
+    public function __construct(Middleware $middleware) {
+        $middleware->setManager($this);
+        $this->middleware = $middleware;
+    }
+
+    public function getMiddleware() {
+        return $this->middleware;
+    }
+
     /**
      * @param RoleModel $role
      * @param string $group
