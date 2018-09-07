@@ -7,6 +7,7 @@ use \GameX\Core\Lang\Language;
 use \GameX\Core\Log\Logger;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Node;
+use \GameX\Core\Configuration\Exceptions\NotFoundException;
 
 abstract class BaseController {
     /**
@@ -53,18 +54,6 @@ abstract class BaseController {
     public function getContainer($container) {
         return $this->container->get($container);
     }
-
-	/**
-	 * @param string $key
-	 * @return Node
-	 */
-    public function getConfig($key) {
-        if ($this->config === null) {
-            $this->config = $this->getContainer('config');
-        }
-
-        return $this->config->getNode($key);
-	}
 
 	/**
 	 * @param $section

@@ -30,7 +30,7 @@ class PermissionsModel extends BaseModel {
     /**
      * @var array
      */
-    protected $fillable = ['group', 'key'];
+    protected $fillable = ['group', 'key', 'type'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

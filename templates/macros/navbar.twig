@@ -46,7 +46,7 @@
                     <a href="#"><i class="fas fa-user-circle"></i></a>
                     <div class="uk-navbar-dropdown">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
-                            {% if not is_user() %}
+                            {% if is_guest() %}
                                 <li><a class="dropdown-item" href="{{ path_for('login') }}">
                                         {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
                                     </a></li>
@@ -96,7 +96,7 @@
         <div id="offcanvas-nav2" uk-offcanvas="overlay: true">
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
-                    {% if not is_user() %}
+                    {% if is_guest() %}
                         <li><a class="dropdown-item" href="{{ path_for('login') }}">
                                 {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
                             </a></li>

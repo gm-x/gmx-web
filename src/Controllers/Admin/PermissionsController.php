@@ -28,16 +28,18 @@ class PermissionsController extends BaseAdminController {
     public function init() {
         $this->roleRepository = $this->getContainer('auth')->getRoleRepository();
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
-        $form = new PermissionsForm($role);
+        $form = new PermissionsForm($role, $this->getContainer('permissions'));
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect('admin_role_permissions', [

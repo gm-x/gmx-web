@@ -3,7 +3,13 @@ require __DIR__ . '/vendor/autoload.php';
 $container = new \Slim\Container([
     'root' => __DIR__ . DIRECTORY_SEPARATOR
 ]);
-include __DIR__ . '/src/dependencies.php';
+
+$container->register(new \GameX\Core\DependencyProvider());
+
+\GameX\Core\BaseModel::setContainer($container);
+\GameX\Core\BaseForm::setContainer($container);
+\GameX\Core\Utils::setContainer($container);
+date_default_timezone_set('UTC');
 
 use \GameX\Core\BaseCronController;
 use \GameX\Core\Jobs\JobHelper;

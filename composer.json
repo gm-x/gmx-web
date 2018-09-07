@@ -12,18 +12,19 @@
 		}
 	],
 	"require": {
+		"php" : "^5.6 || ^7.0",
+		"ext-json": "*",
+		"ext-mbstring": "*",
 		"slim/slim": "3.10.0",
 		"slim/twig-view": "2.3.0",
 		"illuminate/database": "~5.1",
 		"cartalyst/sentinel": "v2.0.17",
 		"illuminate/events": "v5.4.36",
-		"ircmaxell/password-compat": "1.0.3",
 		"monolog/monolog": "1.23.0",
 		"paragonie/random_compat": "^2.0",
 		"davedevelopment/phpmig": "^1.2@dev",
 		"akrabat/ip-address-middleware": "^0.6.0",
 		"tedivm/stash": "v0.14.2",
-		"firebase/php-jwt": "v5.0.0",
 		"swiftmailer/swiftmailer": "5.4.9"
 	},
 	"autoload": {

@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Core\Auth\Middlewares;
+namespace GameX\Middlewares;
 
 use \Psr\Container\ContainerInterface;
 use \Cartalyst\Sentinel\Sentinel;

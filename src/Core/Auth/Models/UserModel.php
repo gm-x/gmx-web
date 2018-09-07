@@ -6,7 +6,6 @@ use \GameX\Models\Player;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
-use \GameX\Core\Auth\Interfaces\PermissionsInterface;
 use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -24,8 +23,11 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property RoleModel $role
  * @property Player[] players
  */
-class UserModel extends BaseModel implements UserInterface, PersistableInterface, PermissionsInterface {
+class UserModel extends BaseModel implements UserInterface, PersistableInterface {
 
+    /**
+     * @var string
+     */
 	protected $table = 'users';
 
 	/**
@@ -134,33 +136,6 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 */
 	public function role() {
 		return $this->belongsTo(RoleModel::class);
-	}
-
-    /**
-     * @inheritdoc
-     */
-	public function hasAccessToGroup($group) {
-	    return $this->role
-            ? $this->role->hasAccessToGroup($group)
-            : false;
-	}
-
-    /**
-     * @inheritdoc
-     */
-	public function hasAccessToPermission($group, $permission, $access = null) {
-	    return $this->role
-            ? $this->role->hasAccessToPermission($group, $permission, $access)
-	        : false;
-	}
-
-    /**
-     * @inheritdoc
-     */
-	public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        return $this->role
-            ? $this->role->hasAccessToResource($group, $permission, $resource, $access)
-            : false;
 	}
     
     /**

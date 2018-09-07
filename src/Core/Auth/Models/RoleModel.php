@@ -3,8 +3,6 @@ namespace GameX\Core\Auth\Models;
 
 use \Carbon\Carbon;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
-use \GameX\Core\Auth\Interfaces\PermissionsInterface;
-use \GameX\Core\Auth\Permissions\Manager;
 use \GameX\Core\BaseModel;
 
 /**
@@ -20,13 +18,11 @@ use \GameX\Core\BaseModel;
  * @property UserModel[] $users
  * @property RolesPermissionsModel[] $permissions
  */
-class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface {
-    
+class RoleModel extends BaseModel implements RoleInterface {
+
     /**
-     * @var Manager|null
+     * @var array|null
      */
-    protected static $manager = null;
-    
     protected $cachedPermissions = null;
 
 	/**
@@ -49,20 +45,6 @@ class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface
 		'slug',
 		'permissions',
 	];
-    
-    /**
-     * @param Manager $manager
-     */
-	public static function setManager(Manager $manager) {
-	    self::$manager = $manager;
-    }
-    
-    /**
-     * @return Manager|null
-     */
-    public static function getManager() {
-	    return self::$manager;
-    }
 
 	/**
 	 * The Users relationship.
@@ -102,33 +84,6 @@ class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface
 	public function getUsers() {
 		return $this->users;
 	}
-    
-    /**
-     * @inheritdoc
-     */
-    public function hasAccessToGroup($group) {
-        return self::$manager !== null
-            ? self::$manager->hasAccessToGroup($this, $group)
-            : false;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function hasAccessToPermission($group, $permission = null, $access = null) {
-        return self::$manager !== null
-            ? self::$manager->hasAccessToPermission($this, $group, $permission, $access)
-            : false;
-	}
-    
-    /**
-     * @inheritdoc
-     */
-    public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        return self::$manager !== null
-            ? self::$manager->hasAccessToResource($this, $group, $permission, $resource, $access)
-            : false;
-    }
 
 	/**
 	 * {@inheritDoc}

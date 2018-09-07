@@ -3,6 +3,7 @@ namespace GameX\Models;
 
 use \Carbon\Carbon;
 use \GameX\Core\BaseModel;
+use \GameX\Core\Utils;
 
 /**
  * @property integer $id
@@ -85,7 +86,7 @@ class Server extends BaseModel {
     public function generateNewToken() {
         $tries = 0;
         do {
-            $token = bin2hex(random_bytes(32));
+            $token = Utils::generateToken(32);
         } while (++$tries < 3 && Server::where('token', $token)->exists());
         return $token;
     }
