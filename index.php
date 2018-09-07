@@ -1,8 +1,7 @@
 <?php
 function redirectToInstall() {
-    $host = $_SERVER['HTTP_HOST'];
     $path = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $baseUrl = (isset($_SERVER['HTTPS']) ? "https" : "http")."://" . $host . $path;
+    $baseUrl = $path;
     header('Location: ' . $baseUrl . '/install',true,302);
     die();
 }
