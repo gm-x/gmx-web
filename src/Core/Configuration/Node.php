@@ -42,7 +42,6 @@ class Node {
      */
     public function getNode($key) {
         if (!$this->existsNode($key)) {
-            Utils::logBacktrace();
             throw new NotFoundException('Key "' . $key . '" not found');
         }
         

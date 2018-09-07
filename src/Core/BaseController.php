@@ -54,7 +54,7 @@ abstract class BaseController {
     public function getContainer($container) {
         return $this->container->get($container);
     }
-    
+
 	/**
 	 * @param $section
 	 * @param $key
