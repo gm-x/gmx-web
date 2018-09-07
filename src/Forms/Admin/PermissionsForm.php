@@ -38,13 +38,14 @@ class PermissionsForm extends BaseForm {
     /**
      * @var PermissionsModel[]
      */
-	protected $permissions = null;
+	protected $permissionsList = null;
 
 	/**
 	 * @param RoleModel $role
+	 * @param Permissions $permissions
 	 */
-	public function __construct(RoleModel $role) {
-	    $this->manager = static::$container->get('permissions');
+	public function __construct(RoleModel $role, Permissions $permissions) {
+	    $this->manager = $permissions;
 		$this->role = $role;
 	}
     
@@ -66,18 +67,19 @@ class PermissionsForm extends BaseForm {
         return $result;
     }
 
-	/**
-	 * @noreturn
-	 */
+    /**
+     * @throws \Exception
+     */
 	protected function createForm() {
         foreach ($this->getPermissions() as $permission) {
             foreach (self::ACCESS_LIST as $access => $v)
             $this->addToForm($permission, $access);
         }
 	}
-    
+
     /**
-     * @return boolean
+     * @return bool
+     * @throws \Exception
      */
     protected function processForm() {
         /** @var \Illuminate\Database\Connection$db */
@@ -126,20 +128,21 @@ class PermissionsForm extends BaseForm {
      * @return PermissionsModel[]
      */
     protected function getPermissions() {
-        if ($this->permissions === null) {
+        if ($this->permissionsList === null) {
             /** @var PermissionsModel[] $permissions */
-            $this->permissions = PermissionsModel::whereNull('type')
+            $this->permissionsList = PermissionsModel::whereNull('type')
                 ->get();
         }
         
-        return $this->permissions;
+        return $this->permissionsList;
     }
-    
+
     /**
      * @param PermissionsModel $permission
      * @param int $access
+     * @throws \Exception
      */
-    protected function addToForm($permission, $access) {
+    protected function addToForm(PermissionsModel $permission, $access) {
         $key = $this->getElementKey($permission, $access);
         $this->form
             ->add(new Checkbox($key, $this->hasAccessToPermission($permission, $access), [

@@ -39,11 +39,6 @@ class SentinelBootstrapper {
      * @var Session|null
      */
     protected $session;
-    
-    /**
-     * @var Permissions
-     */
-    protected $manager;
 
     /**
      * Configuration.
@@ -64,12 +59,10 @@ class SentinelBootstrapper {
      *
      * @param Request $request
      * @param Session $session
-     * @param Permissions $manager
      */
-    public function __construct(Request $request = null, Session $session = null, Permissions $manager = null) {
+    public function __construct(Request $request = null, Session $session = null) {
         $this->request = $request;
         $this->session = $session;
-        $this->manager = $manager;
         $this->config = new ConfigRepository(__DIR__ . '/config.php');
     }
 
@@ -110,10 +103,6 @@ class SentinelBootstrapper {
         $sentinel->setReminderRepository($reminders);
 
         $sentinel->setThrottleRepository($throttle);
-        
-        if ($this->manager !== null) {
-            RoleModel::setManager($this->manager);
-        }
 
         return $sentinel;
     }

@@ -28,6 +28,16 @@ class Permissions {
      * @var ContainerInterface
      */
     protected $container;
+
+    /**
+     * @var \Closure
+     */
+    protected $isAuthorizedCallable = null;
+
+    /**
+     * @var int
+     */
+    protected $rootUserId;
     
     /**
      * @var PermissionsModel[]|null
@@ -59,6 +69,18 @@ class Permissions {
      */
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
+
+        /** @var Node $config */
+        $config = $container->get('config')->getNode('permissions');
+        $this->rootUserId = $config->get('root_user');
+    }
+
+    /**
+     * @param UserModel $user
+     * @return bool
+     */
+    public function isRootUser(UserModel $user) {
+        return ($user->id === $this->rootUserId);
     }
 
     /**
@@ -125,45 +147,25 @@ class Permissions {
     
         return ($this->cachedResources[$group][$permission][$resource] & $access) === $access;
     }
-    
+
     /**
-     * @param RoleModel $role
+     * @return \Closure
      */
-    protected function cacheRole(RoleModel $role) {
-        if ($this->cachedRole == $role->id) {
-            return;
+    public function isAuthorizedMiddleware() {
+        if ($this->isAuthorizedCallable === null) {
+            $self = $this;
+            $this->isAuthorizedCallable = function (Request $request, Response $response, callable $next) use ($self, $handler) {
+                /** @var UserModel|null $user */
+                $user = $request->getAttribute('user');
+                if (!$user) {
+                    return $self->redirectToLogin($response);
+                }
+
+                return $next($request, $response);
+            };
         }
-    
-        $this->cachedGroups = [];
-        $this->cachedPermissions = [];
-        $this->cachedResources = [];
-    
-        /** @var \GameX\Core\Auth\Models\RolesPermissionsModel[] $permissions */
-        $permissions = $role->permissions()->with('permission')->get();
-        
-        foreach ($permissions as $permission) {
-            $p = $permission->permission;
-            if ($p->type === null) {
-                if (!array_key_exists($p->group, $this->cachedPermissions)) {
-                    $this->cachedPermissions[$p->group] = [];
-                }
-                $this->cachedPermissions[$p->group][$p->key] = $permission->access;
-            } else {
-                if (!array_key_exists($p->group, $this->cachedResources)) {
-                    $this->cachedResources[$p->group] = [];
-                }
-                if (!array_key_exists($p->key, $this->cachedResources[$p->group])) {
-                    $this->cachedResources[$p->group][$p->key] = [];
-                }
-                $this->cachedResources[$p->group][$p->key][$permission->resource] = $permission->access;
-            }
-            
-            if ($permission->access > 0) {
-                $this->cachedGroups[$p->group] = true;
-            }
-        }
-    
-        $this->cachedRole = $role->id;
+
+        return $this->isAuthorizedCallable;
     }
 
     /**
@@ -206,6 +208,46 @@ class Permissions {
     }
 
     /**
+     * @param RoleModel $role
+     */
+    protected function cacheRole(RoleModel $role) {
+        if ($this->cachedRole == $role->id) {
+            return;
+        }
+
+        $this->cachedGroups = [];
+        $this->cachedPermissions = [];
+        $this->cachedResources = [];
+
+        /** @var \GameX\Core\Auth\Models\RolesPermissionsModel[] $permissions */
+        $permissions = $role->permissions()->with('permission')->get();
+
+        foreach ($permissions as $permission) {
+            $p = $permission->permission;
+            if ($p->type === null) {
+                if (!array_key_exists($p->group, $this->cachedPermissions)) {
+                    $this->cachedPermissions[$p->group] = [];
+                }
+                $this->cachedPermissions[$p->group][$p->key] = $permission->access;
+            } else {
+                if (!array_key_exists($p->group, $this->cachedResources)) {
+                    $this->cachedResources[$p->group] = [];
+                }
+                if (!array_key_exists($p->key, $this->cachedResources[$p->group])) {
+                    $this->cachedResources[$p->group][$p->key] = [];
+                }
+                $this->cachedResources[$p->group][$p->key][$permission->resource] = $permission->access;
+            }
+
+            if ($permission->access > 0) {
+                $this->cachedGroups[$p->group] = true;
+            }
+        }
+
+        $this->cachedRole = $role->id;
+    }
+
+    /**
      * @param callable $handler
      * @return \Closure
      */
@@ -218,7 +260,7 @@ class Permissions {
                 return $self->redirectToLogin($response);
             }
 
-            if ($self->checkIsRoot($user)) {
+            if ($self->isRootUser($user)) {
                 return $next($request, $response);
             }
 
@@ -248,15 +290,5 @@ class Permissions {
         /** @var Router $router */
         $router = $this->container->get('router');
         return $response->withRedirect($router->pathFor('login'));
-    }
-
-    /**
-     * @param UserModel $user
-     * @return bool
-     */
-    protected function checkIsRoot(UserModel $user) {
-        /** @var Node $config */
-        $config = $this->container->get('config')->getNode('permissions');
-        return ((int) $user->id === $config->get('root_user'));
     }
 }

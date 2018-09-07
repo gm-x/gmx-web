@@ -226,8 +226,7 @@ class DependencyProvider  implements ServiceProviderInterface {
         $container->get('db');
         $bootsrap = new SentinelBootstrapper(
             $container->get('request'),
-            $container->get('session'),
-            $container->get('permissions')
+            $container->get('session')
         );
         return $bootsrap->createSentinel();
     }
@@ -257,7 +256,7 @@ class DependencyProvider  implements ServiceProviderInterface {
         $view->addExtension(new CSRFExtension($container->get('csrf')));
         $view->addExtension(new AuthViewExtension(
             $container->get('auth'),
-            $config->getNode('permissions')->get('root_user')
+            $container->get('permissions')
         ));
         $view->addExtension(new LangViewExtension($container->get('lang')));
         $view->addExtension(new AccessFlagsViewExtension());

@@ -17,25 +17,29 @@ class ViewExtension extends Twig_Extension {
     ];
 
 	/**
-	 * @var UserModel|null
+	 * @var Sentinel
 	 */
-	protected $user;
+	protected $auth;
 
     /**
-     * @var bool
+     * @var Permissions
      */
-	protected $isRootUser = false;
+	protected $permissions;
+
+    /**
+     * @var UserModel
+     */
+	protected $user;
 
 	/**
 	 * ViewExtention constructor.
 	 * @param Sentinel $auth
-	 * @param int $rootId
+	 * @param Permissions $permissions
 	 */
-	public function __construct(Sentinel $auth, $rootId = null) {
+	public function __construct(Sentinel $auth, Permissions $permissions) {
+		$this->auth = $auth;
+		$this->permissions = $permissions;
 		$this->user = $auth->getUser();
-		$this->isRootUser = $this->user
-            ? ((int)$this->user->id === $rootId)
-            : false;
 	}
 
 	/**
@@ -44,8 +48,8 @@ class ViewExtension extends Twig_Extension {
     public function getFunctions() {
         return [
             new Twig_SimpleFunction(
-                'is_user',
-                [$this, 'isUser']
+                'is_guest',
+                [$this, 'isGuest']
             ),
             new Twig_SimpleFunction(
                 'get_user_name',
@@ -69,15 +73,15 @@ class ViewExtension extends Twig_Extension {
 	/**
 	 * @return bool
 	 */
-    public function isUser() {
-		return (bool) $this->user;
+    public function isGuest() {
+		return $this->auth->guest();
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getUserName() {
-		return $this->user
+		return !$this->isGuest()
 			? $this->user->getUserLogin()
 			: '';
 	}
@@ -87,12 +91,7 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToGroup($group) {
-        if (!$this->user) {
-            return false;
-        }
-        return !$this->isRootUser
-            ? $this->user->hasAccessToGroup($group)
-            : true;
+        return $this->hasAccess('hasAccessToGroup', [$group]);
 	}
     
     /**
@@ -102,12 +101,7 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToPermission($group, $permission, $access = null) {
-        if (!$this->user) {
-            return false;
-        }
-        return !$this->isRootUser
-            ? $this->user->hasAccessToPermission($group, $permission, $this->getAccess($access))
-            : true;
+        return $this->hasAccess('hasAccessToPermission', [$group, $permission, $this->getAccess($access)]);
     }
     
     /**
@@ -118,12 +112,28 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        if (!$this->user) {
+        return $this->hasAccess('hasAccessToResource', [$group, $permission, $resource, $this->getAccess($access)]);
+    }
+
+    /**
+     * @param string $method
+     * @param array $args
+     * @return bool
+     */
+    protected function hasAccess($method, array $args) {
+        if ($this->isGuest()) {
             return false;
         }
-        return !$this->isRootUser
-            ? $this->user->hasAccessToResource($group, $permission, $resource, $this->getAccess($access))
-            : true;
+
+        if ($this->permissions->isRootUser($this->user)) {
+            return true;
+        }
+
+        if (!$this->user->role) {
+            return false;
+        }
+
+        return call_user_func_array([$this->permissions, $method], $args);
     }
 
     /**
