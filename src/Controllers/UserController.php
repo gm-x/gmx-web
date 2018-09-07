@@ -32,7 +32,9 @@ class UserController extends BaseMainController {
      * Init UserController
      */
 	public function init() {
-        $this->mailEnabled = (bool) $this->getConfig('mail')->get('enabled', false);
+	    /** @var \GameX\Core\Configuration\Config $preferences */
+	    $preferences = $this->getContainer('preferences');
+        $this->mailEnabled = (bool) $preferences->getNode('mail')->get('enabled', false);
     }
 
     /**

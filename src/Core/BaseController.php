@@ -54,20 +54,7 @@ abstract class BaseController {
     public function getContainer($container) {
         return $this->container->get($container);
     }
-
-    /**
-     * @param $key
-     * @return Node
-     * @throws NotFoundException
-     */
-    public function getConfig($key) {
-        if ($this->config === null) {
-            $this->config = $this->getContainer('config');
-        }
-
-        return $this->config->getNode($key);
-	}
-
+    
 	/**
 	 * @param $section
 	 * @param $key

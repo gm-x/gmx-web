@@ -21,6 +21,7 @@ class Utils {
             debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),
             0
         );
+        array_shift($backtrace);
         $lines = [];
         foreach ($backtrace as $item) {
             $line = "\t";

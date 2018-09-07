@@ -2,6 +2,7 @@
 namespace GameX\Core\Configuration;
 
 use \GameX\Core\Configuration\Exceptions\NotFoundException;
+use GameX\Core\Utils;
 
 class Node {
 
@@ -41,7 +42,8 @@ class Node {
      */
     public function getNode($key) {
         if (!$this->existsNode($key)) {
-            throw new NotFoundException();
+            Utils::logBacktrace();
+            throw new NotFoundException('Key "' . $key . '" not found');
         }
         
         return $this->data[$key];
