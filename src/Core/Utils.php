@@ -4,6 +4,7 @@ namespace GameX\Core;
 use \Psr\Container\ContainerInterface;
 
 class Utils {
+
     /**
      * @var ContainerInterface
      */
@@ -38,6 +39,14 @@ class Utils {
         }
         /** @var \GameX\Core\Log\Logger $logger */
         $logger = self::$container->get('log');
-        $logger->debug('Persistences ' . $_SERVER['REQUEST_URI'] . PHP_EOL . implode(PHP_EOL, $lines));
+        $logger->debug(implode(PHP_EOL, $lines));
+    }
+    
+    /**
+     * @param int $length
+     * @return string
+     */
+    public static function generateToken($length = 32) {
+        return bin2hex(random_bytes(32));
     }
 }

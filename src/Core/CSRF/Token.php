@@ -2,6 +2,7 @@
 namespace GameX\Core\CSRF;
 
 use \GameX\Core\Session\Session;
+use \GameX\Core\Utils;
 
 class Token {
 
@@ -136,7 +137,7 @@ class Token {
             $pieces []= self::KEY_SPACE[random_int(0, $max)];
         }
         $this->newName = implode('', $pieces);
-        $this->newToken = bin2hex(random_bytes(32));
+        $this->newToken = Utils::generateToken(32);
         if(count($this->tokens) >= $this->maxTokens) {
             $this->tokens = array_slice($this->tokens, 0, $this->maxTokens - 1);
         }
