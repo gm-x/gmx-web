@@ -35,10 +35,12 @@ class LoginForm extends BaseForm {
 			->add(new Text('login', '', [
 				'title' => $this->getTranslate('inputs', 'login_email'),
 				'required' => true,
+                'icon' => 'user',
 			]))
 			->add(new Password('password', '', [
 				'title' => $this->getTranslate('inputs', 'password'),
 				'required' => true,
+                'icon' => 'lock',
 			]))
 			->add(new Checkbox('remember_me', true, [
 				'title' => $this->getTranslate('inputs', 'remember_me'),

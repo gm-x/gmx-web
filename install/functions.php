@@ -176,11 +176,3 @@ function cronjobAppend($command){
 
     return false;
 }
-
-function insertPermissions() {
-    $permissions = json_decode(file_get_contents(__DIR__ . DS . 'permissions.json'), true);
-    foreach ($permissions as $permission) {
-        $p = new \GameX\Core\Auth\Models\PermissionsModel($permission);
-        $p->save();
-    }
-}

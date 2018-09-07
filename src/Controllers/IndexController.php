@@ -23,36 +23,8 @@ class IndexController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
     public function indexAction(Request $request, ResponseInterface $response, array $args) {
-    	/** @var \Stash\Pool $item$cache */
-		$cache = $this->getContainer('cache');
-
-		$servers = [];
-		/** @var Server $server */
-		foreach (Server::all() as $server) {
-			$item = $cache->getItem('server_' . $server->id);
-			if ($item->isMiss()) {
-				$servers[] = [
-					'success' => false,
-					'name' => $server->name,
-					'ip' => $server->ip,
-					'port' => $server->port,
-				];
-			} else {
-				$data = $item->get();
-				$servers[] = [
-					'success' => true,
-					'name' => $server->name,
-					'ip' => $server->ip,
-					'port' => $server->port,
-					'map' => $data['map'],
-					'players' => $data['players'],
-					'maxPlayers' => $data['maxPlayers'],
-				];
-			}
-		}
-
         return $this->render('index/index.twig', [
-        	'servers' => $servers,
+        	'servers' => [],
 		]);
     }
 
@@ -61,6 +33,7 @@ class IndexController extends BaseMainController {
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws \GameX\Core\Lang\Exceptions\BadLanguageException
      */
     public function languageAction(Request $request, ResponseInterface $response, array $args) {
         /** @var Language $lang */

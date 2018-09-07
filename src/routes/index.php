@@ -6,7 +6,7 @@ use \GameX\Controllers\Admin\AdminController;
 use \GameX\Middlewares\ApiTokenMiddleware;
 use \GameX\Middlewares\ApiRequestMiddleware;
 
-$authMiddleware = new \GameX\Core\Auth\Middlewares\AuthMiddleware($app->getContainer());
+$authMiddleware = new \GameX\Middlewares\AuthMiddleware($app->getContainer());
 $csrfMiddleware = new \GameX\Core\CSRF\Middleware($app->getContainer()->get('csrf'));
 
 $app->group('', function () {
@@ -25,19 +25,6 @@ $app->group('', function () {
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
     include __DIR__ . DIRECTORY_SEPARATOR . 'settings.php';
-
-//    $modules = $this->getContainer()->get('modules');
-//    /** @var \GameX\Core\Module\ModuleInterface $module */
-//    foreach ($modules as $module) {
-//        $routes = $module->getRoutes();
-//        /** @var \GameX\Core\Module\ModuleRoute $route */
-//        foreach ($routes as $route) {
-//            $this
-//                ->map($route->getMethods(), $route->getRoute(), BaseController::action($route->getController(), $route->getAction()))
-//                ->setName($route->getName())
-//                ->setArgument('permission', $route->getPermission());
-//        }
-//    }
 })
     ->add($authMiddleware)
     ->add($csrfMiddleware);
@@ -55,19 +42,6 @@ $app->group('/admin', function () {
     $this->group('/roles', include $root . 'roles.php');
     $this->group('/servers', include $root . 'servers.php');
     $this->group('/players', include $root . 'players.php');
-
-//	$modules = $this->getContainer()->get('modules');
-//	/** @var \GameX\Core\Module\ModuleInterface $module */
-//	foreach ($modules as $module) {
-//		$routes = $module->getAdminRoutes();
-//		/** @var \GameX\Core\Module\ModuleRoute $route */
-//		foreach ($routes as $route) {
-//			$this
-//				->map($route->getMethods(), $route->getRoute(), BaseController::action($route->getController(), $route->getAction()))
-//				->setName($route->getName())
-//				->setArgument('permission', $route->getPermission());
-//		}
-//	}
 })
     ->add($authMiddleware)
     ->add($csrfMiddleware);

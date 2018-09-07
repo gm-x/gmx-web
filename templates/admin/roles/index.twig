@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
 
+{% block subnav %}
+    {{ admin.add_btn(path_for('admin_roles_create'), 'l') }}
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <div f-table f-divider>
@@ -26,12 +30,12 @@
                         {% block actions %}
                             <li>
                                 <a href="{{ path_for('admin_roles_users', {'role': role.id}) }}" class="dropdown-item">
-                                    <span class="uk-margin-small-right" uk-icon="icon: users"></span> {{ trans('admin_menu', 'users') }}
+                                    <i class="fas fa-users uk-margin-small-right"></i> {{ trans('admin_menu', 'users') }}
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ path_for('admin_role_permissions', {'role': role.id}) }}" class="dropdown-item">
-                                    <span class="uk-margin-small-right" uk-icon="icon: lock"></span> {{ trans('admin_menu', 'permissions') }}
+                                    <i class="fas fa-lock uk-margin-small-right"></i> {{ trans('admin_menu', 'permissions') }}
                                 </a>
                             </li>
                         {% endblock %}
@@ -40,6 +44,5 @@
             </ul>
         {% endfor %}
     </div>
-    <a href="{{ path_for('admin_roles_create') }}" class="btn btn-primary">{{ trans('buttons', 'create') }}</a>
 </div>
 {% endblock %}
