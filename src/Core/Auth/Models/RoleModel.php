@@ -4,7 +4,7 @@ namespace GameX\Core\Auth\Models;
 use \Carbon\Carbon;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \GameX\Core\Auth\Interfaces\PermissionsInterface;
-use \GameX\Core\Auth\Permissions\Manager;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Core\BaseModel;
 
 /**
@@ -23,7 +23,7 @@ use \GameX\Core\BaseModel;
 class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface {
     
     /**
-     * @var Manager|null
+     * @var Permissions|null
      */
     protected static $manager = null;
     
@@ -51,14 +51,14 @@ class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface
 	];
     
     /**
-     * @param Manager $manager
+     * @param Permissions $manager
      */
-	public static function setManager(Manager $manager) {
+	public static function setManager(Permissions $manager) {
 	    self::$manager = $manager;
     }
     
     /**
-     * @return Manager|null
+     * @return Permissions|null
      */
     public static function getManager() {
 	    return self::$manager;

@@ -64,7 +64,6 @@ $container->register(new \GameX\Core\DependencyProvider());
 
 \GameX\Core\BaseModel::setContainer($container);
 \GameX\Core\BaseForm::setContainer($container);
-\GameX\Core\Auth\Middlewares\BaseMiddleware::setContainer($container);
 \GameX\Core\Utils::setContainer($container);
 date_default_timezone_set('UTC');
 

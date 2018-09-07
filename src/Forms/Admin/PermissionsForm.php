@@ -2,7 +2,7 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
-use \GameX\Core\Auth\Permissions\Manager;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Auth\Models\PermissionsModel;
 use \GameX\Core\Auth\Models\RolesPermissionsModel;
@@ -13,11 +13,11 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 class PermissionsForm extends BaseForm {
     
     const ACCESS_LIST = [
-        Manager::ACCESS_LIST => 'list',
-        Manager::ACCESS_VIEW => 'view',
-        Manager::ACCESS_CREATE => 'create',
-        Manager::ACCESS_EDIT => 'edit',
-        Manager::ACCESS_DELETE => 'delete',
+        Permissions::ACCESS_LIST => 'list',
+        Permissions::ACCESS_VIEW => 'view',
+        Permissions::ACCESS_CREATE => 'create',
+        Permissions::ACCESS_EDIT => 'edit',
+        Permissions::ACCESS_DELETE => 'delete',
     ];
 
 	/**
@@ -26,7 +26,7 @@ class PermissionsForm extends BaseForm {
 	protected $name = 'admin_role_permissions';
 
 	/**
-	 * @var Manager
+	 * @var Permissions
 	 */
 	protected $manager;
     

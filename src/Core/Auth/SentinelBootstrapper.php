@@ -27,7 +27,6 @@ use \GameX\Core\Auth\Http\Cookie as SentinelCookie;
 use \GameX\Core\Auth\Http\FakeCookie as SentinelFakeCookie;
 use \GameX\Core\Auth\Http\Session as SentinelSession;
 use \GameX\Core\Auth\Http\FakeSession as SentinelFakeSession;
-use \GameX\Core\Auth\Permissions\Manager;
 
 class SentinelBootstrapper {
     
@@ -42,7 +41,7 @@ class SentinelBootstrapper {
     protected $session;
     
     /**
-     * @var Manager
+     * @var Permissions
      */
     protected $manager;
 
@@ -65,9 +64,9 @@ class SentinelBootstrapper {
      *
      * @param Request $request
      * @param Session $session
-     * @param Manager $manager
+     * @param Permissions $manager
      */
-    public function __construct(Request $request = null, Session $session = null, Manager $manager = null) {
+    public function __construct(Request $request = null, Session $session = null, Permissions $manager = null) {
         $this->request = $request;
         $this->session = $session;
         $this->manager = $manager;

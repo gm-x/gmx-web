@@ -29,8 +29,7 @@ use \GameX\Core\Lang\Language;
 use \GameX\Core\Lang\Exceptions\BadLanguageException;
 use \GameX\Core\Lang\Exceptions\CantReadException;
 
-use \GameX\Core\Auth\Permissions\Manager as PermissionsManager;
-use \GameX\Core\Auth\Permissions\Middleware as PermissionsMiddleware;
+use \GameX\Core\Auth\Permissions;
 
 use \GameX\Core\Auth\SentinelBootstrapper;
 use \Cartalyst\Sentinel\Sentinel;
@@ -213,11 +212,10 @@ class DependencyProvider  implements ServiceProviderInterface {
 
     /**
      * @param ContainerInterface $container
-     * @return PermissionsManager
+     * @return Permissions
      */
     public function getPermissions(ContainerInterface $container) {
-        $middleware = new PermissionsMiddleware($container);
-        return new PermissionsManager($middleware);
+        return new Permissions($container);
     }
 
     /**

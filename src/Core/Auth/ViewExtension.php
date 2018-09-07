@@ -5,16 +5,15 @@ use \Twig_Extension;
 use \Twig_SimpleFunction;
 use \Cartalyst\Sentinel\Sentinel;
 use \GameX\Core\Auth\Models\UserModel;
-use \GameX\Core\Auth\Permissions\Manager;
 
 class ViewExtension extends Twig_Extension {
 
     const ACCESS_LIST = [
-        'list' => Manager::ACCESS_LIST,
-        'view' => Manager::ACCESS_VIEW,
-        'create' => Manager::ACCESS_CREATE,
-        'edit' => Manager::ACCESS_EDIT,
-        'delete' => Manager::ACCESS_DELETE,
+        'list' => Permissions::ACCESS_LIST,
+        'view' => Permissions::ACCESS_VIEW,
+        'create' => Permissions::ACCESS_CREATE,
+        'edit' => Permissions::ACCESS_EDIT,
+        'delete' => Permissions::ACCESS_DELETE,
     ];
 
 	/**
