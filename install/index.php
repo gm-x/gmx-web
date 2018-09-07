@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     BASE_DIR . 'runtime' . DS . 'logs',
                     BASE_DIR . 'runtime' . DS . 'twig_cache',
                 ]);
+
+                clearTwigCache();
                 json(true);
             } catch (Exception $e) {
                 logException($e);
@@ -49,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				checkDbConnection($_POST['db']);
 
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
-				$config = new GameX\Core\Configuration\Config();
+                $provider = new \GameX\Core\Configuration\Providers\JsonProvider();
+				$config = new \GameX\Core\Configuration\Config($provider);
 				$db = $config->getNode('db');
 				$db->set('host', $_POST['db']['host']);
 				$db->set('port', (int) $_POST['db']['port']);
@@ -58,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$db->set('database', $_POST['db']['name']);
 				$db->set('prefix', $_POST['db']['prefix']);
 
-				$config->setPath(BASE_DIR . 'config.json');
+                $provider->setPath(BASE_DIR . 'config.json');
 				$config->save();
                 json(true);
 			} catch (Exception $e) {

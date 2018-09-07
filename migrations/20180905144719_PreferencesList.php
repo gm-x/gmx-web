@@ -47,6 +47,7 @@ class PreferencesList extends Migration
                 'key' => 'languages',
                 'value' => [
                     'en' => 'English',
+                    'кг' => 'Русский',
                 ]
             ]
         ];

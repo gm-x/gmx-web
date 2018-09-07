@@ -1,14 +1,4 @@
 {
-	"main": {
-		"title": "GameX"
-	},
-	"language": {
-		"default": "en",
-		"list": {
-			"en": "English",
-			"ru": "Russian"
-		}
-	},
 	"db": {
 		"driver": "mysql",
 		"host": "127.0.0.1",
@@ -27,12 +17,6 @@
 	"view": {
 		"debug": false,
 		"auto_reload": false
-	},
-	"mail": {
-		"enabled": false,
-		"name": "test",
-		"email": "test@example.com",
-		"type": "mail"
 	},
 	"log": {
 		"queries": false

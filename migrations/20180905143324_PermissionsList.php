@@ -53,6 +53,10 @@ class PermissionsList extends Migration {
                 'type' => NULL,
             ], [
                 'group' => 'admin',
+                'key' => 'preferences',
+                'type' => NULL,
+            ], [
+                'group' => 'admin',
                 'key' => 'server_group',
                 'type' => 'server',
             ], [
