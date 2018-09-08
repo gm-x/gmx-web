@@ -64,38 +64,38 @@ class PlayersForm extends BaseForm {
 	protected function createForm() {
 		$this->form
             ->add(new Text('nick', $this->player->nick, [
-                'title' => 'Nickname',
+                'title' => $this->getTranslate('admin_players', 'nickname'),
                 'required' => true,
             ]))
             ->add(new Text('steamid', $this->player->steamid, [
-                'title' => 'Steam ID',
+                'title' => $this->getTranslate('admin_players', 'steam_id'),
                 'required' => true,
             ]))
             ->add(new Text('ip', $this->player->ip, [
-                'title' => 'IP',
+                'title' => $this->getTranslate('admin_players', 'ip'),
                 'required' => true,
             ]))
             ->add(new Select('auth_type', $this->player->auth_type, [
-                Player::AUTH_TYPE_STEAM => 'Steam ID',
-                Player::AUTH_TYPE_STEAM_AND_PASS => 'Steam ID + pass',
-                Player::AUTH_TYPE_NICK_AND_PASS => 'Nick + pass',
-                Player::AUTH_TYPE_STEAM_AND_HASH => 'Steam ID + hash',
-                Player::AUTH_TYPE_NICK_AND_HASH => 'Nick + hash',
+                Player::AUTH_TYPE_STEAM => $this->getTranslate('admin_players', 'steam_id'),
+                Player::AUTH_TYPE_STEAM_AND_PASS => $this->getTranslate('admin_players', 'steam_id_pass'),
+                Player::AUTH_TYPE_NICK_AND_PASS => $this->getTranslate('admin_players', 'nickname_pass'),
+                Player::AUTH_TYPE_STEAM_AND_HASH => $this->getTranslate('admin_players', 'steam_id_hash'),
+                Player::AUTH_TYPE_NICK_AND_HASH => $this->getTranslate('admin_players', 'nickname_hash'),
             ], [
-                'title' => 'Auth Type',
+                'title' => $this->getTranslate('admin_players', 'auth_type'),
                 'required' => true,
-                'empty_option' => 'Choose auth type',
+                'empty_option' => $this->getTranslate('admin_players', 'choose_auth_type'),
             ]))
             ->add(new Password('password', '', [
-                'title' => 'Password',
+                'title' => $this->getTranslate('admin_players', 'password'),
                 'required' => false,
             ]))
             ->add(new Checkbox('access_reserve_nick', $this->player->hasAccess(Player::ACCESS_RESERVE_NICK), [
-                'title' => 'Reserve nickname',
+                'title' => $this->getTranslate('admin_players', 'reserve_nickname'),
                 'required' => false,
             ]))
             ->add(new Checkbox('access_block_change_nick', $this->player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK), [
-                'title' => 'Block change nick',
+                'title' => $this->getTranslate('admin_players', 'block_nickname'),
                 'required' => false,
             ]));
 		
@@ -104,14 +104,14 @@ class PlayersForm extends BaseForm {
             ->set('steamid', true, [
                 new SteamID()
             ])
-            ->set('steamid', true, [
+            ->set('ip', true, [
                 new IPv4()
             ])
             ->set('auth_type', true, [
                 new InArray(self::VALID_AUTH_TYPES)
             ])
             ->set('password', false, [
-                new Callback([$this, 'checkPassword'], 'Password must be provided')
+                new Callback([$this, 'checkPassword'], $this->getTranslate('admin_players', 'pass_error'))
             ])
             ->set('access_reserve_nick', false, [
                 new Boolean()
@@ -121,7 +121,7 @@ class PlayersForm extends BaseForm {
             ]);
         
         if (!$this->player->exists) {
-            $this->form->addRule('steamid', new Callback([$this, 'checkExists'], 'Player already exists'));
+            $this->form->addRule('steamid', new Callback([$this, 'checkExists'], $this->getTranslate('admin_players', 'player_exists')));
         }
 	}
     
