@@ -30,7 +30,7 @@ class Payment
      */
     public function setProvider($provider_id)
     {
-        $provider_class = 'GameX\\Billing\\Providers\\' . ucfirst((string) $provider_id) . 'Provider';
+        $provider_class = 'GameX\\Billing\\Providers\\' . ucfirst((string) $provider_id) . 'ProviderInterface';
         if (class_exists($provider_class) && ($provider = new $provider_class($this->app) instanceof PayInterface)) {
             $this->provider = $provider;
             return true;

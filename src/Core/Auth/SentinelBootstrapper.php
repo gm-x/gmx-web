@@ -27,7 +27,6 @@ use \GameX\Core\Auth\Http\Cookie as SentinelCookie;
 use \GameX\Core\Auth\Http\FakeCookie as SentinelFakeCookie;
 use \GameX\Core\Auth\Http\Session as SentinelSession;
 use \GameX\Core\Auth\Http\FakeSession as SentinelFakeSession;
-use \GameX\Core\Auth\Permissions\Manager;
 
 class SentinelBootstrapper {
     
@@ -40,11 +39,6 @@ class SentinelBootstrapper {
      * @var Session|null
      */
     protected $session;
-    
-    /**
-     * @var Manager
-     */
-    protected $manager;
 
     /**
      * Configuration.
@@ -65,12 +59,10 @@ class SentinelBootstrapper {
      *
      * @param Request $request
      * @param Session $session
-     * @param Manager $manager
      */
-    public function __construct(Request $request = null, Session $session = null, Manager $manager = null) {
+    public function __construct(Request $request = null, Session $session = null) {
         $this->request = $request;
         $this->session = $session;
-        $this->manager = $manager;
         $this->config = new ConfigRepository(__DIR__ . '/config.php');
     }
 
@@ -111,10 +103,6 @@ class SentinelBootstrapper {
         $sentinel->setReminderRepository($reminders);
 
         $sentinel->setThrottleRepository($throttle);
-        
-        if ($this->manager !== null) {
-            RoleModel::setManager($this->manager);
-        }
 
         return $sentinel;
     }

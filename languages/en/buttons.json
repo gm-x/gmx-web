@@ -11,5 +11,6 @@
 	"activate": "Activate",
 	"edit": "Edit",
 	"delete": "Delete",
-	"close": "Close"
+	"close": "Close",
+	"back": "Back"
 }

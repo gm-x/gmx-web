@@ -4,20 +4,42 @@ namespace GameX\Core\Auth;
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 use \Cartalyst\Sentinel\Sentinel;
+use \GameX\Core\Auth\Models\UserModel;
 
 class ViewExtension extends Twig_Extension {
+
+    const ACCESS_LIST = [
+        'list' => Permissions::ACCESS_LIST,
+        'view' => Permissions::ACCESS_VIEW,
+        'create' => Permissions::ACCESS_CREATE,
+        'edit' => Permissions::ACCESS_EDIT,
+        'delete' => Permissions::ACCESS_DELETE,
+    ];
 
 	/**
 	 * @var Sentinel
 	 */
 	protected $auth;
 
+    /**
+     * @var Permissions
+     */
+	protected $permissions;
+
+    /**
+     * @var UserModel
+     */
+	protected $user;
+
 	/**
 	 * ViewExtention constructor.
 	 * @param Sentinel $auth
+	 * @param Permissions $permissions
 	 */
-	public function __construct(Sentinel $auth) {
+	public function __construct(Sentinel $auth, Permissions $permissions) {
 		$this->auth = $auth;
+		$this->permissions = $permissions;
+		$this->user = $auth->getUser();
 	}
 
 	/**
@@ -26,8 +48,8 @@ class ViewExtension extends Twig_Extension {
     public function getFunctions() {
         return [
             new Twig_SimpleFunction(
-                'is_user',
-                [$this, 'isUser']
+                'is_guest',
+                [$this, 'isGuest']
             ),
             new Twig_SimpleFunction(
                 'get_user_name',
@@ -51,17 +73,16 @@ class ViewExtension extends Twig_Extension {
 	/**
 	 * @return bool
 	 */
-    public function isUser() {
-		return ($this->auth->check() !== false);
+    public function isGuest() {
+		return $this->auth->guest();
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getUserName() {
-    	$user = $this->auth->getUser();
-		return $user
-			? $user->getUserLogin()
+		return !$this->isGuest()
+			? $this->user->getUserLogin()
 			: '';
 	}
     
@@ -70,11 +91,7 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToGroup($group) {
-        /** @var \GameX\Core\Auth\Models\UserModel $user */
-        $user = $this->auth->getUser();
-        return $user
-            ? $user->hasAccessToGroup($group)
-            : false;
+        return $this->hasAccess('hasAccessToGroup', [$group]);
 	}
     
     /**
@@ -84,11 +101,7 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToPermission($group, $permission, $access = null) {
-        /** @var \GameX\Core\Auth\Models\UserModel $user */
-        $user = $this->auth->getUser();
-        return $user
-            ? $user->hasAccessToPermission($group, $permission, $access)
-            : false;
+        return $this->hasAccess('hasAccessToPermission', [$group, $permission, $this->getAccess($access)]);
     }
     
     /**
@@ -99,10 +112,52 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        /** @var \GameX\Core\Auth\Models\UserModel $user */
-        $user = $this->auth->getUser();
-        return $user
-            ? $user->hasAccessToResource($group, $permission, $resource, $access)
-            : false;
+        return $this->hasAccess('hasAccessToResource', [$group, $permission, $resource, $this->getAccess($access)]);
+    }
+
+    /**
+     * @param string $method
+     * @param array $args
+     * @return bool
+     */
+    protected function hasAccess($method, array $args) {
+        if ($this->isGuest()) {
+            return false;
+        }
+
+        if ($this->permissions->isRootUser($this->user)) {
+            return true;
+        }
+
+        if (!$this->user->role) {
+            return false;
+        }
+
+        return call_user_func_array([$this->permissions, $method], $args);
+    }
+
+    /**
+     * @param int|string|int[]|string[]|null $access
+     * @return int|null
+     */
+    protected function getAccess($access) {
+        if ($access === null) {
+            return null;
+        }
+
+        if (!is_array($access)) {
+            $access = [$access];
+        }
+
+        $result = 0;
+        foreach ($access as $val) {
+            if (!is_numeric($val)) {
+                $val = array_key_exists($val, self::ACCESS_LIST) ? self::ACCESS_LIST[$val] : 0;
+            }
+
+            $result |= $val;
+        }
+
+        return $result;
     }
 }

@@ -26,8 +26,6 @@ $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http
 $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) {
     try {
         return $next($request, $response);
-    } catch (GameX\Core\Configuration\Exceptions\ConfigNotFoundException $e) {
-        die(__FILE__);
     } catch (\GameX\Core\Exceptions\RedirectException $e) {
         return $response->withRedirect($e->getUrl(), $e->getStatus());
     }

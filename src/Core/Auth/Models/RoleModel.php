@@ -3,8 +3,6 @@ namespace GameX\Core\Auth\Models;
 
 use \Carbon\Carbon;
 use \Cartalyst\Sentinel\Roles\RoleInterface;
-use \GameX\Core\Auth\Interfaces\PermissionsInterface;
-use \GameX\Core\Auth\Permissions\Manager;
 use \GameX\Core\BaseModel;
 
 /**
@@ -13,28 +11,18 @@ use \GameX\Core\BaseModel;
  *
  * @property int $id
  * @property string $name
- * @property string $slug
  * @property Carbon $completed_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property UserModel[] $users
  * @property RolesPermissionsModel[] $permissions
  */
-class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface {
-    
-    /**
-     * @var Manager|null
-     */
-    protected static $manager = null;
-    
-    protected $cachedPermissions = null;
+class RoleModel extends BaseModel {
 
-	/**
-	 * The Eloquent users model name.
-	 *
-	 * @var string
-	 */
-	protected static $usersModel = UserModel::class;
+    /**
+     * @var array|null
+     */
+    protected $cachedPermissions = null;
 
 	/**
 	 * @var string
@@ -44,25 +32,12 @@ class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface
 	/**
 	 * @var array
 	 */
-	protected $fillable = [
-		'name',
-		'slug',
-		'permissions',
-	];
+	protected $fillable = ['name'];
     
     /**
-     * @param Manager $manager
+     * @var array
      */
-	public static function setManager(Manager $manager) {
-	    self::$manager = $manager;
-    }
-    
-    /**
-     * @return Manager|null
-     */
-    public static function getManager() {
-	    return self::$manager;
-    }
+    protected $dates = ['created_at', 'updated_at'];
 
 	/**
 	 * The Users relationship.
@@ -92,56 +67,8 @@ class RoleModel extends BaseModel implements RoleInterface, PermissionsInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getRoleSlug() {
-		return $this->slug;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getUsers() {
 		return $this->users;
-	}
-    
-    /**
-     * @inheritdoc
-     */
-    public function hasAccessToGroup($group) {
-        return self::$manager !== null
-            ? self::$manager->hasAccessToGroup($this, $group)
-            : false;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function hasAccessToPermission($group, $permission = null, $access = null) {
-        return self::$manager !== null
-            ? self::$manager->hasAccessToPermission($this, $group, $permission, $access)
-            : false;
-	}
-    
-    /**
-     * @inheritdoc
-     */
-    public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        return self::$manager !== null
-            ? self::$manager->hasAccessToResource($this, $group, $permission, $resource, $access)
-            : false;
-    }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function getUsersModel() {
-		return static::$usersModel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function setUsersModel($usersModel) {
-		static::$usersModel = $usersModel;
 	}
 
     /**

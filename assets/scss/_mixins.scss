@@ -1,41 +1,57 @@
-// Toggles
+// Mixins
+// --------------------------
+
+@mixin fa-icon {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+  vertical-align: -.125em;
+}
+
+@mixin fa-icon-rotate($degrees, $rotation) {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=#{$rotation})";
+  transform: rotate($degrees);
+}
+
+@mixin fa-icon-flip($horiz, $vert, $rotation) {
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=#{$rotation}, mirror=1)";
+  transform: scale($horiz, $vert);
+}
+
+
+// Only display content to screen readers. A la Bootstrap 4.
 //
-// Used in conjunction with global variables to enable certain theme features.
+// See: http://a11yproject.com/posts/how-to-hide-content/
 
-// Utilities
-@import "mixins/breakpoints";
-@import "mixins/hover";
-@import "mixins/image";
-@import "mixins/badge";
-@import "mixins/resize";
-@import "mixins/screen-reader";
-@import "mixins/size";
-@import "mixins/reset-text";
-@import "mixins/text-emphasis";
-@import "mixins/text-hide";
-@import "mixins/text-truncate";
-@import "mixins/visibility";
+@mixin sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
 
-// // Components
-@import "mixins/alert";
-@import "mixins/buttons";
-@import "mixins/caret";
-@import "mixins/pagination";
-@import "mixins/lists";
-@import "mixins/list-group";
-@import "mixins/nav-divider";
-@import "mixins/forms";
-@import "mixins/table-row";
+// Use in conjunction with .sr-only to only display content when it's focused.
+//
+// Useful for "Skip to main content" links; see http://www.w3.org/TR/2013/NOTE-WCAG20-TECHS-20130905/G1
+//
+// Credit: HTML5 Boilerplate
 
-// // Skins
-@import "mixins/background-variant";
-@import "mixins/border-radius";
-@import "mixins/box-shadow";
-@import "mixins/gradients";
-@import "mixins/transition";
-
-// // Layout
-@import "mixins/clearfix";
-@import "mixins/grid-framework";
-@import "mixins/grid";
-@import "mixins/float";
+@mixin sr-only-focusable {
+  &:active,
+  &:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+  }
+}

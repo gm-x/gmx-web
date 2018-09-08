@@ -2,30 +2,33 @@
 use \GameX\Core\BaseController;
 use \GameX\Controllers\Admin\PlayersController;
 use \GameX\Controllers\Admin\PrivilegesController;
-use \GameX\Core\Auth\Permissions\Manager;
-use \GameX\Core\Auth\Middlewares\HasAccessToPermission;
+use \GameX\Core\Auth\Permissions;
 
 return function () {
     /** @var \Slim\App $this */
+
+    /** @var Permissions $permissions */
+    $permissions = $this->getContainer()->get('permissions');
+
     $this
         ->get('', BaseController::action(PlayersController::class, 'index'))
         ->setName('admin_players_list')
-        ->add(new HasAccessToPermission('admin', 'player', Manager::ACCESS_LIST));
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_LIST));
 
 	$this
 		->map(['GET', 'POST'], '/create', BaseController::action(PlayersController::class, 'create'))
 		->setName('admin_players_create')
-        ->add(new HasAccessToPermission('admin', 'player', Manager::ACCESS_CREATE));
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_CREATE));
 
     $this
         ->map(['GET', 'POST'], '/{player}/edit', BaseController::action(PlayersController::class, 'edit'))
         ->setName('admin_players_edit')
-        ->add(new HasAccessToPermission('admin', 'player', Manager::ACCESS_EDIT));
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_EDIT));
 
 	$this
 		->post('/{player}/delete', BaseController::action(PlayersController::class, 'delete'))
 		->setName('admin_players_delete')
-        ->add(new HasAccessToPermission('admin', 'player', Manager::ACCESS_DELETE));
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_DELETE));
 
 	// TODO: Check permissions
     $this->group('/{player}/privileges', function () {

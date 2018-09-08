@@ -1,18 +1,20 @@
 <?php
 use \GameX\Core\BaseController;
-use \GameX\Core\Auth\Permissions\Manager;
-use \GameX\Core\Auth\Middlewares\HasAccessToPermission;
-use \GameX\Core\Auth\Middlewares\HasAccessToResource;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Controllers\Admin\ServersController;
 use \GameX\Controllers\Admin\GroupsController;
 use \GameX\Controllers\Admin\ReasonsController;
 
 return function () {
     /** @var \Slim\App $this */
+
+    /** @var Permissions $permissions */
+    $permissions = $this->getContainer()->get('permissions');
+
     $this
         ->get('', BaseController::action(ServersController::class, 'index'))
         ->setName('admin_servers_list')
-        ->add(new HasAccessToPermission('admin', 'server', Manager::ACCESS_LIST));
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_LIST));
     
     $this
         ->get('/token', BaseController::action(ServersController::class, 'token'))
@@ -20,63 +22,76 @@ return function () {
         ->setArgument('permission', 'admin.servers'); // TODO: need another permission
 
     $this
+        ->get('/{server}/view', BaseController::action(ServersController::class, 'view'))
+        ->setName('admin_servers_view')
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_VIEW));
+
+    $this
         ->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))
         ->setName('admin_servers_create')
-        ->add(new HasAccessToPermission('admin', 'server', Manager::ACCESS_CREATE));
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_CREATE));
 
     $this
         ->map(['GET', 'POST'], '/{server}/edit', BaseController::action(ServersController::class, 'edit'))
         ->setName('admin_servers_edit')
-        ->add(new HasAccessToPermission('admin', 'server', Manager::ACCESS_EDIT));
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_EDIT));
 
     $this
         ->post('/{server}/delete', BaseController::action(ServersController::class, 'delete'))
         ->setName('admin_servers_delete')
-        ->add(new HasAccessToPermission('admin', 'server', Manager::ACCESS_DELETE));
+        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_DELETE));
 
     $this->group('/{server}/groups', function () {
         /** @var \Slim\App $this */
+
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer()->get('permissions');
+
         $this
             ->get('', BaseController::action(GroupsController::class, 'index'))
             ->setName('admin_servers_groups_list')
-            ->add(new HasAccessToResource('server', 'admin', 'server_group', Manager::ACCESS_LIST));
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_group', Permissions::ACCESS_LIST));
 
         $this
             ->map(['GET', 'POST'], '/create', BaseController::action(GroupsController::class, 'create'))
             ->setName('admin_servers_groups_create')
-            ->add(new HasAccessToResource('server', 'admin', 'server_group', Manager::ACCESS_CREATE));
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_group', Permissions::ACCESS_CREATE));
 
         $this
             ->map(['GET', 'POST'], '/{group}/edit', BaseController::action(GroupsController::class, 'edit'))
             ->setName('admin_servers_groups_edit')
-            ->add(new HasAccessToResource('server', 'admin', 'server_group', Manager::ACCESS_EDIT));
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_group', Permissions::ACCESS_EDIT));
 
         $this
             ->post('/{group}/delete', BaseController::action(GroupsController::class, 'delete'))
             ->setName('admin_servers_groups_delete')
-            ->add(new HasAccessToResource('server', 'admin', 'server_group', Manager::ACCESS_DELETE));
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_group', Permissions::ACCESS_DELETE));
     });
     
     $this->group('/{server}/reasons', function () {
         /** @var \Slim\App $this */
+
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer()->get('permissions');
+
         $this
             ->get('', BaseController::action(ReasonsController::class, 'index'))
             ->setName('admin_servers_reasons_list')
-            ->add(new HasAccessToResource('server', 'admin', 'server_reason', Manager::ACCESS_LIST));
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_reason', Permissions::ACCESS_LIST));
         
         $this
             ->map(['GET', 'POST'], '/create', BaseController::action(ReasonsController::class, 'create'))
             ->setName('admin_servers_reasons_create')
-            ->add(new HasAccessToResource('server', 'admin', 'server_reason', Manager::ACCESS_CREATE));
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_reason', Permissions::ACCESS_CREATE));
         
         $this
             ->map(['GET', 'POST'], '/{reason}/edit', BaseController::action(ReasonsController::class, 'edit'))
             ->setName('admin_servers_reasons_edit')
-            ->add(new HasAccessToResource('server', 'admin', 'server_reason', Manager::ACCESS_EDIT));
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_reason', Permissions::ACCESS_EDIT));
         
         $this
             ->post('/{reason}/delete', BaseController::action(ReasonsController::class, 'delete'))
             ->setName('admin_servers_reasons_delete')
-            ->add(new HasAccessToResource('server', 'admin', 'server_reason', Manager::ACCESS_DELETE));
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_reason', Permissions::ACCESS_DELETE));
     });
 };

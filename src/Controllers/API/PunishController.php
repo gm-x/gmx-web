@@ -74,7 +74,7 @@ class PunishController extends BaseApiController {
             'status' => Punishment::STATUS_PUNISHED
         ]);
         $punishment->save();
-        return $response->withJson([
+        return $response->withStatus(200)->withJson([
             'success' => true,
             'punishment' => $punishment,
         ]);
@@ -140,7 +140,7 @@ class PunishController extends BaseApiController {
         ]);
         $punishment->save();
         
-        return $response->withJson([
+        return $response->withStatus(200)->withJson([
             'success' => true,
             'player' => $player,
             'punishment' => $punishment,

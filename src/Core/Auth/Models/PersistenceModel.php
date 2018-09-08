@@ -10,6 +10,11 @@ class PersistenceModel extends BaseModel implements PersistenceInterface {
 	 * @var string
 	 */
 	protected $table = 'persistences';
+    
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

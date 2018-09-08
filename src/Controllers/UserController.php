@@ -6,15 +6,13 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
-use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Forms\User\LoginForm;
 use \GameX\Forms\User\RegisterForm;
 use \GameX\Forms\User\ActivationForm;
 use \GameX\Forms\User\ResetPasswordForm;
 use \GameX\Forms\User\ResetPasswordCompleteForm;
 use \GameX\Core\Exceptions\NotAllowedException;
-use \GameX\Core\Exceptions\FormException;
-use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Exceptions\RedirectException;
 
 class UserController extends BaseMainController {
     
@@ -34,15 +32,18 @@ class UserController extends BaseMainController {
      * Init UserController
      */
 	public function init() {
-        $this->mailEnabled = (bool) $this->getConfig('mail')->get('enabled', false);
+	    /** @var \GameX\Core\Configuration\Config $preferences */
+	    $preferences = $this->getContainer('preferences');
+        $this->mailEnabled = (bool) $preferences->getNode('mail')->get('enabled', false);
     }
-    
+
     /**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws RedirectException
+     */
     public function registerAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
 		$authHelper = new AuthHelper($this->container);
 		$form = new RegisterForm($authHelper, !$this->mailEnabled);
@@ -68,13 +69,14 @@ class UserController extends BaseMainController {
         ]);
     }
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 * @throws NotAllowedException
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotAllowedException
+     * @throws RedirectException
+     */
     public function activateAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
 		if (!$this->mailEnabled) {
 			throw new NotAllowedException();
@@ -91,12 +93,13 @@ class UserController extends BaseMainController {
 		]);
     }
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws RedirectException
+     */
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         $form = new LoginForm(new AuthHelper($this->container));
         if ($this->processForm($request, $form, true)) {
@@ -121,13 +124,14 @@ class UserController extends BaseMainController {
     	return $this->redirect('index');
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 * @throws NotAllowedException
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotAllowedException
+     * @throws RedirectException
+     */
 	public function resetPasswordAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         if (!$this->mailEnabled) {
             throw new NotAllowedException();
@@ -159,6 +163,7 @@ class UserController extends BaseMainController {
 	 * @param array $args
 	 * @return ResponseInterface
 	 * @throws NotAllowedException
+	 * @throws RedirectException
 	 */
 	public function resetPasswordCompleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         if (!$this->mailEnabled) {

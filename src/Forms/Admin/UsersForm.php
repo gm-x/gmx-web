@@ -39,9 +39,8 @@ class UsersForm extends BaseForm {
 	protected function createForm() {
 	    $roles = $this->roleHelper->getRolesAsArray();
 		$this->form
-            ->add(new Select('role', $this->user->role ? $this->user->role->slug : '', $roles, [
+            ->add(new Select('role', $this->user->role ? $this->user->role->id : '', $roles, [
                 'title' => 'Role',
-                'error' => 'Required',
                 'required' => true,
                 'empty_option' => 'Choose role'
             ]));

@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     BASE_DIR . 'runtime' . DS . 'logs',
                     BASE_DIR . 'runtime' . DS . 'twig_cache',
                 ]);
+
+                clearTwigCache();
                 json(true);
             } catch (Exception $e) {
                 logException($e);
@@ -49,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				checkDbConnection($_POST['db']);
 
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
-				$config = new GameX\Core\Configuration\Config();
+                $provider = new \GameX\Core\Configuration\Providers\JsonProvider();
+				$config = new \GameX\Core\Configuration\Config($provider);
 				$db = $config->getNode('db');
 				$db->set('host', $_POST['db']['host']);
 				$db->set('port', (int) $_POST['db']['port']);
@@ -58,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$db->set('database', $_POST['db']['name']);
 				$db->set('prefix', $_POST['db']['prefix']);
 
-				$config->setPath(BASE_DIR . 'config.json');
+                $provider->setPath(BASE_DIR . 'config.json');
 				$config->save();
                 json(true);
 			} catch (Exception $e) {
@@ -71,18 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			try {
 				$container = getContainer(true);
 				runMigrations($container);
-                json(true);
-			} catch (Exception $e) {
-                logException($e);
-                json(false, $e->getMessage());
-			}
-		}
-
-		case 'permissions': {
-			try {
-				$container = getContainer(false);
-				$container['db'];
-				insertPermissions();
                 json(true);
 			} catch (Exception $e) {
                 logException($e);
@@ -112,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			try {
                 $container = getContainer(false);
 				\GameX\Models\Task::truncate();
-				\GameX\Core\Jobs\JobHelper::createTask('monitoring');
 				\GameX\Core\Jobs\JobHelper::createTask('punishments');
 
 				cronjobAppend('* * * * * php -f ' . BASE_DIR . 'cron.php');

@@ -125,7 +125,10 @@ function getContainer($phpmig = false) {
     if ($phpmig) {
         require BASE_DIR . 'phpmig.php';
     } else {
-        require BASE_DIR . 'src' . DS . 'dependencies.php';
+        $container->register(new \GameX\Core\DependencyProvider());
+        \GameX\Core\BaseModel::setContainer($container);
+        \GameX\Core\BaseForm::setContainer($container);
+        date_default_timezone_set('UTC');
     }
 
 	return $container;
@@ -177,10 +180,13 @@ function cronjobAppend($command){
     return false;
 }
 
-function insertPermissions() {
-    $permissions = json_decode(file_get_contents(__DIR__ . DS . 'permissions.json'), true);
-    foreach ($permissions as $permission) {
-        $p = new \GameX\Core\Auth\Models\PermissionsModel($permission);
-        $p->save();
+function clearTwigCache() {
+    foreach (new \RecursiveIteratorIterator(
+                 new \RecursiveDirectoryIterator(BASE_DIR . 'runtime' . DS . 'twig_cache'),
+                 \RecursiveIteratorIterator::LEAVES_ONLY) as $file
+    ) {
+        if ($file->isFile()) {
+            @unlink($file->getPathname());
+        }
     }
 }

@@ -1,6 +1,8 @@
 {% macro mainbar(menu) %}
     <nav class="uk-navbar-container uk-visible@m" uk-navbar>
-        <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}"><img src="{{ base_url() }}/assets/images/gxlogo-xs.png"></a>
+        <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}">
+            <img src="{{ base_url() }}/assets/images/logo.svg" width="100">
+        </a>
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
                 {% for item in menu %}
@@ -28,10 +30,10 @@
 
         </div>
         <div class="nav-overlay uk-navbar-right">
-            <a class="uk-navbar-toggle" uk-search-icon uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#"></a>
+            <a class="uk-navbar-toggle" uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#"><i class="fas fa-search"></i></a>
             <ul class="uk-navbar-nav">
                 <li>
-                    <a href="#">{{ userLangName }}</a>
+                    <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
                     <div class="uk-navbar-dropdown">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             {% for key,value in siteLanguages %}
@@ -41,21 +43,21 @@
                     </div>
                 </li>
                 <li>
-                    <a href="#" uk-icon="grid"></a>
+                    <a href="#"><i class="fas fa-user-circle"></i></a>
                     <div class="uk-navbar-dropdown">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
-                            {% if not is_user() %}
+                            {% if is_guest() %}
                                 <li><a class="dropdown-item" href="{{ path_for('login') }}">
                                         {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
                                     </a></li>
                             {% else %}
                                 <li class="uk-nav-header">{{ get_user_name() }}</li>
                                 {#{% if has_access(item.permission) %}#}
-                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin</a></li>
+                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> Admin</a></li>
                                 {#{% endif %}#}
-                                <li><a class="dropdown-item" href="{{ path_for('user_settings_index') }}"><span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a></li>
+                                <li><a class="dropdown-item" href="{{ path_for('user_settings_index') }}"><i class="fas fa-user uk-margin-small-right"></i> Settings</a></li>
                                 <li class="uk-nav-divider"></li>
-                                <li><a class="dropdown-item" href="{{ path_for('logout') }}"><span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('buttons', 'logout') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ path_for('logout') }}"><i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('buttons', 'logout') }}</a></li>
                             {% endif %}
                         </ul>
                     </div>
@@ -64,7 +66,9 @@
         </div>
     </nav>
     <nav class="uk-navbar-container uk-hidden@m" uk-navbar>
-        <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}"><img src="{{ base_url() }}/assets/images/gxlogo-xs.png"></a>
+        <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}">
+            <img src="{{ base_url() }}/assets/images/logo.svg" width="80">
+        </a>
         <div class="uk-navbar-left">
             <a class="uk-navbar-toggle" uk-navbar-toggle-icon href="#" uk-toggle="target: #offcanvas-nav"></a>
         </div>
@@ -92,7 +96,7 @@
         <div id="offcanvas-nav2" uk-offcanvas="overlay: true">
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
-                    {% if not is_user() %}
+                    {% if is_guest() %}
                         <li><a class="dropdown-item" href="{{ path_for('login') }}">
                                 {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
                             </a></li>
