@@ -2,14 +2,15 @@
 namespace GameX\Forms\Settings;
 
 use \GameX\Core\BaseForm;
+use \GameX\Core\Upload\Upload;
 use \GameX\Core\Auth\Models\UserModel;
-use \Slim\Http\UploadedFile;
 use \GameX\Core\Forms\Validator;
 use \GameX\Core\Forms\Elements\File as FileElement;
 use \GameX\Core\Forms\Rules\File as FileRule;
 use \GameX\Core\Forms\Rules\FileExtension;
 use \GameX\Core\Forms\Rules\Image;
 use \GameX\Core\Exceptions\FormException;
+use \GameX\Models\Upload as UploadModel;
 
 class AvatarForm extends BaseForm {
 
@@ -24,17 +25,17 @@ class AvatarForm extends BaseForm {
 	protected $user;
 
 	/**
-	 * @var string
+	 * @var Upload
 	 */
-	protected $root;
+	protected $upload;
 
 	/**
 	 * @param UserModel $user
-	 * @param string $root
+	 * @param Upload $upload
 	 */
-	public function __construct(UserModel $user, $root) {
+	public function __construct(UserModel $user, Upload $upload) {
 		$this->user = $user;
-		$this->root = $root;
+		$this->upload = $upload;
 	}
 
 	/**
@@ -64,15 +65,22 @@ class AvatarForm extends BaseForm {
 	 */
 	protected function processForm() {
 		$element = $this->form->get('avatar');
-		/** @var UploadedFile $file */
-		$file = $element->getValue();
-		$path = $this->root . 'avatar_' . $this->user->id . '.' . $element->getExtension();
-	    $file->moveTo($path);
+		$model = $this->upload->upload($this->user, $element->getValue());
+	    $this->user->avatar = $model->id;
+	    $this->user->save();
 		return true;
 	}
 	
 	protected function getPath() {
-	    // TODO: need to make refactoring
-        return '/upload/avatar_' . $this->user->id . '.jpg';
+	    if (!$this->user->avatar) {
+	        return '';
+        }
+        
+        $upload = UploadModel::find($this->user->avatar);
+	    if (!$upload) {
+	        return '';
+        }
+        
+        return '/upload/' . $upload->path;
     }
 }

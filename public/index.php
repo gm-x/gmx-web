@@ -17,7 +17,7 @@ $container = new \Slim\Container([
 		'determineRouteBeforeAppMiddleware' => true,
 		'displayErrorDetails' => true,
 	],
-	'root' => __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+	'root' => dirname(__DIR__) . DIRECTORY_SEPARATOR,
 ]);
 
 $errorHandler = function (\Slim\Container $container) {

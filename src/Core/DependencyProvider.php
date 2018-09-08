@@ -45,6 +45,8 @@ use \GameX\Core\Mail\Helpers\MailHelper;
 
 use \GameX\Core\CSRF\Token;
 
+use \GameX\Core\Upload\Upload;
+
 class DependencyProvider  implements ServiceProviderInterface {
 
     /**
@@ -101,6 +103,10 @@ class DependencyProvider  implements ServiceProviderInterface {
 
         $container['flash'] = function (ContainerInterface $container) {
             return $this->getFlashMessages($container);
+        };
+
+        $container['upload'] = function (ContainerInterface $container) {
+            return $this->getUpload($container);
         };
 
         $container['modules'] = function (ContainerInterface $container) {
@@ -295,5 +301,9 @@ class DependencyProvider  implements ServiceProviderInterface {
      */
     public function getFlashMessages(ContainerInterface $container) {
         return new FlashMessages($container->get('session'), 'flash_messages');
+    }
+    
+    public function getUpload(ContainerInterface $container) {
+        return new Upload($container->get('root') . 'upload');
     }
 }

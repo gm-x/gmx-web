@@ -74,7 +74,7 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function avatarAction(Request $request, ResponseInterface $response, array $args) {
-        $form = new AvatarForm($this->getUser(), $this->getContainer('root') . 'upload' . DIRECTORY_SEPARATOR);
+        $form = new AvatarForm($this->getUser(), $this->getContainer('upload'));
         if ($this->processForm($request, $form, true)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect('user_settings_avatar');
