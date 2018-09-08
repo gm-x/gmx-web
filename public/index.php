@@ -6,18 +6,18 @@ function redirectToInstall() {
     die();
 }
 
-if (!is_file(__DIR__ . '/vendor/autoload.php')) {
+if (!is_file(__DIR__ . '/../vendor/autoload.php')) {
     redirectToInstall();
 }
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $container = new \Slim\Container([
 	'settings' => [
 		'determineRouteBeforeAppMiddleware' => true,
 		'displayErrorDetails' => true,
 	],
-	'root' => __DIR__ . DIRECTORY_SEPARATOR
+	'root' => __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
 ]);
 
 $errorHandler = function (\Slim\Container $container) {
@@ -66,8 +66,8 @@ date_default_timezone_set('UTC');
 
 $app = new \Slim\App($container);
 
-include __DIR__ . '/src/middlewares.php';
-include __DIR__ . '/src/routes/index.php';
+include __DIR__ . '/../src/middlewares.php';
+include __DIR__ . '/../src/routes/index.php';
 
 //set_error_handler(function ($errno, $error, $file, $line) use ($container) {
 //    $container->get('log')->error("#$errno: $error in $file:$line");
