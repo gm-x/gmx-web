@@ -116,6 +116,20 @@ a:hover, .uk-link:hover {
     text-decoration: none;
 }
 
+.uk-notification-message {
+    background: rgba(2, 2, 2, 0.7);
+    color: #e2e2e2;
+    border-radius: 10px;
+}
+
+.uk-notification-message-danger {
+    color: #bb4545;
+}
+
+.uk-notification-message-success {
+    color: #2d9460;
+}
+
 .uk-navbar-nav > li.uk-active > a {
     color: #f5ebb8;
     position: relative;

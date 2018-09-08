@@ -1,9 +1,7 @@
 <?php
 function redirectToInstall() {
-    $url = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-    $url = str_replace('\\', '/', $url);
-    $baseUrl =  rtrim(dirname($url), '/');
-    
+    $path = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+    $baseUrl = $path;
     header('Location: ' . $baseUrl . '/install',true,302);
     die();
 }
