@@ -3,6 +3,7 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
 		{{ forms.element_select(form.server) }}
@@ -12,15 +13,16 @@
 		{{ forms.element_checkbox(form.active) }}
         <div class="form-group">
 			{% if create %}
-                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
 			{% else %}
-                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
 			{% endif %}
-            <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="btn btn-secondary hvr-grow">
+            <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="uk-button uk-button-secondary">
                 {{ trans('buttons', 'cancel') }}
             </a>
         </div>
     </form>
+</div>
 {% endblock %}
 
 {% block javascript %}

@@ -38,7 +38,7 @@
 {% endmacro %}
 
 {% macro element_datetime(element, format) %}
-    {% set classes = ['form-control'] %}
+    {% set classes = ['uk-input'] %}
     {% if element.getHasError() %}
         {% set classes = classes|merge(['is-invalid']) %}
     {% endif %}
