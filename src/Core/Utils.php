@@ -1,22 +1,7 @@
 <?php
 namespace GameX\Core;
 
-use \Psr\Container\ContainerInterface;
-
 class Utils {
-
-    /**
-     * @var ContainerInterface
-     */
-    protected static $container;
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public static function setContainer(ContainerInterface $container) {
-        self::$container = $container;
-    }
-
     public static function logBacktrace() {
         $backtrace = array_slice(
             debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),
@@ -37,9 +22,7 @@ class Utils {
 
             $lines[] = $line;
         }
-        /** @var \GameX\Core\Log\Logger $logger */
-        $logger = self::$container->get('log');
-        $logger->debug(implode(PHP_EOL, $lines));
+        return $lines;
     }
     
     /**
@@ -47,6 +30,6 @@ class Utils {
      * @return string
      */
     public static function generateToken($length = 32) {
-        return bin2hex(random_bytes(32));
+        return bin2hex(random_bytes($length));
     }
 }

@@ -2,6 +2,7 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
+use GameX\Core\Forms\Rules\IPv4;
 use \GameX\Models\Player;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
@@ -62,13 +63,16 @@ class PlayersForm extends BaseForm {
 	 */
 	protected function createForm() {
 		$this->form
+            ->add(new Text('nick', $this->player->nick, [
+                'title' => 'Nickname',
+                'required' => true,
+            ]))
             ->add(new Text('steamid', $this->player->steamid, [
                 'title' => 'Steam ID',
                 'required' => true,
             ]))
-            ->add(new Text('nick', $this->player->nick, [
-                'title' => 'Nickname',
-                'error' => 'Required',
+            ->add(new Text('ip', $this->player->ip, [
+                'title' => 'IP',
                 'required' => true,
             ]))
             ->add(new Select('auth_type', $this->player->auth_type, [
@@ -79,7 +83,6 @@ class PlayersForm extends BaseForm {
                 Player::AUTH_TYPE_NICK_AND_HASH => 'Nick + hash',
             ], [
                 'title' => 'Auth Type',
-                'error' => 'Required',
                 'required' => true,
                 'empty_option' => 'Choose auth type',
             ]))
@@ -97,8 +100,12 @@ class PlayersForm extends BaseForm {
             ]));
 		
 		$this->form->getValidator()
+            ->set('nick', true)
             ->set('steamid', true, [
                 new SteamID()
+            ])
+            ->set('steamid', true, [
+                new IPv4()
             ])
             ->set('auth_type', true, [
                 new InArray(self::VALID_AUTH_TYPES)
@@ -124,6 +131,7 @@ class PlayersForm extends BaseForm {
     protected function processForm() {
         $this->player->steamid = $this->form->getValue('steamid');
         $this->player->nick = $this->form->getValue('nick');
+        $this->player->ip = $this->form->getValue('ip');
         $authType = $this->form->getValue('auth_type');
         $this->player->auth_type = $authType;
         if ($authType == Player::AUTH_TYPE_STEAM_AND_PASS || $authType == Player::AUTH_TYPE_NICK_AND_PASS) {

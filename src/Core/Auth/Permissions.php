@@ -154,7 +154,7 @@ class Permissions {
     public function isAuthorizedMiddleware() {
         if ($this->isAuthorizedCallable === null) {
             $self = $this;
-            $this->isAuthorizedCallable = function (Request $request, Response $response, callable $next) use ($self, $handler) {
+            $this->isAuthorizedCallable = function (Request $request, Response $response, callable $next) use ($self) {
                 /** @var UserModel|null $user */
                 $user = $request->getAttribute('user');
                 if (!$user) {
@@ -173,8 +173,7 @@ class Permissions {
      * @return \Closure
      */
     public function hasAccessToGroupMiddleware($group) {
-        $self = $this;
-        return $this->getMiddleware(function (RoleModel $role, array $args) use ($self, $group) {
+        return $this->getMiddleware(function (RoleModel $role, array $args) use ($group) {
             return $this->hasAccessToGroup($role, $group);
         });
     }
@@ -186,7 +185,7 @@ class Permissions {
      * @return \Closure
      */
     public function hasAccessToPermissionMiddleware($group, $permission, $access = null) {
-        return $this->getMiddleware(function (RoleModel $role, array $args) use ($self, $group, $permission, $access) {
+        return $this->getMiddleware(function (RoleModel $role, array $args) use ($group, $permission, $access) {
             return $this->hasAccessToPermission($role, $group, $permission, $access);
         });
     }
@@ -199,8 +198,7 @@ class Permissions {
      * @return \Closure
      */
     public function hasAccessToResourceMiddleware($key, $group, $permission, $access = null) {
-        $self = $this;
-        return $this->getMiddleware(function (RoleModel $role, array $args) use ($self, $key, $group, $permission, $access) {
+        return $this->getMiddleware(function (RoleModel $role, array $args) use ($key, $group, $permission, $access) {
             return array_key_exists($key, $args)
                 ? $this->hasAccessToResource($role, $group, $permission, $args[$key], $access)
                 : false;
