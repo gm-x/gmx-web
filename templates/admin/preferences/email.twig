@@ -3,78 +3,71 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
 	{% include 'admin/preferences/tabs.twig' with {'href': currentHref} %}
-	<form action="{{ form.getAction() }}" method="post" id="mailConfigForm">
+	<form action="{{ form.getAction() }}" method="post">
 		{{ csrf_token() }}
 		{{ forms.element_checkbox(form.enabled) }}
-		{{ forms.element_input(form.from_name) }}
-		{{ forms.element_input(form.from_email) }}
+		{{ forms.element_input(form.from_name, {"label": true}) }}
+		{{ forms.element_input(form.from_email, {"label": true}) }}
 		{{ forms.element_select(form.transport_type) }}
 		<div id="email_pref_smtp" class="{{ form.transport_type.getValue() != "smtp" ? 'd-none' : ''}}">
-			<fieldset>
+			<fieldset class="uk-width-1-1@m">
 				<legend>SMTP</legend>
-                {{ forms.element_input(form.smtp_host) }}
-                {{ forms.element_input(form.smtp_port) }}
+                {{ forms.element_input(form.smtp_host, {"label": true}) }}
+                {{ forms.element_input(form.smtp_port, {"label": true}) }}
                 {{ forms.element_select(form.smtp_secure) }}
-                {{ forms.element_input(form.smtp_user) }}
-                {{ forms.element_input(form.smtp_pass) }}
+                {{ forms.element_input(form.smtp_user, {"label": true}) }}
+                {{ forms.element_input(form.smtp_pass, {"label": true}) }}
 			</fieldset>
 		</div>
 		<div class="form-group">
-			<input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
-			<a href="#" class="btn btn-warning hvr-grow" id="testMail">{{ trans('admin_preferences', 'test_mail') }}</a>
+			<input type="submit" class="uk-button uk-button-primary hvr-grow" value="{{ trans('buttons', 'save') }}">
+			<a href="#" class="uk-button uk-button-warning hvr-grow" id="testMail">{{ trans('admin_preferences', 'test_mail') }}</a>
 		</div>
 	</form>
-{% endblock %}
-
-{% block modals %}
-	{{ parent() }}
-	<div
-		class="modal fade"
-		id="testMailModal"
-		tabindex="-1"
-		role="dialog"
-		aria-labelledby="testMailModalLabel"
-		aria-hidden="true"
-	>
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="testMailModalLabel"></h5>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">
-						{{ trans('buttons', 'close') }}
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+</div>
 {% endblock %}
 
 {% block javascript %}
 	{{ parent() }}
 	<script>
-		$(document).ready(function () {
-			$('#testMail').on('click', function (e) {
-				e.stopPropagation();
-				e.preventDefault();
-
-				$.post('{{ path_for('admin_preferences_email_test') }}', $('#mailConfigForm').serialize())
-					.done(function (data) {
-						if (data.success) {
-							$('#testMailModalLabel').text('Success');
-							$('#testMailModal').modal('show');
-						} else {
-							$('#testMailModalLabel').text('Fail: ' + data.message || 'Unknown');
-							$('#testMailModal').modal('show');
-						}
-					})
-					.catch(function () {
-						$('#testMailModalLabel').text('Fail: Server Error');
-						$('#testMailModal').modal('show');
-					});
-			});
+        $(document).ready(function () {
+            UIkit.util.on('#testMail', 'click', function (e) {
+                e.preventDefault();
+                e.target.blur();
+                UIkit.notification({
+                    message: 'Testing...',
+                    pos: 'bottom-right',
+                    timeout: 5000
+                });
+                $.post('{{ path_for('admin_preferences_email_test') }}', $('#mailConfigForm').serialize())
+                    .done(function (data) {
+                        if (data.success) {
+                            UIkit.notification({
+                                message: 'Success!',
+                                status: 'success',
+                                pos: 'bottom-right',
+                                timeout: 8000
+                            });
+                        } else {
+                            UIkit.notification({
+                                message: 'Fail: ' + data.message || 'Unknown',
+                                status: 'danger',
+                                pos: 'bottom-right',
+                                timeout: 8000
+                            });
+                        }
+                    })
+                    .catch(function () {
+                        UIkit.notification({
+                            message: 'Fail: Server Error',
+                            status: 'danger',
+                            pos: 'bottom-right',
+                            timeout: 8000
+                        });
+                    });
+            });
 
 			$('#email_pref_transport').on('change', function () {
 				if ($(this).val() === 'smtp') {

@@ -3,21 +3,24 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
-		{{ forms.element_input(form.steamid) }}
-		{{ forms.element_input(form.nick) }}
+        {{ forms.element_input(form.nick, {"label": true}) }}
+        {{ forms.element_input(form.steamid, {"label": true}) }}
+        {{ forms.element_input(form.ip, {"label": true}) }}
 		{{ forms.element_select(form.auth_type) }}
-		{{ forms.element_input(form.password) }}
+		{{ forms.element_input(form.password, {"label": true}) }}
 		{{ forms.element_checkbox(form.access_reserve_nick) }}
 		{{ forms.element_checkbox(form.access_block_change_nick) }}
         <div class="form-group">
 			{% if create %}
-                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
 			{% else %}
-                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
 			{% endif %}
-            <a href="{{ path_for('admin_players_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
+            <a href="{{ path_for('admin_players_list') }}" class="uk-button uk-button-secondary">{{ trans('buttons', 'cancel') }}</a>
         </div>
     </form>
+</div>
 {% endblock %}

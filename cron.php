@@ -3,13 +3,18 @@ require __DIR__ . '/vendor/autoload.php';
 $container = new \Slim\Container([
     'root' => __DIR__ . DIRECTORY_SEPARATOR
 ]);
-include __DIR__ . '/src/dependencies.php';
+
+$container->register(new \GameX\Core\DependencyProvider());
+
+\GameX\Core\BaseModel::setContainer($container);
+\GameX\Core\BaseForm::setContainer($container);
+date_default_timezone_set('UTC');
 
 use \GameX\Core\BaseCronController;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Models\Task;
 
-/** @var \Monolog\Logger $logger */
+/** @var \GameX\Core\Log\Logger $logger */
 $logger = $container->get('log');
 
 set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
@@ -17,11 +22,11 @@ set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
 }, E_ALL);
 
 BaseCronController::registerKey('sendmail', \GameX\Controllers\Cron\SendMailController::class);
-BaseCronController::registerKey('monitoring', \GameX\Controllers\Cron\MonitoringlController::class);
 BaseCronController::registerKey('punishments', \GameX\Controllers\Cron\PunishmentsController::class);
 
 $task = null;
 try {
+//    return (php_sapi_name() === 'cli');
     $task = JobHelper::getTask();
     if ($task) {
         $logger->debug('Start cron task', [
@@ -46,7 +51,7 @@ try {
         }
     }
 } catch (Exception $e) {
-    $logger->error((string)$e);
+    $logger->exception($e);
     if ($task) {
         JobHelper::failTask($task);
     }

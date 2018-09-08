@@ -1,5 +1,4 @@
 <?php
-
 use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
@@ -11,9 +10,7 @@ class Roles extends Migration {
 		$this->getSchema()
 			->create($this->getTableName(), function (Blueprint $table) {
 				$table->increments('id');
-				$table->string('slug', 255)->unique();
 				$table->string('name', 255);
-				$table->text('permissions');
 				$table->timestamp('completed_at')->nullable();
 				$table->timestamps();
 			});

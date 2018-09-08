@@ -6,8 +6,14 @@ function render($template, array $data = []) {
 	return ob_get_clean();
 }
 
-function json($data) {
-	header('Content-type:application/json;charset=utf-8');
+function json($status, $message = '') {
+	header('Content-type:application/json;charset=utf-8', true, 200);
+	$data = [
+	    'status' => (bool) $status
+    ];
+	if (!$status) {
+	    $data['message'] = (string) $message;
+    }
 	echo json_encode($data);
 	die();
 }
@@ -79,14 +85,9 @@ function composerInstall() {
 }
 
 function checkDbConnection($config) {
-	try {
-		$dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
-		$dbh = new PDO($dsn, $config['user'], $config['pass']);
-		$dbh = null;
-		return true;
-	} catch (PDOException $e) {
-		return false;
-	}
+	$dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
+	$dbh = new PDO($dsn, $config['user'], $config['pass']);
+	$dbh = null;
 }
 
 function generateSecretKey() {
@@ -104,25 +105,17 @@ function createUser($container, $login, $email, $password) {
 	/** @var \Cartalyst\Sentinel\Sentinel $auth */
 	$auth = $container['auth'];
 
-	$permissions = array_fill_keys(
-        array_keys(\GameX\Controllers\Admin\RolesController::PERMISSIONS),
-        true
-    );
-
-    $role = $auth->getRoleRepository()->createModel()->create([
-        'name' => 'Admins',
-        'slug' => 'admin',
-        'permissions' => $permissions
-    ]);
-
     /** @var \GameX\Core\Auth\Models\UserModel $user */
 	$user = $auth->register([
 		'login'  => $login,
 		'email'  => $email,
 		'password' => $password,
 	], true);
-
-    $user->role()->associate($role)->save();
+	
+	/** @var \GameX\Core\Configuration\Config $config */
+	$config = $container['config'];
+	$config->getNode('permissions')->set('root_user', $user->id);
+	$config->save();
 }
 
 function getContainer($phpmig = false) {
@@ -132,14 +125,21 @@ function getContainer($phpmig = false) {
     if ($phpmig) {
         require BASE_DIR . 'phpmig.php';
     } else {
-        require BASE_DIR . 'src' . DS . 'dependencies.php';
+        $container->register(new \GameX\Core\DependencyProvider());
+        \GameX\Core\BaseModel::setContainer($container);
+        \GameX\Core\BaseForm::setContainer($container);
+        date_default_timezone_set('UTC');
     }
 
 	return $container;
 }
 
+function logMessage($message) {
+	file_put_contents(__DIR__ . DS . 'install.log', $message . PHP_EOL . PHP_EOL, FILE_APPEND);
+}
+
 function logException(\Exception $e) {
-	file_put_contents(__DIR__ . DS . 'install.log', (string) $e . PHP_EOL . PHP_EOL, FILE_APPEND);
+	logMessage((string) $e);
 }
 
 function checkDirectories(array $directories) {
@@ -154,5 +154,39 @@ function checkDirectories(array $directories) {
             }
         }
         
+    }
+}
+
+function cronjobExists($command){
+    $cronjob_exists = false;
+    exec('crontab -l', $crontab);
+    if (isset($crontab) && is_array($crontab)) {
+
+        $crontab = array_flip($crontab);
+
+        if (isset($crontab[$command])) {
+            $cronjob_exists=true;
+        }
+    }
+    return $cronjob_exists;
+}
+
+function cronjobAppend($command){
+    if (!empty($command) && !cronjobExists($command)) {
+		exec('echo -e "`crontab -l`\n'.$command.'" | crontab -', $output);
+		return true;
+    }
+
+    return false;
+}
+
+function clearTwigCache() {
+    foreach (new \RecursiveIteratorIterator(
+                 new \RecursiveDirectoryIterator(BASE_DIR . 'runtime' . DS . 'twig_cache'),
+                 \RecursiveIteratorIterator::LEAVES_ONLY) as $file
+    ) {
+        if ($file->isFile()) {
+            @unlink($file->getPathname());
+        }
     }
 }

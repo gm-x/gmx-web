@@ -6,8 +6,6 @@ use \GameX\Models\Player;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
-use \Cartalyst\Sentinel\Permissions\PermissibleInterface;
-use \Cartalyst\Sentinel\Permissions\PermissibleTrait;
 use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -25,10 +23,11 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property RoleModel $role
  * @property Player[] players
  */
-class UserModel extends BaseModel implements UserInterface, PersistableInterface, PermissibleInterface {
+class UserModel extends BaseModel implements UserInterface, PersistableInterface {
 
-	use PermissibleTrait;
-
+    /**
+     * @var string
+     */
 	protected $table = 'users';
 
 	/**
@@ -50,6 +49,11 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	protected $hidden = [
 		'password',
 	];
+    
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
 
 	/**
 	 * Returns the user primary key.
@@ -138,26 +142,6 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	public function role() {
 		return $this->belongsTo(RoleModel::class);
 	}
-
-	/**
-	 * Returns if access is available for all given permissions.
-	 *
-	 * @param  array|string  $permissions
-	 * @return bool
-	 */
-	public function hasAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAccess($permissions);
-	}
-
-	/**
-	 * Returns if access is available for any given permissions.
-	 *
-	 * @param  array|string  $permissions
-	 * @return bool
-	 */
-	public function hasAnyAccess($permissions) {
-		return $this->getPermissionsInstance()->hasAnyAccess($permissions);
-	}
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -165,13 +149,4 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	public function players() {
         return $this->hasMany(EloquentPersistence::class, 'user_id', 'id');
     }
-
-	/**
-	 * Creates a permissions object.
-	 *
-	 * @return \Cartalyst\Sentinel\Permissions\PermissionsInterface
-	 */
-	protected function createPermissions() {
-		return new PermissionsModel(null, $this->role ? $this->role->permissions : null);
-	}
 }

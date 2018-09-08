@@ -4,6 +4,10 @@ define('BASE_DIR', dirname(__DIR__) . DS);
 
 include __DIR__ . DS . 'functions.php';
 
+//if (file_exists(BASE_DIR . 'config.json')) {
+//    header("Location: ".getBaseUrl());
+//}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	echo render('template', [
 		'baseUrl' => getBaseUrl()
@@ -22,14 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     BASE_DIR . 'runtime' . DS . 'logs',
                     BASE_DIR . 'runtime' . DS . 'twig_cache',
                 ]);
-                json([
-                    'success' => true
-                ]);
+
+                clearTwigCache();
+                json(true);
             } catch (Exception $e) {
-                json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ]);
+                logException($e);
+                json(false, $e->getMessage());
             }
         } break;
 
@@ -37,27 +39,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			try {
 				set_time_limit(0);
 				composerInstall();
-				json([
-					'success' => true
-				]);
+                json(true);
 			} catch (Exception $e) {
 				logException($e);
-				json([
-					'success' => false,
-					'message' => $e->getMessage()
-				]);
+                json(false, $e->getMessage());
 			}
 		} break;
 
 		case 'config': {
 			try {
-				if (!checkDbConnection($_POST['db'])) {
-					throw new Exception('Can\'t connect to database');
-				}
+				checkDbConnection($_POST['db']);
 
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
-				$config = new GameX\Core\Configuration\Config();
-				$db = $config->get('db');
+                $provider = new \GameX\Core\Configuration\Providers\JsonProvider();
+				$config = new \GameX\Core\Configuration\Config($provider);
+				$db = $config->getNode('db');
 				$db->set('host', $_POST['db']['host']);
 				$db->set('port', (int) $_POST['db']['port']);
 				$db->set('username', $_POST['db']['user']);
@@ -65,17 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$db->set('database', $_POST['db']['name']);
 				$db->set('prefix', $_POST['db']['prefix']);
 
-				$config->setPath(BASE_DIR . 'config.json');
+                $provider->setPath(BASE_DIR . 'config.json');
 				$config->save();
-				json([
-					'success' => true
-				]);
+                json(true);
 			} catch (Exception $e) {
-				logException($e);
-				json([
-					'success' => false,
-					'message' => $e->getMessage()
-				]);
+                logException($e);
+                json(false, $e->getMessage());
 			}
 		} break;
 
@@ -83,15 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			try {
 				$container = getContainer(true);
 				runMigrations($container);
-				json([
-					'success' => true
-				]);
+                json(true);
 			} catch (Exception $e) {
-				logException($e);
-				json([
-					'success' => false,
-					'message' => $e->getMessage()
-				]);
+                logException($e);
+                json(false, $e->getMessage());
 			}
 		}
 
@@ -106,15 +92,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				\GameX\Core\Auth\Models\PersistenceModel::truncate();
 				$db->getConnection()->statement("SET foreign_key_checks=1");
 				createUser($container, $_POST['login'], $_POST['email'], $_POST['pass']);
-				json([
-					'success' => true
-				]);
+                json(true);
 			} catch (Exception $e) {
-				logException($e);
-				json([
-					'success' => false,
-					'message' => $e->getMessage()
-				]);
+                logException($e);
+                json(false, $e->getMessage());
 			}
 		}
 
@@ -122,26 +103,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			try {
                 $container = getContainer(false);
 				\GameX\Models\Task::truncate();
-				\GameX\Core\Jobs\JobHelper::createTask('monitoring');
 				\GameX\Core\Jobs\JobHelper::createTask('punishments');
 
-				json([
-					'success' => true
-				]);
+				cronjobAppend('* * * * * php -f ' . BASE_DIR . 'cron.php');
+
+                json(true);
 			} catch (Exception $e) {
-				logException($e);
-				json([
-					'success' => false,
-					'message' => $e->getMessage()
-				]);
+                logException($e);
+                json(false, $e->getMessage());
 			}
 		}
 
 		default: {
-			json([
-				'success' => false,
-				'message' => 'Unknown step ' . $step
-			]);
+            json(false, 'Unknown step ' . $step);
 		}
 	}
 }

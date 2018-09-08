@@ -10,17 +10,20 @@ use \Carbon\Carbon;
  * Class Server
  * @package GameX\Models
  *
- * @property integer $id
- * @property integer $user_id
- * @property integer $emulator
+ * @property int $id
+ * @property int $user_id
+ * @property int $emulator
  * @property string $steamid
  * @property string $nick
+ * @property string $ip
  * @property string $auth_type
  * @property string $password
- * @property integer $access
+ * @property int $access
+ * @property int $server_id
  * @property UserModel $user
  * @property Privilege[] $privileges
  * @property Punishment[] $punishments
+ * @property Server $server
  */
 class Player extends BaseModel {
 
@@ -48,7 +51,17 @@ class Player extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'auth_type', 'password', 'access'];
+	protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'ip', 'auth_type', 'password', 'access'];
+    
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
+    
+    /**
+     * @var array
+     */
+    protected $hidden = ['updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -71,6 +84,13 @@ class Player extends BaseModel {
         return $this->hasMany(Punishment::class, 'player_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function server() {
+        return $this->belongsTo(Server::class, 'server_id', 'id');
+    }
+
 	/**
 	 * @param $value
 	 */
@@ -87,10 +107,10 @@ class Player extends BaseModel {
     }
     
     /**
-     * @param $serverId
+     * @param Server $server
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public function getActivePunishments($serverId) {
+    public function getActivePunishments(Server $server) {
         return $this->punishments()
             ->select('punishments.*')
             ->with('reason')
@@ -100,12 +120,12 @@ class Player extends BaseModel {
                 $query->where('expired_at', '>', Carbon::now()->toDateTimeString())
                     ->orWhereNull('expired_at');
             })
-            ->where(function (Builder $query) use ($serverId) {
+            ->where(function (Builder $query) use ($server) {
                 $query->where('reasons.overall', 1)
-                    ->orWhere(function (Builder $query) use ($serverId) {
+                    ->orWhere(function (Builder $query) use ($server) {
                         $query->where([
                             'reasons.overall' => 0,
-                            'punishments.server_id' => $serverId
+                            'punishments.server_id' => $server->id
                         ]);
                     });
             })
@@ -120,4 +140,12 @@ class Player extends BaseModel {
 		return self::where('steamid', 'LIKE', '%' . $filter . '%')
             ->orWhere('nick', 'LIKE', '%' . $filter . '%');
 	}
+    
+    /**
+     * @return bool
+     */
+	public function getIsAuthByNick() {
+	    return ($this->auth_type === Player::AUTH_TYPE_NICK_AND_PASS
+            || $this->auth_type === Player::AUTH_TYPE_NICK_AND_HASH);
+    }
 }

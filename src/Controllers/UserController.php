@@ -6,17 +6,20 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
-use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Forms\User\LoginForm;
 use \GameX\Forms\User\RegisterForm;
 use \GameX\Forms\User\ActivationForm;
 use \GameX\Forms\User\ResetPasswordForm;
 use \GameX\Forms\User\ResetPasswordCompleteForm;
 use \GameX\Core\Exceptions\NotAllowedException;
-use \GameX\Core\Exceptions\FormException;
-use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Exceptions\RedirectException;
 
 class UserController extends BaseMainController {
+    
+    /**
+     * @var bool
+     */
+    protected $mailEnabled = false;
 
 	/**
 	 * @return string
@@ -24,19 +27,28 @@ class UserController extends BaseMainController {
 	protected function getActiveMenu() {
 		return 'index';
 	}
+    
+    /**
+     * Init UserController
+     */
+	public function init() {
+	    /** @var \GameX\Core\Configuration\Config $preferences */
+	    $preferences = $this->getContainer('preferences');
+        $this->mailEnabled = (bool) $preferences->getNode('mail')->get('enabled', false);
+    }
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws RedirectException
+     */
     public function registerAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-		$emailEnabled = (bool) $this->getConfig('mail')->get('enabled', false);
 		$authHelper = new AuthHelper($this->container);
-		$form = new RegisterForm($authHelper, !$emailEnabled);
+		$form = new RegisterForm($authHelper, !$this->mailEnabled);
 		if ($this->processForm($request, $form, true)) {
-            if ($emailEnabled) {
+            if ($this->mailEnabled) {
                 $user = $form->getUser();
                 $activationCode = $authHelper->getActivationCode($user);
                 JobHelper::createTask('sendmail', [
@@ -57,16 +69,16 @@ class UserController extends BaseMainController {
         ]);
     }
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 * @throws NotAllowedException
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotAllowedException
+     * @throws RedirectException
+     */
     public function activateAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-		if (!$enabledEmail) {
+		if (!$this->mailEnabled) {
 			throw new NotAllowedException();
 		}
 
@@ -81,15 +93,14 @@ class UserController extends BaseMainController {
 		]);
     }
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws RedirectException
+     */
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-		$enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-
         $form = new LoginForm(new AuthHelper($this->container));
         if ($this->processForm($request, $form, true)) {
             return $this->redirect('index');
@@ -97,7 +108,7 @@ class UserController extends BaseMainController {
 
 		return $this->render('user/login.twig', [
 			'form' => $form->getForm(),
-			'enabledEmail' => $enabledEmail
+			'enabledEmail' => $this->mailEnabled
 		]);
     }
 
@@ -113,16 +124,16 @@ class UserController extends BaseMainController {
     	return $this->redirect('index');
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 * @throws NotAllowedException
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotAllowedException
+     * @throws RedirectException
+     */
 	public function resetPasswordAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-        if (!$enabledEmail) {
+        if (!$this->mailEnabled) {
             throw new NotAllowedException();
         }
 
@@ -152,10 +163,10 @@ class UserController extends BaseMainController {
 	 * @param array $args
 	 * @return ResponseInterface
 	 * @throws NotAllowedException
+	 * @throws RedirectException
 	 */
 	public function resetPasswordCompleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $enabledEmail = (bool) $this->getConfig('mail')->get('enabled', false);
-        if (!$enabledEmail) {
+        if (!$this->mailEnabled) {
             throw new NotAllowedException();
         }
 

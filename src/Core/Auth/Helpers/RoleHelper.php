@@ -1,8 +1,8 @@
 <?php
 namespace GameX\Core\Auth\Helpers;
 
-use Cartalyst\Sentinel\Users\UserInterface;
 use \Psr\Container\ContainerInterface;
+use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Users\UserRepositoryInterface;
 use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Core\Exceptions\ValidationException;
@@ -18,24 +18,16 @@ class RoleHelper {
      * @var RoleRepositoryInterface
      */
     protected $roleRepository;
-
+    
+    /**
+     * RoleHelper constructor.
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container) {
         /** @var \Cartalyst\Sentinel\Sentinel $auth */
         $auth = $container->get('auth');
         $this->userRepository = $auth->getUserRepository();
         $this->roleRepository = $auth->getRoleRepository();
-    }
-
-    /**
-     * @param string $name
-     * @param string $slug
-     */
-    public function createRole($name, $slug) {
-        $this->roleRepository->createModel()->create([
-            'name' => $name,
-            'slug' => $slug,
-            'permissions' => []
-        ]);
     }
 
     /**
@@ -48,18 +40,6 @@ class RoleHelper {
             ->associate($this->getRole($role))
             ->save();
     }
-
-    /**
-     * @param string $role
-     * @param string $permission
-     * @param bool $allow
-     */
-    public function addPermission($role, $permission, $allow = true) {
-        $this
-            ->getRole($role)
-            ->updatePermission((string) $permission, (bool) $allow, true)
-            ->save();
-    }
     
     /**
      * @return array
@@ -67,7 +47,7 @@ class RoleHelper {
     public function getRolesAsArray() {
         $roles = [];
         foreach ($this->roleRepository->all() as $role) {
-            $roles[$role->slug] = $role->name;
+            $roles[$role->id] = $role->name;
         }
         
         return $roles;
@@ -79,7 +59,7 @@ class RoleHelper {
      * @throws ValidationException
      */
     protected function getRole($role) {
-        $role = $this->roleRepository->findBySlug($role);
+        $role = $this->roleRepository->findById($role);
         if (!$role) {
             throw new ValidationException('Role not found');
         }

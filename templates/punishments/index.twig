@@ -1,12 +1,9 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-	<div class="table-responsive">
-		<form action="{{ path_for('punishments') }}" method="get">
-			<input type="text" name="filter" value="{{ filter }}">
-			<button type="submit"><span class="oi oi-magnifying-glass"></span></button>
-		</form>
-		<table class="table table-hover">
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+	<div class="uk-overflow-auto">
+		<table class="uk-table uk-table-divider">
 			<thead>
 				<tr>
 					<th>Player</th>
@@ -43,4 +40,5 @@
 			</tbody>
 		</table>
 	</div>
+</div>
 {% endblock %}

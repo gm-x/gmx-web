@@ -1,0 +1,38 @@
+{% extends 'admin/admin.twig' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block content %}
+<a href="{{ path_for('admin_users_list') }}" class="uk-button uk-button-secondary">
+    {{ trans('buttons', 'back') }}
+</a>
+<a href="{{ path_for('admin_users_edit', {'user': user.id}) }}" class="uk-button uk-button-primary">
+    {{ trans('buttons', 'edit') }}
+</a>
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <div f-table f-divider>
+        <ul>
+            <li>Username</li>
+            <li>{{ user.login }}</li>
+        </ul>
+        <ul>
+            <li>Email</li>
+            <li>{{ user.email }}</li>
+        </ul>
+        <ul>
+            <li>Create At</li>
+            <li>{{ user.created_at }}</li>
+        </ul>
+        <ul>
+            <li>Update At</li>
+            <li>{{ user.updated_at }}</li>
+        </ul>
+        <ul>
+            <li>Role</li>
+            <li>{{ user.role.name }}</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

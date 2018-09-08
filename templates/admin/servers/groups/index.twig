@@ -3,9 +3,15 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
+{% block subnav %}
+    {{ admin.back_btn(path_for('admin_servers_list'), 'l') }}
+    {{ admin.add_btn(path_for('admin_servers_groups_create', {'server': server.id}), 'l') }}
+{% endblock %}
+
 {% block content %}
-	<div class="table-responsive">
-		<table class="table table-hover">
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+	<div class="uk-overflow-auto">
+		<table class="uk-table uk-table-divider">
 			<thead>
 				<tr>
 					<th>Name</th>
@@ -28,10 +34,5 @@
 		</table>
 	</div>
 	{{ paginator.render(pagination) }}
-	<a href="{{ path_for('admin_servers_groups_create', {'server': server.id}) }}" class="btn btn-primary">
-		{{ trans('buttons', 'create') }}
-	</a>
-	<a href="{{ path_for('admin_servers_list', {'server': server.id}) }}" class="btn btn-secondary">
-		{{ trans('buttons', 'cancel') }}
-	</a>
+</div>
 {% endblock %}

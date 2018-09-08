@@ -7,7 +7,7 @@ $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http
     /** @var GameX\Core\Configuration\Config $config */
     $config = $app->getContainer()->get('config');
 
-    if ($config->get('log')->get('queries', false)) {
+    if ($config->getNode('log')->get('queries', false)) {
         /** @var \Monolog\Logger $log */
         $logger = $app->getContainer()->get('log');
         /** @var \Illuminate\Database\Capsule\Manager $db */

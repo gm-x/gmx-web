@@ -1,5 +1,5 @@
-{% macro element_input(element) %}
-	{% set classes = ['form-control'] %}
+{% macro element_input(element, config) %}
+	{% set classes = ['uk-input'] %}
 	{% if element.getHasError() %}
 		{% set classes = classes|merge(['is-invalid']) %}
 	{% endif %}
@@ -9,14 +9,21 @@
 		{% set attributes = attributes|merge({'required': 'required'}) %}
 	{% endif %}
 
-	<div class="form-group">
-		<label for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+	<div class="uk-margin uk-inline uk-width-1-1">
+        {% if config.label %}
+        <label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+        <div class="uk-form-controls">
+        {% endif %}
+		{% if config.icon %}
+			<i class="uk-form-icon {{ config.icon }}"></i>
+		{% endif %}
 		<input
 				type="{{ element.getType() }}"
 				id="{{ element.getId() }}"
 				name="{{ element.getFormName() }}[{{ element.getName() }}]"
 				value="{{ element.getValue() }}"
 				class="{{ classes | join(' ') }}"
+				placeholder="{{ element.getTitle() }}"
 		{% for key, value in attributes %}
 			{{ key }}="{{ value }}"
 		{% endfor %}
@@ -24,71 +31,44 @@
 		{% if element.getHasError() %}
 			<span class="invalid-feedback">{{ element.getError() }}</span>
 		{% endif %}
-	</div>
-{% endmacro %}
-
-{% macro element_datetime(element, format) %}
-    {% set classes = ['form-control'] %}
-    {% if element.getHasError() %}
-        {% set classes = classes|merge(['is-invalid']) %}
-    {% endif %}
-    {% set classes = classes|merge(element.getClasses()) %}
-    {% set attributes = element.getAttributes() %}
-    {% if element.getIsRequired() %}
-        {% set attributes = attributes|merge({'required': 'required'}) %}
-    {% endif %}
-
-	<div class="form-group">
-		<label for="{{ element.getId() }}">{{ element.getTitle() }}</label>
-		<input
-				type="{{ element.getType() }}"
-				id="{{ element.getId() }}"
-				name="{{ element.getFormName() }}[{{ element.getName() }}]"
-				value="{{ element.format(format) }}"
-				class="{{ classes | join(' ') }}"
-        {% for key, value in attributes %}
-            {{ key }}="{{ value }}"
-        {% endfor %}
-		/>
-        {% if element.getHasError() %}
-			<span class="invalid-feedback">{{ element.getError() }}</span>
+        {% if config.label %}
+            </div>
         {% endif %}
 	</div>
 {% endmacro %}
 
-{% macro element_checkbox(element) %}
-	{% set classes = ['custom-control-input'] %}
-	{% if element.getHasError() %}
-		{% set classes = classes|merge(['is-invalid']) %}
-	{% endif %}
-	{% set classes = classes|merge(element.getClasses()) %}
-	{% set attributes = element.getAttributes() %}
-	{% if element.getIsRequired() %}
-		{% set attributes = attributes|merge({'required': 'required'}) %}
-	{% endif %}
-
-	<div class="form-group">
-		<div class="custom-control custom-checkbox">
+{% macro element_datetime(element, format) %}
+    {% set classes = ['uk-input'] %}
+    {% if element.getHasError() %}
+        {% set classes = classes|merge(['is-invalid']) %}
+    {% endif %}
+    {% set classes = classes|merge(element.getClasses()) %}
+    {% set attributes = element.getAttributes() %}
+    {% if element.getIsRequired() %}
+        {% set attributes = attributes|merge({'required': 'required'}) %}
+    {% endif %}
+	<div class="uk-margin uk-inline uk-width-1-1">
+		<label for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+		<div class="uk-form-controls">
 			<input
-				type="checkbox"
-				id="{{ element.getId() }}"
-				name="{{ element.getFormName() }}[{{ element.getName() }}]"
-				value="1"
-				class="{{ classes | join(' ') }}"
-				{% for key, value in attributes %}
-					{{ key }}="{{ value }}"
-				{% endfor %}
-				{% if element.getValue() %}
-					checked="checked"
-				{% endif %}
+					type="{{ element.getType() }}"
+					id="{{ element.getId() }}"
+					name="{{ element.getFormName() }}[{{ element.getName() }}]"
+					value="{{ element.format(format) }}"
+					class="{{ classes | join(' ') }}"
+			{% for key, value in attributes %}
+				{{ key }}="{{ value }}"
+			{% endfor %}
 			/>
-			<label for="{{ element.getId() }}" class="custom-control-label">{{ element.getTitle() }}</label>
+			{% if element.getHasError() %}
+				<span class="invalid-feedback">{{ element.getError() }}</span>
+			{% endif %}
 		</div>
 	</div>
 {% endmacro %}
 
-{% macro element_select(element) %}
-	{% set classes = ['form-control'] %}
+{% macro element_checkbox(element, label = true) %}
+	{% set classes = ['uk-checkbox'] %}
 	{% if element.getHasError() %}
 		{% set classes = classes|merge(['is-invalid']) %}
 	{% endif %}
@@ -97,35 +77,70 @@
 	{% if element.getIsRequired() %}
 		{% set attributes = attributes|merge({'required': 'required'}) %}
 	{% endif %}
-	<div class="form-group">
-		<label for="{{ element.getId() }}">{{ element.getTitle() }}</label>
-		<select
-			id="{{ element.getId() }}"
-			name="{{ element.getFormName() }}[{{ element.getName() }}]"
-			class="{{ classes | join(' ') }}"
+	<div class="uk-margin uk-inline uk-width-1-1">
+		<label class="switcher">
+			<input
+					type="checkbox"
+					id="{{ element.getId() }}"
+					name="{{ element.getFormName() }}[{{ element.getName() }}]"
+					value="1"
+					class="{{ classes | join(' ') }}"
 			{% for key, value in attributes %}
 				{{ key }}="{{ value }}"
 			{% endfor %}
-		>
-		{% if element.getEmptyOption() %}
-			<option value="">{{ element.getEmptyOption() }}</option>
-		{% endif %}
-		{% for key, value in element.getOptions() %}
-			{% if key == element.getValue() %}
-				<option value="{{ key }}" selected="selected">{{ value }}</option>
-			{% else %}
-				<option value="{{ key }}">{{ value }}</option>
+			{% if element.getValue() %}
+				checked="checked"
 			{% endif %}
-		{% endfor %}
-		</select>
-		{% if element.getHasError() %}
-			<span class="invalid-feedback">{{ element.getError() }}</span>
-		{% endif %}
+			/>
+			<div class="switcher__indicator"></div>
+            {% if label %}
+			<span>{{ element.getTitle() }}</span>
+			{% endif %}
+		</label>
 	</div>
 {% endmacro %}
 
-{% macro element_file(element) %}
-    {% set classes = ['custom-file-input'] %}
+{% macro element_select(element) %}
+	{% set classes = ['uk-select','uk-form-width-large'] %}
+	{% if element.getHasError() %}
+		{% set classes = classes|merge(['is-invalid']) %}
+	{% endif %}
+	{% set classes = classes|merge(element.getClasses()) %}
+	{% set attributes = element.getAttributes() %}
+	{% if element.getIsRequired() %}
+		{% set attributes = attributes|merge({'required': 'required'}) %}
+	{% endif %}
+	<div class="uk-margin uk-inline uk-width-1-1">
+		<label for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+		<div class="uk-form-controls">
+			<select
+				id="{{ element.getId() }}"
+				name="{{ element.getFormName() }}[{{ element.getName() }}]"
+				class="{{ classes | join(' ') }}"
+				{% for key, value in attributes %}
+					{{ key }}="{{ value }}"
+				{% endfor %}
+			>
+			{% if element.getEmptyOption() %}
+				<option value="">{{ element.getEmptyOption() }}</option>
+			{% endif %}
+			{% for key, value in element.getOptions() %}
+				{% if key == element.getValue() %}
+					<option value="{{ key }}" selected="selected">{{ value }}</option>
+				{% else %}
+					<option value="{{ key }}">{{ value }}</option>
+				{% endif %}
+			{% endfor %}
+			</select>
+			{% if element.getHasError() %}
+				<span class="invalid-feedback">{{ element.getError() }}</span>
+			{% endif %}
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro element_file(element, holder = '') %}
+    {% set classes = [''] %}
     {% if element.getHasError() %}
         {% set classes = classes|merge(['is-invalid']) %}
     {% endif %}
@@ -135,22 +150,24 @@
         {% set attributes = attributes|merge({'required': 'required'}) %}
     {% endif %}
 
-	<div class="form-group">
-		<div class="custom-control custom-file">
-			<input
-					type="file"
-					id="{{ element.getId() }}"
-					name="{{ element.getFormName() }}[{{ element.getName() }}]"
-					value="1"
-					class="{{ classes | join(' ') }}"
-            {% for key, value in attributes %}
-                {{ key }}="{{ value }}"
-            {% endfor %}
-			/>
-			<label for="{{ element.getId() }}" class="custom-file-label">{{ element.getTitle() }}</label>
-            {% if element.getHasError() %}
-				<span class="invalid-feedback">{{ element.getError() }}</span>
-            {% endif %}
-		</div>
+	<div uk-form-custom="target: true" class="uk-margin">
+		<input
+				type="file"
+				id="{{ element.getId() }}"
+				name="{{ element.getFormName() }}[{{ element.getName() }}]"
+				value="1"
+				class="{{ classes | join(' ') }}"
+		{% for key, value in attributes %}
+			{{ key }}="{{ value }}"
+		{% endfor %}
+		/>
+        {% if holder %}
+			{{ holder|raw }}
+		{% else %}
+			<input class="uk-input uk-form-width-medium" type="text" placeholder="Select {{ element.getTitle() }}" disabled>
+		{% endif %}
+		{% if element.getHasError() %}
+			<span class="invalid-feedback">{{ element.getError() }}</span>
+		{% endif %}
 	</div>
 {% endmacro %}

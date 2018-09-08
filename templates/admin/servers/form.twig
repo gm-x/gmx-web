@@ -3,18 +3,20 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
-		{{ forms.element_input(form.name) }}
-		{{ forms.element_input(form.ip) }}
-		{{ forms.element_input(form.port) }}
+		{{ forms.element_input(form.name, {"label": true}) }}
+		{{ forms.element_input(form.ip, {"label": true}) }}
+		{{ forms.element_input(form.port, {"label": true}) }}
         <div class="form-group">
             {% if create %}
-                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
+                <input type="submit" class="uk-button uk-button-primary hvr-grow" value="{{ trans('buttons', 'create') }}">
             {% else %}
-                <input type="submit" class="btn btn-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
+                <input type="submit" class="uk-button uk-button-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
             {% endif %}
-            <a href="{{ path_for('admin_servers_list') }}" class="btn btn-secondary hvr-grow">{{ trans('buttons', 'cancel') }}</a>
+            <a href="{{ path_for('admin_servers_list') }}" class="uk-button uk-button-secondary">{{ trans('buttons', 'cancel') }}</a>
         </div>
     </form>
+</div>
 {% endblock %}

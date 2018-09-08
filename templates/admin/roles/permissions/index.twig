@@ -1,0 +1,49 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/permissions.twig' as permissions %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block content %}
+    {# TODO: Remove this #}
+    <style>
+        .inputGroup label:before {
+            background-color: #b6b6b4 !important;
+        }
+    </style>
+    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+        <form action="{{ form.getAction() }}" method="post">
+            {{ csrf_token() }}
+            <div f-table f-divider>
+                <ul th uk-sticky="offset: 80" style="background: #263137;">
+                    <li class="uk-width-expand">Permission</li>
+                    <li class="uk-width-xxs"><span uk-icon="list" uk-tooltip="Список"></span></li>
+                    <li class="uk-width-xxs"><span uk-icon="search" uk-tooltip="Просмотр"></span></li>
+                    <li class="uk-width-xxs"><span uk-icon="plus" uk-tooltip="Добавление"></span></li>
+                    <li class="uk-width-xxs"><span uk-icon="pencil" uk-tooltip="Редактирование"></span></li>
+                    <li class="uk-width-xxs"><span uk-icon="trash" uk-tooltip="Удаление"></span></li>
+                </ul>
+            {% for item in list %}
+                <ul>
+                    <li class="uk-width-expand">
+                        {{ item.title }}
+                    </li>
+                    {% for key in item.items %}
+                        {{ permissions.permission_checkbox(form, key) }}
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+            </div>
+            <div class="form-group">
+                {% if create %}
+                    <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
+                {% else %}
+                    <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
+                {% endif %}
+                <a href="{{ path_for('admin_roles_list') }}" class="uk-button uk-button-secondary">{{ trans('buttons', 'cancel') }}</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

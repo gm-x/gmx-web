@@ -29,6 +29,7 @@ use \GameX\Core\Auth\Http\Session as SentinelSession;
 use \GameX\Core\Auth\Http\FakeSession as SentinelFakeSession;
 
 class SentinelBootstrapper {
+    
     /**
      * @var Request|null
      */

@@ -1,0 +1,7 @@
+{% macro permission_checkbox(form, name) %}
+    {% import 'macros/forms.twig' as forms %}
+    {% set element = form.get(name) %}
+	<li class="uk-width-xxs">
+        {{ forms.element_checkbox(element, false) }}
+	</li>
+{% endmacro %}

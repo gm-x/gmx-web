@@ -35,11 +35,27 @@ class ServersController extends BaseAdminController {
 		]);
     }
 
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return ResponseInterface
+     * @throws NotFoundException
+	 */
+    public function viewAction(Request $request, Response $response, array $args = []) {
+        $server = $this->getServer($request, $response, $args);
+		return $this->render('admin/servers/view.twig', [
+			'server' => $server,
+		]);
+    }
+
     /**
      * @param Request $request
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
 	public function createAction(Request $request, Response $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -47,7 +63,7 @@ class ServersController extends BaseAdminController {
 		$form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_edit', [
+            return $this->redirect('admin_servers_view', [
                 'server' => $server->id,
             ]);
         }
@@ -63,6 +79,8 @@ class ServersController extends BaseAdminController {
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
 	public function editAction(Request $request, Response $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -70,7 +88,7 @@ class ServersController extends BaseAdminController {
         $form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_edit', [
+            return $this->redirect('admin_servers_view', [
                 'server' => $server->id,
             ]);
         }
@@ -86,6 +104,8 @@ class ServersController extends BaseAdminController {
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
 	public function deleteAction(Request $request, Response $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -95,9 +115,7 @@ class ServersController extends BaseAdminController {
             $this->addSuccessMessage($this->getTranslate('admins_servers', 'removed'));
 		} catch (Exception $e) {
 			$this->addErrorMessage($this->getTranslate('labels', 'exception'));
-			/** @var \Monolog\Logger $logger */
-			$logger = $this->getContainer('log');
-			$logger->error((string) $e);
+            $this->getLogger()->exception($e);
 		}
 
 		return $this->redirect('admin_servers_list');
@@ -119,9 +137,7 @@ class ServersController extends BaseAdminController {
                 'token' => $server->token
             ]);
         } catch (Exception $e) {
-            /** @var \Monolog\Logger $logger */
-            $logger = $this->getContainer('log');
-            $logger->error((string) $e);
+            $this->getLogger()->exception($e);
             return $response->withJson([
                 'success' => false,
                 'error' => $this->getTranslate('labels', 'exception')

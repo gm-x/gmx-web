@@ -23,6 +23,10 @@ class FlashMessages implements ArrayAccess {
      */
     protected $fromPrevious = [];
 
+    /**
+     * @param Session $session
+     * @param null|string $sessionKey
+     */
     public function __construct(Session $session, $sessionKey = null) {
         $this->session = $session;
         $this->sessionKey = $sessionKey !== null ? $sessionKey : 'flash_messages';
@@ -88,14 +92,16 @@ class FlashMessages implements ArrayAccess {
 		return $this->getMessage($key);
 	}
 
-	/**
-	 * @param string $key
-	 * @param string $value
-	 * @return $this
-	 */
+    /**
+     * @param string $key
+     * @param string $value
+     */
 	public function offsetSet($key, $value) {
 		$this->addMessage($key, $value);
 	}
 
+    /**
+     * @param string $key
+     */
 	public function offsetUnset($key) {}
 }

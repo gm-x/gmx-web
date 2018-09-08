@@ -2,10 +2,8 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
-use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Forms\Elements\Text;
-use \GameX\Core\Forms\Rules\Callback;
 
 class RolesForm extends BaseForm {
 
@@ -20,20 +18,11 @@ class RolesForm extends BaseForm {
 	protected $role;
 
 	/**
-	 * @param RoleInterface $role
+	 * @param RoleModel $role
 	 */
-	public function __construct(RoleInterface $role) {
+	public function __construct(RoleModel $role) {
 		$this->role = $role;
 	}
-    
-    /**
-     * @param mixed $value
-     * @param array $values
-     * @return mixed|null
-     */
-    public function checkExists($value, array $values) {
-        return !RoleModel::where('slug', $value)->exists() ? $value : null;
-    }
 
 	/**
 	 * @noreturn
@@ -42,24 +31,11 @@ class RolesForm extends BaseForm {
 		$this->form
             ->add(new Text('name', $this->role->name, [
                 'title' => 'Name',
-                'error' => 'Required',
                 'required' => true,
-                'attributes' => [],
-            ]))
-            ->add(new Text('slug', $this->role->slug, [
-                'title' => 'Slug',
-                'error' => 'Required',
-                'required' => true,
-                'attributes' => [],
             ]));
 		
 		$this->form->getValidator()
-            ->set('name', true)
-            ->set('slug', true);
-        
-        if (!$this->role->exists) {
-            $this->form->addRule('slug', new Callback([$this, 'checkExists'], 'Role already exists'));
-        }
+            ->set('name', true);
 	}
     
     /**
@@ -67,10 +43,6 @@ class RolesForm extends BaseForm {
      */
     protected function processForm() {
         $this->role->fill($this->form->getValues());
-        
-        if (!$this->role->exists) {
-            $this->role->permissions = [];
-        }
         return $this->role->save();
     }
 }
