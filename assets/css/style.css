@@ -107,6 +107,10 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
     border-top: 1px solid #212121;
 }
 
+.form-inline {
+    display: inline-block;
+}
+
 a, .uk-link {
     color: #b3b3b3;
 }
@@ -189,7 +193,9 @@ a:hover, .uk-link:hover {
 }
 
 .uk-card-default .uk-card-header {
-    border-bottom: 2px solid #191919;
+    border-bottom: 0;
+    background: #212a2f;
+    border-radius: 4px 4px 0 0;
 }
 
 .uk-form-icon {

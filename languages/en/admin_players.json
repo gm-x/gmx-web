@@ -1,0 +1,16 @@
+{
+  "nickname": "Nickname",
+  "steam_id": "Steam ID",
+  "ip": "IP",
+  "steam_id_pass": "Steam ID + pass",
+  "nickname_pass": "Nick + pass",
+  "steam_id_hash": "Steam ID + hash",
+  "nickname_hash": "Nick + hash",
+  "auth_type": "Auth Type",
+  "choose_auth_type": "Choose auth type",
+  "password": "Password",
+  "reserve_nickname": "Reserve nickname",
+  "block_nickname": "Block change nick",
+  "pass_error": "Password must be provided",
+  "player_exists": "Player already exists"
+}

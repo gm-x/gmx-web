@@ -3,9 +3,17 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
+{% block subnav %}
+    <div class="uk-float-left">
+        {{ admin.back_btn(path_for('admin_players_list'), 'l') }}
+    </div>
+    {{ admin.add_btn(path_for('admin_players_privileges_create', {'player': player.id}), 'l') }}
+{% endblock %}
+
 {% block content %}
-    <div class="table-responsive">
-        <table class="table table-hover">
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <div class="uk-overflow-auto">
+        <table class="uk-table uk-table-divider">
             <thead>
                 <tr>
                     <th>Server</th>
@@ -34,7 +42,5 @@
         </table>
     </div>
 	{{ paginator.render(pagination) }}
-    <a href="{{ path_for('admin_players_privileges_create', {'player': player.id}) }}" class="btn btn-primary">
-        {{ trans('buttons', 'create') }}
-    </a>
+</div>
 {% endblock %}

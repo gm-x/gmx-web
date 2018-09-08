@@ -1,0 +1,16 @@
+{
+  "nickname": "Никнейм",
+  "steam_id": "Steam ID",
+  "ip": "IP",
+  "steam_id_pass": "Steam ID + пароль",
+  "nickname_pass": "Nick + пароль",
+  "steam_id_hash": "Steam ID + хеш",
+  "nickname_hash": "Никнейм + хеш",
+  "auth_type": "Тип авторизации",
+  "choose_auth_type": "Выберите тип авторизации",
+  "password": "Пароль",
+  "reserve_nickname": "Резервация никнейма",
+  "block_nickname": "Запрет смены никнейма",
+  "pass_error": "Password must be provided",
+  "player_exists": "Такой игрок уже существует"
+}
