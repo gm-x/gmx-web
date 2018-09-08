@@ -4,8 +4,8 @@ namespace GameX\Forms\Settings;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Models\UserModel;
 use \Slim\Http\UploadedFile;
+use \GameX\Core\Forms\Validator;
 use \GameX\Core\Forms\Elements\File as FileElement;
-use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\File as FileRule;
 use \GameX\Core\Forms\Rules\FileExtension;
 use \GameX\Core\Forms\Rules\Image;
@@ -42,14 +42,20 @@ class AvatarForm extends BaseForm {
 	 */
 	protected function createForm() {
 		$this->form
-			->add(new FileElement('avatar', '', [
+			->add(new FileElement('avatar', $this->getPath(), [
 				'title' => 'Avatar',
 				'required' => true
-			]))
-			->addRule('avatar', new Required())
-			->addRule('avatar', new FileRule())
-			->addRule('avatar', new FileExtension(['jpg', 'png', 'gif']))
-			->addRule('avatar', new Image([IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF], [100, 200], [100, 200]));
+			]));
+		
+		$this->form->getValidator()
+			->set('avatar', true, [
+                new FileRule(),
+                new FileExtension(['jpg', 'png', 'gif']),
+                new Image([IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF], [100, 1000], [100, 1000])
+            ], [
+                'check' => Validator::CHECK_EMPTY,
+                'trim' => false,
+            ]);
 	}
 
 	/**
@@ -64,4 +70,9 @@ class AvatarForm extends BaseForm {
 	    $file->moveTo($path);
 		return true;
 	}
+	
+	protected function getPath() {
+	    // TODO: need to make refactoring
+        return '/upload/avatar_' . $this->user->id . '.jpg';
+    }
 }

@@ -17,7 +17,7 @@ class File extends BaseRule {
             return null;
         }
 
-		return $value->getError() !== UPLOAD_ERR_OK ? $value : null;
+		return $value->getError() === UPLOAD_ERR_OK ? $value : null;
     }
     
     /**
