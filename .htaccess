@@ -1,3 +1,5 @@
+Options +FollowSymlinks
 RewriteEngine On
 
+RewriteRule ^(install|assets) - [L]
 RewriteRule ^(.*)$ public/$1 [L]
