@@ -31,6 +31,11 @@ class RolesPermissionsModel extends BaseModel {
     protected $fillable = ['role_id', 'permission_id', 'resource', 'access'];
     
     /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
+    
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function role() {

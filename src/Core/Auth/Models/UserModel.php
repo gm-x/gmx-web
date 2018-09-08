@@ -49,6 +49,11 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	protected $hidden = [
 		'password',
 	];
+    
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
 
 	/**
 	 * Returns the user primary key.

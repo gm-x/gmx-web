@@ -33,6 +33,11 @@ class PermissionsModel extends BaseModel {
     protected $fillable = ['group', 'key', 'type'];
     
     /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
+    
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function roles() {

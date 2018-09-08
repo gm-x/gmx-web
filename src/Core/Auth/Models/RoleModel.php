@@ -11,26 +11,18 @@ use \GameX\Core\BaseModel;
  *
  * @property int $id
  * @property string $name
- * @property string $slug
  * @property Carbon $completed_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property UserModel[] $users
  * @property RolesPermissionsModel[] $permissions
  */
-class RoleModel extends BaseModel implements RoleInterface {
+class RoleModel extends BaseModel {
 
     /**
      * @var array|null
      */
     protected $cachedPermissions = null;
-
-	/**
-	 * The Eloquent users model name.
-	 *
-	 * @var string
-	 */
-	protected static $usersModel = UserModel::class;
 
 	/**
 	 * @var string
@@ -40,11 +32,12 @@ class RoleModel extends BaseModel implements RoleInterface {
 	/**
 	 * @var array
 	 */
-	protected $fillable = [
-		'name',
-		'slug',
-		'permissions',
-	];
+	protected $fillable = ['name'];
+    
+    /**
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at'];
 
 	/**
 	 * The Users relationship.
@@ -74,29 +67,8 @@ class RoleModel extends BaseModel implements RoleInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getRoleSlug() {
-		return $this->slug;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getUsers() {
 		return $this->users;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function getUsersModel() {
-		return static::$usersModel;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function setUsersModel($usersModel) {
-		static::$usersModel = $usersModel;
 	}
 
     /**
