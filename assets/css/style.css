@@ -39,8 +39,14 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
     width: 100px;
 }
 
-.uk-width-xxs {
+[class*='uk-width-xxs'] {
     width: 75px;
+}
+
+@media (max-width: 640px) {
+    .uk-width-xxs\@s {
+        width: 100%;
+    }
 }
 
 .uk-subnav > .uk-active > a {

@@ -17,3 +17,19 @@ div[f-table] > ul > li, div[f-table] > ol > li {
     padding: 14px;
     display: inline-flex;
 }
+
+div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
+    font-weight: 700;
+}
+
+@media (max-width: 640px) {
+    div[f-table] > ul > li::after {
+        content: attr(s-title);
+        top: 1em;
+        position: relative;
+    }
+
+    div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
+        font-size: 1.5em;
+    }
+}
