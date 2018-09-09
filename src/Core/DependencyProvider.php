@@ -40,6 +40,7 @@ use \GameX\Core\CSRF\Extension as CSRFExtension;
 use \GameX\Core\Auth\ViewExtension as AuthViewExtension;
 use \GameX\Core\Lang\Extension\ViewExtension as LangViewExtension;
 use \GameX\Core\AccessFlags\ViewExtension as AccessFlagsViewExtension;
+use \GameX\Core\Upload\ViewExtension as UploadFlagsViewExtension;
 
 use \GameX\Core\Mail\Helpers\MailHelper;
 
@@ -53,6 +54,12 @@ class DependencyProvider  implements ServiceProviderInterface {
      * @inheritdoc
      */
     public function register(Container $container) {
+        $container['base_url'] = function (ContainerInterface $container) {
+            /** @var \Slim\Http\Uri $uri */
+            $uri = $container->get('request')->getUri();
+            return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
+        };
+        
         $container['config'] = function (ContainerInterface $container) {
             return $this->getConfig($container);
         };
@@ -256,9 +263,7 @@ class DependencyProvider  implements ServiceProviderInterface {
         /** @var \Psr\Http\Message\UriInterface $uri */
         $uri = $container->get('request')->getUri();
 
-        // Instantiate and add Slim specific extension
-        $basePath = rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
-        $view->addExtension(new TwigExtension($container->get('router'), $basePath));
+        $view->addExtension(new TwigExtension($container->get('router'), $container->get('base_url')));
         $view->addExtension(new CSRFExtension($container->get('csrf')));
         $view->addExtension(new AuthViewExtension(
             $container->get('auth'),
@@ -267,6 +272,7 @@ class DependencyProvider  implements ServiceProviderInterface {
         $view->addExtension(new LangViewExtension($container->get('lang')));
         $view->addExtension(new AccessFlagsViewExtension());
         $view->addExtension(new Twig_Dump());
+        $view->addExtension(new UploadFlagsViewExtension($container->get('upload')));
 
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
         $view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
@@ -304,6 +310,6 @@ class DependencyProvider  implements ServiceProviderInterface {
     }
     
     public function getUpload(ContainerInterface $container) {
-        return new Upload($container->get('root') . 'upload');
+        return new Upload($container->get('root') . 'upload', $container->get('base_url') . '/upload');
     }
 }

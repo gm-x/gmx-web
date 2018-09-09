@@ -10,7 +10,6 @@ use \GameX\Core\Forms\Rules\File as FileRule;
 use \GameX\Core\Forms\Rules\FileExtension;
 use \GameX\Core\Forms\Rules\Image;
 use \GameX\Core\Exceptions\FormException;
-use \GameX\Models\Upload as UploadModel;
 
 class AvatarForm extends BaseForm {
 
@@ -43,7 +42,7 @@ class AvatarForm extends BaseForm {
 	 */
 	protected function createForm() {
 		$this->form
-			->add(new FileElement('avatar', $this->getPath(), [
+			->add(new FileElement('avatar', '', [
 				'title' => 'Avatar',
 				'required' => true
 			]));
@@ -70,17 +69,4 @@ class AvatarForm extends BaseForm {
 	    $this->user->save();
 		return true;
 	}
-	
-	protected function getPath() {
-	    if (!$this->user->avatar) {
-	        return '';
-        }
-        
-        $upload = UploadModel::find($this->user->avatar);
-	    if (!$upload) {
-	        return '';
-        }
-        
-        return '/upload/' . $upload->path;
-    }
 }

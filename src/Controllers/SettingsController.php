@@ -74,7 +74,8 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function avatarAction(Request $request, ResponseInterface $response, array $args) {
-        $form = new AvatarForm($this->getUser(), $this->getContainer('upload'));
+	    $user = $this->getUser();
+        $form = new AvatarForm($user, $this->getContainer('upload'));
         if ($this->processForm($request, $form, true)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect('user_settings_avatar');
@@ -82,6 +83,7 @@ class SettingsController extends BaseMainController {
         
 		return $this->render('settings/avatar.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
+			'user' => $user,
 			'form' => $form->getForm(),
 		]);
 	}

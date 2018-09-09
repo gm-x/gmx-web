@@ -7,9 +7,11 @@ use \GameX\Models\Upload as UploadModel;
 
 class Upload {
     protected $baseDir;
+    protected $baseUrl;
     
-    public function __construct($baseDir) {
+    public function __construct($baseDir, $baseUrl) {
         $this->baseDir = $baseDir . DIRECTORY_SEPARATOR;
+        $this->baseUrl = $baseUrl . '/';
     }
     
     public function upload(UserModel $user, UploadedFile $file) {
@@ -26,6 +28,10 @@ class Upload {
         ]);
         $model->save();
         return $model;
+    }
+    
+    public function getUrl(UploadModel $model) {
+        return $this->baseUrl . $model->path;
     }
     
     protected function checkDirectory($dir) {
