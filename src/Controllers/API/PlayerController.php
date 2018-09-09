@@ -72,13 +72,11 @@ class PlayerController extends BaseApiController {
 
         return $response->withStatus(200)->withJson([
             'success' => true,
-            'data' => [
-                'player' => [
-                    'id' => $player->id,
-                ],
-                'user' => null,
-                'punishments' => $punishments
-            ]
+            'player' => [
+                'id' => $player->id,
+            ],
+            'user' => null,
+            'punishments' => $punishments,
         ]);
     }
     
