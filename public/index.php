@@ -39,7 +39,13 @@ $errorHandler = function (\Slim\Container $container) {
 
 $notFoundHandler = function (\Slim\Container $container) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($container) {
-        return $container['view']->render($response->withStatus(404), 'errors/404.twig');
+        if ($request->getMediaType() === 'application/json') {
+            return $response->withStatus(404)->withJson([
+                "success" => false
+            ]);
+        } else {
+            return $container['view']->render($response->withStatus(404), 'errors/404.twig');
+        }
     };
 };
 

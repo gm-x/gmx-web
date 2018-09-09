@@ -50,7 +50,6 @@ class ReasonsController extends BaseAdminController {
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect('admin_servers_reasons_edit', [
-                'server' => $server->id,
                 'reason' => $reason->id
             ]);
         }
@@ -76,7 +75,6 @@ class ReasonsController extends BaseAdminController {
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect('admin_servers_reasons_edit', [
-                'server' => $server->id,
                 'reason' => $reason->id
             ]);
         }
