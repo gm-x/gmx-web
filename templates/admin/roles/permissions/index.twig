@@ -18,23 +18,24 @@
             {{ csrf_token() }}
             <div f-table f-divider>
                 <ul th uk-sticky="offset: 80" style="background: #263137;">
-                    <li class="uk-width-expand">Permission</li>
+                    <li class="uk-width-expand"><h3>Admin</h3></li>
                     <li class="uk-width-xxs"><span uk-icon="list" uk-tooltip="Список"></span></li>
                     <li class="uk-width-xxs"><span uk-icon="search" uk-tooltip="Просмотр"></span></li>
                     <li class="uk-width-xxs"><span uk-icon="plus" uk-tooltip="Добавление"></span></li>
                     <li class="uk-width-xxs"><span uk-icon="pencil" uk-tooltip="Редактирование"></span></li>
                     <li class="uk-width-xxs"><span uk-icon="trash" uk-tooltip="Удаление"></span></li>
                 </ul>
-            {% for item in list %}
-                <ul>
-                    <li class="uk-width-expand">
-                        {{ item.title }}
-                    </li>
-                    {% for key in item.items %}
-                        {{ permissions.permission_checkbox(form, key) }}
+                {% for key in list.admin.all %}
+                    {{ permissions.permission_checkboxes(form, key) }}
+                {% endfor %}
+                {% for serverId, serverName in servers %}
+                    <ul th uk-sticky="offset: 80" style="background: #263137;">
+                        <li class="uk-width-expand"><h3>{{ serverName }}</h3></li>
+                    </ul>
+                    {% for key in list.admin.servers[serverId] %}
+                        {{ permissions.permission_checkboxes(form, key) }}
                     {% endfor %}
-                </ul>
-            {% endfor %}
+                {% endfor %}
             </div>
             <div class="form-group">
                 {% if create %}

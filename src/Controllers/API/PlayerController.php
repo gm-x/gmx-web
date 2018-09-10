@@ -94,7 +94,6 @@ class PlayerController extends BaseApiController {
                 new Number(1)
             ]);
     
-    
         $result = $validator->validate($this->getBody($request));
     
         if (!$result->getIsValid()) {

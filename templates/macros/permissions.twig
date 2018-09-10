@@ -1,7 +1,32 @@
-{% macro permission_checkbox(form, name) %}
-    {% import 'macros/forms.twig' as forms %}
+{% macro permission_checkboxes(form, name) %}
     {% set element = form.get(name) %}
-	<li class="uk-width-xxs">
-        {{ forms.element_checkbox(element, false) }}
-	</li>
+    {% if element %}
+        <ul>
+            <li class="uk-width-expand">
+                {{ element.getTitle() }}
+            </li>
+            {% for access in [1, 2, 4, 8, 16] %}
+                <li class="uk-width-xxs">
+                    {{ _self.permission_checkbox(element, access) }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro permission_checkbox(element, access) %}
+    <div class="uk-margin uk-inline uk-width-1-1">
+        <label class="switcher">
+            <input
+                    type="checkbox"
+                    id="{{ element.getId() ~ access }}"
+                    name="{{ element.getFormName() }}[{{ element.getName() }}][]"
+                    value="{{ access }}"
+                    {% if element.hasAccess(access) %}
+                        checked="checked"
+                    {% endif %}
+            />
+            <div class="switcher__indicator"></div>
+        </label>
+    </div>
 {% endmacro %}
