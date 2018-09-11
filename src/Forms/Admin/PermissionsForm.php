@@ -1,37 +1,23 @@
 <?php
 namespace GameX\Forms\Admin;
 
+use GameX\Core\Auth\Permissions;
 use \GameX\Core\BaseForm;
-use \GameX\Core\Auth\Permissions;
+use \GameX\Core\Forms\Validator;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Auth\Models\PermissionsModel;
 use \GameX\Core\Auth\Models\RolesPermissionsModel;
-use GameX\Core\BaseModel;
 use \GameX\Models\Server;
-use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Elements\PermissionAccess;
-use \GameX\Core\Forms\Rules\Boolean;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use \GameX\Core\Forms\Elements\PermissionAccess as PermissionAccessElement;
+use \GameX\Core\Forms\Rules\PermissionAccess as PermissionAccessRule;
+use \Exception;
 
 class PermissionsForm extends BaseForm {
-    
-    const ACCESS_LIST = [
-        Permissions::ACCESS_LIST => 'list',
-        Permissions::ACCESS_VIEW => 'view',
-        Permissions::ACCESS_CREATE => 'create',
-        Permissions::ACCESS_EDIT => 'edit',
-        Permissions::ACCESS_DELETE => 'delete',
-    ];
 
 	/**
 	 * @var string
 	 */
 	protected $name = 'admin_role_permissions';
-
-	/**
-	 * @var Permissions
-	 */
-	protected $manager;
     
     /**
      * @var RoleModel
@@ -44,16 +30,14 @@ class PermissionsForm extends BaseForm {
 	protected $list = [
 	    'admin' => [
 	        'all' => [],
-            'servers' => []
+            'server' => []
         ]
     ];
 
 	/**
 	 * @param RoleModel $role
-	 * @param Permissions $permissions
 	 */
-	public function __construct(RoleModel $role, Permissions $permissions) {
-	    $this->manager = $permissions;
+	public function __construct(RoleModel $role) {
 		$this->role = $role;
 	}
     
@@ -65,98 +49,120 @@ class PermissionsForm extends BaseForm {
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
 	protected function createForm() {
-        foreach ($this->getServers() as $serverId => $tmp) {
-            $this->list['admin']['servers'][$serverId] = [];
+        foreach ($this->getServers() as $resource => $tmp) {
+            $this->list['admin']['servers'][$resource] = [];
         }
-        
-        /** @var PermissionsModel[] $permissions */
-        $permissions = PermissionsModel::get();
-        foreach ($permissions as $permission) {
-            if ($permission->type === 'server') {
-                foreach ($this->getServers() as $serverId => $tmp) {
-                    $key = $this->getElementKey($permission, $serverId);
-                    $this->list['admin']['servers'][$serverId][] = $key;
-                    $value = $this->getAccessForPermission($permission, $serverId);
-                    $title = $this->getTranslate('permissions', $permission->group . '_' . $permission->key);
-                    $this->addToForm($key, $value, $title);
+
+        foreach ($this->getPermissions() as $permission) {
+            if ($permission->type === null) {
+                $this->addToForm($permission);
+            } else {
+                $resources = null;
+                switch ($permission->type) {
+                    case 'server': {
+                        $resources = $this->getServers();
+                    } break;
                 }
-            } elseif ($permission->type === null) {
-                $key = $this->getElementKey($permission);
-                $this->list['admin']['all'][] = $key;
-                $value = $this->getAccessForPermission($permission);
-                $title = $this->getTranslate('permissions', $permission->group . '_' . $permission->key);
-                $this->addToForm($key, $value, $title);
+                if ($resources !== null) {
+                    foreach ($resources as $resource => $tmp) {
+                        $this->addToForm($permission, $resource);
+                    }
+                }
             }
-            
         }
 	}
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function processForm() {
-//        /** @var \Illuminate\Database\Connection$db */
-//        $db = static::$container->get('db')->getConnection();
-//        $db->beginTransaction();
-//        try {
-//            foreach ($this->getPermissions() as $permission) {
-//                $access = 0;
-//                foreach (self::ACCESS_LIST as $a => $v) {
-//                    $val = $this->form->getValue($this->getElementKey($permission, $a));
-//                    if ($val) {
-//                        $access |= $a;
-//                    }
-//                }
-//
-//                if ($access === 0) {
-//                    RolesPermissionsModel::where([
-//                        'role_id' => $this->role->id,
-//                        'permission_id' => $permission->id
-//                    ])->delete();
-//                } else {
-//                    $model = RolesPermissionsModel::where([
-//                        'role_id' => $this->role->id,
-//                        'permission_id' => $permission->id
-//                    ])->first();
-//                    if (!$model) {
-//                        $model = new RolesPermissionsModel();
-//                        $model->fill([
-//                            'role_id' => $this->role->id,
-//                            'permission_id' => $permission->id
-//                        ]);
-//                    }
-//                    $model->access = $access;
-//                    $model->save();
-//                }
-//            }
-//            $db->commit();
-//            return true;
-//        } catch (Exception $e) {
-//            $db->rollBack();
-//            return false;
-//        }
-        return true;
+        /** @var \Illuminate\Database\Connection$db */
+        $db = static::$container->get('db')->getConnection();
+        $db->beginTransaction();
+        try {
+            foreach ($this->getPermissions() as $permission) {
+                if ($permission->type === 'server') {
+                    foreach ($this->getServers() as $serverId => $tmp) {
+                        $this->saveAccess($permission, $serverId);
+                    }
+                } elseif ($permission->type === null) {
+                    $this->saveAccess($permission);
+                }
+            }
+            $db->commit();
+            return true;
+        } catch (Exception $e) {
+            $db->rollBack();
+            return false;
+        }
     }
-    
+
     /**
-     * @param string $key
-     * @param int $value
-     * @param string $title
+     * @param PermissionsModel $permission
+     * @param int|null $resource
+     * @throws Exception
      */
-    protected function addToForm($key, $value, $title) {
+    protected function addToForm(PermissionsModel $permission, $resource = null) {
+        $key = $this->getElementKey($permission, $resource);
+        if ($resource === null) {
+            $this->list['admin']['all'][] = $key;
+        } else {
+            $this->list['admin'][$permission->type][$resource][] = $key;
+        }
+
+        $value = $this->getAccessForPermission($permission, $resource);
+        $title = $this->getTranslate('permissions', $permission->group . '_' . $permission->key);
+
         $this->form
-            ->add(new PermissionAccess($key, $value, [
+            ->add(new PermissionAccessElement($key, $value, [
                 'title' => $title,
             ]));
-        
-//        $this->form->getValidator()
-//            ->set($key, false, [
-//                new Boolean()
-//            ]);
+
+        $this->form->getValidator()
+            ->set($key, false, [
+                new PermissionAccessRule()
+            ], [
+                'check' => Validator::CHECK_ARRAY,
+                'trim' => false,
+                'default' => 0
+            ]);
+    }
+
+    /**
+     * @param PermissionsModel $permission
+     * @param int|null $resource
+     * @throws Exception
+     */
+    protected function saveAccess(PermissionsModel $permission, $resource = null) {
+        $key = $this->getElementKey($permission, $resource);
+        $access = $this->form->getValue($key);
+        if ($access !== null && $access > 0) {
+            $model = RolesPermissionsModel::where([
+                'role_id' => $this->role->id,
+                'permission_id' => $permission->id,
+                'resource' => $resource,
+            ])->first();
+            if (!$model) {
+                $model = new RolesPermissionsModel();
+                $model->fill([
+                    'role_id' => $this->role->id,
+                    'permission_id' => $permission->id,
+                    'resource' => $resource,
+                ]);
+            }
+            $model->access = $access;
+            $model->save();
+        } else {
+            RolesPermissionsModel::where([
+                'role_id' => $this->role->id,
+                'permission_id' => $permission->id,
+                'resource' => $resource,
+            ])->delete();
+        }
     }
     
     /**
@@ -171,6 +177,15 @@ class PermissionsForm extends BaseForm {
             $key .= '_' . $permission->type . '_' . $resource;
         }
         return $key;
+    }
+
+    protected $permissions = null;
+
+    protected function getPermissions() {
+        if ($this->permissions === null) {
+            $this->permissions = PermissionsModel::get();
+        }
+        return $this->permissions;
     }
     
     protected $servers = null;
@@ -197,12 +212,12 @@ class PermissionsForm extends BaseForm {
      * @param int|null $resource
      * @return int
      */
-    protected function getAccessForPermission(PermissionsModel $permission, $resource) {
+    protected function getAccessForPermission(PermissionsModel $permission, $resource = null) {
         if ($this->rolePermissions === null) {
             $this->rolePermissions = [
                 'admin' => [
                     'all' => [],
-                    'servers' => []
+                    'server' => []
                 ]
             ];
             
@@ -242,7 +257,7 @@ class PermissionsForm extends BaseForm {
             return 0;
         }
     
-        $tmp = $tmp[$model->getKey()];
+        $tmp = $tmp[$resource];
         return array_key_exists($permission->key, $tmp)
             ? $tmp[$permission->key]
             : 0;

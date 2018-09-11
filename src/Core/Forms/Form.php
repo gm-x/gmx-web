@@ -131,6 +131,7 @@ class Form implements ArrayAccess {
      */
     public function get($name) {
         if (!$this->exists($name)) {
+            \GameX\Core\Utils::logBacktrace();
             throw new Exception('Element not found');
         }
 

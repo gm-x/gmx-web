@@ -39,7 +39,7 @@ class PermissionsController extends BaseAdminController {
      */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
-        $form = new PermissionsForm($role, $this->getContainer('permissions'));
+        $form = new PermissionsForm($role);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect('admin_role_permissions', [

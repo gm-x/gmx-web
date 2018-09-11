@@ -32,7 +32,7 @@
                     <ul th uk-sticky="offset: 80" style="background: #263137;">
                         <li class="uk-width-expand"><h3>{{ serverName }}</h3></li>
                     </ul>
-                    {% for key in list.admin.servers[serverId] %}
+                    {% for key in list.admin.server[serverId] %}
                         {{ permissions.permission_checkboxes(form, key) }}
                     {% endfor %}
                 {% endfor %}

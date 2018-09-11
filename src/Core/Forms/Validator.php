@@ -48,6 +48,7 @@ class Validator {
      * @param string $key
      * @param bool $required
      * @param array $rules
+     * @param array $options
      * @return Validator
      * @throws \Exception
      */
@@ -63,6 +64,7 @@ class Validator {
         $this->options[$key] = array_merge([
             'check' => Validator::CHECK_LENGTH,
             'trim' => true,
+            'default' => null
         ], $options);
         
         return $this;
@@ -80,10 +82,10 @@ class Validator {
         if (!array_key_exists($key, $this->required)) {
             $this->required[$key] = false;
         }
-        
+
         // TODO: Remove this
         if ($rule instanceof Trim) {
-            //
+            $this->options[$key]['trim'] = true;
         } elseif ($rule instanceof Required) {
             $this->required[$key] = true;
         } else {
@@ -119,7 +121,7 @@ class Validator {
                 $isValid = false;
                 $value = null;
             } else {
-                $value = null;
+                $value = $this->options[$key]['default'];
             }
             $values[$key] = $value;
         }
