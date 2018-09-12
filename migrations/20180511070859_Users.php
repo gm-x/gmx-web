@@ -11,8 +11,8 @@ class Users extends Migration {
 		$this->getSchema()
 			->create($this->getTableName(), function (Blueprint $table) {
 				$table->increments('id');
-				$table->string('login', 255)->unique();
-				$table->string('email', 255)->unique();
+				$table->string('login')->unique();
+				$table->string('email')->unique();
 				$table->string('password', 255);
 				$table->unsignedInteger('role_id')->default('0')->references('id')->on('roles');
 				$table->timestamp('last_login')->nullable();
