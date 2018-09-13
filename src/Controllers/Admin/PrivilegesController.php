@@ -5,6 +5,8 @@ use GameX\Core\Exceptions\NotAllowedException;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
+use \GameX\Constants\Routes\Admin\Players as PlayersRoutes;
+use \GameX\Constants\Routes\Admin\Privileges as PrivilegesRoutes;
 use \GameX\Core\BaseAdminController;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Models\Player;
@@ -22,7 +24,7 @@ class PrivilegesController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_players_list';
+		return PlayersRoutes::ROUTE_LIST;
 	}
 
     /**
@@ -146,7 +148,7 @@ class PrivilegesController extends BaseAdminController {
             $this->getLogger()->exception($e);
         }
 
-		return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
+		return $this->redirect(PrivilegesRoutes::ROUTE_LIST, ['player' => $player->id]);
     }
 
 	/**

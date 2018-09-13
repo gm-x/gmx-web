@@ -1,5 +1,7 @@
 <?php
 use \GameX\Core\BaseController;
+use \GameX\Constants\Routes\Admin\Players;
+use \GameX\Constants\Routes\Admin\Privileges;
 use \GameX\Controllers\Admin\PlayersController;
 use \GameX\Controllers\Admin\PrivilegesController;
 use \GameX\Core\Auth\Permissions;
@@ -12,22 +14,22 @@ return function () {
 
     $this
         ->get('', BaseController::action(PlayersController::class, 'index'))
-        ->setName('admin_players_list')
+        ->setName(Players::ROUTE_LIST)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_LIST));
 
 	$this
 		->map(['GET', 'POST'], '/create', BaseController::action(PlayersController::class, 'create'))
-		->setName('admin_players_create')
+		->setName(Players::ROUTE_CREATE)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_CREATE));
 
     $this
         ->map(['GET', 'POST'], '/{player}/edit', BaseController::action(PlayersController::class, 'edit'))
-        ->setName('admin_players_edit')
+        ->setName(Players::ROUTE_EDIT)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_EDIT));
 
 	$this
 		->post('/{player}/delete', BaseController::action(PlayersController::class, 'delete'))
-		->setName('admin_players_delete')
+		->setName(Players::ROUTE_DELETE)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_DELETE));
 
 	// TODO: Check permissions
@@ -39,19 +41,19 @@ return function () {
 
         $this
             ->get('', BaseController::action(PrivilegesController::class, 'index'))
-            ->setName('admin_players_privileges_list')
+            ->setName(Privileges::ROUTE_LIST)
             ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'privilege', Permissions::ACCESS_CREATE));
 
         $this
             ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PrivilegesController::class, 'create'))
-            ->setName('admin_players_privileges_create');
+            ->setName(Privileges::ROUTE_CREATE);
 
         $this
             ->map(['GET', 'POST'], '/{privilege}/edit', BaseController::action(PrivilegesController::class, 'edit'))
-            ->setName('admin_players_privileges_edit');
+            ->setName(Privileges::ROUTE_VIEW);
 
         $this
             ->post('/{privilege}/delete', BaseController::action(PrivilegesController::class, 'delete'))
-            ->setName('admin_players_privileges_delete');
+            ->setName(Privileges::ROUTE_DELETE);
     });
 };
