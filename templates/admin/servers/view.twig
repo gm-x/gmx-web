@@ -10,8 +10,8 @@
     <div class="uk-float-left">
         {{ admin.back_btn(path_for(routes.admin.servers.ROUTE_LIST), 'l') }}
     </div>
-        {{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id}), 'l') }}
-        {{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id}), 'l') }}
+        {{ admin.edit_btn(path_for(routes.admin.servers.ROUTE_EDIT, {'server': server.id}), 'l') }}
+        {{ admin.delete_btn(path_for(routes.admin.servers.ROUTE_DELETE, {'server': server.id}), 'l') }}
 {% endblock %}
 
 {% block content %}
@@ -55,7 +55,7 @@
             <ul>
                 <li class="uk-width-1-3@m uk-width-2-3@s" data-title="Nick">
                     {% if hasPermissionsForView %}
-                        <a href="{{ path_for('admin_players_list') }}">{{ player.nick }}</a>
+                        <a href="{{ path_for(routes.admin.players.ROUTE_LIST) }}">{{ player.nick }}</a>
                     {% else %}
                         {{ player.nick }}
                     {% endif %}
