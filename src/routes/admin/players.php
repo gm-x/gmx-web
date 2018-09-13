@@ -53,9 +53,5 @@ return function () {
         $this
             ->post('/{privilege}/delete', BaseController::action(PrivilegesController::class, 'delete'))
             ->setName('admin_players_privileges_delete');
-
-        $this
-            ->get('/groups', BaseController::action(PrivilegesController::class, 'groups'))
-            ->setName('admin_players_privileges_groups');
     });
 };

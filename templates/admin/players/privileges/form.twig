@@ -6,7 +6,6 @@
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
-		{{ forms.element_select(form.server) }}
 		{{ forms.element_select(form.group) }}
 		{{ forms.element_input(form.prefix) }}
         {{ forms.element_checkbox(form.forever) }}
@@ -29,20 +28,7 @@
 {% block javascript %}
 <script>
 $(document).ready(function () {
-    var groupSelect = $('#input_player_group');
-    $('#input_admin_server').on('change', function () {
-        var server = $(this).val();
-        if (server === '') {
-            return;
-        }
-        $.get('/admin/players/1/privileges/groups', {server: server})
-            .done(function(data) {
-                groupSelect.empty();
-                $.each(data.groups, function (id, title) {
-                    $('<option/>').val(id).html(title).appendTo(groupSelect);
-                });
-            });
-    });
+
 });
 </script>
 {% endblock %}

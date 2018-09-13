@@ -1,15 +1,16 @@
 <?php
 namespace GameX\Controllers\Admin;
 
+use GameX\Core\Exceptions\NotAllowedException;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Core\BaseAdminController;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Models\Player;
 use \GameX\Models\Privilege;
 use \GameX\Models\Server;
 use \GameX\Forms\Admin\PrivilegesForm;
-use \GameX\Core\Pagination\Pagination;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 use \GameX\Core\Exceptions\RedirectException;
 use \Slim\Exception\NotFoundException;
@@ -49,7 +50,6 @@ class PrivilegesController extends BaseAdminController {
             $data[$serverId]['privileges'][] = $privilege;
         }
 
-		$pagination = new Pagination($player->privileges()->get(), $request);
 		return $this->render('admin/players/privileges/index.twig', [
             'player' => $player,
 			'data' => $data,
@@ -79,8 +79,8 @@ class PrivilegesController extends BaseAdminController {
                 ]);
             }
         } catch (PrivilegeFormException $e) {
-            $this->addErrorMessage($e->getMessage());
-            return $this->redirect($e->getPath(), $e->getParams());
+            $this->addErrorMessage('Add privileges groups before adding privilege');
+            return $this->redirect('admin_servers_groups_create', ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
@@ -102,8 +102,9 @@ class PrivilegesController extends BaseAdminController {
     public function editAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
         $privilege = $this->getPrivilege($request, $response, $args, $player);
+        $server = $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_EDIT);
         
-        $form = new PrivilegesForm($privilege);
+        $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -113,8 +114,8 @@ class PrivilegesController extends BaseAdminController {
                 ]);
             }
         } catch (PrivilegeFormException $e) {
-            $this->addErrorMessage($e->getMessage());
-            return $this->redirect($e->getPath(), $e->getParams());
+            $this->addErrorMessage('Add privileges groups before adding privilege');
+            return $this->redirect('admin_servers_groups_create', ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
@@ -135,6 +136,7 @@ class PrivilegesController extends BaseAdminController {
     public function deleteAction(Request $request, Response $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
 		$privilege = $this->getPrivilege($request, $response, $args, $player);
+        $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_DELETE);
 
         try {
 			$privilege->delete();
@@ -145,27 +147,6 @@ class PrivilegesController extends BaseAdminController {
         }
 
 		return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
-    }
-
-	/**
-	 * @param Request $request
-	 * @param Response $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 * @throws NotFoundException
-	 */
-    public function groupsAction(Request $request, Response $response, array $args = []) {
-        if (!array_key_exists('server', $_GET)) {
-            throw new NotFoundException($request, $response);
-        }
-        $server = Server::find($_GET['server']);
-        if (!$server) {
-            throw new NotFoundException($request, $response);
-        }
-
-        return $response->withJson([
-            'groups' => $this->getGroups($server),
-        ]);
     }
 
 	/**
@@ -204,6 +185,40 @@ class PrivilegesController extends BaseAdminController {
 		return $server;
 	}
 
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param Privilege $privilege
+	 * @return Server
+	 * @throws NotFoundException
+	 * @throws NotAllowedException
+	 */
+	protected function getServerForPrivilege(Request $request, Response $response, Privilege $privilege, $access) {
+	    if (!$privilege->group || !$privilege->group->server) {
+            throw new NotFoundException($request, $response);
+        }
+        
+        $server = $privilege->group->server;
+        
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer('permissions');
+        
+        $user = $this->getUser();
+        if (!$user) {
+            throw new NotAllowedException();
+        }
+        
+        if ($permissions->isRootUser($user)) {
+            return $server;
+        }
+        
+        if (!$user->role || !$permissions->hasAccessToResource($user->role, 'admin', 'privilege', $server->id, $access)) {
+            throw new NotAllowedException();
+        }
+
+		return $server;
+	}
+
     /**
      * @param Request $request
      * @param Response $response
@@ -238,16 +253,4 @@ class PrivilegesController extends BaseAdminController {
 		}
 		return $servers;
     }
-
-	/**
-	 * @param Server $server
-	 * @return array
-	 */
-    protected function getGroups(Server $server) {
-    	$groups = [];
-    	foreach ($server->groups as $group) {
-    		$groups[$group->id] = $group->title;
-		}
-		return $groups;
-	}
 }
