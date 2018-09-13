@@ -1,6 +1,6 @@
 <?php
 
-namespace GameX\Constants\Routes\Admin;
+namespace GameX\Core\Constants\Routes\Admin;
 
 class Privileges {
     const ROUTE_LIST = 'admin_privileges_list';

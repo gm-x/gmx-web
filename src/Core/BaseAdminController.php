@@ -4,6 +4,7 @@ namespace GameX\Core;
 use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
 use \GameX\Core\Menu\MenuItem;
+use \GameX\Core\Constants\Routes\Admin\Players as PlayersRoutes;
 
 abstract class BaseAdminController extends BaseMainController {
 
@@ -37,22 +38,12 @@ abstract class BaseAdminController extends BaseMainController {
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','players'),
-                'admin_players_list',
+                PlayersRoutes::ROUTE_LIST,
                 []
             ));
 
-		// TODO: Make refactoring for this
         /** @var Twig $view */
         $view = $this->getContainer('view');
-//		$modules = $this->getContainer('modules');
-//		/** @var \GameX\Core\Module\ModuleInterface $module */
-//		foreach ($modules as $module) {
-//			$items = $module->getAdminMenuItems();
-//			foreach ($items as $item) {
-//				$menu->add($item);
-//			}
-//		}
-//
 		$view->getEnvironment()->addGlobal('menu', $menu);
 	}
 }

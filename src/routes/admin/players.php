@@ -1,7 +1,7 @@
 <?php
 use \GameX\Core\BaseController;
-use \GameX\Constants\Routes\Admin\Players;
-use \GameX\Constants\Routes\Admin\Privileges;
+use \GameX\Core\Constants\Routes\Admin\Players;
+use \GameX\Core\Constants\Routes\Admin\Privileges;
 use \GameX\Controllers\Admin\PlayersController;
 use \GameX\Controllers\Admin\PrivilegesController;
 use \GameX\Core\Auth\Permissions;

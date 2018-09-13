@@ -1,6 +1,6 @@
 <?php
 
-namespace GameX\Constants\Routes\Admin;
+namespace GameX\Core\Constants\Routes\Admin;
 
 class Players {
     const ROUTE_LIST = 'admin_players_list';

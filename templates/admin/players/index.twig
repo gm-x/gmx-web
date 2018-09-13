@@ -34,7 +34,12 @@
                     <td class="text-nowrap">
                         {% embed "admin/actions.twig" with {'actionId': role.id} %}
                             {% block actions %}
-                                <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="dropdown-item">
+                                <a
+                                    href="{{ path_for(routes.admin.privileges.ROUTE_LIST, {
+                                        'player': player.id
+                                    }) }}"
+                                    class="dropdown-item"
+                                >
                                     <span class="oi oi-people"></span> Privileges
                                 </a>
                             {% endblock %}

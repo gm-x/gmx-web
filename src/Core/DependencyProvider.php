@@ -41,6 +41,7 @@ use \GameX\Core\Auth\ViewExtension as AuthViewExtension;
 use \GameX\Core\Lang\Extension\ViewExtension as LangViewExtension;
 use \GameX\Core\AccessFlags\ViewExtension as AccessFlagsViewExtension;
 use \GameX\Core\Upload\ViewExtension as UploadFlagsViewExtension;
+use \GameX\Core\Constants\ViewExtension as ConstantsViewExtension;
 
 use \GameX\Core\Mail\Helpers\MailHelper;
 
@@ -273,6 +274,7 @@ class DependencyProvider  implements ServiceProviderInterface {
         $view->addExtension(new AccessFlagsViewExtension());
         $view->addExtension(new Twig_Dump());
         $view->addExtension(new UploadFlagsViewExtension($container->get('upload')));
+        $view->addExtension(new ConstantsViewExtension());
 
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
         $view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
