@@ -13,17 +13,17 @@ class PrivilegeFormException extends Exception {
 	/**
 	 * @var array
 	 */
-	protected $data;
+	protected $params;
 
 	/**
 	 * @param string $message
 	 * @param string $path
-	 * @param array $data
+	 * @param array $params
 	 */
-	public function __construct($message, $path, array $data = []) {
+	public function __construct($message, $path, array $params = []) {
 		parent::__construct($message, 0, null);
 		$this->path = $path;
-		$this->data = $data;
+		$this->params = $params;
 	}
 
 	/**
@@ -36,7 +36,7 @@ class PrivilegeFormException extends Exception {
 	/**
 	 * @return array
 	 */
-	public function getData() {
-		return $this->data;
+	public function getParams() {
+		return $this->params;
 	}
 }
