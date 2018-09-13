@@ -4,12 +4,12 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block subnav %}
-    {{ admin.add_btn(path_for('admin_players_create'), 'l') }}
+    {{ admin.add_btn(path_for(routes.admin.players.ROUTE_CREATE), 'l') }}
 {% endblock %}
 
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-    <form action="{{ path_for('admin_players_list') }}" method="get">
+    <form action="{{ path_for(routes.admin.players.ROUTE_LIST) }}" method="get">
         <div class="uk-button-group uk-width-1-2@m">
         <input class="uk-input uk-width-3-4" type="text" name="filter" value="{{ filter }}">
             <div class="uk-inline">
@@ -45,8 +45,16 @@
                             {% endblock %}
                         {% endembed %}
 
-                        {{ admin.edit_btn(path_for('admin_players_edit', {'player': player.id})) }}
-                        {{ admin.delete_btn(path_for('admin_players_delete', {'player': player.id})) }}
+                        {{ admin.edit_btn(
+                            path_for(routes.admin.players.ROUTE_EDIT, {
+                                'player': player.id
+                            })
+                        ) }}
+                        {{ admin.delete_btn(
+                            path_for(routes.admin.players.ROUTE_DELETE, {
+                                'player': player.id
+                            })
+                        ) }}
                     </td>
                 </tr>
             {% endfor %}

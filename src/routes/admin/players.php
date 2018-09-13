@@ -50,7 +50,7 @@ return function () {
 
         $this
             ->map(['GET', 'POST'], '/{privilege}/edit', BaseController::action(PrivilegesController::class, 'edit'))
-            ->setName(Privileges::ROUTE_VIEW);
+            ->setName(Privileges::ROUTE_EDIT);
 
         $this
             ->post('/{privilege}/delete', BaseController::action(PrivilegesController::class, 'delete'))

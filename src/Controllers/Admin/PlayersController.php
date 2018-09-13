@@ -2,18 +2,19 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
-use \GameX\Models\Player;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Constants\Routes\Admin\Players as PlayersRoutes;
 use \GameX\Forms\Admin\PlayersForm;
 use \GameX\Core\Pagination\Pagination;
+use \GameX\Models\Player;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
 class PlayersController extends BaseAdminController {
 
 	protected function getActiveMenu() {
-		return 'admin_players_list';
+		return PlayersRoutes::ROUTE_LIST;
 	}
 
 	/**
@@ -47,7 +48,7 @@ class PlayersController extends BaseAdminController {
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_players_edit', [
+            return $this->redirect(PlayersRoutes::ROUTE_EDIT, [
                 'player' => $player->id,
             ]);
         }
@@ -69,7 +70,7 @@ class PlayersController extends BaseAdminController {
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_players_edit', [
+            return $this->redirect(PlayersRoutes::ROUTE_EDIT, [
                 'player' => $player->id,
             ]);
         }
@@ -97,7 +98,7 @@ class PlayersController extends BaseAdminController {
             $this->getLogger()->exception($e);
 		}
 
-		return $this->redirect('admin_players_list');
+		return $this->redirect(PlayersRoutes::ROUTE_LIST);
 	}
 
     /**

@@ -9,12 +9,10 @@ use \GameX\Core\Constants\Routes\Admin\Privileges;
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
     
     protected $routes = [
-        'routes' => [
-            'admin' => [
-                'players' => Players::class,
-                'privileges' => Privileges::class,
-            ]
-        ]
+        'admin' => [
+            'players' => Players::class,
+            'privileges' => Privileges::class,
+        ],
     ];
     
     public function getGlobals() {
