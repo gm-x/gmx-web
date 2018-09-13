@@ -23,15 +23,22 @@ class PrivilegesForm extends BaseForm {
 	 */
 	protected $name = 'admin_privileges';
 
+    /**
+     * @var Server
+     */
+	protected $server;
+
 	/**
 	 * @var Privilege
 	 */
 	protected $privilege;
 
 	/**
+	 * @param Server $server
 	 * @param Privilege $privilege
 	 */
-	public function __construct(Privilege $privilege) {
+	public function __construct(Server $server, Privilege $privilege) {
+		$this->server = $server;
 		$this->privilege = $privilege;
 	}
     
@@ -61,16 +68,7 @@ class PrivilegesForm extends BaseForm {
 	 * @noreturn
 	 */
 	protected function createForm() {
-        $server = $this->privilege->exists
-            ? $this->privilege->group->server
-            : Server::first();
-
-        if (!$server) {
-        	throw new PrivilegeFormException('Add server before adding privilege', 'admin_servers_list');
-		}
-        
-        $servers = $this->getServers();
-        $groups = $this->getGroups($server);
+        $groups = $this->getGroups();
 		if (!count($groups)) {
 			throw new PrivilegeFormException('Add privileges groups before adding privilege', 'admin_servers_groups_list', ['server' => $server->id]);
 		}
@@ -93,7 +91,6 @@ class PrivilegesForm extends BaseForm {
             ]))
             ->add(new DateElement('forever', $this->privilege->expired_at === null, [
                 'title' => 'Forever',
-                'required' => true,
             ]))
             ->add(new DateElement('expired', $this->privilege->expired_at, [
                 'title' => 'Expired',
@@ -153,12 +150,11 @@ class PrivilegesForm extends BaseForm {
     }
     
     /**
-     * @param Server $server
      * @return array
      */
-    protected function getGroups(Server $server) {
+    protected function getGroups() {
         $groups = [];
-        foreach ($server->groups as $group) {
+        foreach ($this->server->groups as $group) {
             $groups[$group->id] = $group->title;
         }
         return $groups;

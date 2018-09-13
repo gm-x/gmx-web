@@ -33,11 +33,26 @@ class PrivilegesController extends BaseAdminController {
      */
     public function indexAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
+
+        $data = [];
+        /** @var Server $server */
+        foreach (Server::get() as $server) {
+            $data[$server->id] = [
+                'name' => $server->name,
+                'privileges' => []
+            ];
+        }
+
+        /** @var Privilege $privilege */
+        foreach($player->privileges()->with('group')->get() as $privilege) {
+            $serverId = $privilege->group->server_id;
+            $data[$serverId]['privileges'][] = $privilege;
+        }
+
 		$pagination = new Pagination($player->privileges()->get(), $request);
 		return $this->render('admin/players/privileges/index.twig', [
             'player' => $player,
-			'privileges' => $pagination->getCollection(),
-			'pagination' => $pagination,
+			'data' => $data,
 		]);
     }
 
@@ -51,9 +66,10 @@ class PrivilegesController extends BaseAdminController {
      */
     public function createAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
+        $server = $this->getServer($request, $response, $args);
         $privilege = $this->getPrivilege($request, $response, $args, $player);
     
-        $form = new PrivilegesForm($privilege);
+        $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -170,6 +186,22 @@ class PrivilegesController extends BaseAdminController {
 		}
 
 		return $player;
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Server
+	 * @throws NotFoundException
+	 */
+	protected function getServer(Request $request, Response $response, array $args) {
+		$server = Server::find($args['server']);
+		if (!$server) {
+			throw new NotFoundException($request, $response);
+		}
+
+		return $server;
 	}
 
     /**

@@ -33,12 +33,17 @@ return function () {
 	// TODO: Check permissions
     $this->group('/{player}/privileges', function () {
         /** @var \Slim\App $this */
-        $this
-            ->get('', BaseController::action(PrivilegesController::class, 'index'))
-            ->setName('admin_players_privileges_list');
+
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer()->get('permissions');
 
         $this
-            ->map(['GET', 'POST'], '/create', BaseController::action(PrivilegesController::class, 'create'))
+            ->get('', BaseController::action(PrivilegesController::class, 'index'))
+            ->setName('admin_players_privileges_list')
+            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'privilege', Permissions::ACCESS_CREATE));
+
+        $this
+            ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PrivilegesController::class, 'create'))
             ->setName('admin_players_privileges_create');
 
         $this
