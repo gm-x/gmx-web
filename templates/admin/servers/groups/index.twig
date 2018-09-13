@@ -4,7 +4,7 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block subnav %}
-    {{ admin.back_btn(path_for('admin_servers_list'), 'l') }}
+    {{ admin.back_btn(path_for(routes.admin.servers.ROUTE_LIST), 'l') }}
     {{ admin.add_btn(path_for('admin_servers_groups_create', {'server': server.id}), 'l') }}
 {% endblock %}
 

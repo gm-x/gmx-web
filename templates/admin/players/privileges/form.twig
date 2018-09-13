@@ -17,7 +17,9 @@
 			{% else %}
                 <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
 			{% endif %}
-            <a href="{{ path_for('admin_players_privileges_list', {'player': player.id}) }}" class="uk-button uk-button-secondary">
+            <a href="{{ path_for(routes.admin.privileges.ROUTE_LIST, {
+                'player': player.id
+            }) }}" class="uk-button uk-button-secondary">
                 {{ trans('buttons', 'cancel') }}
             </a>
         </div>

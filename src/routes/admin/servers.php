@@ -1,5 +1,6 @@
 <?php
 use \GameX\Core\BaseController;
+use \GameX\Core\Constants\Routes\Admin\Servers;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Controllers\Admin\ServersController;
 use \GameX\Controllers\Admin\GroupsController;
@@ -13,32 +14,32 @@ return function () {
 
     $this
         ->get('', BaseController::action(ServersController::class, 'index'))
-        ->setName('admin_servers_list')
+        ->setName(Servers::ROUTE_LIST)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_LIST));
     
     $this
         ->get('/token', BaseController::action(ServersController::class, 'token'))
-        ->setName('admin_servers_token')
+        ->setName(Servers::ROUTE_TOKEN)
         ->setArgument('permission', 'admin.servers'); // TODO: need another permission
 
     $this
         ->get('/{server}/view', BaseController::action(ServersController::class, 'view'))
-        ->setName('admin_servers_view')
+        ->setName(Servers::ROUTE_VIEW)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_VIEW));
 
     $this
         ->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))
-        ->setName('admin_servers_create')
+        ->setName(Servers::ROUTE_CREATE)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_CREATE));
 
     $this
         ->map(['GET', 'POST'], '/{server}/edit', BaseController::action(ServersController::class, 'edit'))
-        ->setName('admin_servers_edit')
+        ->setName(Servers::ROUTE_EDIT)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_EDIT));
 
     $this
         ->post('/{server}/delete', BaseController::action(ServersController::class, 'delete'))
-        ->setName('admin_servers_delete')
+        ->setName(Servers::ROUTE_DELETE)
         ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_DELETE));
 
     $this->group('/{server}/groups', function () {

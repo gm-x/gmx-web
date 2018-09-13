@@ -1,11 +1,11 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-
 use \GameX\Core\BaseAdminController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Constants\Routes\Admin\Servers as ServersRoutes;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Server;
 use \GameX\Forms\Admin\ServersForm;
@@ -18,7 +18,7 @@ class ServersController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_servers_list';
+		return ServersRoutes::ROUTE_LIST;
 	}
 
 	/**
@@ -63,7 +63,7 @@ class ServersController extends BaseAdminController {
 		$form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_view', [
+            return $this->redirect(ServersRoutes::ROUTE_VIEW, [
                 'server' => $server->id,
             ]);
         }
@@ -88,7 +88,7 @@ class ServersController extends BaseAdminController {
         $form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_view', [
+            return $this->redirect(ServersRoutes::ROUTE_VIEW, [
                 'server' => $server->id,
             ]);
         }
@@ -118,7 +118,7 @@ class ServersController extends BaseAdminController {
             $this->getLogger()->exception($e);
 		}
 
-		return $this->redirect('admin_servers_list');
+		return $this->redirect(ServersRoutes::ROUTE_LIST);
 	}
     
     /**

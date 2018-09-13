@@ -5,6 +5,7 @@ use \Twig_Extension;
 use \Twig_Extension_GlobalsInterface;
 use \GameX\Core\Constants\Routes\Admin\Players;
 use \GameX\Core\Constants\Routes\Admin\Privileges;
+use \GameX\Core\Constants\Routes\Admin\Servers;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
     
@@ -12,6 +13,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
         'admin' => [
             'players' => Players::class,
             'privileges' => Privileges::class,
+            'servers' => Servers::class,
         ],
     ];
     

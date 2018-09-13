@@ -5,6 +5,7 @@ use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
 use \GameX\Core\Menu\MenuItem;
 use \GameX\Core\Constants\Routes\Admin\Players as PlayersRoutes;
+use \GameX\Core\Constants\Routes\Admin\Servers as ServersRoutes;
 
 abstract class BaseAdminController extends BaseMainController {
 
@@ -33,7 +34,7 @@ abstract class BaseAdminController extends BaseMainController {
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','servers'),
-                'admin_servers_list',
+                ServersRoutes::ROUTE_LIST,
                 []
             ))
 			->add(new MenuItem(

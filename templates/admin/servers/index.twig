@@ -4,7 +4,7 @@
 {% import 'macros/paginator.twig' as paginator %}
 
 {% block subnav %}
-    {{ admin.add_btn(path_for('admin_servers_create'), 'l') }}
+    {{ admin.add_btn(path_for(routes.admin.servers.ROUTE_CREATE), 'l') }}
 {% endblock %}
 
 {% block content %}
@@ -18,7 +18,9 @@
 							<div class="uk-width-expand">
 								<h3 class="uk-card-title uk-margin-remove-bottom">
 									{% if hasPermissionsForView %}
-										<a href="{{ path_for('admin_servers_view', {'server': server.id}) }}">{{ server.name }}</a>
+										<a href="{{ path_for(routes.admin.servers.ROUTE_VIEW, {'server': server.id}) }}">
+											{{ server.name }}
+										</a>
 									{% else %}
                                         {{ server.name }}
 									{% endif %}
@@ -48,8 +50,8 @@
                             {% endblock %}
                         {% endembed %}
 
-                        {{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id})) }}
-                        {{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id})) }}
+                        {{ admin.edit_btn(path_for(routes.admin.servers.ROUTE_EDIT, {'server': server.id})) }}
+                        {{ admin.delete_btn(path_for(routes.admin.servers.ROUTE_DELETE, {'server': server.id})) }}
 					</div>
 				</div>
 			</div>
@@ -67,10 +69,15 @@
 			    e.preventDefault();
            		e.target.blur();
 				var serverId = $(this).data('server-id');
-				$.getJSON('{{ path_for('admin_servers_token') }}', {server: serverId})
+				$.getJSON('{{ path_for(routes.admin.servers.ROUTE_TOKEN) }}', {server: serverId})
 					.done(function(data) {
                         if (data.success) {
-                             UIkit.modal.dialog('<div class="uk-modal-header uk-light uk-background-secondary"><h2 class="uk-modal-title">{{ trans('admin_servers', 'token') }}</h2></div><p class="uk-modal-body">' + data.token + '</p>');
+                            var html = [
+                                '<div class="uk-modal-header uk-light uk-background-secondary">' +
+								'<h2 class="uk-modal-title">{{ trans("admin_servers", "token") }}</h2>' +
+								'</div><p class="uk-modal-body">' + data.token + '</p>'
+							];
+                             UIkit.modal.dialog(html.join(''));
                         }
 					})
                     .fail(function() {
