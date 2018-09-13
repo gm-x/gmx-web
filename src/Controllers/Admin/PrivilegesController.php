@@ -51,8 +51,7 @@ class PrivilegesController extends BaseAdminController {
      */
     public function createAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
-        $privilege = $this->getPrivilege($request, $response, $args);
-        $privilege->player_id = $player->id;
+        $privilege = $this->getPrivilege($request, $response, $args, $player);
     
         $form = new PrivilegesForm($privilege);
         try {
@@ -86,7 +85,7 @@ class PrivilegesController extends BaseAdminController {
      */
     public function editAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
-        $privilege = $this->getPrivilege($request, $response, $args);
+        $privilege = $this->getPrivilege($request, $response, $args, $player);
         
         $form = new PrivilegesForm($privilege);
         try {
@@ -119,7 +118,7 @@ class PrivilegesController extends BaseAdminController {
      */
     public function deleteAction(Request $request, Response $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
-		$privilege = $this->getPrivilege($request, $response, $args);
+		$privilege = $this->getPrivilege($request, $response, $args, $player);
 
         try {
 			$privilege->delete();
@@ -177,12 +176,15 @@ class PrivilegesController extends BaseAdminController {
      * @param Request $request
      * @param Response $response
      * @param array $args
+     * @param Player $player
      * @return Privilege
      * @throws NotFoundException
      */
-	protected function getPrivilege(Request $request, Response $response, array $args) {
+	protected function getPrivilege(Request $request, Response $response, array $args, Player $player) {
         if (!array_key_exists('privilege', $args)) {
-            return new Privilege();
+            return new Privilege([
+                'player_id' => $player->id
+            ]);
         }
 
         $privilege = Privilege::with('group')->find($args['privilege']);

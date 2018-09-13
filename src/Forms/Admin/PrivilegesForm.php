@@ -91,6 +91,10 @@ class PrivilegesForm extends BaseForm {
             ->add(new Text('prefix', $this->privilege->prefix, [
                 'title' => 'Prefix',
             ]))
+            ->add(new DateElement('forever', $this->privilege->expired_at === null, [
+                'title' => 'Forever',
+                'required' => true,
+            ]))
             ->add(new DateElement('expired', $this->privilege->expired_at, [
                 'title' => 'Expired',
                 'required' => true,
@@ -109,6 +113,9 @@ class PrivilegesForm extends BaseForm {
                 new Callback([$this, 'checkGroupExists'], 'Group doesn\'t exists')
             ])
             ->set('prefix', false)
+            ->set('forever',false, [
+                new Boolean()
+            ])
             ->set('expired',true, [
                 new DateRule()
             ])
