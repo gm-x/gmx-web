@@ -7,6 +7,7 @@ use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Constants\Admin\ReasonsConstants;
 use \GameX\Constants\Admin\UsersConstants;
+use \GameX\Constants\Admin\RolesConstants;
 
 class PermissionsList extends Migration {
 
@@ -62,9 +63,9 @@ class PermissionsList extends Migration {
                 'key' => UsersConstants::PERMISSION_KEY,
                 'type' => UsersConstants::PERMISSION_TYPE,
             ], [
-                'group' => 'admin',
-                'key' => 'role',
-                'type' => NULL,
+                'group' => RolesConstants::PERMISSION_GROUP,
+                'key' => RolesConstants::PERMISSION_KEY,
+                'type' => RolesConstants::PERMISSION_TYPE,
             ], [
                 'group' => 'admin',
                 'key' => 'role_permission',

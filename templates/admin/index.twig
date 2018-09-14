@@ -1,5 +1,7 @@
 {% extends 'admin/admin.twig' %}
 
+{% block title %}{{ title }} | {{ trans('labels', 'admin_panel') }} | {{ trans('labels', 'index') }}{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
 	<a href="{{ path_for('admin_preferences_index') }}">Preferences</a>

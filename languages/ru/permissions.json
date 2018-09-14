@@ -4,12 +4,15 @@
 	"create": "Созданиие",
 	"edit": "Редактирование",
 	"delete": "Удаление",
-	"user_index": "Главная",
-	"user_punishment": "Наказания",
 	"admin_server": "Сервера",
+	"admin_server_token": "Токен сервера",
+	"admin_group": "Групы привилегий",
+	"admin_reason": "Причины наказаний",
 	"admin_user": "Пользователи",
-	"admin_user_role": "Роли пользователя",
 	"admin_role": "Роли",
 	"admin_player": "Игрок",
+	"admin_privilege": "Привилегии",
+	"admin_preferences": "Настройки",
+	"admin_user_role": "Роли пользователя",
 	"admin_role_permission": "Права роли"
 }

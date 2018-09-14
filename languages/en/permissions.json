@@ -4,12 +4,15 @@
 	"create": "Create",
 	"edit": "Edit",
 	"delete": "Delete",
-	"user_index": "Index",
-	"user_punishment": "Punishments",
 	"admin_server": "Servers",
+	"admin_server_token": "Server token",
+	"admin_group": "Privileges groups",
+	"admin_reason": "Punishments reasons",
 	"admin_user": "Users",
-	"admin_user_role": "User roles",
 	"admin_role": "Roles",
 	"admin_player": "Players",
+	"admin_privilege": "Privileges",
+	"admin_preferences": "Preferences",
+	"admin_user_role": "User roles",
 	"admin_role_permission": "Role permissions"
 }

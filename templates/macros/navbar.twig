@@ -6,7 +6,7 @@
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
                 {% for item in menu %}
-                    {#{% if has_access(item.permission) %}#}
+                    {% if not item.permission or has_access_permission(item.permission[0], item.permission[0]) %}
                         {% if menu.getActiveRoute() == item.route %}
                             <li class="uk-active">
                         {% else %}
@@ -14,7 +14,7 @@
                         {% endif %}
                         <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
                         </li>
-                    {#{% endif %}#}
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>
@@ -76,7 +76,7 @@
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
                     {% for item in menu %}
-                        {#{% if has_access(item.permission) %}#}
+                    {% if not item.permission or has_access_permission(item.permission[0], item.permission[0]) %}
                             {% if menu.getActiveRoute() == item.route %}
                                 <li class="uk-active">
                             {% else %}
@@ -84,7 +84,7 @@
                             {% endif %}
                             <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
                             </li>
-                        {#{% endif %}#}
+                        {% endif %}
                     {% endfor %}
                 </ul>
 

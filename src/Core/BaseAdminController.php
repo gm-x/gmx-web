@@ -20,27 +20,25 @@ abstract class BaseAdminController extends BaseMainController {
 			->setActiveRoute($this->getActiveMenu())
 			->add(new MenuItem(
 			    $lang->format('admin_menu','preferences'),
-                'admin_preferences_index',
-                []
+                'admin_preferences_index', []
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','users'),
-                UsersConstants::ROUTE_LIST,
-                [UsersConstants::PERMISSION_GROUP, UsersConstants::PERMISSION_KEY]
+                UsersConstants::ROUTE_LIST, [],
+                [ServersConstants::PERMISSION_GROUP, ServersConstants::PERMISSION_KEY]
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','roles'),
-                'admin_roles_list',
-                []
+                'admin_roles_list', []
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','servers'),
-                ServersConstants::ROUTE_LIST,
+                ServersConstants::ROUTE_LIST, [],
                 [ServersConstants::PERMISSION_GROUP, ServersConstants::PERMISSION_KEY]
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','players'),
-                PlayersConstants::ROUTE_LIST,
+                PlayersConstants::ROUTE_LIST, [],
                 [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY]
             ));
 

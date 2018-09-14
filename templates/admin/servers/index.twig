@@ -3,6 +3,8 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
+{% block title %}{{ parent() }} | {{ trans('admin_menu', 'servers') }}{% endblock %}
+
 {% block subnav %}
     {{ admin.add_btn(path_for(constants.admin.servers.ROUTE_CREATE), 'l') }}
 {% endblock %}

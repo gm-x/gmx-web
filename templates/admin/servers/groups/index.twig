@@ -3,6 +3,8 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
+{% block title %}{{ parent() }} | {{ trans('admin_menu', 'servers') }} | {{ server.name }} | Groups{% endblock %}
+
 {% block subnav %}
     {% if has_access_permission(
 		constants.admin.servers.PERMISSION_GROUP,
