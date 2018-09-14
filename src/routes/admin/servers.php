@@ -16,8 +16,8 @@ return function () {
         ->get('', BaseController::action(ServersController::class, 'index'))
         ->setName(ServersConstants::ROUTE_LIST)
         ->add($permissions->hasAccessToPermissionMiddleware(
-            ServersConstants::PERMISSIONS_GROUP,
-            ServersConstants::PERMISSION_SERVER,
+            ServersConstants::PERMISSION_GROUP,
+            ServersConstants::PERMISSION_KEY,
             Permissions::ACCESS_LIST
         ));
     
@@ -26,8 +26,8 @@ return function () {
         ->setName(ServersConstants::ROUTE_TOKEN)
         ->add($permissions->hasAccessToResourceMiddleware(
             'server',
-            ServersConstants::PERMISSIONS_GROUP,
-            ServersConstants::PERMISSION_TOKEN,
+            ServersConstants::PERMISSION_TOKEN_GROUP,
+            ServersConstants::PERMISSION_TOKEN_KEY,
             Permissions::ACCESS_CREATE | Permissions::ACCESS_CREATE
         ));
 
@@ -35,8 +35,8 @@ return function () {
         ->get('/{server}/view', BaseController::action(ServersController::class, 'view'))
         ->setName(ServersConstants::ROUTE_VIEW)
         ->add($permissions->hasAccessToPermissionMiddleware(
-            ServersConstants::PERMISSIONS_GROUP,
-            ServersConstants::PERMISSION_SERVER,
+            ServersConstants::PERMISSION_GROUP,
+            ServersConstants::PERMISSION_KEY,
             Permissions::ACCESS_VIEW
         ));
 
@@ -44,8 +44,8 @@ return function () {
         ->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))
         ->setName(ServersConstants::ROUTE_CREATE)
         ->add($permissions->hasAccessToPermissionMiddleware(
-            ServersConstants::PERMISSIONS_GROUP,
-            ServersConstants::PERMISSION_SERVER,
+            ServersConstants::PERMISSION_GROUP,
+            ServersConstants::PERMISSION_KEY,
             Permissions::ACCESS_CREATE
         ));
 
@@ -53,8 +53,8 @@ return function () {
         ->map(['GET', 'POST'], '/{server}/edit', BaseController::action(ServersController::class, 'edit'))
         ->setName(ServersConstants::ROUTE_EDIT)
         ->add($permissions->hasAccessToPermissionMiddleware(
-            ServersConstants::PERMISSIONS_GROUP,
-            ServersConstants::PERMISSION_SERVER,
+            ServersConstants::PERMISSION_GROUP,
+            ServersConstants::PERMISSION_KEY,
             Permissions::ACCESS_EDIT
         ));
 
@@ -62,8 +62,8 @@ return function () {
         ->post('/{server}/delete', BaseController::action(ServersController::class, 'delete'))
         ->setName(ServersConstants::ROUTE_DELETE)
         ->add($permissions->hasAccessToPermissionMiddleware(
-            ServersConstants::PERMISSIONS_GROUP,
-            ServersConstants::PERMISSION_SERVER,
+            ServersConstants::PERMISSION_GROUP,
+            ServersConstants::PERMISSION_KEY,
             Permissions::ACCESS_DELETE
         ));
 

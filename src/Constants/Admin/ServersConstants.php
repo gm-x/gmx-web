@@ -11,8 +11,12 @@ class ServersConstants {
     const ROUTE_TOKEN = 'admin_servers_token';
 
     const PERMISSIONS_GROUP = 'admin';
-    const PERMISSIONS_TYPE = 'server';
 
-    const PERMISSION_SERVER = 'server';
-    const PERMISSION_TOKEN = 'server_token';
+    const PERMISSION_GROUP = 'admin';
+    const PERMISSION_TYPE = null;
+    const PERMISSION_KEY = 'server';
+
+    const PERMISSION_TOKEN_GROUP = 'admin';
+    const PERMISSION_TOKEN_TYPE = 'server';
+    const PERMISSION_TOKEN_KEY = 'server_token';
 }

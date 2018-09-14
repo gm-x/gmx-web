@@ -35,12 +35,12 @@ abstract class BaseAdminController extends BaseMainController {
 			->add(new MenuItem(
 			    $lang->format('admin_menu','servers'),
                 ServersConstants::ROUTE_LIST,
-                []
+                [ServersConstants::PERMISSION_GROUP, ServersConstants::PERMISSION_KEY]
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','players'),
                 PlayersConstants::ROUTE_LIST,
-                []
+                [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY]
             ));
 
         /** @var Twig $view */

@@ -7,27 +7,49 @@
 {% endblock %}
 
 {% block subnav %}
-    <div class="uk-float-left">
-        {{ admin.back_btn(path_for(constants.admin.servers.ROUTE_LIST), 'l') }}
-    </div>
+
+    {% if has_access_permission(
+        constants.admin.servers.PERMISSION_GROUP,
+        constants.admin.servers.PERMISSION_KEY,
+        permissions.ACCESS_LIST
+    ) %}
+        <div class="uk-float-left">
+            {{ admin.back_btn(path_for(constants.admin.servers.ROUTE_LIST), 'l') }}
+        </div>
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.servers.PERMISSION_GROUP,
+        constants.admin.servers.PERMISSION_KEY,
+        permissions.ACCESS_EDIT
+    ) %}
         {{ admin.edit_btn(path_for(constants.admin.servers.ROUTE_EDIT, {'server': server.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.servers.PERMISSION_GROUP,
+        constants.admin.servers.PERMISSION_KEY,
+        permissions.ACCESS_DELETE
+    ) %}
         {{ admin.delete_btn(path_for(constants.admin.servers.ROUTE_DELETE, {'server': server.id}), 'l') }}
-        {% if has_access_resource(
-            constants.admin.servers.PERMISSIONS_GROUP,
-            constants.admin.servers.PERMISSION_TOKEN,
-            server.id,
-            [permissions.ACCESS_VIEW, permissions.ACCESS_CREATE]
-        ) %}
-            {{ admin.circle_btn({
-                'href': path_for(constants.admin.servers.ROUTE_TOKEN, {'server': server.id}),
-                'title': trans('admin_servers', 'token'),
-                'icon': 'fas fa-barcode',
-                'size': 'l',
-                'attrs': {
-                    'id': 'tokenModal'
-                }
-            }) }}
-        {% endif %}
+    {% endif %}
+
+    {% if has_access_resource(
+        constants.admin.servers.PERMISSION_TOKEN_GROUP,
+        constants.admin.servers.PERMISSION_TOKEN_KEY,
+        server.id,
+        [permissions.ACCESS_VIEW, permissions.ACCESS_CREATE]
+    ) %}
+        {{ admin.circle_btn({
+            'href': path_for(constants.admin.servers.ROUTE_TOKEN, {'server': server.id}),
+            'title': trans('admin_servers', 'token'),
+            'icon': 'fas fa-barcode',
+            'size': 'l',
+            'attrs': {
+                'id': 'tokenModal'
+            }
+        }) }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}

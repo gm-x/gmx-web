@@ -9,7 +9,11 @@
 
 {% block content %}
 	<div class="uk-child-width-1-2@s" uk-grid>
-        {% set hasPermissionsForView = has_access_permission('admin', 'server', 'view') %}
+        {% set hasPermissionsForView = has_access_permission(
+            constants.admin.servers.PERMISSION_GROUP,
+            constants.admin.servers.PERMISSION_KEY,
+            permissions.ACCESS_VIEW
+		) %}
         {% for server in servers %}
 			<div>
 				<div class="uk-card uk-card-default">
@@ -45,8 +49,21 @@
                             {% endblock %}
                         {% endembed %}
 
-                        {{ admin.edit_btn(path_for(constants.admin.servers.ROUTE_EDIT, {'server': server.id})) }}
-                        {{ admin.delete_btn(path_for(constants.admin.servers.ROUTE_DELETE, {'server': server.id})) }}
+                        {% if has_access_permission(
+                            constants.admin.servers.PERMISSION_GROUP,
+                            constants.admin.servers.PERMISSION_KEY,
+                            permissions.ACCESS_EDIT
+						) %}
+                        	{{ admin.edit_btn(path_for(constants.admin.servers.ROUTE_EDIT, {'server': server.id})) }}
+						{% endif %}
+
+                        {% if has_access_permission(
+                            constants.admin.servers.PERMISSION_GROUP,
+                            constants.admin.servers.PERMISSION_KEY,
+                            permissions.ACCESS_DELETE
+						) %}
+                        	{{ admin.delete_btn(path_for(constants.admin.servers.ROUTE_DELETE, {'server': server.id})) }}
+						{% endif %}
 					</div>
 				</div>
 			</div>

@@ -8,4 +8,8 @@ class PrivilegesConstants {
     const ROUTE_CREATE = 'admin_privileges_create';
     const ROUTE_EDIT = 'admin_privileges_edit';
     const ROUTE_DELETE = 'admin_privileges_delete';
+
+    const PERMISSION_GROUP = 'admin';
+    const PERMISSION_TYPE = 'server';
+    const PERMISSION_KEY = 'privilege';
 }

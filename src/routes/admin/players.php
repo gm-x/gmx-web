@@ -15,24 +15,39 @@ return function () {
     $this
         ->get('', BaseController::action(PlayersController::class, 'index'))
         ->setName(PlayersConstants::ROUTE_LIST)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_LIST));
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_LIST
+        ));
 
 	$this
 		->map(['GET', 'POST'], '/create', BaseController::action(PlayersController::class, 'create'))
 		->setName(PlayersConstants::ROUTE_CREATE)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_CREATE));
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_CREATE
+        ));
 
     $this
         ->map(['GET', 'POST'], '/{player}/edit', BaseController::action(PlayersController::class, 'edit'))
         ->setName(PlayersConstants::ROUTE_EDIT)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_EDIT));
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_EDIT
+        ));
 
 	$this
 		->post('/{player}/delete', BaseController::action(PlayersController::class, 'delete'))
 		->setName(PlayersConstants::ROUTE_DELETE)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_DELETE));
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_DELETE
+        ));
 
-	// TODO: Check permissions
     $this->group('/{player}/privileges', function () {
         /** @var \Slim\App $this */
 
@@ -41,12 +56,17 @@ return function () {
 
         $this
             ->get('', BaseController::action(PrivilegesController::class, 'index'))
-            ->setName(PrivilegesConstants::ROUTE_LIST)
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'privilege', Permissions::ACCESS_CREATE));
+            ->setName(PrivilegesConstants::ROUTE_LIST);
 
         $this
             ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PrivilegesController::class, 'create'))
-            ->setName(PrivilegesConstants::ROUTE_CREATE);
+            ->setName(PrivilegesConstants::ROUTE_CREATE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                PrivilegesConstants::PERMISSION_GROUP,
+                PrivilegesConstants::PERMISSION_KEY,
+                Permissions::ACCESS_CREATE
+            ));
 
         $this
             ->map(['GET', 'POST'], '/{privilege}/edit', BaseController::action(PrivilegesController::class, 'edit'))

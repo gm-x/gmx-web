@@ -40,16 +40,20 @@ class PrivilegesController extends BaseAdminController {
         $data = [];
         /** @var Server $server */
         foreach (Server::get() as $server) {
-            $data[$server->id] = [
-                'name' => $server->name,
-                'privileges' => []
-            ];
+            if ($this->hasAccess($server->id, Permissions::ACCESS_LIST)) {
+                $data[$server->id] = [
+                    'name' => $server->name,
+                    'privileges' => []
+                ];
+            }
         }
 
         /** @var Privilege $privilege */
         foreach($player->privileges()->with('group')->get() as $privilege) {
             $serverId = $privilege->group->server_id;
-            $data[$serverId]['privileges'][] = $privilege;
+            if (array_key_exists($serverId, $data)) {
+                $data[$serverId]['privileges'][] = $privilege;
+            }
         }
 
 		return $this->render('admin/players/privileges/index.twig', [
@@ -193,6 +197,7 @@ class PrivilegesController extends BaseAdminController {
 	 * @param Request $request
 	 * @param Response $response
 	 * @param Privilege $privilege
+	 * @param int $access
 	 * @return Server
 	 * @throws NotFoundException
 	 * @throws NotAllowedException
@@ -204,19 +209,7 @@ class PrivilegesController extends BaseAdminController {
         
         $server = $privilege->group->server;
         
-        /** @var Permissions $permissions */
-        $permissions = $this->getContainer('permissions');
-        
-        $user = $this->getUser();
-        if (!$user) {
-            throw new NotAllowedException();
-        }
-        
-        if ($permissions->isRootUser($user)) {
-            return $server;
-        }
-        
-        if (!$user->role || !$permissions->hasAccessToResource($user->role, 'admin', 'privilege', $server->id, $access)) {
+        if (!$this->hasAccess($server->id, $access)) {
             throw new NotAllowedException();
         }
 
@@ -256,5 +249,40 @@ class PrivilegesController extends BaseAdminController {
     		$servers[$server->id] = $server->name;
 		}
 		return $servers;
+    }
+
+    /**
+     * @param int $serverId
+     * @param int $access
+     * @return bool
+     */
+    protected function hasAccess($serverId, $access) {
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer('permissions');
+
+        $user = $this->getUser();
+        if (!$user) {
+            return false;
+        }
+
+        if ($permissions->isRootUser($user)) {
+            return true;
+        }
+
+        if (!$user->role) {
+            return false;
+        }
+
+        if (!$permissions->hasAccessToResource(
+            $user->role,
+            PrivilegesConstants::PERMISSION_GROUP,
+            PrivilegesConstants::PERMISSION_KEY,
+            $serverId,
+            $access
+        )) {
+            return false;
+        }
+
+        return true;
     }
 }

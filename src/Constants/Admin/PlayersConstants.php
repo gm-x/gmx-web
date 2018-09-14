@@ -8,4 +8,9 @@ class PlayersConstants {
     const ROUTE_CREATE = 'admin_players_create';
     const ROUTE_EDIT = 'admin_players_edit';
     const ROUTE_DELETE = 'admin_players_delete';
+
+    const PERMISSION_GROUP = 'admin';
+    const PERMISSION_TYPE = null;
+    const PERMISSION_KEY = 'player';
+
 }
