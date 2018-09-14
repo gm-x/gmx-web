@@ -25,8 +25,8 @@ class Select extends BaseElement {
 		parent::__construct($name, $value, $params);
 
 		$this->options = $options;
-		if (array_key_exists('empty_option', $options)) {
-			$this->emptyOption = (string) $options['empty_option'];
+		if (array_key_exists('empty_option', $params)) {
+			$this->emptyOption = (string) $params['empty_option'];
 		}
 	}
     
@@ -61,6 +61,13 @@ class Select extends BaseElement {
 
 	/**
 	 * @return bool
+	 */
+	public function hasEmptyOption() {
+		return $this->emptyOption !== null;
+	}
+
+	/**
+	 * @return string
 	 */
 	public function getEmptyOption() {
 		return $this->emptyOption;

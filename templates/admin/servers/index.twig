@@ -53,13 +53,13 @@
 								</li>
 								<li>
                                     {% if has_access_resource(
-										constants.admin.reasons.PERMISSION_GROUP,
-										constants.admin.reasons.PERMISSION_KEY,
+										constants.admin.groups.PERMISSION_GROUP,
+										constants.admin.groups.PERMISSION_KEY,
 										server.id,
 										permissions.ACCESS_LIST
                                     ) %}
 										<a
-											href="{{ path_for(constants.admin.reasons.ROUTE_LIST, {'server': server.id}) }}"
+											href="{{ path_for(constants.admin.rea.ROUTE_LIST, {'server': server.id}) }}"
 											class="dropdown-item"
 										>
 											<i class="fas fa-tasks uk-margin-small-right"></i> &nbsp;{{ trans('admin_servers', 'reasons') }}

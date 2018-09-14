@@ -9,6 +9,7 @@ use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Constants\Admin\ReasonsConstants;
+use \GameX\Constants\Admin\UsersConstants;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
     
@@ -19,6 +20,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
             'servers' => ServersConstants::class,
             'groups' => GroupsConstants::class,
             'reasons' => ReasonsConstants::class,
+            'users' => UsersConstants::class,
         ],
     ];
     

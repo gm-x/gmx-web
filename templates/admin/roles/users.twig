@@ -20,7 +20,14 @@
                     <div class="uk-margin">
                         <div class="uk-card uk-card-default uk-card-body uk-card-small">
                             <span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
-                            {{ user.email }} {{ admin.edit_btn(path_for('admin_users_edit', {'user': user.id})) }}
+                            {{ user.email }}
+                            {% if has_access_permission(
+                                constants.admin.users.PERMISSION_GROUP,
+                                constants.admin.users.PERMISSION_KEY,
+                                permissions.ACCESS_EDIT
+                            ) %}
+                                {{ admin.edit_btn(path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id})) }}
+                            {% endif %}
                         </div>
                     </div>
                 {% endfor %}

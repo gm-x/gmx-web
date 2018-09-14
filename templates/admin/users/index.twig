@@ -9,7 +9,11 @@
 
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-    {% set hasPermissionsForView = has_access_permission('admin', 'user', 'view') %}
+    {% set hasPermissionsForView = has_access_permission(
+        constants.admin.users.PERMISSION_GROUP,
+        constants.admin.users.PERMISSION_KEY,
+        premissions.ACCESS_VIEW
+    ) %}
     <div f-table f-divider>
         <ul th>
             <li class="uk-width-1-6@m uk-visible@m"></li>
@@ -22,13 +26,21 @@
             <li class="uk-width-1-6@m uk-visible@m"><span uk-icon="icon: user" class="avatar"></span></li>
             <li class="uk-width-1-3@m uk-width-2-3@s">
                 {% if hasPermissionsForView %}
-                    <a href="{{ path_for('admin_users_view', {'user': user.id}) }}">{{ user.login }}</a>
+                    <a href="{{ path_for(constants.admin.users.ROUTE_VIEW, {'user': user.id}) }}">{{ user.login }}</a>
                 {% else %}
                     {{ user.login }}
                 {% endif %}
             </li>
             <li class="uk-width-1-3@m uk-width-1-3@s">{{ user.email }}</li>
-            <li class="uk-width-1-6@m">{{ admin.edit_btn(path_for('admin_users_edit', {'user': user.id})) }}</li>
+            <li class="uk-width-1-6@m">
+                {% if has_access_permission(
+                    constants.admin.users.PERMISSION_GROUP,
+                    constants.admin.users.PERMISSION_KEY,
+                    premissions.ACCESS_EDIT
+                ) %}
+                    {{ admin.edit_btn(path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id})) }}
+                {% endif %}
+            </li>
         </ul>
         {% endfor %}
     </div>
