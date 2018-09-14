@@ -22,6 +22,21 @@ class PermissionsForm extends BaseForm {
      * @var RoleModel
      */
 	protected $role;
+
+    /**
+     * @var array|null
+     */
+    protected $rolePermissions = null;
+
+    /**
+     * @var PermissionsModel[]|null
+     */
+    protected $permissions = null;
+
+    /**
+     * @var Server[]|null
+     */
+    protected $servers = null;
     
     /**
      * @var array
@@ -178,17 +193,19 @@ class PermissionsForm extends BaseForm {
         return $key;
     }
 
-    protected $permissions = null;
-
+    /**
+     * @return PermissionsModel[]
+     */
     protected function getPermissions() {
         if ($this->permissions === null) {
             $this->permissions = PermissionsModel::get();
         }
         return $this->permissions;
     }
-    
-    protected $servers = null;
-    
+
+    /**
+     * @return Server[]
+     */
     public function getServers() {
         if ($this->servers === null) {
             $this->servers = [];
@@ -200,11 +217,6 @@ class PermissionsForm extends BaseForm {
         
         return $this->servers;
     }
-    
-    /**
-     * @var array|null
-     */
-    protected $rolePermissions = null;
     
     /**
      * @param PermissionsModel $permission
