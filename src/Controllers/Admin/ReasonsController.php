@@ -4,6 +4,7 @@ namespace GameX\Controllers\Admin;
 use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Constants\Admin\ReasonsConstants;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Reason;
 use \GameX\Models\Server;
@@ -49,7 +50,7 @@ class ReasonsController extends BaseAdminController {
         $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_reasons_edit', [
+            return $this->redirect(ReasonsConstants::ROUTE_EDIT, [
                 'reason' => $reason->id
             ]);
         }
@@ -74,7 +75,7 @@ class ReasonsController extends BaseAdminController {
         $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_reasons_edit', [
+            return $this->redirect(ReasonsConstants::ROUTE_EDIT, [
                 'reason' => $reason->id
             ]);
         }
@@ -104,7 +105,7 @@ class ReasonsController extends BaseAdminController {
             $this->getLogger()->exception($e);
         }
         
-        return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
+        return $this->redirect(ReasonsConstants::ROUTE_LIST, ['server' => $server->id]);
     }
     
     /**

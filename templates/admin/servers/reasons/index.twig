@@ -3,6 +3,25 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
+{% block subnav %}
+    {% if has_access_permission(
+		constants.admin.servers.PERMISSION_GROUP,
+		constants.admin.servers.PERMISSION_KEY,
+		permissions.ACCESS_LIST
+    ) %}
+        {{ admin.back_btn(path_for(constants.admin.servers.ROUTE_LIST), 'l') }}
+    {% endif %}
+
+    {% if has_access_resource(
+		constants.admin.reasons.PERMISSION_GROUP,
+		constants.admin.reasons.PERMISSION_KEY,
+		server.id,
+		permissions.ACCESS_CREATE
+    ) %}
+        {{ admin.add_btn(path_for(constants.admin.reasons.ROUTE_CREATE, {'server': server.id}), 'l') }}
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
 	<div class="uk-overflow-auto">
@@ -26,8 +45,27 @@
 						{% endif %}
 					</td>
 					<td class="text-nowrap">
-                        {{ admin.edit_btn(path_for('admin_servers_reasons_edit', {'server': server.id, 'reason': reason.id})) }}
-                        {{ admin.delete_btn(path_for('admin_servers_reasons_delete', {'server': server.id, 'reason': reason.id})) }}
+                        {% if has_access_resource(
+							constants.admin.reasons.PERMISSION_GROUP,
+							constants.admin.reasons.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_EDIT
+                        ) %}
+                            {{ admin.edit_btn(
+                            	path_for(constants.admin.reasons.ROUTE_EDIT, {'server': server.id, 'reason': reason.id})
+                            ) }}
+                        {% endif %}
+
+                        {% if has_access_resource(
+							constants.admin.reasons.PERMISSION_GROUP,
+							constants.admin.reasons.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_DELETE
+                        ) %}
+                            {{ admin.delete_btn(
+                            	path_for(constants.admin.reasons.ROUTE_DELETE, {'server': server.id, 'reason': reason.id})
+                            ) }}
+                        {% endif %}
 					</td>
 				</tr>
 			{% endfor %}
@@ -35,11 +73,5 @@
 		</table>
 	</div>
 	{{ paginator.render(pagination) }}
-	<a href="{{ path_for('admin_servers_reasons_create', {'server': server.id}) }}" class="uk-button uk-button-primary">
-		{{ trans('buttons', 'create') }}
-	</a>
-	<a href="{{ path_for(constants.admin.servers.ROUTE_LIST) }}" class="uk-button uk-button-secondary">
-		{{ trans('buttons', 'cancel') }}
-	</a>
 </div>
 {% endblock %}

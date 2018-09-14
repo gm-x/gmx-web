@@ -7,6 +7,8 @@ use \GameX\Core\Auth\Permissions;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\ServersConstants;
+use \GameX\Constants\Admin\GroupsConstants;
+use \GameX\Constants\Admin\ReasonsConstants;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
     
@@ -15,6 +17,8 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
             'players' => PlayersConstants::class,
             'privileges' => PrivilegesConstants::class,
             'servers' => ServersConstants::class,
+            'groups' => GroupsConstants::class,
+            'reasons' => ReasonsConstants::class,
         ],
     ];
     

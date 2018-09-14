@@ -1,6 +1,8 @@
 <?php
 use \GameX\Core\BaseController;
 use \GameX\Constants\Admin\ServersConstants;
+use \GameX\Constants\Admin\GroupsConstants;
+use \GameX\Constants\Admin\ReasonsConstants;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Controllers\Admin\ServersController;
 use \GameX\Controllers\Admin\GroupsController;
@@ -75,23 +77,43 @@ return function () {
 
         $this
             ->get('', BaseController::action(GroupsController::class, 'index'))
-            ->setName('admin_servers_groups_list')
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_group', Permissions::ACCESS_LIST));
+            ->setName(GroupsConstants::ROUTE_LIST)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                GroupsConstants::PERMISSION_GROUP,
+                GroupsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_LIST
+            ));
 
         $this
             ->map(['GET', 'POST'], '/create', BaseController::action(GroupsController::class, 'create'))
-            ->setName('admin_servers_groups_create')
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_group', Permissions::ACCESS_CREATE));
+            ->setName(GroupsConstants::ROUTE_CREATE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                GroupsConstants::PERMISSION_GROUP,
+                GroupsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_CREATE
+            ));
 
         $this
             ->map(['GET', 'POST'], '/{group}/edit', BaseController::action(GroupsController::class, 'edit'))
-            ->setName('admin_servers_groups_edit')
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_group', Permissions::ACCESS_EDIT));
+            ->setName(GroupsConstants::ROUTE_EDIT)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                GroupsConstants::PERMISSION_GROUP,
+                GroupsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_EDIT
+            ));
 
         $this
             ->post('/{group}/delete', BaseController::action(GroupsController::class, 'delete'))
-            ->setName('admin_servers_groups_delete')
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_group', Permissions::ACCESS_DELETE));
+            ->setName(GroupsConstants::ROUTE_DELETE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                GroupsConstants::PERMISSION_GROUP,
+                GroupsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_DELETE
+            ));
     });
     
     $this->group('/{server}/reasons', function () {
@@ -102,22 +124,42 @@ return function () {
 
         $this
             ->get('', BaseController::action(ReasonsController::class, 'index'))
-            ->setName('admin_servers_reasons_list')
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_reason', Permissions::ACCESS_LIST));
+            ->setName(ReasonsConstants::ROUTE_LIST)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                ReasonsConstants::PERMISSION_GROUP,
+                ReasonsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_LIST
+            ));
         
         $this
             ->map(['GET', 'POST'], '/create', BaseController::action(ReasonsController::class, 'create'))
-            ->setName('admin_servers_reasons_create')
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_reason', Permissions::ACCESS_CREATE));
+            ->setName(ReasonsConstants::ROUTE_CREATE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                ReasonsConstants::PERMISSION_GROUP,
+                ReasonsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_CREATE
+            ));
         
         $this
             ->map(['GET', 'POST'], '/{reason}/edit', BaseController::action(ReasonsController::class, 'edit'))
-            ->setName('admin_servers_reasons_edit')
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_reason', Permissions::ACCESS_EDIT));
+            ->setName(ReasonsConstants::ROUTE_EDIT)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                ReasonsConstants::PERMISSION_GROUP,
+                ReasonsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_EDIT
+            ));
         
         $this
             ->post('/{reason}/delete', BaseController::action(ReasonsController::class, 'delete'))
-            ->setName('admin_servers_reasons_delete')
-            ->add($permissions->hasAccessToResourceMiddleware('server', 'admin', 'server_reason', Permissions::ACCESS_DELETE));
+            ->setName(ReasonsConstants::ROUTE_DELETE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                ReasonsConstants::PERMISSION_GROUP,
+                ReasonsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_DELETE
+            ));
     });
 };

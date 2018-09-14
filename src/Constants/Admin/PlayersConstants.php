@@ -12,5 +12,4 @@ class PlayersConstants {
     const PERMISSION_GROUP = 'admin';
     const PERMISSION_TYPE = null;
     const PERMISSION_KEY = 'player';
-
 }

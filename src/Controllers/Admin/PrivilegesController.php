@@ -7,6 +7,7 @@ use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
+use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Core\BaseAdminController;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Models\Player;
@@ -86,7 +87,7 @@ class PrivilegesController extends BaseAdminController {
             }
         } catch (PrivilegeFormException $e) {
             $this->addErrorMessage('Add privileges groups before adding privilege');
-            return $this->redirect('admin_servers_groups_create', ['server' => $server->id]);
+            return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
@@ -122,7 +123,7 @@ class PrivilegesController extends BaseAdminController {
             }
         } catch (PrivilegeFormException $e) {
             $this->addErrorMessage('Add privileges groups before adding privilege');
-            return $this->redirect('admin_servers_groups_create', ['server' => $server->id]);
+            return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [

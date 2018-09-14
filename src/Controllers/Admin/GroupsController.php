@@ -4,6 +4,7 @@ namespace GameX\Controllers\Admin;
 use \GameX\Models\Server;
 use \GameX\Models\Group;
 use \GameX\Core\BaseAdminController;
+use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -49,7 +50,7 @@ class GroupsController extends BaseAdminController {
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_groups_edit', [
+            return $this->redirect(GroupsConstants::ROUTE_EDIT, [
                 'server' => $server->id,
                 'group' => $group->id
             ]);
@@ -75,7 +76,7 @@ class GroupsController extends BaseAdminController {
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_groups_edit', [
+            return $this->redirect(GroupsConstants::ROUTE_EDIT, [
                 'server' => $server->id,
                 'group' => $group->id
             ]);
@@ -106,7 +107,7 @@ class GroupsController extends BaseAdminController {
             $this->getLogger()->exception($e);
         }
 
-        return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
+        return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
     }
 
 	/**
