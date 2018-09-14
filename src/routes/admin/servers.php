@@ -1,6 +1,6 @@
 <?php
 use \GameX\Core\BaseController;
-use \GameX\Core\Constants\Routes\Admin\Servers;
+use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Controllers\Admin\ServersController;
 use \GameX\Controllers\Admin\GroupsController;
@@ -14,33 +14,58 @@ return function () {
 
     $this
         ->get('', BaseController::action(ServersController::class, 'index'))
-        ->setName(Servers::ROUTE_LIST)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_LIST));
+        ->setName(ServersConstants::ROUTE_LIST)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            ServersConstants::PERMISSIONS_GROUP,
+            ServersConstants::PERMISSION_SERVER,
+            Permissions::ACCESS_LIST
+        ));
     
     $this
-        ->get('/token', BaseController::action(ServersController::class, 'token'))
-        ->setName(Servers::ROUTE_TOKEN)
-        ->setArgument('permission', 'admin.servers'); // TODO: need another permission
+        ->get('/{server}/token', BaseController::action(ServersController::class, 'token'))
+        ->setName(ServersConstants::ROUTE_TOKEN)
+        ->add($permissions->hasAccessToResourceMiddleware(
+            'server',
+            ServersConstants::PERMISSIONS_GROUP,
+            ServersConstants::PERMISSION_TOKEN,
+            Permissions::ACCESS_CREATE | Permissions::ACCESS_CREATE
+        ));
 
     $this
         ->get('/{server}/view', BaseController::action(ServersController::class, 'view'))
-        ->setName(Servers::ROUTE_VIEW)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_VIEW));
+        ->setName(ServersConstants::ROUTE_VIEW)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            ServersConstants::PERMISSIONS_GROUP,
+            ServersConstants::PERMISSION_SERVER,
+            Permissions::ACCESS_VIEW
+        ));
 
     $this
         ->map(['GET', 'POST'], '/create', BaseController::action(ServersController::class, 'create'))
-        ->setName(Servers::ROUTE_CREATE)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_CREATE));
+        ->setName(ServersConstants::ROUTE_CREATE)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            ServersConstants::PERMISSIONS_GROUP,
+            ServersConstants::PERMISSION_SERVER,
+            Permissions::ACCESS_CREATE
+        ));
 
     $this
         ->map(['GET', 'POST'], '/{server}/edit', BaseController::action(ServersController::class, 'edit'))
-        ->setName(Servers::ROUTE_EDIT)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_EDIT));
+        ->setName(ServersConstants::ROUTE_EDIT)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            ServersConstants::PERMISSIONS_GROUP,
+            ServersConstants::PERMISSION_SERVER,
+            Permissions::ACCESS_EDIT
+        ));
 
     $this
         ->post('/{server}/delete', BaseController::action(ServersController::class, 'delete'))
-        ->setName(Servers::ROUTE_DELETE)
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'server', Permissions::ACCESS_DELETE));
+        ->setName(ServersConstants::ROUTE_DELETE)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            ServersConstants::PERMISSIONS_GROUP,
+            ServersConstants::PERMISSION_SERVER,
+            Permissions::ACCESS_DELETE
+        ));
 
     $this->group('/{server}/groups', function () {
         /** @var \Slim\App $this */

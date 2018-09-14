@@ -4,7 +4,7 @@ namespace GameX\Controllers\Admin;
 use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Core\Constants\Routes\Admin\Players as PlayersRoutes;
+use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Forms\Admin\PlayersForm;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Player;
@@ -14,7 +14,7 @@ use \Exception;
 class PlayersController extends BaseAdminController {
 
 	protected function getActiveMenu() {
-		return PlayersRoutes::ROUTE_LIST;
+		return PlayersConstants::ROUTE_LIST;
 	}
 
 	/**
@@ -37,18 +37,20 @@ class PlayersController extends BaseAdminController {
         ]);
     }
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
+     */
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(PlayersRoutes::ROUTE_EDIT, [
+            return $this->redirect(PlayersConstants::ROUTE_EDIT, [
                 'player' => $player->id,
             ]);
         }
@@ -59,18 +61,20 @@ class PlayersController extends BaseAdminController {
 		]);
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
+     */
 	public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(PlayersRoutes::ROUTE_EDIT, [
+            return $this->redirect(PlayersConstants::ROUTE_EDIT, [
                 'player' => $player->id,
             ]);
         }
@@ -81,12 +85,13 @@ class PlayersController extends BaseAdminController {
 		]);
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     */
 	public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
 
@@ -98,7 +103,7 @@ class PlayersController extends BaseAdminController {
             $this->getLogger()->exception($e);
 		}
 
-		return $this->redirect(PlayersRoutes::ROUTE_LIST);
+		return $this->redirect(PlayersConstants::ROUTE_LIST);
 	}
 
     /**

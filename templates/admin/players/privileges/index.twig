@@ -8,7 +8,7 @@
 
 {% block subnav %}
     <div class="uk-float-left">
-        {{ admin.back_btn(path_for(routes.admin.players.ROUTE_LIST), 'l') }}
+        {{ admin.back_btn(path_for(constants.admin.players.ROUTE_LIST), 'l') }}
     </div>
 {% endblock %}
 
@@ -20,7 +20,7 @@
                     <li class="uk-width-expand"><h3>{{ serverData.name }}</h3></li>
                     <li class="uk-width-xxs">
                         {{ admin.add_btn(
-                            path_for(routes.admin.privileges.ROUTE_CREATE, {
+                            path_for(constants.admin.privileges.ROUTE_CREATE, {
                                 'player': player.id,
                                 'server': serverId
                             })
@@ -40,7 +40,7 @@
                         </li>
                         <li class="uk-width-xxs">
                             {{ admin.edit_btn(
-                                path_for(routes.admin.privileges.ROUTE_EDIT, {
+                                path_for(constants.admin.privileges.ROUTE_EDIT, {
                                     'player': player.id,
                                     'privilege' : privilege.id
                                 })
@@ -48,7 +48,7 @@
                         </li>
                         <li class="uk-width-xxs">
                             {{ admin.delete_btn(
-                                path_for(routes.admin.privileges.ROUTE_DELETE, {
+                                path_for(constants.admin.privileges.ROUTE_DELETE, {
                                     'player': player.id,
                                     'privilege' : privilege.id
                                 })

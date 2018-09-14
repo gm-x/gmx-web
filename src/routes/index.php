@@ -5,6 +5,7 @@ use \GameX\Controllers\PunishmentsController;
 use \GameX\Controllers\Admin\AdminController;
 use \GameX\Middlewares\ApiTokenMiddleware;
 use \GameX\Middlewares\ApiRequestMiddleware;
+use \GameX\Core\Auth\Permissions;
 
 $authMiddleware = new \GameX\Middlewares\AuthMiddleware($app->getContainer());
 $csrfMiddleware = new \GameX\Core\CSRF\Middleware($app->getContainer()->get('csrf'));
@@ -31,10 +32,14 @@ $app->group('', function () {
 
 $app->group('/admin', function () {
 	/** @var \Slim\App $this */
+
+    /** @var Permissions $permissions */
+    $permissions = $this->getContainer()->get('permissions');
+
     $this
         ->get('', BaseController::action(AdminController::class, 'index'))
         ->setName('admin_index')
-        ->setArgument('permission', 'admin.*');
+        ->add($permissions->hasAccessToGroupMiddleware('admin'));
 
     $root = __DIR__ . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR;
     $this->group('/preferences', include  $root . 'preferences.php');

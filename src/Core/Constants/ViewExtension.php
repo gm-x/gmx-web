@@ -3,23 +3,31 @@ namespace GameX\Core\Constants;
 
 use \Twig_Extension;
 use \Twig_Extension_GlobalsInterface;
-use \GameX\Core\Constants\Routes\Admin\Players;
-use \GameX\Core\Constants\Routes\Admin\Privileges;
-use \GameX\Core\Constants\Routes\Admin\Servers;
+use \GameX\Core\Auth\Permissions;
+use \GameX\Constants\Admin\PlayersConstants;
+use \GameX\Constants\Admin\PrivilegesConstants;
+use \GameX\Constants\Admin\ServersConstants;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
     
-    protected $routes = [
+    protected $constants = [
         'admin' => [
-            'players' => Players::class,
-            'privileges' => Privileges::class,
-            'servers' => Servers::class,
+            'players' => PlayersConstants::class,
+            'privileges' => PrivilegesConstants::class,
+            'servers' => ServersConstants::class,
         ],
     ];
     
     public function getGlobals() {
         return [
-            'routes' => $this->getConstants($this->routes)
+            'constants' => $this->getConstants($this->constants),
+            'permissions' => [
+                'ACCESS_LIST' => Permissions::ACCESS_LIST,
+                'ACCESS_VIEW' => Permissions::ACCESS_VIEW,
+                'ACCESS_CREATE' => Permissions::ACCESS_CREATE,
+                'ACCESS_EDIT' =>  Permissions::ACCESS_EDIT,
+                'ACCESS_DELETE' => Permissions::ACCESS_DELETE,
+            ]
         ];
     }
     

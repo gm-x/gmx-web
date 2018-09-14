@@ -5,8 +5,8 @@ use GameX\Core\Exceptions\NotAllowedException;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
-use \GameX\Core\Constants\Routes\Admin\Players as PlayersRoutes;
-use \GameX\Core\Constants\Routes\Admin\Privileges as PrivilegesRoutes;
+use \GameX\Constants\Admin\PlayersConstants;
+use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Core\BaseAdminController;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Models\Player;
@@ -24,7 +24,7 @@ class PrivilegesController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return PlayersRoutes::ROUTE_LIST;
+		return PlayersConstants::ROUTE_LIST;
 	}
 
     /**
@@ -98,6 +98,7 @@ class PrivilegesController extends BaseAdminController {
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotAllowedException
      * @throws NotFoundException
      * @throws RedirectException
      */
@@ -133,6 +134,7 @@ class PrivilegesController extends BaseAdminController {
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotAllowedException
      * @throws NotFoundException
      */
     public function deleteAction(Request $request, Response $response, array $args = []) {
@@ -148,7 +150,7 @@ class PrivilegesController extends BaseAdminController {
             $this->getLogger()->exception($e);
         }
 
-		return $this->redirect(PrivilegesRoutes::ROUTE_LIST, ['player' => $player->id]);
+		return $this->redirect(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id]);
     }
 
 	/**

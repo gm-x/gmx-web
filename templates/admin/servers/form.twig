@@ -15,7 +15,7 @@
             {% else %}
                 <input type="submit" class="uk-button uk-button-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
             {% endif %}
-            <a href="{{ path_for(routes.admin.servers.ROUTE_LIST) }}" class="uk-button uk-button-secondary">
+            <a href="{{ path_for(constants.admin.servers.ROUTE_LIST) }}" class="uk-button uk-button-secondary">
                 {{ trans('buttons', 'cancel') }}
             </a>
         </div>

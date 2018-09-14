@@ -1,6 +1,7 @@
 <?php
 use \GameX\Core\Migration;
 use \GameX\Core\Auth\Models\PermissionsModel;
+use \GameX\Constants\Admin\ServersConstants;
 
 class PermissionsList extends Migration {
 
@@ -28,10 +29,14 @@ class PermissionsList extends Migration {
     protected function getList() {
         return [
             [
-                'group' => 'admin',
-                'key' => 'server',
+                'group' => ServersConstants::PERMISSIONS_GROUP,
+                'key' => ServersConstants::PERMISSION_SERVER,
                 'type' => NULL,
-            ],[
+            ], [
+                'group' => ServersConstants::PERMISSIONS_GROUP,
+                'key' => ServersConstants::PERMISSION_TOKEN,
+                'type' => ServersConstants::PERMISSIONS_TYPE,
+            ], [
                 'group' => 'admin',
                 'key' => 'user',
                 'type' => NULL,
