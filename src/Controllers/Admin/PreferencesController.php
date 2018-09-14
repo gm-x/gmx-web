@@ -5,13 +5,12 @@ use \GameX\Core\BaseAdminController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Constants\Admin\PreferencesConstants;
 use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Configuration\Config;
-use \GameX\Core\Configuration\Node;
 use \GameX\Core\Mail\Email;
-use \GameX\Core\Forms\Form;
 use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 
@@ -21,7 +20,7 @@ class PreferencesController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_preferences_index';
+		return PreferencesConstants::ROUTE_MAIN;
 	}
 
 	/**
@@ -36,7 +35,7 @@ class PreferencesController extends BaseAdminController {
         $form = new MainForm($preferences);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_preferences_index');
+            return $this->redirect(PreferencesConstants::ROUTE_MAIN);
         }
 
 		return $this->render('admin/preferences/index.twig', [

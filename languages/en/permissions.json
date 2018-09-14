@@ -12,6 +12,7 @@
 	"admin_role": "Roles",
 	"admin_player": "Players",
 	"admin_privilege": "Privileges",
-	"admin_preferences": "Preferences",
-	"admin_permission": "Permissions"
+	"admin_permission": "Permissions",
+	"admin_preferences_main": "Main preferences",
+	"admin_preferences_email": "Email preferences"
 }

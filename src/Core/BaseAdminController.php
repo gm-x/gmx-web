@@ -8,6 +8,7 @@ use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Constants\Admin\UsersConstants;
 use \GameX\Constants\Admin\RolesConstants;
+use \GameX\Constants\Admin\PreferencesConstants;
 
 abstract class BaseAdminController extends BaseMainController {
 
@@ -21,7 +22,7 @@ abstract class BaseAdminController extends BaseMainController {
 			->setActiveRoute($this->getActiveMenu())
 			->add(new MenuItem(
 			    $lang->format('admin_menu','preferences'),
-                'admin_preferences_index', []
+                PreferencesConstants::ROUTE_MAIN, []
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','users'),

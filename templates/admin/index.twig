@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-	<a href="{{ path_for('admin_preferences_index') }}">Preferences</a>
+	<a href="{{ path_for(constants.admin.preferences.ROUTE_MAIN) }}">Preferences</a>
 	<a href="{{ path_for(constants.admin.users.ROUTE_LIST) }}">Users</a>
 	<a href="{{ path_for(constants.admin.roles.ROUTE_LIST) }}">Roles</a>
 	<a href="{{ path_for(constants.admin.servers.ROUTE_LIST) }}">Server</a>

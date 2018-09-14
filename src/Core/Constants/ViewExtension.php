@@ -12,6 +12,7 @@ use \GameX\Constants\Admin\ReasonsConstants;
 use \GameX\Constants\Admin\UsersConstants;
 use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Constants\Admin\PermissionsConstants;
+use \GameX\Constants\Admin\PreferencesConstants;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
     
@@ -25,6 +26,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
             'users' => UsersConstants::class,
             'roles' => RolesConstants::class,
             'permissions' => PermissionsConstants::class,
+            'preferences' => PreferencesConstants::class,
         ],
     ];
     

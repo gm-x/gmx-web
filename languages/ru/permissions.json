@@ -12,6 +12,7 @@
 	"admin_role": "Роли",
 	"admin_player": "Игрок",
 	"admin_privilege": "Привилегии",
-	"admin_preferences": "Настройки",
-	"admin_permission": "Права"
+	"admin_permission": "Права",
+	"admin_preferences_main": "Основные настройки",
+	"admin_preferences_email": "Настройки email"
 }
