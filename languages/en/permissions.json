@@ -13,6 +13,5 @@
 	"admin_player": "Players",
 	"admin_privilege": "Privileges",
 	"admin_preferences": "Preferences",
-	"admin_user_role": "User roles",
-	"admin_role_permission": "Role permissions"
+	"admin_permission": "Permissions"
 }

@@ -38,36 +38,37 @@
 					<div class="uk-card-body">
                         {% embed "admin/actions.twig" with {'actionId': server.id} %}
                             {% block actions %}
-								<li>
-                                    {% if has_access_resource(
-										constants.admin.groups.PERMISSION_GROUP,
-										constants.admin.groups.PERMISSION_KEY,
-										server.id,
-										permissions.ACCESS_LIST
-                                    ) %}
+								{% if has_access_resource(
+									constants.admin.groups.PERMISSION_GROUP,
+									constants.admin.groups.PERMISSION_KEY,
+									server.id,
+									permissions.ACCESS_LIST
+								) %}
+									<li>
 										<a
 											href="{{ path_for(constants.admin.groups.ROUTE_LIST, {'server': server.id}) }}"
 											class="dropdown-item"
 										>
 											<i class="fas fa-users uk-margin-small-right"></i> &nbsp;{{ trans('admin_servers', 'groups') }}
 										</a>
-									{% endif %}
-								</li>
-								<li>
-                                    {% if has_access_resource(
-										constants.admin.groups.PERMISSION_GROUP,
-										constants.admin.groups.PERMISSION_KEY,
-										server.id,
-										permissions.ACCESS_LIST
-                                    ) %}
+									</li>
+								{% endif %}
+
+								{% if has_access_resource(
+									constants.admin.groups.PERMISSION_GROUP,
+									constants.admin.groups.PERMISSION_KEY,
+									server.id,
+									permissions.ACCESS_LIST
+								) %}
+									<li>
 										<a
-											href="{{ path_for(constants.admin.rea.ROUTE_LIST, {'server': server.id}) }}"
+											href="{{ path_for(constants.admin.reasons.ROUTE_LIST, {'server': server.id}) }}"
 											class="dropdown-item"
 										>
 											<i class="fas fa-tasks uk-margin-small-right"></i> &nbsp;{{ trans('admin_servers', 'reasons') }}
 										</a>
-                                    {% endif %}
-								</li>
+									</li>
+								{% endif %}
                             {% endblock %}
                         {% endembed %}
 

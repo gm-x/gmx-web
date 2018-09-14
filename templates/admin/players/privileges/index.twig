@@ -45,36 +45,38 @@
                         <li class="uk-width-expand">
                             {{ privilege.prefix }}
                         </li>
-                        <li class="uk-width-xxs">
-                            {% if has_access_resource(
-                                constants.admin.privileges.PERMISSION_GROUP,
-                                constants.admin.privileges.PERMISSION_KEY,
-                                serverId,
-                                permissions.ACCESS_EDIT
-                            ) %}
+
+                        {% if has_access_resource(
+                            constants.admin.privileges.PERMISSION_GROUP,
+                            constants.admin.privileges.PERMISSION_KEY,
+                            serverId,
+                            permissions.ACCESS_EDIT
+                        ) %}
+                            <li class="uk-width-xxs">
                                 {{ admin.edit_btn(
                                     path_for(constants.admin.privileges.ROUTE_EDIT, {
                                         'player': player.id,
                                         'privilege' : privilege.id
                                     })
                                 ) }}
-                            {% endif %}
-                        </li>
-                        <li class="uk-width-xxs">
-                            {% if has_access_resource(
-                                constants.admin.privileges.PERMISSION_GROUP,
-                                constants.admin.privileges.PERMISSION_KEY,
-                                serverId,
-                                permissions.ACCESS_DELETE
-                            ) %}
+                            </li>
+                        {% endif %}
+
+                        {% if has_access_resource(
+                            constants.admin.privileges.PERMISSION_GROUP,
+                            constants.admin.privileges.PERMISSION_KEY,
+                            serverId,
+                            permissions.ACCESS_DELETE
+                        ) %}
+                            <li class="uk-width-xxs">
                                 {{ admin.delete_btn(
                                     path_for(constants.admin.privileges.ROUTE_DELETE, {
                                         'player': player.id,
                                         'privilege' : privilege.id
                                     })
                                 ) }}
-                            {% endif %}
-                        </li>
+                            </li>
+                        {% endif %}
                     </ul>
                 {% endfor %}
             {% endfor %}

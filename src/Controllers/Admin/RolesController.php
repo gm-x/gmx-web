@@ -4,33 +4,21 @@ namespace GameX\Controllers\Admin;
 use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Core\Auth\Models\RoleModel;
-use \Cartalyst\Sentinel\Roles\RoleInterface;
-use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
 use \GameX\Forms\Admin\RolesForm;
-use \GameX\Core\Exceptions\ValidationException;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
 class RolesController extends BaseAdminController {
 
-    /** @var  RoleRepositoryInterface */
-    protected $roleRepository;
-
 	/**
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_roles_list';
+		return RolesConstants::ROUTE_LIST;
 	}
-    
-    /**
-     * Init
-     */
-	public function init() {
-        $this->roleRepository = $this->getContainer('auth')->getRoleRepository();
-    }
     
     /**
      * @param ServerRequestInterface $request
@@ -40,7 +28,25 @@ class RolesController extends BaseAdminController {
      */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         return $this->render('admin/roles/index.twig', [
-            'roles' => $this->roleRepository->get()
+            'roles' => RoleModel::get()
+        ]);
+    }
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+    public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+        $role = $this->getRole($request, $response, $args);
+        
+        $pagination = new Pagination($role->users()->get(), $request);
+        $users = $pagination->getCollection();
+        
+        return $this->render('admin/roles/view.twig', [
+            'users' => $users,
+            'pagination' => $pagination,
         ]);
     }
     
@@ -56,7 +62,7 @@ class RolesController extends BaseAdminController {
         $form = new RolesForm($role);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_roles_edit', [
+            return $this->redirect(RolesConstants::ROUTE_VIEW, [
                 'role' => $role->id,
             ]);
         }
@@ -78,7 +84,7 @@ class RolesController extends BaseAdminController {
         $form = new RolesForm($role);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_roles_edit', [
+            return $this->redirect(RolesConstants::ROUTE_VIEW, [
                 'role' => $role->id,
             ]);
         }
@@ -109,32 +115,14 @@ class RolesController extends BaseAdminController {
             $this->getLogger()->exception($e);
         }
 
-        return $this->redirect('admin_roles_list');
-    }
-    
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
-     * @return ResponseInterface
-     */
-    public function usersAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        $role = $this->getRole($request, $response, $args);
-
-        $pagination = new Pagination($role->users()->get(), $request);
-        $users = $pagination->getCollection();
-
-        return $this->render('admin/roles/users.twig', [
-            'users' => $users,
-            'pagination' => $pagination,
-        ]);
+        return $this->redirect(RolesConstants::ROUTE_LIST);
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
-     * @return RoleInterface
+     * @return RoleModel
      * @throws NotFoundException
      */
     protected function getRole(ServerRequestInterface $request, ResponseInterface $response, array $args) {
@@ -142,7 +130,7 @@ class RolesController extends BaseAdminController {
             return new RoleModel();
         }
         
-        $role = $this->roleRepository->findById($args['role']);
+        $role = RoleModel::find($args['role']);
         if (!$role) {
             throw new NotFoundException($request, $response);
         }

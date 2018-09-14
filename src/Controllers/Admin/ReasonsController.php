@@ -4,6 +4,7 @@ namespace GameX\Controllers\Admin;
 use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Constants\Admin\ReasonsConstants;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Reason;
@@ -18,7 +19,7 @@ class ReasonsController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_servers_list';
+		return ServersConstants::ROUTE_LIST;
 	}
     
     /**

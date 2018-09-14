@@ -13,6 +13,5 @@
 	"admin_player": "Игрок",
 	"admin_privilege": "Привилегии",
 	"admin_preferences": "Настройки",
-	"admin_user_role": "Роли пользователя",
-	"admin_role_permission": "Права роли"
+	"admin_permission": "Права"
 }

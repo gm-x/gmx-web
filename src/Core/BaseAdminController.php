@@ -7,6 +7,7 @@ use \GameX\Core\Menu\MenuItem;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Constants\Admin\UsersConstants;
+use \GameX\Constants\Admin\RolesConstants;
 
 abstract class BaseAdminController extends BaseMainController {
 
@@ -29,7 +30,8 @@ abstract class BaseAdminController extends BaseMainController {
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','roles'),
-                'admin_roles_list', []
+                RolesConstants::ROUTE_LIST, [],
+                [RolesConstants::PERMISSION_GROUP, RolesConstants::PERMISSION_KEY]
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','servers'),

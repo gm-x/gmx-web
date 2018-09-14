@@ -1,32 +1,22 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-
 use \GameX\Core\BaseAdminController;
 use \GameX\Forms\Admin\PermissionsForm;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
-use \Cartalyst\Sentinel\Roles\RoleInterface;
+use \GameX\Core\Auth\Models\RoleModel;
+use \GameX\Constants\Admin\RolesConstants;
+use \GameX\Constants\Admin\PermissionsConstants;
 use \Slim\Exception\NotFoundException;
 
 class PermissionsController extends BaseAdminController {
-    
-    /** @var  RoleRepositoryInterface */
-    protected $roleRepository;
-    
+
     /**
      * @return string
      */
     protected function getActiveMenu() {
-        return 'admin_roles_list';
-    }
-    
-    /**
-     * Init
-     */
-    public function init() {
-        $this->roleRepository = $this->getContainer('auth')->getRoleRepository();
+        return RolesConstants::ROUTE_LIST;
     }
 
     /**
@@ -42,7 +32,7 @@ class PermissionsController extends BaseAdminController {
         $form = new PermissionsForm($role);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_role_permissions', [
+            return $this->redirect(PermissionsConstants::ROUTE_LIST, [
                 'role' => $role->id,
             ]);
         }
@@ -58,15 +48,15 @@ class PermissionsController extends BaseAdminController {
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
-     * @return RoleInterface
+     * @return RoleModel
      * @throws NotFoundException
      */
     protected function getRole(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         if (!array_key_exists('role', $args)) {
             throw new NotFoundException($request, $response);
         }
-        
-        $role = $this->roleRepository->findById($args['role']);
+    
+        $role = RoleModel::find($args['role']);
         if (!$role) {
             throw new NotFoundException($request, $response);
         }

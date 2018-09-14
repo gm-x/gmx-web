@@ -5,6 +5,7 @@ use \GameX\Models\Server;
 use \GameX\Models\Group;
 use \GameX\Core\BaseAdminController;
 use \GameX\Constants\Admin\GroupsConstants;
+use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -18,7 +19,7 @@ class GroupsController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_servers_list';
+		return ServersConstants::ROUTE_LIST;
 	}
 
 	/**
