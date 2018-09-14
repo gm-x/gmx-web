@@ -1,7 +1,6 @@
 <?php
 namespace GameX\Forms\Admin;
 
-use GameX\Core\Auth\Permissions;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Forms\Validator;
 use \GameX\Core\Auth\Models\RoleModel;
@@ -222,12 +221,12 @@ class PermissionsForm extends BaseForm {
             ];
             
             /** @var RolesPermissionsModel $permission */
-            foreach ($this->role->permissions()->with('permission')->get() as $permission) {
-                $p = $permission->permission;
+            foreach ($this->role->permissions()->with('permission')->get() as $rolePermission) {
+                $p = $rolePermission->permission;
                 if ($p->type === 'server') {
-                    $this->rolePermissions['admin']['server'][$permission->resource][$p->key] = $permission->access;
+                    $this->rolePermissions['admin']['server'][$rolePermission->resource][$p->key] = $rolePermission->access;
                 } elseif (!$p->type) {
-                    $this->rolePermissions['admin']['all'][$p->key] = $permission->access;
+                    $this->rolePermissions['admin']['all'][$p->key] = $rolePermission->access;
                 }
             }
         }
