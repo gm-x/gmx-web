@@ -41,7 +41,7 @@
                     pos: 'bottom-right',
                     timeout: 5000
                 });
-                $.post('{{ path_for('admin_preferences_email_test') }}', $('#mailConfigForm').serialize())
+                $.post('{{ path_for(constants.admin.preferences.ROUTE_EMAIL_TEST) }}', $('#mailConfigForm').serialize())
                     .done(function (data) {
                         if (data.success) {
                             UIkit.notification({

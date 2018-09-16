@@ -11,7 +11,7 @@ class Preferences extends Migration {
         $this->getSchema()
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->string('key')->unique();
-                $table->json('value');
+                $table->text('value');
             });
     }
 

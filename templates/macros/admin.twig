@@ -5,6 +5,9 @@
             data-toggle="tooltip"
             data-placement="top"
             title="{{ config.title }}"
+            {% for key, value in config.attrs %}
+                {{ key }}="{{ value }}"
+            {% endfor %}
     ><i class="{{ config.icon }} fa-sm"></i></a>
 {% endmacro %}
 

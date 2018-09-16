@@ -15,9 +15,20 @@
             {% else %}
                 <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
             {% endif %}
-            <a href="{{ path_for('admin_servers_groups_list', {'server': server.id}) }}" class="uk-button uk-button-secondary">
-                {{ trans('buttons', 'cancel') }}
-            </a>
+
+            {% if has_access_resource(
+                constants.admin.groups.PERMISSION_GROUP,
+                constants.admin.groups.PERMISSION_KEY,
+                server.id,
+                permissions.ACCESS_LIST
+            ) %}
+                <a
+                    href="{{ path_for(constants.admin.groups.ROUTE_LIST, {'server': server.id}) }}"
+                    class="uk-button uk-button-secondary"
+                >
+                    {{ trans('buttons', 'cancel') }}
+                </a>
+            {% endif %}
         </div>
     </form>
 </div>

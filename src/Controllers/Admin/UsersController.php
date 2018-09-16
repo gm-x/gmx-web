@@ -4,6 +4,7 @@ namespace GameX\Controllers\Admin;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Users\UserRepositoryInterface;
 use \GameX\Core\BaseAdminController;
+use \GameX\Constants\Admin\UsersConstants;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Forms\Admin\UsersForm;
 use \Psr\Http\Message\ServerRequestInterface;
@@ -17,7 +18,7 @@ class UsersController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_users_list';
+		return UsersConstants::ROUTE_LIST;
 	}
 
     /** @var  UserRepositoryInterface */
@@ -70,7 +71,7 @@ class UsersController extends BaseAdminController {
         $form = new UsersForm($user, $roleHelper);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_users_view', [
+            return $this->redirect(UsersConstants::ROUTE_VIEW, [
                 'user' => $user->id,
             ]);
         }

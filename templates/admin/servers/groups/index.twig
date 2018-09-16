@@ -3,9 +3,25 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
+{% block title %}{{ parent() }} | {{ trans('admin_menu', 'servers') }} | {{ server.name }} | Groups{% endblock %}
+
 {% block subnav %}
-    {{ admin.back_btn(path_for('admin_servers_list'), 'l') }}
-    {{ admin.add_btn(path_for('admin_servers_groups_create', {'server': server.id}), 'l') }}
+    {% if has_access_permission(
+		constants.admin.servers.PERMISSION_GROUP,
+		constants.admin.servers.PERMISSION_KEY,
+		permissions.ACCESS_LIST
+    ) %}
+        {{ admin.back_btn(path_for(constants.admin.servers.ROUTE_LIST), 'l') }}
+    {% endif %}
+
+    {% if has_access_resource(
+		constants.admin.groups.PERMISSION_GROUP,
+		constants.admin.groups.PERMISSION_KEY,
+		server.id,
+		permissions.ACCESS_CREATE
+    ) %}
+        {{ admin.add_btn(path_for(constants.admin.groups.ROUTE_CREATE, {'server': server.id}), 'l') }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -25,8 +41,27 @@
 					<td class="text-nowrap">{{ group.title }}</td>
 					<td class="text-nowrap">{{ get_flags(group.flags) }}</td>
 					<td class="text-nowrap">
-                        {{ admin.edit_btn(path_for('admin_servers_groups_edit', {'server': server.id, 'group': group.id})) }}
-                        {{ admin.delete_btn(path_for('admin_servers_groups_delete', {'server': server.id, 'group': group.id})) }}
+                        {% if has_access_resource(
+							constants.admin.groups.PERMISSION_GROUP,
+							constants.admin.groups.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_EDIT
+                        ) %}
+                        	{{ admin.edit_btn(
+								path_for(constants.admin.groups.ROUTE_EDIT, {'server': server.id, 'group': group.id})
+							) }}
+						{% endif %}
+
+                        {% if has_access_resource(
+							constants.admin.groups.PERMISSION_GROUP,
+							constants.admin.groups.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_DELETE
+                        ) %}
+                        	{{ admin.delete_btn(
+								path_for(constants.admin.groups.ROUTE_DELETE, {'server': server.id, 'group': group.id})
+							) }}
+                        {% endif %}
 					</td>
 				</tr>
 			{% endfor %}

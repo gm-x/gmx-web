@@ -23,15 +23,22 @@ class PrivilegesForm extends BaseForm {
 	 */
 	protected $name = 'admin_privileges';
 
+    /**
+     * @var Server
+     */
+	protected $server;
+
 	/**
 	 * @var Privilege
 	 */
 	protected $privilege;
 
 	/**
+	 * @param Server $server
 	 * @param Privilege $privilege
 	 */
-	public function __construct(Privilege $privilege) {
+	public function __construct(Server $server, Privilege $privilege) {
+		$this->server = $server;
 		$this->privilege = $privilege;
 	}
     
@@ -61,35 +68,22 @@ class PrivilegesForm extends BaseForm {
 	 * @noreturn
 	 */
 	protected function createForm() {
-        $server = $this->privilege->exists
-            ? $this->privilege->group->server
-            : Server::first();
-
-        if (!$server) {
-        	throw new PrivilegeFormException('Add server before adding privilege', 'admin_servers_list');
-		}
-        
-        $servers = $this->getServers();
-        $groups = $this->getGroups($server);
+        $groups = $this->getGroups();
 		if (!count($groups)) {
-			throw new PrivilegeFormException('Add privileges groups before adding privilege', 'admin_servers_groups_list', ['server' => $server->id]);
+			throw new PrivilegeFormException();
 		}
 		
 		$this->form
-            ->add(new Select('server', $server->id, $servers, [
-                'id' => 'input_admin_server',
-                'title' => 'Server',
-                'required' => true,
-                'empty_option' => 'Choose server',
-            ]))
             ->add(new Select('group', $this->privilege->group_id, $groups, [
-                'id' => 'input_player_group',
                 'title' => 'Group',
                 'required' => true,
                 'empty_option' => 'Choose group',
             ]))
             ->add(new Text('prefix', $this->privilege->prefix, [
                 'title' => 'Prefix',
+            ]))
+            ->add(new DateElement('forever', $this->privilege->expired_at === null, [
+                'title' => 'Forever',
             ]))
             ->add(new DateElement('expired', $this->privilege->expired_at, [
                 'title' => 'Expired',
@@ -100,15 +94,15 @@ class PrivilegesForm extends BaseForm {
             ]));
 		
 		$this->form->getValidator()
-            ->set('server', true, [
-                new Number(1),
-                new InArray(array_keys($servers))
-            ])
             ->set('group', true, [
                 new Number(1),
+                new InArray(array_keys($groups)),
                 new Callback([$this, 'checkGroupExists'], 'Group doesn\'t exists')
             ])
             ->set('prefix', false)
+            ->set('forever',false, [
+                new Boolean()
+            ])
             ->set('expired',true, [
                 new DateRule()
             ])
@@ -136,22 +130,9 @@ class PrivilegesForm extends BaseForm {
     /**
      * @return array
      */
-    protected function getServers() {
-        $servers = [];
-        /** @var Server $server */
-        foreach (Server::all() as $server) {
-            $servers[$server->id] = $server->name;
-        }
-        return $servers;
-    }
-    
-    /**
-     * @param Server $server
-     * @return array
-     */
-    protected function getGroups(Server $server) {
+    protected function getGroups() {
         $groups = [];
-        foreach ($server->groups as $group) {
+        foreach ($this->server->groups as $group) {
             $groups[$group->id] = $group->title;
         }
         return $groups;

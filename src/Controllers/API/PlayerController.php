@@ -72,13 +72,11 @@ class PlayerController extends BaseApiController {
 
         return $response->withStatus(200)->withJson([
             'success' => true,
-            'data' => [
-                'player' => [
-                    'id' => $player->id,
-                ],
-                'user' => null,
-                'punishments' => $punishments
-            ]
+            'player' => [
+                'id' => $player->id,
+            ],
+            'user' => null,
+            'punishments' => $punishments,
         ]);
     }
     
@@ -95,7 +93,6 @@ class PlayerController extends BaseApiController {
             ->set('id', true, [
                 new Number(1)
             ]);
-    
     
         $result = $validator->validate($this->getBody($request));
     

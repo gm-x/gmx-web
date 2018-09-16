@@ -17,7 +17,7 @@ $container = new \Slim\Container([
 		'determineRouteBeforeAppMiddleware' => true,
 		'displayErrorDetails' => true,
 	],
-	'root' => __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+	'root' => dirname(__DIR__) . DIRECTORY_SEPARATOR,
 ]);
 
 $errorHandler = function (\Slim\Container $container) {
@@ -39,7 +39,13 @@ $errorHandler = function (\Slim\Container $container) {
 
 $notFoundHandler = function (\Slim\Container $container) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($container) {
-        return $container['view']->render($response->withStatus(404), 'errors/404.twig');
+        if ($request->getMediaType() === 'application/json') {
+            return $response->withStatus(404)->withJson([
+                "success" => false
+            ]);
+        } else {
+            return $container['view']->render($response->withStatus(404), 'errors/404.twig');
+        }
     };
 };
 
@@ -62,6 +68,7 @@ $container->register(new \GameX\Core\DependencyProvider());
 
 \GameX\Core\BaseModel::setContainer($container);
 \GameX\Core\BaseForm::setContainer($container);
+\GameX\Core\Utils::setContainer($container);
 date_default_timezone_set('UTC');
 
 $app = new \Slim\App($container);
