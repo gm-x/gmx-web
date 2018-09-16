@@ -5,6 +5,7 @@ use \GameX\Core\BaseAdminController;
 use \GameX\Forms\Admin\PermissionsForm;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Cache\Cache;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Constants\Admin\PermissionsConstants;
@@ -31,6 +32,9 @@ class PermissionsController extends BaseAdminController {
         $role = $this->getRole($request, $response, $args);
         $form = new PermissionsForm($role);
         if ($this->processForm($request, $form)) {
+            /** @var Cache $cache */
+            $cache = $this->getContainer('cache');
+            $cache->clear('permissions');
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PermissionsConstants::ROUTE_LIST, [
                 'role' => $role->id,

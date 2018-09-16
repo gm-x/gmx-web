@@ -16,6 +16,7 @@ use \GameX\Core\Session\Session;
 use \Stash\Driver\FileSystem;
 use \GameX\Core\Cache\Cache;
 use \GameX\Core\Cache\Items\Preferences;
+use \GameX\Core\Cache\Items\Permissions as PermissionsCache;
 
 use \GameX\Core\Log\Logger;
 use \Monolog\Formatter\LineFormatter;
@@ -162,6 +163,7 @@ class DependencyProvider  implements ServiceProviderInterface {
         ]);
         $cache = new Cache($driver);
         $cache->add('preferences', new Preferences());
+        $cache->add('permissions', new PermissionsCache());
         return $cache;
     }
 
