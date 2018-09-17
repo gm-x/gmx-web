@@ -60,8 +60,8 @@ class SettingsController extends BaseMainController {
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-	public function connectAction(Request $request, ResponseInterface $response, array $args) {
-		return $this->render('settings/connect.twig', [
+	public function assignAction(Request $request, ResponseInterface $response, array $args) {
+		return $this->render('settings/assign.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
             'user' => $this->getUser()
 		]);

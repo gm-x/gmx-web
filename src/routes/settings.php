@@ -15,6 +15,6 @@ $this
 	->add($permissions->isAuthorizedMiddleware());
 
 $this
-	->map(['GET', 'POST'], '/settings/connect', BaseController::action(SettingsController::class, 'connect'))
-	->setName(SettingsConstants::ROUTE_CONNECT)
+	->map(['GET', 'POST'], '/settings/assign', BaseController::action(SettingsController::class, 'assign'))
+	->setName(SettingsConstants::ROUTE_ASSIGN)
     ->add($permissions->isAuthorizedMiddleware());

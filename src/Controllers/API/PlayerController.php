@@ -113,4 +113,17 @@ class PlayerController extends BaseApiController {
             'success' => true,
         ]);
     }
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws ApiException
+     */
+    public function assignAction(Request $request, Response $response, array $args) {
+        return $response->withStatus(200)->withJson([
+            'success' => true,
+        ]);
+    }
 }
