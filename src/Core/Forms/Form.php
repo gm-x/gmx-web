@@ -156,17 +156,26 @@ class Form implements ArrayAccess {
         }
 
         $body = $request->getParsedBody();
-        if (!array_key_exists($this->name, $body) || !is_array($body[$this->name])) {
+        $files = $request->getUploadedFiles();
+        
+        $fails = 0;
+        if (array_key_exists($this->name, $body) && is_array($body[$this->name])) {
+            $body = $body[$this->name];
+        } else {
+            $fails++;
+        }
+        if (array_key_exists($this->name, $files) && is_array($files[$this->name])) {
+            $files = $files[$this->name];
+        } else {
+            $fails++;
+        }
+        
+        if ($fails >= 2) {
             return $this;
         }
 
-        $files = $request->getUploadedFiles();
-        $files = array_key_exists($this->name, $files) && is_array($files[$this->name])
-            ? $files[$this->name]
-            : [];
-
         $this->isSubmitted = true;
-        $values = array_merge($body[$this->name], $files);
+        $values = array_merge($body, $files);
         $result = $this->validator->validate($values);
         
         $this->isValid = $result->getIsValid();

@@ -2,7 +2,7 @@
 use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
-class Tokens extends Migration {
+class UserToken extends Migration {
     
     /**
      * Do the migration
