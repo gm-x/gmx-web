@@ -19,6 +19,7 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $role_id
  * @property \DateTime $last_login
  * @property int $avatar
+ * @property string $token
  * @property \DateTime $created_at
  * @property \DateTime $update_at
  * @property RoleModel $role
@@ -42,7 +43,8 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 		'first_name',
 		'permissions',
 		'role_id',
-        'avatar'
+        'avatar',
+        'token'
 	];
 
 	/**

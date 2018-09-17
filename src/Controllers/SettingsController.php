@@ -45,7 +45,7 @@ class SettingsController extends BaseMainController {
             return $this->redirect(SettingsConstants::ROUTE_MAIN);
         }
 
-        return $this->render('settings/index.twig', [
+        return $this->render('settings/main.twig', [
         	'currentHref' => UriHelper::getUrl($request->getUri()),
             'user' => $user,
             'emailForm' => $emailForm->getForm(),
@@ -61,8 +61,9 @@ class SettingsController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function connectAction(Request $request, ResponseInterface $response, array $args) {
-		return $this->render('settings/steamid.twig', [
+		return $this->render('settings/connect.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
+            'user' => $this->getUser()
 		]);
 	}
 }
