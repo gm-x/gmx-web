@@ -4,17 +4,17 @@ namespace GameX\Controllers;
 use \GameX\Core\BaseMainController;
 use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Constants\SettingsConstants;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Forms\Settings\EmailForm;
 use \GameX\Forms\Settings\PasswordForm;
 use \GameX\Forms\Settings\AvatarForm;
-use \GameX\Core\Exceptions\ValidationException;
-use \GameX\Core\Exceptions\FormException;
+use \GameX\Core\Exceptions\RedirectException;
 
 class SettingsController extends BaseMainController {
     protected function getActiveMenu() {
-        return 'user_settings_index';
+        return SettingsConstants::ROUTE_MAIN;
     }
     
     /**
@@ -29,12 +29,13 @@ class SettingsController extends BaseMainController {
         ]);
     }
 
-	/**
-	 * @param Request $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param Request $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws RedirectException
+     */
 	public function emailAction(Request $request, ResponseInterface $response, array $args) {
 		$form = new EmailForm($this->getUser());
 		if ($this->processForm($request, $form, true)) {
@@ -48,12 +49,13 @@ class SettingsController extends BaseMainController {
 		]);
 	}
 
-	/**
-	 * @param Request $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param Request $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws RedirectException
+     */
 	public function passwordAction(Request $request, ResponseInterface $response, array $args) {
         $form = new PasswordForm($this->getUser(), new AuthHelper($this->container));
         if ($this->processForm($request, $form, true)) {
@@ -67,12 +69,13 @@ class SettingsController extends BaseMainController {
 		]);
 	}
 
-	/**
-	 * @param Request $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param Request $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws RedirectException
+     */
 	public function avatarAction(Request $request, ResponseInterface $response, array $args) {
 	    $user = $this->getUser();
         $form = new AvatarForm($user, $this->getContainer('upload'));

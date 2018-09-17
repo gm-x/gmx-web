@@ -1,17 +1,17 @@
 {% import 'macros/tabs.twig' as tabs %}
 {{ tabs.render([{
-    'href': path_for('user_settings_index'),
+    'href': path_for(constants.settings.ROUTE_MAIN),
     'title': 'Index'
 }, {
-    'href': path_for('user_settings_email'),
+    'href': path_for(constants.settings.ROUTE_EMAIL),
     'title': 'Email'
 }, {
-    'href': path_for('user_settings_password'),
+    'href': path_for(constants.settings.ROUTE_PASSWORD),
     'title': 'Password'
 }, {
-    'href': path_for('user_settings_avatar'),
+    'href': path_for(constants.settings.ROUTE_AVATAR),
     'title': 'Avatar'
 }, {
-    'href': path_for('user_settings_steamid'),
+    'href': path_for(constants.settings.ROUTE_CONNECT),
     'title': 'Steamid'
 }], href) }}
