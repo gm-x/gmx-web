@@ -15,21 +15,6 @@ $this
 	->add($permissions->isAuthorizedMiddleware());
 
 $this
-	->map(['GET', 'POST'], '/settings/email', BaseController::action(SettingsController::class, 'email'))
-	->setName(SettingsConstants::ROUTE_EMAIL)
-    ->add($permissions->isAuthorizedMiddleware());
-
-$this
-	->map(['GET', 'POST'], '/settings/password', BaseController::action(SettingsController::class, 'password'))
-	->setName(SettingsConstants::ROUTE_PASSWORD)
-    ->add($permissions->isAuthorizedMiddleware());
-
-$this
-	->map(['GET', 'POST'], '/settings/avatar', BaseController::action(SettingsController::class, 'avatar'))
-	->setName(SettingsConstants::ROUTE_AVATAR)
-    ->add($permissions->isAuthorizedMiddleware());
-
-$this
-	->map(['GET', 'POST'], '/settings/steamid', BaseController::action(SettingsController::class, 'steamid'))
+	->map(['GET', 'POST'], '/settings/connect', BaseController::action(SettingsController::class, 'connect'))
 	->setName(SettingsConstants::ROUTE_CONNECT)
     ->add($permissions->isAuthorizedMiddleware());

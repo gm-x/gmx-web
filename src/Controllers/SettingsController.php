@@ -16,80 +16,43 @@ class SettingsController extends BaseMainController {
     protected function getActiveMenu() {
         return SettingsConstants::ROUTE_MAIN;
     }
-    
+
     /**
      * @param Request $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws RedirectException
      */
     public function indexAction(Request $request, ResponseInterface $response, array $args) {
+        $user = $this->getUser();
+
+        $emailForm = new EmailForm($user);
+        if ($this->processForm($request, $emailForm, true)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect(SettingsConstants::ROUTE_MAIN);
+        }
+
+        $passwordForm = new PasswordForm($user, new AuthHelper($this->container));
+        if ($this->processForm($request, $passwordForm, true)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect(SettingsConstants::ROUTE_MAIN);
+        }
+
+        $avatarForm = new AvatarForm($user, $this->getContainer('upload'));
+        if ($this->processForm($request, $avatarForm, true)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect(SettingsConstants::ROUTE_MAIN);
+        }
+
         return $this->render('settings/index.twig', [
         	'currentHref' => UriHelper::getUrl($request->getUri()),
+            'user' => $user,
+            'emailForm' => $emailForm->getForm(),
+            'passwordForm' => $passwordForm->getForm(),
+            'avatarForm' => $avatarForm->getForm(),
         ]);
     }
-
-    /**
-     * @param Request $request
-     * @param ResponseInterface $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws RedirectException
-     */
-	public function emailAction(Request $request, ResponseInterface $response, array $args) {
-		$form = new EmailForm($this->getUser());
-		if ($this->processForm($request, $form, true)) {
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('user_settings_email');
-        }
-
-		return $this->render('settings/email.twig', [
-			'currentHref' => UriHelper::getUrl($request->getUri()),
-			'form' => $form->getForm(),
-		]);
-	}
-
-    /**
-     * @param Request $request
-     * @param ResponseInterface $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws RedirectException
-     */
-	public function passwordAction(Request $request, ResponseInterface $response, array $args) {
-        $form = new PasswordForm($this->getUser(), new AuthHelper($this->container));
-        if ($this->processForm($request, $form, true)) {
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('user_settings_password');
-        }
-
-		return $this->render('settings/password.twig', [
-			'currentHref' => UriHelper::getUrl($request->getUri()),
-			'form' => $form->getForm(),
-		]);
-	}
-
-    /**
-     * @param Request $request
-     * @param ResponseInterface $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws RedirectException
-     */
-	public function avatarAction(Request $request, ResponseInterface $response, array $args) {
-	    $user = $this->getUser();
-        $form = new AvatarForm($user, $this->getContainer('upload'));
-        if ($this->processForm($request, $form, true)) {
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('user_settings_avatar');
-        }
-        
-		return $this->render('settings/avatar.twig', [
-			'currentHref' => UriHelper::getUrl($request->getUri()),
-			'user' => $user,
-			'form' => $form->getForm(),
-		]);
-	}
 
 	/**
 	 * @param Request $request
@@ -97,7 +60,7 @@ class SettingsController extends BaseMainController {
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-	public function steamidAction(Request $request, ResponseInterface $response, array $args) {
+	public function connectAction(Request $request, ResponseInterface $response, array $args) {
 		return $this->render('settings/steamid.twig', [
 			'currentHref' => UriHelper::getUrl($request->getUri()),
 		]);

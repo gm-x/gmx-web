@@ -148,7 +148,7 @@ class Form implements ArrayAccess {
 
     /**
      * @param ServerRequestInterface|null $request
-     * @return $this
+     * @return Form
      */
     public function processRequest(ServerRequestInterface $request) {
         if (!$request->isPost()) {
@@ -156,17 +156,17 @@ class Form implements ArrayAccess {
         }
 
         $body = $request->getParsedBody();
-        $data = array_key_exists($this->name, $body) && is_array($body[$this->name])
-            ? $body[$this->name]
-            : [];
+        if (!array_key_exists($this->name, $body) || !is_array($body[$this->name])) {
+            return $this;
+        }
 
-        $body = $request->getUploadedFiles();
-        $files = array_key_exists($this->name, $body) && is_array($body[$this->name])
-            ? $body[$this->name]
+        $files = $request->getUploadedFiles();
+        $files = array_key_exists($this->name, $files) && is_array($files[$this->name])
+            ? $files[$this->name]
             : [];
 
         $this->isSubmitted = true;
-        $values = array_merge($data, $files);
+        $values = array_merge($body[$this->name], $files);
         $result = $this->validator->validate($values);
         
         $this->isValid = $result->getIsValid();
@@ -186,6 +186,13 @@ class Form implements ArrayAccess {
     public function saveValues() {
         $this->writeValues();
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() {
+        return $this->name;
     }
 
     /**
@@ -215,7 +222,8 @@ class Form implements ArrayAccess {
 
     /**
      * @param $name
-     * @return string|null
+     * @return mixed
+     * @throws Exception
      */
     public function getValue($name) {
         return $this->get($name)->getValue();
@@ -232,6 +240,7 @@ class Form implements ArrayAccess {
      * @param $name
      * @param $error
      * @return $this
+     * @throws Exception
      */
     public function setError($name, $error) {
         $this
