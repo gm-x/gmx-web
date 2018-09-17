@@ -1,5 +1,4 @@
 <?php
-
 namespace GameX\Constants;
 
 class SettingsConstants {
