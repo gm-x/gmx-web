@@ -10,7 +10,7 @@ class Tokens extends Migration {
     public function up() {
         $this->getSchema()
             ->table('users', function (Blueprint $table) {
-                $table->unsignedTinyInteger('token')
+                $table->string('token', 70)
                     ->nullable()
                     ->after('avatar');
             });
