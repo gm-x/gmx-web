@@ -151,6 +151,6 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
 	public function players() {
-        return $this->hasMany(EloquentPersistence::class, 'user_id', 'id');
+        return $this->hasMany(Player::class, 'user_id', 'id');
     }
 }
