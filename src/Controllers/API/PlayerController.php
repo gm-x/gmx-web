@@ -4,11 +4,13 @@ namespace GameX\Controllers\API;
 use \GameX\Core\BaseApiController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
+use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Models\Player;
 use \GameX\Core\Forms\Validator;
 use \GameX\Core\Forms\Rules\SteamID;
 use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\IPv4;
+use \GameX\Core\Forms\Rules\Length;
 use \GameX\Core\Exceptions\ApiException;
 
 class PlayerController extends BaseApiController {
@@ -122,6 +124,35 @@ class PlayerController extends BaseApiController {
      * @throws ApiException
      */
     public function assignAction(Request $request, Response $response, array $args) {
+        $validator = new Validator($this->getContainer('lang'));
+        $validator
+            ->set('id', true, [
+                new Number(1)
+            ])
+            ->set('token', true, [
+                new Length(32, 32)
+            ]);
+
+        $result = $validator->validate($this->getBody($request));
+
+        if (!$result->getIsValid()) {
+            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+        }
+        $player = Player::find($result->getValue('id'), ['id', 'user_id']);
+        if (!$player) {
+            throw new ApiException('Player not found', ApiException::ERROR_VALIDATION);
+        }
+        if ($player->user_id !== null) {
+            throw new ApiException('User already assigned', ApiException::ERROR_VALIDATION);
+        }
+        $user = UserModel::where('token', $result->getValue('token'))->first(['id']);
+        if (!$user) {
+            throw new ApiException('Invalid user token', ApiException::ERROR_VALIDATION);
+        }
+
+        $player->user_id = $user->id;
+        $player->save();
+
         return $response->withStatus(200)->withJson([
             'success' => true,
         ]);
