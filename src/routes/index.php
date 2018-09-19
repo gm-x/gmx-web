@@ -17,8 +17,9 @@ $app->group('', function () {
         ->setName('index');
 
     $this
-        ->get('/lang', BaseController::action(IndexController::class, 'language'))
-        ->setName('language');
+        ->post('/lang', BaseController::action(IndexController::class, 'language'))
+        ->setName('language')
+        ->setArgument('csrf_skip', true);
 
     $this
         ->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))

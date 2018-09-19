@@ -29,9 +29,9 @@
                 <li>
                     <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
                     <div class="uk-navbar-dropdown">
-                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                        <ul class="uk-nav uk-navbar-dropdown-nav lang-select">
                             {% for key,value in siteLanguages %}
-                                <li><a href="{{ path_for('language', {}, {'lang': key, 'r': currentUri}) }}">{{ value }}</a></li>
+                                <li><a data-lang="{{ key }}">{{ value }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
