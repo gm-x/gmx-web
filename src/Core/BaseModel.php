@@ -45,26 +45,4 @@ abstract class BaseModel extends Model {
 	public static function setContainer(ContainerInterface $container) {
 		self::$container = $container;
 	}
-
-//    public function find($id, $columns = ['*']) {
-//	    /** @var \GameX\Core\Log\Logger $logger */
-//        $logger = self::$container->get('log');
-//        $logger->debug('Find model ' . static::class . ' with id ' . $id);
-//	    return parent::find($id, $columns);
-//    }
-//
-//    public function findMany($ids, $columns = ['*']) {
-//        /** @var \GameX\Core\Log\Logger $logger */
-//        $logger = self::$container->get('log');
-//        $logger->debug('Find model ' . static::class . ' with id ' . $ids);
-//        return parent::findMany($ids, $columns);
-//    }
-
-//    protected function newBaseQueryBuilder() {
-//        /** @var \GameX\Core\Log\Logger $logger */
-//        $logger = self::$container->get('log');
-//        $logger->debug('New Base Query Builder ' . static::class);
-//
-//	    return parent::newBaseQueryBuilder();
-//    }
 }
