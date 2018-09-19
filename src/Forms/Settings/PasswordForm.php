@@ -52,12 +52,18 @@ class PasswordForm extends BaseForm {
             ->add(new Password('repeat_password', '', [
                 'title' => 'Repeat password',
                 'required' => true,
-            ]))
-            ->addRule('old_password', new Required())
-            ->addRule('old_password', new Length(AuthHelper::MIN_PASSWORD_LENGTH))
-            ->addRule('new_password', new Required())
-            ->addRule('new_password', new Length(AuthHelper::MIN_PASSWORD_LENGTH))
-            ->addRule('repeat_password', new PasswordRepeat('new_password'));
+            ]));
+
+        $this->form->getValidator()
+            ->set('old_password', true, [
+                new Length(AuthHelper::MIN_PASSWORD_LENGTH)
+            ])
+            ->set('new_password', true, [
+                new Length(AuthHelper::MIN_PASSWORD_LENGTH)
+            ])
+            ->set('repeat_password', true, [
+                new PasswordRepeat('new_password')
+            ]);
     }
     
     /**

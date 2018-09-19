@@ -1,5 +1,4 @@
 <?php
-
 namespace GameX\Constants\Admin;
 
 class ServersConstants {

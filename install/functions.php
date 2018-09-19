@@ -110,6 +110,7 @@ function createUser($container, $login, $email, $password) {
 		'login'  => $login,
 		'email'  => $email,
 		'password' => $password,
+        'token' => \GameX\Core\Utils::generateToken(16),
 	], true);
 	
 	/** @var \GameX\Core\Configuration\Config $config */

@@ -149,7 +149,7 @@ abstract class BaseMainController extends BaseController {
             if ($withTransaction) {
                 $connection->beginTransaction();
             }
-            
+
             $form->process($request);
             $result = $form->getIsSubmitted() && $form->getIsValid();
             if ($withTransaction) {
