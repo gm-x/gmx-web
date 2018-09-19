@@ -1,8 +1,8 @@
 <?php
 function redirectToInstall() {
     $path = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $baseUrl = $path;
-    header('Location: ' . $baseUrl . '/install',true,302);
+    $path = str_replace('/public', '', $path);
+    header('Location: ' . $path . '/install',true,302);
     die();
 }
 
