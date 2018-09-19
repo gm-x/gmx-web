@@ -16,22 +16,12 @@ class ApiTokenMiddleware {
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
         try {
-            if (!preg_match('/Basic\s+(?P<token>.+?)$/i', $request->getHeaderLine('Authorization'), $matches)) {
+            if (!preg_match('/Token\s+(?P<token>.+?)$/i', $request->getHeaderLine('Authorization'), $matches)) {
                 throw new ApiException('Token required');
             }
-        
-            $token = base64_decode($matches['token']);
-            if (!$token) {
-                throw new ApiException('Token required');
-            }
-        
-            list ($token) = explode(':', $token);
-            if (empty($token)) {
-                throw new ApiException('Token required');
-            }
-        
+
             /** @var \GameX\Models\Server $server */
-            $server = Server::where('token', $token)->first();
+            $server = Server::where('token', $matches['token'])->first();
             if (!$server || !$server->active) {
                 throw new ApiException('Invalid token');
             }

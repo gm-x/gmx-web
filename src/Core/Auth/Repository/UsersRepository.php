@@ -5,7 +5,6 @@ use \Cartalyst\Sentinel\Users\IlluminateUserRepository;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \InvalidArgumentException;
 
-
 class UsersRepository extends IlluminateUserRepository {
 
     /**

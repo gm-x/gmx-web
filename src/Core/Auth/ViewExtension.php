@@ -133,6 +133,8 @@ class ViewExtension extends Twig_Extension {
             return false;
         }
 
+        array_unshift($args, $this->user->role);
+
         return call_user_func_array([$this->permissions, $method], $args);
     }
 

@@ -3,7 +3,6 @@
 
 ```
 server {
-server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 
@@ -17,7 +16,7 @@ server {
 	}
 
 	location / {
-		try_files $uri /index.php$is_args$args;
+		try_files $uri /public/index.php$is_args$args;
  	}
 
 	location ~ \.php$ {

@@ -2,16 +2,55 @@
 
 {% import 'macros/admin.twig' as admin %}
 
+{% block title %}{{ parent() }} | {{ trans('admin_menu', 'servers') }} | {{ server.name }}{% endblock %}
+
 {% block style %}
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
 
 {% block subnav %}
-    <div class="uk-float-left">
-        {{ admin.back_btn(path_for('admin_servers_list'), 'l') }}
-    </div>
-        {{ admin.edit_btn(path_for('admin_servers_edit', {'server': server.id}), 'l') }}
-        {{ admin.delete_btn(path_for('admin_servers_delete', {'server': server.id}), 'l') }}
+    {% if has_access_permission(
+        constants.admin.servers.PERMISSION_GROUP,
+        constants.admin.servers.PERMISSION_KEY,
+        permissions.ACCESS_LIST
+    ) %}
+        <div class="uk-float-left">
+            {{ admin.back_btn(path_for(constants.admin.servers.ROUTE_LIST), 'l') }}
+        </div>
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.servers.PERMISSION_GROUP,
+        constants.admin.servers.PERMISSION_KEY,
+        permissions.ACCESS_EDIT
+    ) %}
+        {{ admin.edit_btn(path_for(constants.admin.servers.ROUTE_EDIT, {'server': server.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.servers.PERMISSION_GROUP,
+        constants.admin.servers.PERMISSION_KEY,
+        permissions.ACCESS_DELETE
+    ) %}
+        {{ admin.delete_btn(path_for(constants.admin.servers.ROUTE_DELETE, {'server': server.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_resource(
+        constants.admin.servers.PERMISSION_TOKEN_GROUP,
+        constants.admin.servers.PERMISSION_TOKEN_KEY,
+        server.id,
+        [permissions.ACCESS_VIEW, permissions.ACCESS_CREATE]
+    ) %}
+        {{ admin.circle_btn({
+            'href': path_for(constants.admin.servers.ROUTE_TOKEN, {'server': server.id}),
+            'title': trans('admin_servers', 'token'),
+            'icon': 'fas fa-barcode',
+            'size': 'l',
+            'attrs': {
+                'id': 'tokenModal'
+            }
+        }) }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -44,7 +83,11 @@
 </div>
 
 <div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
-    {% set hasPermissionsForView = has_access_permission('admin', 'player', 'view') %}
+    {% set hasPermissionsForView = has_access_permission(
+        constants.admin.players.PERMISSION_GROUP,
+        constants.admin.players.PERMISSION_KEY,
+        premissions.ACCESS_VIEW
+    ) %}
     <div f-table f-divider>
         <ul th>
             <li class="uk-width-1-3@m uk-width-2-3@s uk-visible@s">Nick</li>
@@ -55,7 +98,7 @@
             <ul>
                 <li class="uk-width-1-3@m uk-width-2-3@s" data-title="Nick">
                     {% if hasPermissionsForView %}
-                        <a href="{{ path_for('admin_players_list') }}">{{ player.nick }}</a>
+                        <a href="{{ path_for(constants.admin.players.ROUTE_LIST) }}">{{ player.nick }}</a>
                     {% else %}
                         {{ player.nick }}
                     {% endif %}
@@ -63,7 +106,37 @@
                 <li class="uk-width-1-3@m uk-width-1-3@s" data-title="STEAM ID">{{ player.steamid }}</li>
                 <li class="uk-width-1-3@m uk-width-1-3@s" data-title="IP">{{ player.ip }}</li>
             </ul>
+        {% else %}
+            <ul>
+                <li>There are no online players on server</li>
+            </ul>
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+	<script>
+		$(document).ready(function () {
+			UIkit.util.on('#tokenModal', 'click', function (e) {
+			    e.preventDefault();
+           		e.target.blur();
+				$.getJSON($(this).attr('href'))
+					.done(function(data) {
+                        if (data.success) {
+                            var html = [
+                                '<div class="uk-modal-header uk-light uk-background-secondary">' +
+								'<h2 class="uk-modal-title">{{ trans("admin_servers", "token") }}</h2>' +
+								'</div><p class="uk-modal-body">' + data.token + '</p>'
+							];
+                             UIkit.modal.dialog(html.join(''));
+                        }
+					})
+                    .fail(function() {
+                        console.log("error");
+                    });
+			});
+        });
+	</script>
 {% endblock %}

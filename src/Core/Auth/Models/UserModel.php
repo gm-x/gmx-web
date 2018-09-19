@@ -18,6 +18,8 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array $permissions
  * @property int $role_id
  * @property \DateTime $last_login
+ * @property int $avatar
+ * @property string $token
  * @property \DateTime $created_at
  * @property \DateTime $update_at
  * @property RoleModel $role
@@ -41,6 +43,8 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 		'first_name',
 		'permissions',
 		'role_id',
+        'avatar',
+        'token'
 	];
 
 	/**
@@ -147,6 +151,6 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
 	public function players() {
-        return $this->hasMany(EloquentPersistence::class, 'user_id', 'id');
+        return $this->hasMany(Player::class, 'user_id', 'id');
     }
 }

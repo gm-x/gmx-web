@@ -4,6 +4,11 @@ namespace GameX\Core;
 use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
 use \GameX\Core\Menu\MenuItem;
+use \GameX\Constants\Admin\PlayersConstants;
+use \GameX\Constants\Admin\ServersConstants;
+use \GameX\Constants\Admin\UsersConstants;
+use \GameX\Constants\Admin\RolesConstants;
+use \GameX\Constants\Admin\PreferencesConstants;
 
 abstract class BaseAdminController extends BaseMainController {
 
@@ -17,42 +22,31 @@ abstract class BaseAdminController extends BaseMainController {
 			->setActiveRoute($this->getActiveMenu())
 			->add(new MenuItem(
 			    $lang->format('admin_menu','preferences'),
-                'admin_preferences_index',
-                []
+                PreferencesConstants::ROUTE_MAIN, []
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','users'),
-                'admin_users_list',
-                []
+                UsersConstants::ROUTE_LIST, [],
+                [ServersConstants::PERMISSION_GROUP, ServersConstants::PERMISSION_KEY]
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','roles'),
-                'admin_roles_list',
-                []
+                RolesConstants::ROUTE_LIST, [],
+                [RolesConstants::PERMISSION_GROUP, RolesConstants::PERMISSION_KEY]
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','servers'),
-                'admin_servers_list',
-                []
+                ServersConstants::ROUTE_LIST, [],
+                [ServersConstants::PERMISSION_GROUP, ServersConstants::PERMISSION_KEY]
             ))
 			->add(new MenuItem(
 			    $lang->format('admin_menu','players'),
-                'admin_players_list',
-                []
+                PlayersConstants::ROUTE_LIST, [],
+                [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY]
             ));
 
-		// TODO: Make refactoring for this
         /** @var Twig $view */
         $view = $this->getContainer('view');
-//		$modules = $this->getContainer('modules');
-//		/** @var \GameX\Core\Module\ModuleInterface $module */
-//		foreach ($modules as $module) {
-//			$items = $module->getAdminMenuItems();
-//			foreach ($items as $item) {
-//				$menu->add($item);
-//			}
-//		}
-//
 		$view->getEnvironment()->addGlobal('menu', $menu);
 	}
 }

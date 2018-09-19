@@ -14,7 +14,6 @@ class RolesPermissions extends Migration {
                 $table->unsignedInteger('resource')->nullable();
                 $table->unsignedTinyInteger('access')->nullable()->default('0');
                 $table->timestamps();
-                $table->unique(['role_id', 'permission_id']);
             });
     }
     

@@ -1,46 +1,89 @@
 {% extends 'admin/admin.twig' %}
 
 {% import 'macros/admin.twig' as admin %}
-{% import 'macros/paginator.twig' as paginator %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
 
 {% block subnav %}
     <div class="uk-float-left">
-        {{ admin.back_btn(path_for('admin_players_list'), 'l') }}
+        {{ admin.back_btn(path_for(constants.admin.players.ROUTE_LIST), 'l') }}
     </div>
-    {{ admin.add_btn(path_for('admin_players_privileges_create', {'player': player.id}), 'l') }}
 {% endblock %}
 
 {% block content %}
-<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-    <div class="uk-overflow-auto">
-        <table class="uk-table uk-table-divider">
-            <thead>
-                <tr>
-                    <th>Server</th>
-                    <th>Group</th>
-                    <th>Prefix</th>
-                    <th>Expired</th>
-                    <th>Active</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for privilege in privileges %}
-                <tr>
-                    <td class="text-nowrap">{{ privilege.group.server.name }}</td>
-                    <td class="text-nowrap">{{ privilege.group.title }}</td>
-                    <td class="text-nowrap">{{ privilege.prefix }}</td>
-                    <td class="text-nowrap">{{ privilege.expired_at|date('d.m.Y') }}</td>
-                    <td>{{ privilege.active ? 'Yes' : 'No' }}</td>
-                    <td class="text-nowrap">
-                        {{ admin.edit_btn(path_for('admin_players_privileges_edit', {'player': player.id, 'privilege': privilege.id})) }}
-                        {{ admin.delete_btn(path_for('admin_players_privileges_delete', {'player': player.id, 'privilege': privilege.id})) }}
-                    </td>
-                </tr>
+    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+        <div f-table f-divider>
+            {% for serverId, serverData in data %}
+                <ul th uk-sticky="offset: 80" style="background: #263137;">
+                    <li class="uk-width-expand"><h3>{{ serverData.name }}</h3></li>
+                    <li class="uk-width-xxs">
+                        {% if has_access_resource(
+                            constants.admin.privileges.PERMISSION_GROUP,
+                            constants.admin.privileges.PERMISSION_KEY,
+                            serverId,
+                            permissions.ACCESS_CREATE
+                        ) %}
+                            {{ admin.add_btn(
+                                path_for(constants.admin.privileges.ROUTE_CREATE, {
+                                    'player': player.id,
+                                    'server': serverId
+                                })
+                            ) }}
+                        {% endif %}
+                    </li>
+                </ul>
+                {% for privilege in serverData.privileges %}
+                    <ul>
+                        <li class="uk-width-expand">
+                            {{ privilege.group.title }}
+                        </li>
+                        <li class="uk-width-expand">
+                            {{ privilege.expired_at }}
+                        </li>
+                        <li class="uk-width-expand">
+                            {{ privilege.prefix }}
+                        </li>
+
+                        {% if has_access_resource(
+                            constants.admin.privileges.PERMISSION_GROUP,
+                            constants.admin.privileges.PERMISSION_KEY,
+                            serverId,
+                            permissions.ACCESS_EDIT
+                        ) %}
+                            <li class="uk-width-xxs">
+                                {{ admin.edit_btn(
+                                    path_for(constants.admin.privileges.ROUTE_EDIT, {
+                                        'player': player.id,
+                                        'privilege' : privilege.id
+                                    })
+                                ) }}
+                            </li>
+                        {% endif %}
+
+                        {% if has_access_resource(
+                            constants.admin.privileges.PERMISSION_GROUP,
+                            constants.admin.privileges.PERMISSION_KEY,
+                            serverId,
+                            permissions.ACCESS_DELETE
+                        ) %}
+                            <li class="uk-width-xxs">
+                                {{ admin.delete_btn(
+                                    path_for(constants.admin.privileges.ROUTE_DELETE, {
+                                        'player': player.id,
+                                        'privilege' : privilege.id
+                                    })
+                                ) }}
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <ul>
+                        <li>Empty list</li>
+                    </ul>
+                {% endfor %}
             {% endfor %}
-            </tbody>
-        </table>
+        </div>
     </div>
-	{{ paginator.render(pagination) }}
-</div>
 {% endblock %}

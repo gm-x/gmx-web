@@ -15,7 +15,15 @@
             {% else %}
                 <input type="submit" class="uk-button uk-button-primary hvr-grow" value="{{ trans('buttons', 'update') }}">
             {% endif %}
-            <a href="{{ path_for('admin_servers_list') }}" class="uk-button uk-button-secondary">{{ trans('buttons', 'cancel') }}</a>
+            {% if has_access_permission(
+                constants.admin.servers.PERMISSION_GROUP,
+                constants.admin.servers.PERMISSION_KEY,
+                permissions.ACCESS_LIST
+            ) %}
+                <a href="{{ path_for(constants.admin.servers.ROUTE_LIST) }}" class="uk-button uk-button-secondary">
+                    {{ trans('buttons', 'cancel') }}
+                </a>
+            {% endif %}
         </div>
     </form>
 </div>

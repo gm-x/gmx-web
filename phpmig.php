@@ -30,6 +30,8 @@ $container['db'] = function ($container) {
     $capsule->addConnection($config->getNode('db')->toArray());
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
+    
+    \Illuminate\Database\Schema\Builder::defaultStringLength(191);
 
     return $capsule;
 };

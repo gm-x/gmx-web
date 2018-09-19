@@ -121,11 +121,11 @@
 					{{ key }}="{{ value }}"
 				{% endfor %}
 			>
-			{% if element.getEmptyOption() %}
+			{% if element.hasEmptyOption() %}
 				<option value="">{{ element.getEmptyOption() }}</option>
 			{% endif %}
 			{% for key, value in element.getOptions() %}
-				{% if key == element.getValue() %}
+				{% if element.getValue() is same as(key) %}
 					<option value="{{ key }}" selected="selected">{{ value }}</option>
 				{% else %}
 					<option value="{{ key }}">{{ value }}</option>

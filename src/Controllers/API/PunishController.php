@@ -92,13 +92,13 @@ class PunishController extends BaseApiController {
         
         $validator = new Validator($this->getContainer('lang'));
         $validator
-            ->set('steamid', true, [
-                new SteamID()
-            ])
+            ->set('nick', true)
             ->set('emulator', true, [
                 new Number()
             ])
-            ->set('nick', true)
+            ->set('steamid', true, [
+                new SteamID()
+            ])
             ->set('ip', true, [
                 new IPv4()
             ])

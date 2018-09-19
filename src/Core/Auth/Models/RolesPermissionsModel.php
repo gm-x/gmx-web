@@ -36,6 +36,18 @@ class RolesPermissionsModel extends BaseModel {
     protected $dates = ['created_at', 'updated_at'];
     
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'role_id' => 'int',
+        'permission_id' => 'int',
+        'resource' => 'int',
+        'access' => 'int',
+    ];
+    
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function role() {

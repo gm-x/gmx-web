@@ -1,6 +1,15 @@
 <?php
 use \GameX\Core\Migration;
 use \GameX\Core\Auth\Models\PermissionsModel;
+use \GameX\Constants\Admin\ServersConstants;
+use \GameX\Constants\Admin\PlayersConstants;
+use \GameX\Constants\Admin\PrivilegesConstants;
+use \GameX\Constants\Admin\GroupsConstants;
+use \GameX\Constants\Admin\ReasonsConstants;
+use \GameX\Constants\Admin\UsersConstants;
+use \GameX\Constants\Admin\RolesConstants;
+use \GameX\Constants\Admin\PermissionsConstants;
+use \GameX\Constants\Admin\PreferencesConstants;
 
 class PermissionsList extends Migration {
 
@@ -28,41 +37,49 @@ class PermissionsList extends Migration {
     protected function getList() {
         return [
             [
-                'group' => 'admin',
-                'key' => 'server',
-                'type' => NULL,
-            ],[
-                'group' => 'admin',
-                'key' => 'user',
-                'type' => NULL,
+                'group' => ServersConstants::PERMISSION_GROUP,
+                'key' => ServersConstants::PERMISSION_KEY,
+                'type' => ServersConstants::PERMISSION_TYPE,
             ], [
-                'group' => 'admin',
-                'key' => 'user_role',
-                'type' => NULL,
+                'group' => ServersConstants::PERMISSION_TOKEN_GROUP,
+                'key' => ServersConstants::PERMISSION_TOKEN_KEY,
+                'type' => ServersConstants::PERMISSION_TOKEN_TYPE,
             ], [
-                'group' => 'admin',
-                'key' => 'role',
-                'type' => NULL,
+                'group' => PlayersConstants::PERMISSION_GROUP,
+                'key' => PlayersConstants::PERMISSION_KEY,
+                'type' => PlayersConstants::PERMISSION_TYPE,
             ], [
-                'group' => 'admin',
-                'key' => 'player',
-                'type' => NULL,
+                'group' => PrivilegesConstants::PERMISSION_GROUP,
+                'key' => PrivilegesConstants::PERMISSION_KEY,
+                'type' => PrivilegesConstants::PERMISSION_TYPE,
             ], [
-                'group' => 'admin',
-                'key' => 'role_permission',
-                'type' => NULL,
+                'group' => GroupsConstants::PERMISSION_GROUP,
+                'key' => GroupsConstants::PERMISSION_KEY,
+                'type' => GroupsConstants::PERMISSION_TYPE,
             ], [
-                'group' => 'admin',
-                'key' => 'preferences',
-                'type' => NULL,
+                'group' => ReasonsConstants::PERMISSION_GROUP,
+                'key' => ReasonsConstants::PERMISSION_KEY,
+                'type' => ReasonsConstants::PERMISSION_TYPE,
             ], [
-                'group' => 'admin',
-                'key' => 'server_group',
-                'type' => 'server',
+                'group' => UsersConstants::PERMISSION_GROUP,
+                'key' => UsersConstants::PERMISSION_KEY,
+                'type' => UsersConstants::PERMISSION_TYPE,
             ], [
-                'group' => 'admin',
-                'key' => 'server_reason',
-                'type' => 'server',
+                'group' => RolesConstants::PERMISSION_GROUP,
+                'key' => RolesConstants::PERMISSION_KEY,
+                'type' => RolesConstants::PERMISSION_TYPE,
+            ], [
+                'group' => PermissionsConstants::PERMISSION_GROUP,
+                'key' => PermissionsConstants::PERMISSION_KEY,
+                'type' => PermissionsConstants::PERMISSION_TYPE,
+            ], [
+                'group' => PreferencesConstants::PERMISSION_GROUP,
+                'key' => PreferencesConstants::PERMISSION_MAIN_KEY,
+                'type' => PreferencesConstants::PERMISSION_TYPE,
+            ], [
+                'group' => PreferencesConstants::PERMISSION_GROUP,
+                'key' => PreferencesConstants::PERMISSION_EMAIL_KEY,
+                'type' => PreferencesConstants::PERMISSION_TYPE,
             ]
         ];
     }

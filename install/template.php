@@ -154,15 +154,8 @@
 			email: $('#formAdminEmail').val(),
 			pass: $('#formAdminPass').val()
 		};
-        var nextFunc = result('administrator', installTasks);
+        var nextFunc = result('administrator', finish);
 		$.post('?step=admin', data)
-            .done(nextFunc)
-            .fail(fail(nextFunc));
-	}
-
-	function installTasks() {
-        var nextFunc = result('tasks', finish);
-		$.post('?step=tasks')
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}

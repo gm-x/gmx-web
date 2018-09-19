@@ -5,16 +5,10 @@
         </a>
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
-                {% for item in menu %}
-                    {#{% if has_access(item.permission) %}#}
-                        {% if menu.getActiveRoute() == item.route %}
-                            <li class="uk-active">
-                        {% else %}
-                            <li>
-                        {% endif %}
+                {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
+                    <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
                         <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
-                        </li>
-                    {#{% endif %}#}
+                    </li>
                 {% endfor %}
             </ul>
         </div>
@@ -52,10 +46,10 @@
                                     </a></li>
                             {% else %}
                                 <li class="uk-nav-header">{{ get_user_name() }}</li>
-                                {#{% if has_access(item.permission) %}#}
+                                {% if has_access_group('admin') %}
                                     <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> Admin</a></li>
-                                {#{% endif %}#}
-                                <li><a class="dropdown-item" href="{{ path_for('user_settings_index') }}"><i class="fas fa-user uk-margin-small-right"></i> Settings</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}"><i class="fas fa-user uk-margin-small-right"></i> Settings</a></li>
                                 <li class="uk-nav-divider"></li>
                                 <li><a class="dropdown-item" href="{{ path_for('logout') }}"><i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('buttons', 'logout') }}</a></li>
                             {% endif %}
@@ -75,16 +69,10 @@
         <div id="offcanvas-nav" uk-offcanvas="overlay: true">
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
-                    {% for item in menu %}
-                        {#{% if has_access(item.permission) %}#}
-                            {% if menu.getActiveRoute() == item.route %}
-                                <li class="uk-active">
-                            {% else %}
-                                <li>
-                            {% endif %}
+                    {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
+                        <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
                             <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
-                            </li>
-                        {#{% endif %}#}
+                        </li>
                     {% endfor %}
                 </ul>
 
@@ -102,13 +90,13 @@
                             </a></li>
                     {% else %}
                         <li class="uk-nav-header">{{ get_user_name() }}</li>
-                        {#{% if has_access(item.permission) %}#}
+                        {% if has_access_group('admin') %}
                             <li>
                                 <a class="dropdown-item" href="{{ path_for('admin_index') }}">
                                     <span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin
                                 </a>
                             </li>
-                        {#{% endif %}#}
+                        {% endif %}
                         <li>
                             <a class="dropdown-item" href="#">
                                 <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a>

@@ -4,9 +4,7 @@ namespace GameX\Forms\Settings;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Email as EmailElement;
-use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Email as EmailRule;
-use \GameX\Core\Exceptions\FormException;
 
 class EmailForm extends BaseForm {
 
@@ -35,15 +33,18 @@ class EmailForm extends BaseForm {
 			->add(new EmailElement('email', $this->user->email, [
 				'title' => 'Email',
 				'required' => true
-			]))
-			->addRule('old_password', new Required())
-			->addRule('old_password', new EmailRule());
+			]));
+
+		$this->form->getValidator()
+			->set('email', true, [
+			    new EmailRule()
+            ]);
 	}
 
-	/**
-	 * @return boolean
-	 * @throws FormException
-	 */
+    /**
+     * @return bool
+     * @throws \Exception
+     */
 	protected function processForm() {
 		$this->user->email = $this->form->getValue('email');
 		return $this->user->save();

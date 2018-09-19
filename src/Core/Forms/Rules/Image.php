@@ -107,7 +107,7 @@ class Image extends BaseRule {
     		$this->message = ['image_' . $prefix . '_min', [$min]];
     		return false;
 		} elseif ($max && $size > $max) {
-			$this->message = ['image_' . $prefix . '_max', [$min]];
+			$this->message = ['image_' . $prefix . '_max', [$max]];
 			return false;
 		} else {
     		return true;

@@ -1,23 +1,23 @@
 <?php
 function redirectToInstall() {
     $path = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $baseUrl = $path;
-    header('Location: ' . $baseUrl . '/install',true,302);
+    $path = str_replace('/public', '', $path);
+    header('Location: ' . $path . '/install',true,302);
     die();
 }
 
-if (!is_file(__DIR__ . '/vendor/autoload.php')) {
+if (!is_file(__DIR__ . '/../vendor/autoload.php')) {
     redirectToInstall();
 }
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $container = new \Slim\Container([
 	'settings' => [
 		'determineRouteBeforeAppMiddleware' => true,
 		'displayErrorDetails' => true,
 	],
-	'root' => __DIR__ . DIRECTORY_SEPARATOR
+	'root' => dirname(__DIR__) . DIRECTORY_SEPARATOR,
 ]);
 
 $errorHandler = function (\Slim\Container $container) {
@@ -39,7 +39,13 @@ $errorHandler = function (\Slim\Container $container) {
 
 $notFoundHandler = function (\Slim\Container $container) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($container) {
-        return $container['view']->render($response->withStatus(404), 'errors/404.twig');
+        if ($request->getMediaType() === 'application/json') {
+            return $response->withStatus(404)->withJson([
+                "success" => false
+            ]);
+        } else {
+            return $container['view']->render($response->withStatus(404), 'errors/404.twig');
+        }
     };
 };
 
@@ -62,12 +68,13 @@ $container->register(new \GameX\Core\DependencyProvider());
 
 \GameX\Core\BaseModel::setContainer($container);
 \GameX\Core\BaseForm::setContainer($container);
+\GameX\Core\Utils::setContainer($container);
 date_default_timezone_set('UTC');
 
 $app = new \Slim\App($container);
 
-include __DIR__ . '/src/middlewares.php';
-include __DIR__ . '/src/routes/index.php';
+include __DIR__ . '/../src/middlewares.php';
+include __DIR__ . '/../src/routes/index.php';
 
 //set_error_handler(function ($errno, $error, $file, $line) use ($container) {
 //    $container->get('log')->error("#$errno: $error in $file:$line");
