@@ -8,6 +8,7 @@
 				<tr>
 					<th>Player</th>
 					<th>Punisher</th>
+					<th>Server</th>
 					<th>Type</th>
 					<th>Reason</th>
 					<th>Comment</th>
@@ -17,13 +18,21 @@
 			<tbody>
 			{% for punishment in punishments %}
 				<tr>
-					<td class="text-nowrap">{{ punishment.player.nick }}</td>
+					<td class="text-nowrap">
+						{% if punishment.player.user_id %}
+							<img src="{{ upload_url(punishment.player.user.avatar) }}" width="100">
+						{% endif %}
+						{{ punishment.player.nick }}
+					</td>
 					<td class="text-nowrap">
 						{% if punishment.punisher_id %}
 							{{ punishment.punisher.nick }}
 						{% else %}
-							{{ punishment.server.name }}
+							Server
 						{% endif %}
+					</td>
+					<td>
+                        {{ punishment.server.name }}
 					</td>
 					<td class="text-nowrap">{{ punishment.type }}</td>
 					<td class="text-nowrap">{{ punishment.reason.title }}</td>
@@ -35,6 +44,10 @@
 							Never
 						{% endif %}
 					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="7">Nothing to show</td>
 				</tr>
 			{% endfor %}
 			</tbody>
