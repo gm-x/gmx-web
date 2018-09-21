@@ -2,8 +2,10 @@
 use \GameX\Core\BaseController;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
+use \GameX\Constants\Admin\PunishmentsConstants;
 use \GameX\Controllers\Admin\PlayersController;
 use \GameX\Controllers\Admin\PrivilegesController;
+use \GameX\Controllers\Admin\PunishmentsController;
 use \GameX\Core\Auth\Permissions;
 
 return function () {
@@ -75,5 +77,21 @@ return function () {
         $this
             ->post('/{privilege}/delete', BaseController::action(PrivilegesController::class, 'delete'))
             ->setName(PrivilegesConstants::ROUTE_DELETE);
+    });
+    
+    $this->group('/{player}/punishments', function () {
+        /** @var \Slim\App $this */
+        
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer()->get('permissions');
+        
+        $this
+            ->get('', BaseController::action(PunishmentsController::class, 'index'))
+            ->setName(PunishmentsConstants::ROUTE_LIST)
+            ->add($permissions->hasAccessToPermissionMiddleware(
+                PunishmentsConstants::PERMISSION_GROUP,
+                PunishmentsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_LIST
+            ));
     });
 };
