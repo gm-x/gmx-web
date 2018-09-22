@@ -47,16 +47,6 @@ class PrivilegesForm extends BaseForm {
      * @param array $values
      * @return mixed|null
      */
-    public function checkGroupExists($value, array $values) {
-        return Group::where('id', $value)->exists() ? $value : null;
-    }
-    
-    
-    /**
-     * @param mixed $value
-     * @param array $values
-     * @return mixed|null
-     */
     public function checkPrivilegeExists($value, array $values) {
         return !Privilege::where([
         	'player_id' => $this->privilege->player_id,
@@ -97,7 +87,6 @@ class PrivilegesForm extends BaseForm {
             ->set('group', true, [
                 new Number(1),
                 new InArray(array_keys($groups)),
-                new Callback([$this, 'checkGroupExists'], 'Group doesn\'t exists')
             ])
             ->set('prefix', false)
             ->set('forever',false, [

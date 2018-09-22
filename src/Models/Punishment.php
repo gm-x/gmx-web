@@ -11,6 +11,7 @@ use \GameX\Core\Auth\Models\UserModel;
  * @property integer $id
  * @property integer $player_id
  * @property integer $punisher_id
+ * @property integer $punisher_user_id
  * @property integer $server_id
  * @property integer $reason_id
  * @property string $comment

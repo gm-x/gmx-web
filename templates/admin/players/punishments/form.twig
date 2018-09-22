@@ -1,0 +1,26 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <form action="{{ form.getAction() }}" method="post">
+        {{ csrf_token() }}
+		{{ forms.element_select(form.reason) }}
+        {{ forms.element_checkbox(form.forever) }}
+		{{ forms.element_datetime(form.expired, 'Y-m-d') }}
+        <div class="form-group">
+			{% if create %}
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
+			{% else %}
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
+			{% endif %}
+            <a href="{{ path_for(constants.admin.punishments.ROUTE_LIST, {
+                'player': player.id
+            }) }}" class="uk-button uk-button-secondary">
+                {{ trans('buttons', 'cancel') }}
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

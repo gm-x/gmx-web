@@ -10,7 +10,9 @@ use \GameX\Models\Player;
 use \GameX\Models\Server;
 use \GameX\Forms\Admin\PunishmentsForm;
 use \GameX\Constants\Admin\PunishmentsConstants;
+use \GameX\Constants\Admin\ReasonsConstants;
 use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\PunishmentsFormException;
 
 class PunishmentsController extends BaseAdminController {
 
@@ -44,7 +46,7 @@ class PunishmentsController extends BaseAdminController {
     public function createAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
         $server = $this->getServer($request, $response, $args);
-        $punishment = $this->getPrivilege($request, $response, $args, $player);
+        $punishment = $this->getPunishment($request, $response, $args, $player, $server);
     
         $form = new PunishmentsForm($server, $punishment);
         try {
@@ -55,12 +57,16 @@ class PunishmentsController extends BaseAdminController {
                     'privilege' => $punishment->id,
                 ]);
             }
-        } catch (\GameX\Core\Exceptions\PrivilegeFormException $e) {
-            $this->addErrorMessage('Add privileges groups before adding privilege');
-            return $this->redirect(\GameX\Constants\Admin\GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
+        } catch (PunishmentsFormException $e) {
+            $this->addErrorMessage('Add reasons before punish player');
+            return $this->redirect(ReasonsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/punishments/index.twig', []);
+        return $this->render('admin/players/punishments/form.twig', [
+            'player' => $player,
+            'form' => $form->getForm(),
+            'create' => true,
+        ]);
     }
     
     /**
@@ -104,13 +110,17 @@ class PunishmentsController extends BaseAdminController {
      * @param Response $response
      * @param array $args
      * @param Player $player
+     * @param Server $server
      * @return Punishment
      * @throws NotFoundException
      */
-    protected function getPunishment(Request $request, Response $response, array $args, Player $player) {
+    protected function getPunishment(Request $request, Response $response, array $args, Player $player, Server $server) {
         if (!array_key_exists('punishment', $args)) {
             return new Punishment([
-                'player_id' => $player->id
+                'player_id' => $player->id,
+                'punisher_id' => null,
+                'punisher_user_id' => $this->getUser()->id,
+                'server_id' => $server->id
             ]);
         }
     

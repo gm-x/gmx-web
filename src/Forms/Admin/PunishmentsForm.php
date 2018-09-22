@@ -14,7 +14,7 @@ use \GameX\Core\Forms\Rules\Boolean;
 use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\Date as DateRule;
 use \GameX\Core\Forms\Rules\Callback;
-use \GameX\Core\Exceptions\PrivilegeFormException;
+use \GameX\Core\Exceptions\PunishmentsFormException;
 
 class PunishmentsForm extends BaseForm {
 
@@ -41,100 +41,60 @@ class PunishmentsForm extends BaseForm {
 		$this->server = $server;
 		$this->punishment = $punishment;
 	}
-    
-    /**
-     * @param mixed $value
-     * @param array $values
-     * @return mixed|null
-     */
-    public function checkGroupExists($value, array $values) {
-        return Group::where('id', $value)->exists() ? $value : null;
-    }
-    
-    
-    /**
-     * @param mixed $value
-     * @param array $values
-     * @return mixed|null
-     */
-    public function checkPrivilegeExists($value, array $values) {
-        return !Privilege::where([
-        	'player_id' => $this->privilege->player_id,
-        	'group_id' => $value,
-		])->exists() ? $value : null;
-    }
 
 	/**
 	 * @noreturn
 	 */
 	protected function createForm() {
-        $groups = $this->getGroups();
-		if (!count($groups)) {
-			throw new PrivilegeFormException();
+        $reasons = $this->getReasons();
+		if (!count($reasons)) {
+			throw new PunishmentsFormException();
 		}
 		
 		$this->form
-            ->add(new Select('group', $this->privilege->group_id, $groups, [
-                'title' => 'Group',
+            ->add(new Select('reason', $this->punishment->reason_id, $reasons, [
+                'title' => 'Reason',
                 'required' => true,
-                'empty_option' => 'Choose group',
+                'empty_option' => 'Choose reason',
             ]))
-            ->add(new Text('prefix', $this->privilege->prefix, [
-                'title' => 'Prefix',
-            ]))
-            ->add(new DateElement('forever', $this->privilege->expired_at === null, [
+            ->add(new DateElement('forever', $this->punishment->expired_at === null, [
                 'title' => 'Forever',
             ]))
-            ->add(new DateElement('expired', $this->privilege->expired_at, [
+            ->add(new DateElement('expired', $this->punishment->expired_at, [
                 'title' => 'Expired',
                 'required' => true,
-            ]))
-            ->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
-                'title' => 'Active',
             ]));
 		
 		$this->form->getValidator()
             ->set('group', true, [
                 new Number(1),
-                new InArray(array_keys($groups)),
-                new Callback([$this, 'checkGroupExists'], 'Group doesn\'t exists')
+                new InArray(array_keys($reasons)),
             ])
-            ->set('prefix', false)
             ->set('forever',false, [
                 new Boolean()
             ])
             ->set('expired',true, [
                 new DateRule()
-            ])
-            ->set('active', false, [
-                new Boolean()
             ]);
-		
-		if (!$this->privilege->exists) {
-		    $this->form
-                ->addRule('group', new Callback([$this, 'checkPrivilegeExists'], 'Privilege already exists'));
-        }
 	}
     
     /**
      * @return boolean
      */
     protected function processForm() {
-        $this->privilege->group_id = $this->form->getValue('group');
-        $this->privilege->prefix = $this->form->getValue('prefix');
-        $this->privilege->expired_at = $this->form->getValue('expired');
-        $this->privilege->active = $this->form->getValue('active') ? 1 : 0;
-        return $this->privilege->save();
+        $this->punishment->reason_id = $this->form->getValue('reason');
+        $this->punishment->expired_at = $this->form->getValue('expired');
+        return $this->punishment->save();
     }
     
     /**
      * @return array
      */
-    protected function getGroups() {
-        $groups = [];
-        foreach ($this->server->groups as $group) {
-            $groups[$group->id] = $group->title;
+    protected function getReasons() {
+        $reasons = [];
+        foreach ($this->server->reasons as $reason) {
+            $reasons[$reason->id] = $reason->title;
         }
-        return $groups;
+        return $reasons;
     }
 }

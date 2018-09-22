@@ -87,14 +87,13 @@ class PrivilegesController extends BaseAdminController {
             }
         } catch (PrivilegeFormException $e) {
             $this->addErrorMessage('Add privileges groups before adding privilege');
-            return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
+            return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => true,
-            'servers' => $this->getServers(),
         ]);
     }
 
@@ -123,14 +122,13 @@ class PrivilegesController extends BaseAdminController {
             }
         } catch (PrivilegeFormException $e) {
             $this->addErrorMessage('Add privileges groups before adding privilege');
-            return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
+            return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => false,
-            'servers' => $this->getServers(),
         ]);
     }
 
@@ -238,18 +236,6 @@ class PrivilegesController extends BaseAdminController {
         }
 
         return $privilege;
-    }
-
-	/**
-	 * @return array
-	 */
-    protected function getServers() {
-    	$servers = [];
-    	/** @var Server $server */
-		foreach (Server::all() as $server) {
-    		$servers[$server->id] = $server->name;
-		}
-		return $servers;
     }
 
     /**
