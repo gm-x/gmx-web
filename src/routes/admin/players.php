@@ -87,11 +87,16 @@ return function () {
         
         $this
             ->get('', BaseController::action(PunishmentsController::class, 'index'))
-            ->setName(PunishmentsConstants::ROUTE_LIST)
-            ->add($permissions->hasAccessToPermissionMiddleware(
+            ->setName(PunishmentsConstants::ROUTE_LIST);
+    
+        $this
+            ->get('/create/{server}', BaseController::action(PunishmentsController::class, 'create'))
+            ->setName(PunishmentsConstants::ROUTE_CREATE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
                 PunishmentsConstants::PERMISSION_GROUP,
                 PunishmentsConstants::PERMISSION_KEY,
-                Permissions::ACCESS_LIST
+                Permissions::ACCESS_CREATE
             ));
     });
 };

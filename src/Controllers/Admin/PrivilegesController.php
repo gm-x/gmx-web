@@ -11,8 +11,8 @@ use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Core\BaseAdminController;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Models\Player;
-use \GameX\Models\Privilege;
 use \GameX\Models\Server;
+use \GameX\Models\Privilege;
 use \GameX\Forms\Admin\PrivilegesForm;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 use \GameX\Core\Exceptions\RedirectException;
@@ -80,7 +80,7 @@ class PrivilegesController extends BaseAdminController {
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect('admin_players_privileges_edit', [
+                return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
                     'player' => $player->id,
                     'privilege' => $privilege->id,
                 ]);
@@ -116,7 +116,7 @@ class PrivilegesController extends BaseAdminController {
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect('admin_players_privileges_edit', [
+                return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
                     'player' => $player->id,
                     'privilege' => $privilege->id,
                 ]);
