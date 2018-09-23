@@ -90,8 +90,18 @@ return function () {
             ->setName(PunishmentsConstants::ROUTE_LIST);
     
         $this
-            ->get('/create/{server}', BaseController::action(PunishmentsController::class, 'create'))
+            ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PunishmentsController::class, 'create'))
             ->setName(PunishmentsConstants::ROUTE_CREATE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                PunishmentsConstants::PERMISSION_GROUP,
+                PunishmentsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_CREATE
+            ));
+    
+        $this
+            ->map(['GET', 'POST'], '/{punishment}/edit', BaseController::action(PunishmentsController::class, 'edit'))
+            ->setName(PunishmentsConstants::ROUTE_EDIT)
             ->add($permissions->hasAccessToResourceMiddleware(
                 'server',
                 PunishmentsConstants::PERMISSION_GROUP,

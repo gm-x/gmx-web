@@ -7,6 +7,7 @@
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
 		{{ forms.element_select(form.reason) }}
+		{{ forms.element_bitmask(form.type) }}
         {{ forms.element_checkbox(form.forever) }}
 		{{ forms.element_datetime(form.expired, 'Y-m-d') }}
         <div class="form-group">

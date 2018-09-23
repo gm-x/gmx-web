@@ -171,3 +171,28 @@
 		{% endif %}
 	</div>
 {% endmacro %}
+
+{% macro element_bitmask(element) %}
+    {% set classes = ['uk-checkbox']|merge(element.getClasses()) %}
+    {% set attributes = element.getAttributes() %}
+	{% for value,label in element.getValues() %}
+		<div class="uk-margin uk-inline uk-width-1-1">
+			<label class="switcher">
+				<input
+						type="checkbox"
+						name="{{ element.getFormName() }}[{{ element.getName() }}][]"
+						value="{{ value }}"
+						class="{{ classes | join(' ') }}"
+				{% for key, value in attributes %}
+					{{ key }}="{{ value }}"
+				{% endfor %}
+				{% if element.getValue() %}
+					checked="checked"
+				{% endif %}
+				/>
+				<div class="switcher__indicator"></div>
+				<span>{{ label }}</span>
+			</label>
+		</div>
+	{% endfor %}
+{% endmacro %}
