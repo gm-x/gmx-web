@@ -33,7 +33,10 @@ class PunishmentsController extends BaseAdminController {
      * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function indexAction(Request $request, Response $response, array $args = []) {
-        return $this->render('admin/players/punishments/index.twig', []);
+        $player = $this->getPlayer($request, $response, $args);
+        return $this->render('admin/players/punishments/index.twig', [
+            'player' => $player
+        ]);
     }
     
     /**
@@ -108,15 +111,19 @@ class PunishmentsController extends BaseAdminController {
      * @param Request $request
      * @param Response $response
      * @param array $args
+     * @param bool $withPunishments
      * @return Player
      * @throws NotFoundException
      */
-    protected function getPlayer(Request $request, Response $response, array $args) {
+    protected function getPlayer(Request $request, Response $response, array $args, $withPunishments = false) {
         if (!array_key_exists('player', $args)) {
             return new Player();
         }
         
-        $player = Player::find($args['player']);
+        $player = $withPunishments
+            ? Player::with('punishments')->find($args['player'])
+            : Player::find($args['player']);
+        
         if (!$player) {
             throw new NotFoundException($request, $response);
         }

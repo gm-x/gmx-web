@@ -1,9 +1,33 @@
 {% extends 'admin/admin.twig' %}
 
 {% import 'macros/admin.twig' as admin %}
+{% block style %}
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
 
 {% block content %}
     <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-        <h1>TEST</h1>
+        <div f-table f-divider>
+            <ul th>
+                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Server</li>
+                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Reason</li>
+                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Comment</li>
+                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Type</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m"></li>
+            </ul>
+            {% for punishment in player.punishments %}
+                <ul>
+                    <li class="uk-width-1-4@m">{{ punishment.server.name }}</li>
+                    <li class="uk-width-1-4@m">{{ punishment.reason.title }}</li>
+                    <li class="uk-width-1-4@m">{{ punishment.reason.comment ?? '-' }}</li>
+                    <li class="uk-width-1-4@m">{{ punishment.reason.type }}</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s"></li>
+                </ul>
+                {% else %}
+                <ul>
+                    <li class="uk-width-1-1@m">No records</li>
+                </ul>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
