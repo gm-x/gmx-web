@@ -40,14 +40,25 @@
                     <td class="text-nowrap">
                         {% embed "admin/actions.twig" with {'actionId': role.id} %}
                             {% block actions %}
-                                <a
-                                    href="{{ path_for(constants.admin.privileges.ROUTE_LIST, {
-                                        'player': player.id
-                                    }) }}"
-                                    class="dropdown-item"
-                                >
-                                    <span class="oi oi-people"></span> Privileges
-                                </a>
+                                <li>
+                                    <a
+                                        href="{{ path_for(constants.admin.privileges.ROUTE_LIST, {
+                                            'player': player.id
+                                        }) }}"
+                                        class="dropdown-item"
+                                    >
+                                        <span class="oi oi-people"></span> Privileges
+                                    </a>
+                                </li>
+                                    <a
+                                        href="{{ path_for(constants.admin.punishments.ROUTE_LIST, {
+                                            'player': player.id
+                                        }) }}"
+                                        class="dropdown-item"
+                                    >
+                                        <span class="oi oi-people"></span> Punishments
+                                    </a>
+                                <li>
                             {% endblock %}
                         {% endembed %}
 
