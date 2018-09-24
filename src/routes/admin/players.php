@@ -101,12 +101,10 @@ return function () {
     
         $this
             ->map(['GET', 'POST'], '/{punishment}/edit', BaseController::action(PunishmentsController::class, 'edit'))
-            ->setName(PunishmentsConstants::ROUTE_EDIT)
-            ->add($permissions->hasAccessToResourceMiddleware(
-                'server',
-                PunishmentsConstants::PERMISSION_GROUP,
-                PunishmentsConstants::PERMISSION_KEY,
-                Permissions::ACCESS_CREATE
-            ));
+            ->setName(PunishmentsConstants::ROUTE_EDIT);
+    
+        $this
+            ->post('/{punishment}/delete', BaseController::action(PunishmentsController::class, 'delete'))
+            ->setName(PunishmentsConstants::ROUTE_DELETE);
     });
 };

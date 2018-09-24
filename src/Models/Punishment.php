@@ -31,6 +31,10 @@ class Punishment extends BaseModel {
 	const STATUS_PUNISHED = 'punished';
 	const STATUS_EXPIRED = 'expired';
 	const STATUS_AMNESTIED = 'amnestied';
+	
+	const TYPE_BANNED = 1;
+	const TYPE_GAGED = 2;
+	const TYPE_MUTED = 4;
 
 	/**
 	 * The table associated with the model.
@@ -99,5 +103,26 @@ class Punishment extends BaseModel {
      */
 	public function getPermanentAttribute() {
 	    return $this->attributes['expired_at'] === null;
+    }
+    
+    /**
+     * @return bool
+     */
+	public function isBanned() {
+	    return (bool) $this->attributes['type'] & self::TYPE_BANNED;
+    }
+    
+    /**
+     * @return bool
+     */
+	public function isGaged() {
+	    return (bool) $this->attributes['type'] & self::TYPE_GAGED;
+    }
+    
+    /**
+     * @return bool
+     */
+	public function isMuted() {
+	    return (bool) $this->attributes['type'] & self::TYPE_MUTED;
     }
 }

@@ -9,19 +9,64 @@
     <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
         <div f-table f-divider>
             <ul th>
-                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Server</li>
-                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Reason</li>
-                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Comment</li>
-                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Type</li>
+                <li class="uk-width-1-6@m uk-width-1-4@s uk-visible@s">Server</li>
+                <li class="uk-width-1-6@m uk-width-1-4@s uk-visible@s">Reason</li>
+                <li class="uk-width-1-6@m uk-width-1-4@s uk-visible@s">Type</li>
+                <li class="uk-width-1-6@m uk-width-1-4@s uk-visible@s">Expired</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m"></li>
             </ul>
             {% for punishment in player.punishments %}
                 <ul>
-                    <li class="uk-width-1-4@m">{{ punishment.server.name }}</li>
-                    <li class="uk-width-1-4@m">{{ punishment.reason.title }}</li>
-                    <li class="uk-width-1-4@m">{{ punishment.reason.comment ?? '-' }}</li>
-                    <li class="uk-width-1-4@m">{{ punishment.reason.type }}</li>
-                    <li class="uk-width-1-6@m uk-width-1-6@s"></li>
+                    <li class="uk-width-1-6@m">{{ punishment.server.name }}</li>
+                    <li class="uk-width-1-6@m">
+                        {{ punishment.reason.title }}
+                        {% if punishment.reason.comment %}
+                            ({{ punishment.reason.comment }}
+                        {% endif %}
+                    </li>
+                    <li class="uk-width-1-6@m">
+                        <ul>
+                            {% if punishment.isBanned() %}
+                                <li>Ban</li>
+                            {% endif %}
+                            {% if punishment.isGaged() %}
+                                <li>Gag</li>
+                            {% endif %}
+                            {% if punishment.isMuted() %}
+                                <li>Mute</li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ punishment.expried ?? 'never' }}</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">
+                        {% if has_access_resource(
+                            constants.admin.punishments.PERMISSION_GROUP,
+                            constants.admin.punishments.PERMISSION_KEY,
+                            punishment.server_id,
+                            permissions.ACCESS_EDIT
+                        ) %}
+                            {{ admin.edit_btn(
+                                path_for(constants.admin.punishments.ROUTE_EDIT, {
+                                    'player': player.id,
+                                    'punishment': punishment.id
+                                })
+                            ) }}
+                        {% endif %}
+
+                        {% if has_access_resource(
+                            constants.admin.punishments.PERMISSION_GROUP,
+                            constants.admin.punishments.PERMISSION_KEY,
+                            punishment.server_id,
+                            permissions.ACCESS_DELETE
+                        ) %}
+                            {{ admin.delete_btn(
+                                path_for(constants.admin.punishments.ROUTE_DELETE, {
+                                    'player': player.id,
+                                    'punishment': punishment.id
+                                })
+                            ) }}
+                        {% endif %}
+                    </li>
                 </ul>
                 {% else %}
                 <ul>

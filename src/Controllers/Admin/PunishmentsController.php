@@ -5,6 +5,7 @@ use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Models\Punishment;
 use \GameX\Models\Player;
 use \GameX\Models\Server;
@@ -12,8 +13,10 @@ use \GameX\Forms\Admin\PunishmentsForm;
 use \GameX\Constants\Admin\PunishmentsConstants;
 use \GameX\Constants\Admin\ReasonsConstants;
 use \GameX\Constants\Admin\PlayersConstants;
-use \Slim\Exception\NotFoundException;
 use \GameX\Core\Exceptions\PunishmentsFormException;
+use \GameX\Core\Exceptions\NotAllowedException;
+use \Slim\Exception\NotFoundException;
+use \Exception;
 
 class PunishmentsController extends BaseAdminController {
 
@@ -58,7 +61,7 @@ class PunishmentsController extends BaseAdminController {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
                 return $this->redirect(PunishmentsConstants::ROUTE_EDIT, [
                     'player' => $player->id,
-                    'privilege' => $punishment->id,
+                    'punishment' => $punishment->id,
                 ]);
             }
         } catch (PunishmentsFormException $e) {
@@ -83,8 +86,8 @@ class PunishmentsController extends BaseAdminController {
      */
     public function editAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
-        $server = $this->getServer($request, $response, $args);
-        $punishment = $this->getPunishment($request, $response, $args, $player, $server);
+        $punishment = $this->getPunishment($request, $response, $args, $player);
+        $server = $this->getServerForPunishment($punishment, Permissions::ACCESS_DELETE);
         
         $form = new PunishmentsForm($server, $punishment);
         try {
@@ -92,7 +95,7 @@ class PunishmentsController extends BaseAdminController {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
                 return $this->redirect(PunishmentsConstants::ROUTE_EDIT, [
                     'player' => $player->id,
-                    'privilege' => $punishment->id,
+                    'punishment' => $punishment->id,
                 ]);
             }
         } catch (PunishmentsFormException $e) {
@@ -103,8 +106,32 @@ class PunishmentsController extends BaseAdminController {
         return $this->render('admin/players/punishments/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
-            'create' => true,
+            'create' => false,
         ]);
+    }
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotAllowedException
+     * @throws NotFoundException
+     */
+    public function deleteAction(Request $request, Response $response, array $args = []) {
+        $player = $this->getPlayer($request, $response, $args);
+        $punishment = $this->getPunishment($request, $response, $args, $player);
+        $this->getServerForPunishment($punishment, Permissions::ACCESS_DELETE);
+        
+        try {
+            $punishment->delete();
+            $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
+        } catch (Exception $e) {
+            $this->addErrorMessage($this->getTranslate('labels', 'exception'));
+            $this->getLogger()->exception($e);
+        }
+        
+        return $this->redirect(PunishmentsConstants::ROUTE_LIST, ['player' => $player->id]);
     }
     
     /**
@@ -148,15 +175,31 @@ class PunishmentsController extends BaseAdminController {
     }
     
     /**
+     * @param Punishment $punishment
+     * @param int $access
+     * @return Server
+     * @throws NotFoundException
+     * @throws NotAllowedException
+     */
+    protected function getServerForPunishment(Punishment $punishment, $access) {
+        if (!$this->hasAccess($punishment->server_id, $access)) {
+            throw new NotAllowedException();
+        }
+        
+        return $punishment->server;
+    }
+    
+    /**
      * @param Request $request
      * @param Response $response
      * @param array $args
      * @param Player $player
-     * @param Server $server
+     * @param Server|null $server
      * @return Punishment
      * @throws NotFoundException
+     * @throws NotAllowedException
      */
-    protected function getPunishment(Request $request, Response $response, array $args, Player $player, Server $server) {
+    protected function getPunishment(Request $request, Response $response, array $args, Player $player, Server $server = null) {
         if (!array_key_exists('punishment', $args)) {
             return new Punishment([
                 'player_id' => $player->id,
@@ -171,6 +214,45 @@ class PunishmentsController extends BaseAdminController {
             throw new NotFoundException($request, $response);
         }
         
+        if ($punishment->player_id !== $player->id) {
+            throw new NotAllowedException();
+        }
+        
         return $punishment;
+    }
+    
+    /**
+     * @param int $serverId
+     * @param int $access
+     * @return bool
+     */
+    protected function hasAccess($serverId, $access) {
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer('permissions');
+        
+        $user = $this->getUser();
+        if (!$user) {
+            return false;
+        }
+        
+        if ($permissions->isRootUser($user)) {
+            return true;
+        }
+        
+        if (!$user->role) {
+            return false;
+        }
+        
+        if (!$permissions->hasAccessToResource(
+            $user->role,
+            PunishmentsConstants::PERMISSION_GROUP,
+            PunishmentsConstants::PERMISSION_KEY,
+            $serverId,
+            $access
+        )) {
+            return false;
+        }
+        
+        return true;
     }
 }

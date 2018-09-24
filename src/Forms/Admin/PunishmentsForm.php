@@ -57,9 +57,9 @@ class PunishmentsForm extends BaseForm {
                 'empty_option' => 'Choose reason',
             ]))
             ->add(new BitMaskElement('type', $this->punishment->type, [
-                1 => 'Ban',
-                2 => 'Gag',
-                4 => 'Mute',
+                Punishment::TYPE_BANNED => 'Ban',
+                Punishment::TYPE_GAGED => 'Gag',
+                Punishment::TYPE_MUTED => 'Mute',
             ]))
             ->add(new DateElement('forever', $this->punishment->expired_at === null, [
                 'title' => 'Forever',
@@ -75,7 +75,11 @@ class PunishmentsForm extends BaseForm {
                 new InArray(array_keys($reasons)),
             ])
             ->set('type', true, [
-                new BitMaskRule([1, 2, 4])
+                new BitMaskRule([
+                    Punishment::TYPE_BANNED,
+                    Punishment::TYPE_GAGED,
+                    Punishment::TYPE_MUTED,
+                ])
             ], [
                 'check' => Validator::CHECK_ARRAY,
                 'trim' => false,

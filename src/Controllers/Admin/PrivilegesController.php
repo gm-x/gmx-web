@@ -1,7 +1,6 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-use GameX\Core\Exceptions\NotAllowedException;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
@@ -17,6 +16,7 @@ use \GameX\Forms\Admin\PrivilegesForm;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 use \GameX\Core\Exceptions\RedirectException;
 use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\NotAllowedException;
 use \Exception;
 
 class PrivilegesController extends BaseAdminController {
