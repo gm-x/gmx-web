@@ -79,8 +79,9 @@ class ReasonsForm extends BaseForm {
                 'title' => 'Active',
                 'required' => false,
             ]));
-		
-		$this->form->getValidator()
+
+        $validator = $this->form->getValidator();
+        $validator
             ->set('title', true)
             ->set('time_enabled', false, [
                 new Boolean()
@@ -99,7 +100,7 @@ class ReasonsForm extends BaseForm {
             ]);
 		
 		if (!$this->reason->exists) {
-            $this->form->addRule(
+            $validator->add(
                 'title',
                 new Callback([$this, 'checkExists'], $this->getTranslate('admin_reasons', 'exists'))
             );

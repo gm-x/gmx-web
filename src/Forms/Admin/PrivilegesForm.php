@@ -82,8 +82,9 @@ class PrivilegesForm extends BaseForm {
             ->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
                 'title' => 'Active',
             ]));
-		
-		$this->form->getValidator()
+
+        $validator = $this->form->getValidator();
+        $validator
             ->set('group', true, [
                 new Number(1),
                 new InArray(array_keys($groups)),
@@ -100,8 +101,7 @@ class PrivilegesForm extends BaseForm {
             ]);
 		
 		if (!$this->privilege->exists) {
-		    $this->form
-                ->addRule('group', new Callback([$this, 'checkPrivilegeExists'], 'Privilege already exists'));
+            $validator->add('group', new Callback([$this, 'checkPrivilegeExists'], 'Privilege already exists'));
         }
 	}
     
