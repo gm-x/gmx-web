@@ -31,12 +31,13 @@ class RolesController extends BaseAdminController {
             'roles' => RoleModel::get()
         ]);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
      */
     public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
@@ -49,12 +50,14 @@ class RolesController extends BaseAdminController {
             'pagination' => $pagination,
         ]);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
@@ -72,12 +75,14 @@ class RolesController extends BaseAdminController {
             'create' => true,
         ]);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
@@ -94,24 +99,28 @@ class RolesController extends BaseAdminController {
             'create' => false,
         ]);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
      */
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
 
+        if ($role->users()->count() > 0) {
+            $this->addErrorMessage($this->getTranslate('admin_roles', 'empty_users_exists'));
+            return $this->redirect(RolesConstants::ROUTE_VIEW, [
+                'role' => $role->id,
+            ]);
+        }
+
         try {
-            if ($role->users()->count() > 0) {
-                $this->addErrorMessage('There users attached to role');
-            } else {
-                $role->delete();
-            }
+            $role->delete();
         } catch (Exception $e) {
-            $this->addErrorMessage('Something wrong. Please Try again later.');
+            $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
 

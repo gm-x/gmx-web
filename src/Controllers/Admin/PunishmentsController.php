@@ -33,7 +33,6 @@ class PunishmentsController extends BaseAdminController {
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
-     * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function indexAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
@@ -41,12 +40,13 @@ class PunishmentsController extends BaseAdminController {
             'player' => $player
         ]);
     }
-    
+
     /**
      * @param Request $request
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotAllowedException
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
@@ -65,7 +65,7 @@ class PunishmentsController extends BaseAdminController {
                 ]);
             }
         } catch (PunishmentsFormException $e) {
-            $this->addErrorMessage('Add reasons before punish player');
+            $this->addErrorMessage($this->getTranslate('admin_punishments', 'empty_reasons_list'));
             return $this->redirect(ReasonsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
@@ -75,12 +75,13 @@ class PunishmentsController extends BaseAdminController {
             'create' => true,
         ]);
     }
-    
+
     /**
      * @param Request $request
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotAllowedException
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
@@ -99,7 +100,7 @@ class PunishmentsController extends BaseAdminController {
                 ]);
             }
         } catch (PunishmentsFormException $e) {
-            $this->addErrorMessage('Add reasons before punish player');
+            $this->addErrorMessage($this->getTranslate('admin_punishments', 'empty_reasons_list'));
             return $this->redirect(ReasonsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
