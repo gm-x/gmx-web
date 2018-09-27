@@ -9,8 +9,9 @@ use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Slim\Exception\NotFoundException;
 use \GameX\Forms\Admin\GroupsForm;
+use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\RedirectException;
 use \Exception;
 
 class GroupsController extends BaseAdminController {
@@ -22,12 +23,13 @@ class GroupsController extends BaseAdminController {
 		return ServersConstants::ROUTE_LIST;
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
 		$pagination = new Pagination($server->groups()->get(), $request);
@@ -43,6 +45,8 @@ class GroupsController extends BaseAdminController {
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws RedirectException
      */
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -69,6 +73,8 @@ class GroupsController extends BaseAdminController {
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws RedirectException
      */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -95,6 +101,7 @@ class GroupsController extends BaseAdminController {
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
      */
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -102,7 +109,7 @@ class GroupsController extends BaseAdminController {
 
         try {
             $group->delete();
-            $this->addSuccessMessage($this->getTranslate('admins_players', 'removed'));
+            $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);

@@ -2,12 +2,13 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
-use \Psr\Http\Message\ServerRequestInterface;
+use \Slim\Http\Request;
+use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Forms\Admin\PlayersForm;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Player;
+use \GameX\Constants\Admin\PlayersConstants;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -18,12 +19,12 @@ class PlayersController extends BaseAdminController {
 	}
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
+	 * @param Request $request
+	 * @param Response $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function indexAction(Request $request, Response $response, array $args = []) {
     	$filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
     	$players = $filter === null
 			? Player::get()
@@ -38,14 +39,14 @@ class PlayersController extends BaseAdminController {
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-	public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+	public function createAction(Request $request, Response $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
@@ -62,14 +63,14 @@ class PlayersController extends BaseAdminController {
 	}
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-	public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+	public function editAction(Request $request, Response $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
@@ -86,18 +87,18 @@ class PlayersController extends BaseAdminController {
 	}
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      */
-	public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+	public function deleteAction(Request $request, Response $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
 
 		try {
 			$player->delete();
-            $this->addSuccessMessage($this->getTranslate('admins_players', 'removed'));
+            $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
 		} catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
@@ -107,13 +108,13 @@ class PlayersController extends BaseAdminController {
 	}
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return Player
      * @throws NotFoundException
      */
-    protected function getPlayer(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    protected function getPlayer(Request $request, Response $response, array $args) {
 		if (!array_key_exists('player', $args)) {
 			return new Player();
 		}

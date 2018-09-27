@@ -84,27 +84,6 @@ abstract class BaseMainController extends BaseController {
     }
     
     /**
-     * @param Exception $e
-     * @param Form $form
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    protected function failRedirect(Exception $e, Form $form) {
-        if ($e instanceof FormException) {
-            $form->setError($e->getField(), $e->getMessage());
-        } elseif ($e instanceof ValidationException) {
-            $this->addErrorMessage($e->getMessage());
-        } else {
-            $this->addErrorMessage('Something wrong. Please Try again later.');
-        }
-
-        $form->saveValues();
-    
-        $this->getLogger()->exception($e);
-
-        return $this->redirectTo($form->getAction());
-    }
-    
-    /**
      * Menu initialization
      */
 	protected function initMenu() {
