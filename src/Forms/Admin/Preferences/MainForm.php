@@ -5,8 +5,6 @@ use \GameX\Core\BaseForm;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\InArray;
 
 class MainForm extends BaseForm {

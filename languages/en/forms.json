@@ -1,9 +1,15 @@
 {
+	"bitmask": "Must be a valid value",
 	"boolean": "Value is not a boolean",
+	"date": "Must be a valid date",
+	"date_time": "Must be a valid datetime",
+	"time": "Must be a valid time",
 	"email": "Must be a valid email address",
+	"file": "Value is not a valid file",
 	"file_extension": "File type %s is not enabled",
 	"file_mime_type": "File type %s is not enabled",
 	"file_size": "File size must be less than %d bytes",
+	"flags": "Must be a valid value",
 	"image": "File isn't a valid image",
 	"image_width": "Image width must be %dpx",
 	"image_width_min": "Image width must be greater than %dpx",
@@ -11,8 +17,8 @@
 	"image_height": "Image height must be %dpx",
 	"image_height_min": "Image height must be greater than %dpx",
 	"image_height_max": "Image height must be less than %dpx",
-	"in_array": "Is not a valid value",
-	"ip": "Must be a valid IP address",
+	"in_array": "Must be a valid value",
+	"ipv4": "Must be a valid IP address",
 	"length_min_max": "Must be greater than %d and less than %d characters",
 	"length_min": "Must be greater than %d characters",
 	"length_max": "Must be less than %d characters",
@@ -21,8 +27,9 @@
 	"number_min": "Must be greater than %d",
 	"number_max": "Must be less than %d",
 	"password_repeat": "Passwords don't match",
+	"permission_access": "Must be a valid value",
+	"regexp": "Must be a valid value",
 	"required": "Can not be blank",
 	"string": "Must be a valid value",
-	"regexp": "Must be a valid value",
-	"date": "Must be a valid date"
+	"steamid": "Must be a valid STEAM_ID"
 }
