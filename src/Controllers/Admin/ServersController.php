@@ -105,14 +105,13 @@ class ServersController extends BaseAdminController {
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
-     * @throws \GameX\Core\Exceptions\RedirectException
      */
 	public function deleteAction(Request $request, Response $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
 
 		try {
 			$server->delete();
-            $this->addSuccessMessage($this->getTranslate('admins_servers', 'removed'));
+            $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
 		} catch (Exception $e) {
 			$this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
