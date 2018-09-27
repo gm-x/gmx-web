@@ -86,7 +86,7 @@ class PrivilegesController extends BaseAdminController {
                 ]);
             }
         } catch (PrivilegeFormException $e) {
-            $this->addErrorMessage('Add privileges groups before adding privilege');
+            $this->addErrorMessage($this->getTranslate('admin_privileges', 'empty_groups_list'));
             return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
 
@@ -121,7 +121,7 @@ class PrivilegesController extends BaseAdminController {
                 ]);
             }
         } catch (PrivilegeFormException $e) {
-            $this->addErrorMessage('Add privileges groups before adding privilege');
+            $this->addErrorMessage($this->getTranslate('admin_privileges', 'empty_groups_list'));
             return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
 
@@ -147,7 +147,7 @@ class PrivilegesController extends BaseAdminController {
 
         try {
 			$privilege->delete();
-            $this->addSuccessMessage($this->getTranslate('admins_privileges', 'removed'));
+            $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
