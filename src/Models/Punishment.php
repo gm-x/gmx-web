@@ -2,7 +2,7 @@
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
-use \Carbon\Carbon;
+use \GameX\Core\Auth\Models\UserModel;
 
 /**
  * Class Group
@@ -11,6 +11,7 @@ use \Carbon\Carbon;
  * @property integer $id
  * @property integer $player_id
  * @property integer $punisher_id
+ * @property integer $punisher_user_id
  * @property integer $server_id
  * @property integer $reason_id
  * @property string $comment
@@ -19,6 +20,7 @@ use \Carbon\Carbon;
  * @property string $status
  * @property Player $player
  * @property Player $punisher
+ * @property Player $punisherUser
  * @property Server $server
  * @property Reason $reason
  * @property bool $permanent
@@ -29,6 +31,10 @@ class Punishment extends BaseModel {
 	const STATUS_PUNISHED = 'punished';
 	const STATUS_EXPIRED = 'expired';
 	const STATUS_AMNESTIED = 'amnestied';
+	
+	const TYPE_BANNED = 1;
+	const TYPE_GAGED = 2;
+	const TYPE_MUTED = 4;
 
 	/**
 	 * The table associated with the model.
@@ -45,7 +51,7 @@ class Punishment extends BaseModel {
 	/**
 	 * @var array
 	 */
-	protected $fillable = ['player_id', 'punisher_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at', 'status'];
+	protected $fillable = ['player_id', 'punisher_id', 'punisher_user_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at', 'status'];
     
     /**
      * @var array
@@ -74,6 +80,13 @@ class Punishment extends BaseModel {
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
+	public function punisherUser() {
+		return $this->belongsTo(UserModel::class, 'punisher_user_id', 'id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function server() {
 		return $this->belongsTo(Server::class, 'server_id', 'id');
 	}
@@ -90,5 +103,26 @@ class Punishment extends BaseModel {
      */
 	public function getPermanentAttribute() {
 	    return $this->attributes['expired_at'] === null;
+    }
+    
+    /**
+     * @return bool
+     */
+	public function isBanned() {
+	    return (bool) $this->attributes['type'] & self::TYPE_BANNED;
+    }
+    
+    /**
+     * @return bool
+     */
+	public function isGaged() {
+	    return (bool) $this->attributes['type'] & self::TYPE_GAGED;
+    }
+    
+    /**
+     * @return bool
+     */
+	public function isMuted() {
+	    return (bool) $this->attributes['type'] & self::TYPE_MUTED;
     }
 }

@@ -2,27 +2,27 @@
 use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
-class UserAvatar extends Migration {
+class PunisherUser extends Migration {
 
     /**
      * Do the migration
      */
     public function up() {
         $this->getSchema()
-            ->table('users', function (Blueprint $table) {
-                $table->unsignedTinyInteger('avatar')
+            ->table('punishments', function (Blueprint $table) {
+                $table->unsignedTinyInteger('punisher_user_id')
                     ->nullable()
-                    ->after('last_login');
+                    ->after('punisher_id');
             });
     }
-    
+
     /**
      * Undo the migration
      */
     public function down() {
         $this->getSchema()
-            ->table('users', function (Blueprint $table) {
-                $table->dropColumn('avatar');
+            ->table('punishments', function (Blueprint $table) {
+                $table->dropColumn('punisher_id');
             });
     }
 }

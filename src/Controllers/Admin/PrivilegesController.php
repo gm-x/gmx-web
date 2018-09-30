@@ -1,7 +1,6 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-use GameX\Core\Exceptions\NotAllowedException;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
@@ -11,12 +10,13 @@ use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Core\BaseAdminController;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Models\Player;
-use \GameX\Models\Privilege;
 use \GameX\Models\Server;
+use \GameX\Models\Privilege;
 use \GameX\Forms\Admin\PrivilegesForm;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 use \GameX\Core\Exceptions\RedirectException;
 use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\NotAllowedException;
 use \Exception;
 
 class PrivilegesController extends BaseAdminController {
@@ -80,21 +80,20 @@ class PrivilegesController extends BaseAdminController {
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect('admin_players_privileges_edit', [
+                return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
                     'player' => $player->id,
                     'privilege' => $privilege->id,
                 ]);
             }
         } catch (PrivilegeFormException $e) {
             $this->addErrorMessage('Add privileges groups before adding privilege');
-            return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
+            return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => true,
-            'servers' => $this->getServers(),
         ]);
     }
 
@@ -116,21 +115,20 @@ class PrivilegesController extends BaseAdminController {
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect('admin_players_privileges_edit', [
+                return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
                     'player' => $player->id,
                     'privilege' => $privilege->id,
                 ]);
             }
         } catch (PrivilegeFormException $e) {
             $this->addErrorMessage('Add privileges groups before adding privilege');
-            return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
+            return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => false,
-            'servers' => $this->getServers(),
         ]);
     }
 
@@ -238,18 +236,6 @@ class PrivilegesController extends BaseAdminController {
         }
 
         return $privilege;
-    }
-
-	/**
-	 * @return array
-	 */
-    protected function getServers() {
-    	$servers = [];
-    	/** @var Server $server */
-		foreach (Server::all() as $server) {
-    		$servers[$server->id] = $server->name;
-		}
-		return $servers;
     }
 
     /**

@@ -43,22 +43,17 @@
     {% block modals %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        UIkit.util.on('form.btn-delete', 'submit', function (e) {
+        UIkit.util.on('form.delete-form', 'submit', function (e) {
             e.preventDefault();
             e.target.blur();
             var form = this;
-            //alert(form.action);
-            UIkit.modal.confirm('{{ trans('labels', 'are_you_sure') }}',
-                {
-                    labels: {
-                        ok: '{{ trans('buttons', 'delete') }}',
-                        cancel: '{{ trans('buttons', 'cancel') }}'
-                    }
-                }).then(function () {
-                //console.log('Confirmed.');
+            UIkit.modal.confirm('{{ trans('labels', 'are_you_sure') }}', {
+                labels: {
+                    ok: '{{ trans('buttons', 'delete') }}',
+                    cancel: '{{ trans('buttons', 'cancel') }}'
+                }
+            }).then(function () {
                 form.submit();
-            }, function () {
-                //console.log('Rejected.')
             });
         });
     </script>

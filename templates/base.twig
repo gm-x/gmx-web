@@ -42,6 +42,17 @@
         </main>
         {% block modals %}{% endblock %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+            $('.lang-select').on('click', 'a', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var lang = $(this).data('lang');
+                $.post('{{ path_for('language')}}', {lang: lang})
+                    .always(function() {
+                        location.reload()
+                    });
+            });
+        </script>
         {% block javascript %}{% endblock %}
     </div>
 </body>

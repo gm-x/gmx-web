@@ -52,6 +52,7 @@ class ReasonsController extends BaseAdminController {
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(ReasonsConstants::ROUTE_EDIT, [
+                'server' => $server->id,
                 'reason' => $reason->id
             ]);
         }
@@ -77,6 +78,7 @@ class ReasonsController extends BaseAdminController {
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(ReasonsConstants::ROUTE_EDIT, [
+                'server' => $server->id,
                 'reason' => $reason->id
             ]);
         }

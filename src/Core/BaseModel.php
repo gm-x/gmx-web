@@ -3,10 +3,17 @@ namespace GameX\Core;
 
 use \Illuminate\Database\Eloquent\Model;
 use \Psr\Container\ContainerInterface;
-use \Carbon\Carbon;
 use \DateTimeInterface;
+use \GameX\Core\Rememberable\Rememberable;
 
 abstract class BaseModel extends Model {
+
+    use Rememberable;
+
+    /**
+     * @var bool
+     */
+    protected $rememberCache = true;
 
 	/**
 	 * @var ContainerInterface
