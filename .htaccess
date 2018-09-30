@@ -1,5 +1,5 @@
 Options +FollowSymlinks
 RewriteEngine On
 
-RewriteRule ^(install|assets|upload) - [L]
+RewriteRule ^(upload) - [L]
 RewriteRule ^(.*)$ public/$1 [L]

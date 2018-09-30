@@ -16,6 +16,7 @@
 	},
 	"view": {
 		"debug": false,
+		"theme": "default",
 		"auto_reload": false
 	},
 	"log": {

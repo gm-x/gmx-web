@@ -260,8 +260,9 @@ class DependencyProvider  implements ServiceProviderInterface {
 
         $settings = $config->getNode('view')->toArray();
         $settings['cache'] = $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache';
+        $theme = $settings['theme'] ?: 'default';
 
-        $view = new Twig($container->get('root') . 'templates', $settings);
+        $view = new Twig($container->get('root') . 'theme' . DIRECTORY_SEPARATOR . ($settings['theme'] ?: 'default') . DIRECTORY_SEPARATOR . 'templates', $settings);
 
         /** @var \Psr\Http\Message\UriInterface $uri */
         $uri = $container->get('request')->getUri();
