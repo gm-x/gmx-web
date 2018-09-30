@@ -1,12 +1,13 @@
 {% macro permission_checkboxes(form, name) %}
     {% set element = form.get(name) %}
+    {% set perm_key = {1 : 'list', 2 : 'view', 4 : 'create', 8 : 'edit', 16 : 'delete'} %}
     {% if element %}
         <ul>
-            <li class="uk-width-expand" s-title="{{ element.getTitle() }}>
+            <li class="uk-width-expand">
                 {{ element.getTitle() }}
             </li>
-            {% for access in [1, 2, 4, 8, 16] %}
-                <li class="uk-width-xxs">
+            {% for access,val in perm_key %}
+                <li class="uk-width-xxs@s" s-title="{{ trans('permissions', perm_key[access]) }}">
                     {{ _self.permission_checkbox(element, access) }}
                 </li>
             {% endfor %}
