@@ -1,51 +1,63 @@
 {% extends 'admin/admin.twig' %}
 
+{% import 'macros/admin.twig' as admin %}
+
 {% block style %}
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
 
-{% block content %}
+{% block subnav %}
     {% if has_access_permission(
         constants.admin.users.PERMISSION_GROUP,
         constants.admin.users.PERMISSION_KEY,
         permissions.ACCESS_LIST
-    ) %}
-        <a href="{{ path_for(constants.admin.users.ROUTE_LIST) }}" class="uk-button uk-button-secondary">
-            {{ trans('buttons', 'back') }}
-        </a>
+        ) %}
+        <div class="uk-float-left">
+            {{ admin.back_btn(path_for(constants.admin.users.ROUTE_LIST), 'l') }}
+        </div>
     {% endif %}
 
     {% if has_access_permission(
         constants.admin.users.PERMISSION_GROUP,
         constants.admin.users.PERMISSION_KEY,
         permissions.ACCESS_EDIT
-    ) %}
-        <a href="{{ path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id}) }}" class="uk-button uk-button-primary">
-            {{ trans('buttons', 'edit') }}
-        </a>
+        ) %}
+        {{ admin.edit_btn(path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id}), 'l') }}
     {% endif %}
-    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-        <div f-table f-divider>
-            <ul>
-                <li>Username</li>
-                <li>{{ user.login }}</li>
-            </ul>
-            <ul>
-                <li>Email</li>
-                <li>{{ user.email }}</li>
-            </ul>
-            <ul>
-                <li>Create At</li>
-                <li>{{ user.created_at }}</li>
-            </ul>
-            <ul>
-                <li>Update At</li>
-                <li>{{ user.updated_at }}</li>
-            </ul>
-            <ul>
-                <li>Role</li>
-                <li>{{ user.role.name }}</li>
-            </ul>
+{% endblock %}
+
+{% block content %}
+    <div class="uk-card uk-card-default uk-width-1-1@m uk-margin">
+        <div class="uk-card-header">
+            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    <img class="uk-border-circle" width="40" height="40" src="/upload/avatar_3.jpg">
+                </div>
+                <div class="uk-width-expand">
+                    <h3 class="uk-card-title uk-margin-remove-bottom">{{ user.login }}</h3>
+                    <p class="uk-text-meta uk-margin-remove-top">Date registration: <time>{{ user.created_at }}</time></p>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-body">
+            <div f-table f-divider>
+                <ul>
+                    <li>Email</li>
+                    <li>{{ user.email }}</li>
+                </ul>
+                <ul>
+                    <li>Create At</li>
+                    <li>{{ user.created_at }}</li>
+                </ul>
+                <ul>
+                    <li>Update At</li>
+                    <li>{{ user.updated_at }}</li>
+                </ul>
+                <ul>
+                    <li>Role</li>
+                    <li>{{ user.role.name }}</li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}
