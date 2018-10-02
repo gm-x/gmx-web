@@ -1,0 +1,51 @@
+{% extends 'admin/admin.twig' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block content %}
+    {% if has_access_permission(
+        constants.admin.users.PERMISSION_GROUP,
+        constants.admin.users.PERMISSION_KEY,
+        permissions.ACCESS_LIST
+    ) %}
+        <a href="{{ path_for(constants.admin.users.ROUTE_LIST) }}" class="uk-button uk-button-secondary">
+            {{ trans('buttons', 'back') }}
+        </a>
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.users.PERMISSION_GROUP,
+        constants.admin.users.PERMISSION_KEY,
+        permissions.ACCESS_EDIT
+    ) %}
+        <a href="{{ path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id}) }}" class="uk-button uk-button-primary">
+            {{ trans('buttons', 'edit') }}
+        </a>
+    {% endif %}
+    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+        <div f-table f-divider>
+            <ul>
+                <li>Username</li>
+                <li>{{ user.login }}</li>
+            </ul>
+            <ul>
+                <li>Email</li>
+                <li>{{ user.email }}</li>
+            </ul>
+            <ul>
+                <li>Create At</li>
+                <li>{{ user.created_at }}</li>
+            </ul>
+            <ul>
+                <li>Update At</li>
+                <li>{{ user.updated_at }}</li>
+            </ul>
+            <ul>
+                <li>Role</li>
+                <li>{{ user.role.name }}</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% macro render(pagination) %}
+	{% if pagination.getPagesCount() > 1 %}
+		<nav>
+			<ul class="pagination">
+				{% if pagination.getPage() > 5 %}
+					<li class="page-item">
+						<a class="page-link" href="{{ pagination.getPageUrl(pagination.getPage()) }}" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+							<span class="sr-only">Previous</span>
+						</a>
+					</li>
+					<li class="page-item"><a class="page-link" href="{{ pagination.getPageUrl(1) }}">&nbsp;1&nbsp;</a></li>
+				{% endif %}
+				{% for page in pagination.getStartPage()..pagination.getEndPage() - 1 %}
+				<li class="page-item {{ page == pagination.getPage() ? 'active' : '' }}">
+					<a class="page-link" href="{{ pagination.getPageUrl(page + 1) }}">{{ page + 1 }}</a>
+				</li>
+				{% endfor %}
+				{% if pagination.getPage() < pagination.getPagesCount() - 5 %}
+				<li class="page-item">
+					<a class="page-link" href="{{ pagination.getPageUrl(pagination.getPagesCount()) }}">&nbsp;{{ pagination.getPagesCount() }}&nbsp;</a>
+				</li>
+				<li class="page-item">
+					<a class="page-link" href="{{ pagination.getPageUrl(pagination.getPage() + 2) }}" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+						<span class="sr-only">Next</span>
+					</a>
+				</li>
+				{% endif %}
+			</ul>
+		</nav>
+	{% endif %}
+{% endmacro %}
