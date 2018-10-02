@@ -14,5 +14,10 @@
 	"admin_privilege": "Privileges",
 	"admin_permission": "Permissions",
 	"admin_preferences_main": "Main preferences",
-	"admin_preferences_email": "Email preferences"
+	"admin_preferences_email": "Email preferences",
+	"admin_role_permission": "Role permissions",
+	"admin_user_role": "Users Roles",
+	"admin_preferences": "Preferences",
+	"admin_server_group": "Server Groups",
+	"admin_server_reason": "Server Reasons"
 }

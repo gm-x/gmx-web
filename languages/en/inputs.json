@@ -4,5 +4,6 @@
 	"email": "Email",
 	"password": "Password",
 	"password_repeat": "Repeat password",
-	"remember_me": "Remember me"
+	"remember_me": "Remember me",
+	"avatar": "Avatar"
 }
