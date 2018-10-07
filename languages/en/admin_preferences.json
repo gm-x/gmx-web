@@ -14,6 +14,7 @@
 	"password": "Password",
 	"title": "Title",
 	"language": "Language",
+	"theme": "Тема",
 	"email_not_valid": "Some fields are not valid",
 	"email_connect_fail": "Could not open SMTP Port",
 	"email_encrypt_fail": "Start TLS failed to enable crypto",

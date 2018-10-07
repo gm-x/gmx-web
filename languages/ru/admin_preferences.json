@@ -13,5 +13,6 @@
 	"username": "Логин",
 	"password": "Пароль",
 	"title": "Заголовок",
-	"language": "Язык"
+	"language": "Язык",
+	"theme": "Тема"
 }
