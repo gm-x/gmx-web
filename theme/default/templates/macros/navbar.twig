@@ -69,21 +69,6 @@
         <div id="offcanvas-nav" uk-offcanvas="overlay: true">
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
-                    {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
-                        <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                            <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-
-            </div>
-        </div>
-        <div class="uk-navbar-right">
-            <a class="uk-navbar-toggle" uk-icon="grid" href="#" uk-toggle="target: #offcanvas-nav2"></a>
-        </div>
-        <div id="offcanvas-nav2" uk-offcanvas="overlay: true">
-            <div class="uk-offcanvas-bar">
-                <ul class="uk-nav uk-nav-default">
                     {% if is_guest() %}
                         <li><a class="dropdown-item" href="{{ path_for('login') }}">
                                 {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
@@ -107,6 +92,13 @@
                             </a>
                         </li>
                     {% endif %}
+                </ul>
+                <ul class="uk-nav uk-nav-default">
+                    {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
+                        <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
+                            <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

@@ -262,9 +262,18 @@ class DependencyProvider  implements ServiceProviderInterface {
         $settings['cache'] = $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache';
         $theme = $preferences->getNode('main')->get('theme', 'default');
         
-        $root = $container->get('root') . 'theme' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'templates';
+        $root = $container->get('root') . 'theme' . DIRECTORY_SEPARATOR;
 
-        $view = new Twig($root, $settings);
+        $paths = [
+            $root . $theme . DIRECTORY_SEPARATOR . 'templates'
+        ];
+
+        // Fallback for custom theme haven't needed template
+        if ($theme !== 'default') {
+            $paths[] = $root . 'default' . DIRECTORY_SEPARATOR . 'templates';
+        }
+
+        $view = new Twig($paths, $settings);
 
         /** @var \Psr\Http\Message\UriInterface $uri */
         $uri = $container->get('request')->getUri();
