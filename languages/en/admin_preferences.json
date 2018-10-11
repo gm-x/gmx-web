@@ -1,6 +1,7 @@
 {
 	"tab_main": "Main settings",
 	"tab_email": "Email settings",
+	"tab_update": "Update",
 	"test_mail": "Send test email",
 	"enabled": "Enabled",
 	"from_name": "From Name",

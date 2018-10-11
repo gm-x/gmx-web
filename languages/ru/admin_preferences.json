@@ -1,6 +1,7 @@
 {
 	"tab_main": "Основные настройки",
 	"tab_email": "Настройки email",
+	"tab_update": "Обновление",
 	"test_mail": "Отправить тестовый email",
 	"enabled": "Включено",
 	"from_name": "Имя отправителя",

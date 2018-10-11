@@ -131,4 +131,16 @@ class PreferencesController extends BaseAdminController {
 			]);
 		}
 	}
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+    public function updateAction(Request $request, Response $response, array $args = []) {
+        return $this->render('admin/preferences/update.twig', [
+            'currentHref' => UriHelper::getUrl($request->getUri(), false),
+        ]);
+    }
 }
