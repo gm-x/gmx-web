@@ -8,6 +8,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Constants\Admin\PreferencesConstants;
 use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
+use \GameX\Forms\Admin\Preferences\UpdateForm;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Mail\Email;
@@ -137,10 +138,18 @@ class PreferencesController extends BaseAdminController {
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function updateAction(Request $request, Response $response, array $args = []) {
+        $form = new UpdateForm($this->getContainer('updater'));
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
+        }
+
         return $this->render('admin/preferences/update.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
+            'form' => $form->getForm()
         ]);
     }
 }

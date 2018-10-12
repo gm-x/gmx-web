@@ -1,3 +1,7 @@
+{% macro element_hidden(element) %}
+	<input type="hidden" name="{{ element.getFormName() }}[{{ element.getName() }}]" value="{{ element.getValue() }}">
+{% endmacro %}
+
 {% macro element_input(element, config) %}
 	{% set classes = ['uk-input'] %}
 	{% if element.getHasError() %}

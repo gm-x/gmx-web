@@ -4,6 +4,7 @@ namespace GameX\Forms\Admin\Preferences;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Update\Updater;
 use \GameX\Core\Update\Manifest;
+use \GameX\Core\Forms\Elements\Hidden;
 
 class UpdateForm extends BaseForm {
 
@@ -28,8 +29,9 @@ class UpdateForm extends BaseForm {
 	 * @noreturn
 	 */
 	protected function createForm() {
-//
-	}
+	    $this->form->add(new Hidden('update', ''));
+	    $this->form->getValidator()->set('update', false);
+    }
 
     /**
      * @return bool
@@ -39,8 +41,7 @@ class UpdateForm extends BaseForm {
         try {
             $old = new Manifest(__DIR__ . 'old.json');
             $new = new Manifest(__DIR__ . 'new.json');
-            $actions = $this->updater->calculateActions($old, $new);
-            $actions->run();
+            $this->updater->run($old, $new);
             return true;
         } catch (\Exception $e) {
             return false;

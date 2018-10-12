@@ -50,6 +50,8 @@ use \GameX\Core\CSRF\Token;
 
 use \GameX\Core\Upload\Upload;
 
+use \GameX\Core\Update\Updater;
+
 class DependencyProvider  implements ServiceProviderInterface {
 
     /**
@@ -116,6 +118,10 @@ class DependencyProvider  implements ServiceProviderInterface {
 
         $container['upload'] = function (ContainerInterface $container) {
             return $this->getUpload($container);
+        };
+
+        $container['updater'] = function (ContainerInterface $container) {
+            return $this->getUpdater($container);
         };
 
         $container['modules'] = function (ContainerInterface $container) {
@@ -327,5 +333,9 @@ class DependencyProvider  implements ServiceProviderInterface {
     
     public function getUpload(ContainerInterface $container) {
         return new Upload($container->get('root') . 'upload', $container->get('base_url') . '/upload');
+    }
+
+    public function getUpdater(ContainerInterface $container) {
+        return new Updater($container->get('root'), $container->get('root') . 'runtime/update');
     }
 }
