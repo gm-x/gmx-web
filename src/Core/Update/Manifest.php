@@ -3,8 +3,13 @@ namespace GameX\Core\Update;
 
 class Manifest {
     protected $manifest;
+
     public function __construct($path) {
-//        $this->manifest = json_decode(file_get_contents($path), true);
+        $this->manifest = json_decode(file_get_contents($path), true);
+    }
+
+    public function getVersion() {
+        return $this->manifest['version'];
     }
 
     public function getFiles() {

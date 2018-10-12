@@ -7,12 +7,21 @@ use \RecursiveDirectoryIterator;
 
 class ActionClearCache implements ActionInterface {
 
+    /**
+     * @var string
+     */
     protected $dir;
 
+    /**
+     * @param string $dir
+     */
     public function __construct($dir) {
         $this->dir = $dir;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function run() {
         var_dump($this->dir);
         $files = new RecursiveIteratorIterator(

@@ -46,6 +46,13 @@ abstract class BaseController {
     protected function init() {}
 
     /**
+     * @return string
+     */
+    public function getRoot() {
+        return $this->container->get('root');
+    }
+
+    /**
      * @param $container
      * @return mixed
      * @throws \Psr\Container\ContainerExceptionInterface

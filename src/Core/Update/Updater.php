@@ -8,15 +8,34 @@ use \GameX\Core\Update\Actions\ActionMigrationsRun;
 use \GameX\Core\Update\Actions\ActionClearCache;
 
 class Updater {
+
+    /**
+     * @var string
+     */
     protected $baseDir;
+
+    /**
+     * @var string
+     */
     protected $updateDir;
 
+    /**
+     * @param string $baseDir
+     * @param string $updateDir
+     */
     public function __construct($baseDir, $updateDir) {
         $this->baseDir = $baseDir;
         $this->updateDir = $updateDir;
     }
 
+    /**
+     * @param Manifest $old
+     * @param Manifest $new
+     * @throws \Exception
+     */
     public function run(Manifest $old, Manifest $new) {
+        if (!$this->compareVersions($old, $new))
+
         $actions = new Actions();
 
 //        $oldFiles = $old->getFiles();
@@ -63,5 +82,14 @@ class Updater {
         $actions->add(new ActionClearCache($this->baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
 
         $actions->run();
+    }
+
+    /**
+     * @param Manifest $old
+     * @param Manifest $new
+     * @return bool
+     */
+    protected function compareVersions(Manifest $old, Manifest $new) {
+        return false;
     }
 }

@@ -18,11 +18,18 @@ class UpdateForm extends BaseForm {
 	 */
 	protected $updater;
 
+    /**
+     * @var Manifest
+     */
+	protected $manifest;
+
 	/**
 	 * @param Updater $updater
+	 * @param Manifest $manifest
 	 */
-	public function __construct(Updater $updater) {
+	public function __construct(Updater $updater, Manifest $manifest) {
 		$this->updater = $updater;
+		$this->manifest = $manifest;
 	}
 
 	/**
@@ -39,9 +46,8 @@ class UpdateForm extends BaseForm {
      */
     protected function processForm() {
         try {
-            $old = new Manifest(__DIR__ . 'old.json');
-            $new = new Manifest(__DIR__ . 'new.json');
-            $this->updater->run($old, $new);
+            $updates = new Manifest(__DIR__ . 'manifest.json');
+            $this->updater->run($this->manifest, $updates);
             return true;
         } catch (\Exception $e) {
             return false;

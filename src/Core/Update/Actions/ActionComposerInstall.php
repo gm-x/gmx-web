@@ -8,12 +8,21 @@ use \Composer\Console\Application;
 
 class ActionComposerInstall implements ActionInterface {
 
+    /**
+     * @var string
+     */
     protected $dir;
 
+    /**
+     * @param string $dir
+     */
     public function __construct($dir) {
         $this->dir = $dir;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function run() {
         chdir($this->dir);
         putenv('COMPOSER_HOME=' . $this->dir . 'vendor/bin/composer');

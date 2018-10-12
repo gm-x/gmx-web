@@ -8,12 +8,21 @@ use \GameX\Core\Container;
 
 class ActionMigrationsRun implements ActionInterface {
 
+    /**
+     * @var string
+     */
     protected $dir;
 
+    /**
+     * @param string $dir
+     */
     public function __construct($dir) {
         $this->dir = $dir;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function run() {
         $container = new Container();
         $container['root'] = $this->dir . DIRECTORY_SEPARATOR;

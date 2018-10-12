@@ -6,6 +6,7 @@ use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Constants\Admin\PreferencesConstants;
+use \GameX\Core\Update\Manifest;
 use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
 use \GameX\Forms\Admin\Preferences\UpdateForm;
@@ -141,7 +142,8 @@ class PreferencesController extends BaseAdminController {
      * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function updateAction(Request $request, Response $response, array $args = []) {
-        $form = new UpdateForm($this->getContainer('updater'));
+        $manifest = new Manifest($this->getRoot() . 'manifest.json');
+        $form = new UpdateForm($this->getContainer('updater'), $manifest);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
