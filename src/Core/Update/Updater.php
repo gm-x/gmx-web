@@ -5,6 +5,7 @@ use \GameX\Core\Update\Actions\ActionCopyFile;
 use \GameX\Core\Update\Actions\ActionDeleteFile;
 use \GameX\Core\Update\Actions\ActionComposerInstall;
 use \GameX\Core\Update\Actions\ActionMigrationsRun;
+use \GameX\Core\Update\Actions\ActionClearCache;
 
 class Updater {
     protected $baseDir;
@@ -58,6 +59,8 @@ class Updater {
 
         $actions->add(new ActionComposerInstall($this->baseDir));
         $actions->add(new ActionMigrationsRun($this->baseDir));
+        $actions->add(new ActionClearCache($this->baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
+        $actions->add(new ActionClearCache($this->baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
 
         $actions->run();
     }
