@@ -51,6 +51,7 @@ use \GameX\Core\CSRF\Token;
 use \GameX\Core\Upload\Upload;
 
 use \GameX\Core\Update\Updater;
+use \GameX\Core\Update\Manifest;
 
 class DependencyProvider  implements ServiceProviderInterface {
 
@@ -336,6 +337,7 @@ class DependencyProvider  implements ServiceProviderInterface {
     }
 
     public function getUpdater(ContainerInterface $container) {
-        return new Updater($container->get('root'), $container->get('root') . 'runtime/update');
+        $manifest = new Manifest($container->get('root') . 'manifest.json');
+        return new Updater($manifest);
     }
 }

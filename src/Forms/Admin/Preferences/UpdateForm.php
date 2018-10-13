@@ -4,7 +4,13 @@ namespace GameX\Forms\Admin\Preferences;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Update\Updater;
 use \GameX\Core\Update\Manifest;
-use \GameX\Core\Forms\Elements\Hidden;
+use \GameX\Core\Forms\Validator;
+use \GameX\Core\Forms\Elements\File as FileInput;
+use \GameX\Core\Forms\Rules\File as FileRule;
+use \GameX\Core\Forms\Rules\FileExtension;
+use \GameX\Core\Forms\Rules\FileSize;
+use \Psr\Http\Message\UploadedFileInterface;
+use \ZipArchive;
 
 class UpdateForm extends BaseForm {
 
@@ -25,19 +31,28 @@ class UpdateForm extends BaseForm {
 
 	/**
 	 * @param Updater $updater
-	 * @param Manifest $manifest
 	 */
-	public function __construct(Updater $updater, Manifest $manifest) {
+	public function __construct(Updater $updater) {
 		$this->updater = $updater;
-		$this->manifest = $manifest;
 	}
 
 	/**
 	 * @noreturn
 	 */
 	protected function createForm() {
-	    $this->form->add(new Hidden('update', ''));
-	    $this->form->getValidator()->set('update', false);
+	    $this->form->add(new FileInput('updates', '', [
+            'title' => 'Updates',
+            'required' => true
+        ]));
+	    $this->form->getValidator()
+            ->set('updates', true, [
+                new FileRule(),
+                new FileExtension(['zip']),
+                new FileSize('10M'),
+            ], [
+                'check' => Validator::CHECK_EMPTY,
+                'trim' => false,
+            ]);
     }
 
     /**
@@ -46,8 +61,25 @@ class UpdateForm extends BaseForm {
      */
     protected function processForm() {
         try {
-            $updates = new Manifest(__DIR__ . 'manifest.json');
-            $this->updater->run($this->manifest, $updates);
+            /** @var UploadedFileInterface $value */
+            $value = $this->form->getValue('updates');
+            $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('GameX', true) . DIRECTORY_SEPARATOR;
+    
+            if (!is_dir($tempDir)) {
+                if (!mkdir($tempDir, 0777, true)) {
+                    throw new \Exception('Can\'t create folder ' . $tempDir);
+                }
+            }
+            
+            $value->moveTo($tempDir . 'uploads.zip');
+            
+            $archive = new ZipArchive();
+            $archive->open($tempDir . 'uploads.zip',ZipArchive::CHECKCONS);
+            $archive->extractTo($tempDir);
+
+            
+            $updates = new Manifest($tempDir . 'manifest.json');
+            $this->updater->run($updates);
             return true;
         } catch (\Exception $e) {
             return false;

@@ -8,33 +8,27 @@ use \GameX\Core\Update\Actions\ActionMigrationsRun;
 use \GameX\Core\Update\Actions\ActionClearCache;
 
 class Updater {
+    
+    /**
+     * @var Manifest
+     */
+    protected $manifest;
 
     /**
-     * @var string
+     * @param Manifest $manifest
      */
-    protected $baseDir;
-
-    /**
-     * @var string
-     */
-    protected $updateDir;
-
-    /**
-     * @param string $baseDir
-     * @param string $updateDir
-     */
-    public function __construct($baseDir, $updateDir) {
-        $this->baseDir = $baseDir;
-        $this->updateDir = $updateDir;
+    public function __construct(Manifest $manifest) {
+        $this->manifest = $manifest;
     }
 
     /**
-     * @param Manifest $old
-     * @param Manifest $new
+     * @param Manifest $updates
      * @throws \Exception
      */
-    public function run(Manifest $old, Manifest $new) {
-        if (!$this->compareVersions($old, $new))
+    public function run(Manifest $updates) {
+//        if (!$this->compareVersions($old, $new))
+        
+        $baseDir = $this->manifest->getDir();
 
         $actions = new Actions();
 
@@ -76,10 +70,10 @@ class Updater {
 //            $actions->add(new ActionDeleteFile($destination));
 //        }
 
-        $actions->add(new ActionComposerInstall($this->baseDir));
-        $actions->add(new ActionMigrationsRun($this->baseDir));
-        $actions->add(new ActionClearCache($this->baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
-        $actions->add(new ActionClearCache($this->baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
+        $actions->add(new ActionComposerInstall($baseDir));
+        $actions->add(new ActionMigrationsRun($baseDir));
+        $actions->add(new ActionClearCache($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
+        $actions->add(new ActionClearCache($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
 
         $actions->run();
     }

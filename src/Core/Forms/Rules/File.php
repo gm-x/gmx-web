@@ -13,7 +13,7 @@ class File extends BaseRule {
      * @return UploadedFile|null
      */
     public function validate($value, array $values) {
-        if ($value === null) {
+        if ($value === null || !($value instanceof UploadedFile)) {
             return null;
         }
 

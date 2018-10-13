@@ -144,9 +144,10 @@
 {% endmacro %}
 
 {% macro element_file(element, holder = '') %}
-    {% set classes = [''] %}
     {% if element.getHasError() %}
-        {% set classes = classes|merge(['is-invalid']) %}
+        {% set classes = ['is-invalid'] %}
+	{% else %}
+        {% set classes = [] %}
     {% endif %}
     {% set classes = classes|merge(element.getClasses()) %}
     {% set attributes = element.getAttributes() %}
@@ -168,7 +169,7 @@
         {% if holder %}
 			{{ holder|raw }}
 		{% else %}
-			<input class="uk-input uk-form-width-medium" type="text" placeholder="Select {{ element.getTitle() }}" disabled>
+			<input class="uk-input uk-form-width-medium" type="text" placeholder="{{ element.getTitle() }}" disabled>
 		{% endif %}
 		{% if element.getHasError() %}
 			<span class="invalid-feedback">{{ element.getError() }}</span>

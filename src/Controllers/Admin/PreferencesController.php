@@ -142,8 +142,7 @@ class PreferencesController extends BaseAdminController {
      * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function updateAction(Request $request, Response $response, array $args = []) {
-        $manifest = new Manifest($this->getRoot() . 'manifest.json');
-        $form = new UpdateForm($this->getContainer('updater'), $manifest);
+        $form = new UpdateForm($this->getContainer('updater'));
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
