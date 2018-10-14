@@ -7,7 +7,9 @@ if ($argc < 2) {
     die('Version is not provided');
 }
 
-define('SKIP_DIRECTORIES', [
+define('ROOT', __DIR__ . DIRECTORY_SEPARATOR);
+
+$skipDirectories = [
     '.idea',
     '.git',
     'runtime',
@@ -15,11 +17,13 @@ define('SKIP_DIRECTORIES', [
     'upload',
     'config.json',
     'router.php',
-    'manifest.json'
-]);
+    'manifest.json',
+    'manifest.php',
+];
 
 function checkToSkip($path) {
-    foreach (SKIP_DIRECTORIES as $item) {
+    global $skipDirectories;
+    foreach ($skipDirectories as $item) {
         $pattern = '#^' . preg_quote($item, '#') . '#';
         if (preg_match($pattern, $path)) {
             return true;
@@ -33,7 +37,7 @@ $flags = FilesystemIterator::KEY_AS_PATHNAME
     | FilesystemIterator::CURRENT_AS_SELF
     | FilesystemIterator::UNIX_PATHS
     | FilesystemIterator::SKIP_DOTS;
-$iterator = new RecursiveDirectoryIterator(__DIR__, $flags);
+$iterator = new RecursiveDirectoryIterator(ROOT, $flags);
 $iterator = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
 $files = [];
 
@@ -51,9 +55,24 @@ foreach($iterator as $path => $it) {
     }
 }
 
-file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'manifest.json', json_encode([
+file_put_contents(ROOT . 'manifest.json', json_encode([
     'version' => $argv[1],
     'files' => $files
 ], JSON_PRETTY_PRINT));
 
-echo 'Completed successfully';
+$zip = new ZipArchive();
+$filename = ROOT . 'updates_' . $argv[1] . '.zip';
+
+if (!$zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+    die('Error while creating file ' . $filename);
+}
+
+foreach ($files as $path => $v) {
+    $zip->addFile(ROOT . $path, $path);
+}
+
+$zip->addFile(ROOT . 'manifest.json', 'manifest.json');
+
+$zip->close();
+
+echo 'Completed successfully' . PHP_EOL;
