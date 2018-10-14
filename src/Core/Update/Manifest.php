@@ -14,7 +14,7 @@ class Manifest {
     protected $manifest;
 
     public function __construct($path) {
-        $this->dir = dirname($path);
+        $this->dir = dirname($path) . DIRECTORY_SEPARATOR;
         $this->manifest = json_decode(file_get_contents($path), true);
     }
     

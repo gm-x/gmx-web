@@ -27,48 +27,48 @@ class Updater {
      */
     public function run(Manifest $updates) {
 //        if (!$this->compareVersions($old, $new))
-        
-        $baseDir = $this->manifest->getDir();
 
         $actions = new Actions();
 
-//        $oldFiles = $old->getFiles();
-//        $newFiles = $new->getFiles();
-//
-//        foreach ($newFiles as $key => $value) {
-//            $source = $this->updateDir . DIRECTORY_SEPARATOR . $key;
-//            $destination = $this->baseDir . DIRECTORY_SEPARATOR . $key;
-//            if (!array_key_exists($key, $oldFiles)) {
-//                $actions->add(new ActionCopyFile($source, $destination));
-//            } elseif ($value !== $oldFiles[$key]) {
-//                if (!is_readable($destination)) {
-//                    $actions->add(new ActionCopyFile($source, $destination));
-//                } elseif ($old['files'][$key] !== sha1_file($destination)) {
-//                    throw new \Exception('File ' . $key . ' is modified');
-//                } elseif (!is_writable($destination)) {
-//                    throw new \Exception('Haven\'t permssions to write file ' . $key);
-//                } else {
-//                    $actions->add(new ActionCopyFile($source, $destination));
-//                }
-//            }
-//        }
-//
-//        foreach ($oldFiles as $key => $value) {
-//            if (array_key_exists($key, $newFiles)) {
-//                continue;
-//            }
-//
-//            $destination = $this->baseDir . DIRECTORY_SEPARATOR . $key;
-//            if (!is_readable($destination)) {
-//                continue;
-//            }
-//
-//            if ($value !== sha1_file($destination)) {
-//                throw new \Exception('File ' . $key . ' is modified');
-//            }
-//
-//            $actions->add(new ActionDeleteFile($destination));
-//        }
+        $oldFiles = $this->manifest->getFiles();
+        $newFiles = $updates->getFiles();
+        $baseDir = $this->manifest->getDir();
+        $updateDir = $updates->getDir();
+
+        foreach ($newFiles as $key => $value) {
+            $source = $updateDir . $key;
+            $destination = $baseDir . DIRECTORY_SEPARATOR . $key;
+            if (!array_key_exists($key, $oldFiles)) {
+                $actions->add(new ActionCopyFile($source, $destination));
+            } elseif ($value !== $oldFiles[$key]) {
+                if (!is_readable($destination)) {
+                    $actions->add(new ActionCopyFile($source, $destination));
+                } elseif ($oldFiles[$key] !== sha1_file($destination)) {
+                    throw new \Exception('File ' . $key . ' is modified');
+                } elseif (!is_writable($destination)) {
+                    throw new \Exception('Haven\'t permssions to write file ' . $key);
+                } else {
+                    $actions->add(new ActionCopyFile($source, $destination));
+                }
+            }
+        }
+
+        foreach ($oldFiles as $key => $value) {
+            if (array_key_exists($key, $newFiles)) {
+                continue;
+            }
+
+            $destination = $baseDir . DIRECTORY_SEPARATOR . $key;
+            if (!is_readable($destination)) {
+                continue;
+            }
+
+            if ($value !== sha1_file($destination)) {
+                throw new \Exception('File ' . $key . ' is modified');
+            }
+
+            $actions->add(new ActionDeleteFile($destination));
+        }
 
         $actions->add(new ActionComposerInstall($baseDir));
         $actions->add(new ActionMigrationsRun($baseDir));
