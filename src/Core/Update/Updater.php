@@ -5,7 +5,11 @@ use \GameX\Core\Update\Actions\ActionCopyFile;
 use \GameX\Core\Update\Actions\ActionDeleteFile;
 use \GameX\Core\Update\Actions\ActionComposerInstall;
 use \GameX\Core\Update\Actions\ActionMigrationsRun;
-use \GameX\Core\Update\Actions\ActionClearCache;
+use \GameX\Core\Update\Actions\ActionClearDirectory;
+use \GameX\Core\Update\Exceptions\LastVersionException;
+use \GameX\Core\Update\Exceptions\IsModifiedException;
+use \GameX\Core\Update\Exceptions\FileNotExistsException;
+use \GameX\Core\Update\Exceptions\CanWriteException;
 
 class Updater {
     
@@ -26,45 +30,49 @@ class Updater {
      * @throws \Exception
      */
     public function run(Manifest $updates) {
-//        if (!$this->compareVersions($old, $new))
-
+        if (version_compare($this->manifest->getVersion(), $updates->getVersion(), '>=')) {
+            throw new LastVersionException();
+        }
+        
         $actions = new Actions();
 
-        $oldFiles = $this->manifest->getFiles();
-        $newFiles = $updates->getFiles();
+        $baseFiles = $this->manifest->getFiles();
+        $updatesFiles = $updates->getFiles();
         $baseDir = $this->manifest->getDir();
-        $updateDir = $updates->getDir();
+        $updatesDir = $updates->getDir();
 
-        foreach ($newFiles as $key => $value) {
-            $source = $updateDir . $key;
-            $destination = $baseDir . DIRECTORY_SEPARATOR . $key;
-            if (!array_key_exists($key, $oldFiles)) {
+        foreach ($updatesFiles as $key => $value) {
+            $source = $updatesDir . $key;
+            $destination = $baseDir . $key;
+            if (!array_key_exists($key, $baseFiles)) {
                 $actions->add(new ActionCopyFile($source, $destination));
-            } elseif ($value !== $oldFiles[$key]) {
-                if (!is_readable($destination)) {
+            } elseif ($value !== $baseFiles[$key]) {
+                if (!is_readable($source)) {
+                    throw new FileNotExistsException($source);
+                } else if (!is_readable($destination)) {
                     $actions->add(new ActionCopyFile($source, $destination));
-                } elseif ($oldFiles[$key] !== sha1_file($destination)) {
-                    throw new \Exception('File ' . $key . ' is modified');
+                } elseif ($baseFiles[$key] !== sha1_file($destination)) {
+                    throw new IsModifiedException($key);
                 } elseif (!is_writable($destination)) {
-                    throw new \Exception('Haven\'t permssions to write file ' . $key);
+                    throw new CanWriteException($destination);
                 } else {
                     $actions->add(new ActionCopyFile($source, $destination));
                 }
             }
         }
 
-        foreach ($oldFiles as $key => $value) {
-            if (array_key_exists($key, $newFiles)) {
+        foreach ($baseFiles as $key => $value) {
+            if (array_key_exists($key, $updatesFiles)) {
                 continue;
             }
 
-            $destination = $baseDir . DIRECTORY_SEPARATOR . $key;
-            if (!is_readable($destination)) {
+            $destination = $baseDir . $key;
+            if (!is_file($destination)) {
                 continue;
             }
 
             if ($value !== sha1_file($destination)) {
-                throw new \Exception('File ' . $key . ' is modified');
+                throw new IsModifiedException($key);
             }
 
             $actions->add(new ActionDeleteFile($destination));
@@ -72,18 +80,11 @@ class Updater {
 
         $actions->add(new ActionComposerInstall($baseDir));
         $actions->add(new ActionMigrationsRun($baseDir));
-        $actions->add(new ActionClearCache($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
-        $actions->add(new ActionClearCache($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
-
+        $actions->add(new ActionClearDirectory($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
+        $actions->add(new ActionClearDirectory($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
+        $actions->add(new ActionCopyFile($updatesDir . 'manifest.json', $baseDir . 'manifest.json'));
+        $actions->add(new ActionClearDirectory($updatesDir));
+    
         $actions->run();
-    }
-
-    /**
-     * @param Manifest $old
-     * @param Manifest $new
-     * @return bool
-     */
-    protected function compareVersions(Manifest $old, Manifest $new) {
-        return false;
     }
 }

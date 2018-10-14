@@ -1,6 +1,8 @@
 <?php
 namespace GameX\Core\Update;
 
+use \GameX\Core\Update\Exceptions\ActionException;
+
 class Actions {
 
     /**
@@ -21,7 +23,7 @@ class Actions {
     public function run() {
         foreach ($this->actions as $action) {
             if (!$action->run()) {
-                throw new \Exception('Error while updating');
+                throw new ActionException();
             }
         }
     }

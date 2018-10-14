@@ -11,6 +11,12 @@ use \GameX\Core\Forms\Rules\FileExtension;
 use \GameX\Core\Forms\Rules\FileSize;
 use \Psr\Http\Message\UploadedFileInterface;
 use \ZipArchive;
+use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Update\Exceptions\LastVersionException;
+use \GameX\Core\Update\Exceptions\IsModifiedException;
+use \GameX\Core\Update\Exceptions\FileNotExistsException;
+use \GameX\Core\Update\Exceptions\CanWriteException;
+use \GameX\Core\Update\Exceptions\ActionException;
 
 class UpdateForm extends BaseForm {
 
@@ -70,19 +76,27 @@ class UpdateForm extends BaseForm {
                     throw new \Exception('Can\'t create folder ' . $tempDir);
                 }
             }
-            
+    
             $value->moveTo($tempDir . 'uploads.zip');
-            
+    
             $archive = new ZipArchive();
-            $archive->open($tempDir . 'uploads.zip',ZipArchive::CHECKCONS);
+            $archive->open($tempDir . 'uploads.zip', ZipArchive::CHECKCONS);
             $archive->extractTo($tempDir);
-
-            
+    
+    
             $updates = new Manifest($tempDir . 'manifest.json');
             $this->updater->run($updates);
             return true;
-        } catch (\Exception $e) {
-            return false;
+        } catch (LastVersionException $e) {
+            throw new ValidationException('You already have last version', 0, $e);
+        } catch (IsModifiedException $e) {
+            throw new ValidationException('File ' . $e->getFilePath() . ' is modified', 0, $e);
+        } catch (FileNotExistsException $e) {
+            throw new ValidationException('File ' . $e->getFilePath() . ' doesn\'t exists', 0, $e);
+        } catch (CanWriteException $e) {
+            throw new ValidationException('Can\'t write to file ' . $e->getFilePath(), 0, $e);
+        } catch (ActionException $e) {
+            throw new ValidationException('Something went wrong while updating', 0, $e);
         }
     }
 }

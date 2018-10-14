@@ -19,6 +19,7 @@ $skipDirectories = [
     'router.php',
     'manifest.json',
     'manifest.php',
+    'updates_[^.]+\.zip',
 ];
 
 function checkToSkip($path) {

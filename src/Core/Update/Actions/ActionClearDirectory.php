@@ -5,7 +5,7 @@ use \GameX\Core\Update\ActionInterface;
 use \RecursiveIteratorIterator;
 use \RecursiveDirectoryIterator;
 
-class ActionClearCache implements ActionInterface {
+class ActionClearDirectory implements ActionInterface {
 
     /**
      * @var string

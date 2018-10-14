@@ -28,10 +28,6 @@ class ActionCopyFile implements ActionInterface {
      * @inheritdoc
      */
     public function run() {
-        if (!is_file($this->source)) {
-            return false;
-        }
-
         $dir = dirname($this->destination);
         if (!is_dir($dir)) {
             mkdir($dir, 644, true);

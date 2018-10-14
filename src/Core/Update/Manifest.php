@@ -12,7 +12,10 @@ class Manifest {
      * @var array
      */
     protected $manifest;
-
+    
+    /**
+     * @param string $path
+     */
     public function __construct($path) {
         $this->dir = dirname($path) . DIRECTORY_SEPARATOR;
         $this->manifest = json_decode(file_get_contents($path), true);
