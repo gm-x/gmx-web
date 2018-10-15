@@ -2,7 +2,6 @@
 namespace GameX\Core\Forms\Rules;
 
 use \GameX\Core\Forms\Rule;
-use \GameX\Core\Forms\Form;
 use \GameX\Core\Lang\Language;
 
 class Callback implements Rule {
