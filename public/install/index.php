@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 checkDirectories([
                     BASE_DIR . 'vendor',
+                    BASE_DIR . 'upload',
                     BASE_DIR . 'runtime' . DS . 'cache',
                     BASE_DIR . 'runtime' . DS . 'logs',
                     BASE_DIR . 'runtime' . DS . 'twig_cache',

@@ -8,24 +8,29 @@ if ($argc < 2) {
 }
 
 define('ROOT', __DIR__ . DIRECTORY_SEPARATOR);
+define('INSTALL', ROOT . 'public' . DIRECTORY_SEPARATOR . 'install'. DIRECTORY_SEPARATOR);
 
-$skipDirectories = [
-    '.idea',
-    '.git',
-    'runtime',
-    'vendor',
-    'upload',
-    'config.json',
-    'router.php',
-    'manifest.json',
-    'manifest.php',
-    'updates_[^.]+\.zip',
+$ignoreList = [
+    '^\.idea',
+    '^\.git',
+    '^\.gitignore',
+    '\.gitkeep$',
+    '^runtime',
+    '^vendor',
+    '^upload',
+    '^config\.json',
+    '^router\.php',
+    '^manifest\.json',
+    '^manifest\.php',
+    '^updates_[^.]+\.zip',
+    '^public/install',
+    '\.less$'
 ];
 
-function checkToSkip($path) {
-    global $skipDirectories;
-    foreach ($skipDirectories as $item) {
-        $pattern = '#^' . preg_quote($item, '#') . '#';
+function isIgnored($path) {
+    global $ignoreList;
+    foreach ($ignoreList as $item) {
+        $pattern = '#' . $item . '#';
         if (preg_match($pattern, $path)) {
             return true;
         }
@@ -47,12 +52,8 @@ $files = [];
  * @var RecursiveDirectoryIterator $it
  */
 foreach($iterator as $path => $it) {
-    if (!checkToSkip($iterator->getSubPathName()) && $it->isFile()) {
+    if (!isIgnored($iterator->getSubPathName()) && $it->isFile()) {
         $files[$it->getSubPathName()] = sha1_file($path);
-    }
-
-    if ($it->isFile() && $it->getSubPath() === 'migrations') {
-        $migrations[] = $it->getFilename();
     }
 }
 
@@ -73,6 +74,23 @@ foreach ($files as $path => $v) {
 }
 
 $zip->addFile(ROOT . 'manifest.json', 'manifest.json');
+
+$flags = FilesystemIterator::KEY_AS_PATHNAME
+    | FilesystemIterator::CURRENT_AS_SELF
+    | FilesystemIterator::UNIX_PATHS
+    | FilesystemIterator::SKIP_DOTS;
+$iterator = new RecursiveDirectoryIterator(INSTALL, $flags);
+$iterator = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
+
+/**
+ * @var string $path
+ * @var RecursiveDirectoryIterator $it
+ */
+foreach($iterator as $path => $it) {
+    if ($it->isFile()) {
+        $zip->addFile(INSTALL . $it->getSubPathName(), 'public/install/' . $it->getSubPathName());
+    }
+}
 
 $zip->close();
 
