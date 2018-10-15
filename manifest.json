@@ -1,5 +1,5 @@
 {
-    "version": "0.5",
+    "version": "0.4beta1",
     "files": {
         "public\/.htaccess": "e54834a99cdaf8349d7e088429320f8a2328f823",
         "public\/assets\/favicon.ico": "d20c18bb8ddff0788c893c6947e7736026f0e9ae",
@@ -1692,7 +1692,7 @@
         "theme\/default\/templates\/admin\/servers\/index.twig": "b16cc814361d2cc8463da1986c056ae0fc9254dc",
         "theme\/default\/templates\/admin\/servers\/form.twig": "4b3e4c91dceaf78249f5c22360668ea09b970f8d",
         "theme\/default\/templates\/admin\/admin.twig": "2c3f473dd3ff1806eca0a889655d1d57609b6c5b",
-        "theme\/default\/templates\/admin\/index.twig": "1bc0ab76449feadacc86c5dc940c44e06f0cc54c",
+        "theme\/default\/templates\/admin\/index.twig": "152fcd6724ae8272c30416150feaebd5a6434c77",
         "theme\/default\/templates\/admin\/roles\/view.twig": "648cc909666c977be93f77bebb477ed77e424819",
         "theme\/default\/templates\/admin\/roles\/permissions\/index.twig": "8bea4b6f4a82ae34041f35338b5fb8bb0af58281",
         "theme\/default\/templates\/admin\/roles\/index.twig": "61a69321f774d73b8784e33669e0f97ea974c65d",
