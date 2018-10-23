@@ -9,6 +9,8 @@ if (!is_file(__DIR__ . '/../vendor/autoload.php')) {
 
 require __DIR__ . '/../vendor/autoload.php';
 
+$_SERVER['SCRIPT_NAME'] = str_replace('/public', '', $_SERVER['SCRIPT_NAME']);
+
 $container = new \Slim\Container([
 	'settings' => [
 		'determineRouteBeforeAppMiddleware' => true,
