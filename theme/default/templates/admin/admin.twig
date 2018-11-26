@@ -57,6 +57,17 @@
                 form.submit();
             });
         });
+        $(document).ready(function () {
+            $('.lang-select').on('click', 'a', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var lang = $(this).data('lang');
+                $.post('{{ path_for('language')}}', {lang: lang})
+                    .always(function() {
+                        location.reload()
+                    });
+            });
+        });
     </script>
     {% block javascript %}{% endblock %}
 </div>
