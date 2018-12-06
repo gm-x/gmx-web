@@ -53,6 +53,10 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 */
 	protected $hidden = [
 		'password',
+        'token',
+        'email',
+        'role_id',
+        'avatar'
 	];
     
     /**
