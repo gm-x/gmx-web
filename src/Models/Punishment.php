@@ -27,31 +27,31 @@ use \GameX\Core\Auth\Models\UserModel;
  */
 class Punishment extends BaseModel {
 
-	const STATUS_NONE = 'none';
-	const STATUS_PUNISHED = 'punished';
-	const STATUS_EXPIRED = 'expired';
-	const STATUS_AMNESTIED = 'amnestied';
-	
-	const TYPE_BANNED = 1;
-	const TYPE_GAGED = 2;
-	const TYPE_MUTED = 4;
-
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'punishments';
-
-	/**
-	 * @var string
-	 */
-	protected $primaryKey = 'id';
-
-	/**
-	 * @var array
-	 */
-	protected $fillable = ['player_id', 'punisher_id', 'punisher_user_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at', 'status'];
+    const STATUS_NONE = 'none';
+    const STATUS_PUNISHED = 'punished';
+    const STATUS_EXPIRED = 'expired';
+    const STATUS_AMNESTIED = 'amnestied';
+    
+    const TYPE_BANNED = 1;
+    const TYPE_GAGED = 2;
+    const TYPE_MUTED = 4;
+    
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'punishments';
+    
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'id';
+    
+    /**
+     * @var array
+     */
+    protected $fillable = ['player_id', 'punisher_id', 'punisher_user_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at', 'status'];
     
     /**
      * @var array

@@ -35,7 +35,15 @@
             <tbody>
             {% for player in players %}
                 <tr>
-                    <td class="text-nowrap">{{ player.steamid }}</td>
+                    <td class="text-nowrap">
+                        <a
+                            href="{{ path_for(constants.admin.players.ROUTE_VIEW, {
+                                'player': player.id
+                            }) }}"
+                        >
+                            {{ player.steamid }}
+                        </a>
+                    </td>
                     <td class="text-nowrap">{{ player.nick }}</td>
                     <td class="text-nowrap">
                         {% embed "admin/actions.twig" with {'actionId': role.id} %}

@@ -232,10 +232,11 @@ class DependencyProvider  implements ServiceProviderInterface {
             $config->getNode('main')->get('language')
         );
     }
-
+    
     /**
      * @param ContainerInterface $container
      * @return Permissions
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function getPermissions(ContainerInterface $container) {
         return new Permissions($container);

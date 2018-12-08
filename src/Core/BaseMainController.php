@@ -3,6 +3,7 @@ namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\Models\UserModel;
 use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
@@ -11,7 +12,6 @@ use \GameX\Core\Forms\Form;
 use \GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\RedirectException;
-use \Exception;
 
 abstract class BaseMainController extends BaseController {
 
@@ -153,5 +153,12 @@ abstract class BaseMainController extends BaseController {
             $form->getForm()->saveValues();
             throw new RedirectException($form->getForm()->getAction(), 302);
         }
+    }
+    
+    /**
+     * @return Permissions
+     */
+    protected function getPermissions() {
+	    return $this->getContainer('permissions');
     }
 }

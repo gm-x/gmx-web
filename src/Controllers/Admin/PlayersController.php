@@ -5,10 +5,13 @@ use \GameX\Core\BaseAdminController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Forms\Admin\PlayersForm;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Player;
 use \GameX\Constants\Admin\PlayersConstants;
+use \GameX\Constants\Admin\UsersConstants;
+use \GameX\Constants\Admin\PunishmentsConstants;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -35,6 +38,38 @@ class PlayersController extends BaseAdminController {
             'players' => $pagination->getCollection(),
             'pagination' => $pagination,
 			'filter' => $filter
+        ]);
+    }
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
+     */
+    public function viewAction(Request $request, Response $response, array $args = []) {
+        $player = $this->getPlayer($request, $response, $args);
+        
+        $permissions = $this->getPermissions();
+        
+        $user = $permissions->hasUserAccessToPermission(
+            UsersConstants::PERMISSION_GROUP,
+            UsersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_VIEW
+        ) ? $player->user : null;
+        
+        $punishments = $permissions->hasUserAccessToPermission(
+            PunishmentsConstants::PERMISSION_GROUP,
+            PunishmentsConstants::PERMISSION_KEY,
+            Permissions::ACCESS_VIEW
+        ) ? $player->punishments : null;
+        
+        return $this->render('admin/players/view.twig', [
+            'player' => $player,
+            'user' => $user,
+            'punishments' => $punishments,
         ]);
     }
 

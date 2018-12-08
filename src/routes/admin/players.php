@@ -22,6 +22,15 @@ return function () {
             PlayersConstants::PERMISSION_KEY,
             Permissions::ACCESS_LIST
         ));
+    
+    $this
+        ->get('/{player}/view', BaseController::action(PlayersController::class, 'view'))
+        ->setName(PlayersConstants::ROUTE_VIEW)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_VIEW
+        ));
 
 	$this
 		->map(['GET', 'POST'], '/create', BaseController::action(PlayersController::class, 'create'))

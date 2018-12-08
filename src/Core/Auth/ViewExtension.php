@@ -91,7 +91,7 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToGroup($group) {
-        return $this->hasAccess('hasAccessToGroup', [$group]);
+        return $this->permissions->hasUserAccessToGroup($group);
 	}
     
     /**
@@ -101,7 +101,7 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToPermission($group, $permission, $access = null) {
-        return $this->hasAccess('hasAccessToPermission', [$group, $permission, $this->getAccess($access)]);
+        return $this->permissions->hasUserAccessToPermission($group, $permission, $this->getAccess($access));
     }
     
     /**
@@ -112,30 +112,7 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      */
     public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        return $this->hasAccess('hasAccessToResource', [$group, $permission, $resource, $this->getAccess($access)]);
-    }
-
-    /**
-     * @param string $method
-     * @param array $args
-     * @return bool
-     */
-    protected function hasAccess($method, array $args) {
-        if ($this->isGuest()) {
-            return false;
-        }
-
-        if ($this->permissions->isRootUser($this->user)) {
-            return true;
-        }
-
-        if (!$this->user->role) {
-            return false;
-        }
-
-        array_unshift($args, $this->user->role);
-
-        return call_user_func_array([$this->permissions, $method], $args);
+        return $this->permissions->hasUserAccessToResource($group, $permission, $resource, $this->getAccess($access));
     }
 
     /**
