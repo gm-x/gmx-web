@@ -58,7 +58,6 @@
     Expired:
     {% if punishment.expired_at %}
         {{ punishment.expired_at | date('d.m.Y H:i') }}
-        ({{ punishment.expired_at - punishment.created_at }})
     {% else %}
         Never
     {% endif %}
