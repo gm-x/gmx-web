@@ -1,6 +1,7 @@
 {% extends 'admin/admin.twig' %}
 
 {% import 'macros/admin.twig' as admin %}
+{% import 'macros/punishments.twig' as punishments %}
 
 {#{% block title %}{{ parent() }} | {{ trans('admin_menu', 'players') }} | {{ player.name }}{% endblock %}#}
 
@@ -44,16 +45,16 @@
                 <h3 class="uk-card-title">{{ player.nick }}</h3>
                 <div f-table f-divider>
                     <ul>
-                        <li>Emulator</li>
-                        <li>{{ player.emulator }}</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Emulator</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.emulator }}</li>
                     </ul>
                     <ul>
-                        <li>STEAM_ID</li>
-                        <li>{{ player.steamid }}</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">STEAM_ID</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.steamid }}</li>
                     </ul>
                     <ul>
-                        <li>IP</li>
-                        <li>{{ player.ip }}</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">IP</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.ip }}</li>
                     </ul>
                     {% if has_access_permission(
                         constants.admin.users.PERMISSION_GROUP,
@@ -61,8 +62,8 @@
                         premissions.ACCESS_VIEW
                     ) %}
                         <ul>
-                            <li>User</li>
-                            <li>
+                            <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">User</li>
+                            <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">
                             {% if player.user_id %}
                                 <a href="{{ path_for(constants.admin.users.ROUTE_VIEW, {'user': player.user.id}) }}">
                                     {{ player.user.login }}
@@ -74,16 +75,44 @@
                         </ul>
                     {% endif %}
                     <ul>
-                        <li>Create At</li>
-                        <li>{{ player.created_at }}</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Create At</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.created_at }}</li>
                     </ul>
                     <ul>
-                        <li>Update At</li>
-                        <li>{{ player.updated_at }}</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Update At</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.updated_at }}</li>
                     </ul>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
+    <div f-table f-divider>
+        <ul th>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Punisher</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Server</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Type</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Reason</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Comment</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Expired at</li>
+        </ul>
+        {% for punishment in player.punishments %}
+            <ul>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">
+                    {{ punishments.punisher(punishment) }}
+                </li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">
+                    {{ punishments.server(punishment) }}
+                </li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">
+                    {{ punishments.type(punishment) }}
+                </li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishment.reason.title }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishment.comment }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.expired(punishment) }}</li>
+            </ul>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

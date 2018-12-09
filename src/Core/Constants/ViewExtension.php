@@ -15,6 +15,7 @@ use \GameX\Constants\Admin\PermissionsConstants;
 use \GameX\Constants\Admin\PreferencesConstants;
 use \GameX\Constants\Admin\PunishmentsConstants;
 use \GameX\Constants\SettingsConstants;
+use \GameX\Models\Punishment;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
     
@@ -34,6 +35,10 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
         'settings' => SettingsConstants::class,
     ];
     
+    protected $models = [
+        'punishment' => Punishment::class,
+    ];
+    
     public function getGlobals() {
         return [
             'constants' => $this->getConstants($this->constants),
@@ -43,7 +48,8 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
                 'ACCESS_CREATE' => Permissions::ACCESS_CREATE,
                 'ACCESS_EDIT' =>  Permissions::ACCESS_EDIT,
                 'ACCESS_DELETE' => Permissions::ACCESS_DELETE,
-            ]
+            ],
+            'models' => $this->getConstants($this->models),
         ];
     }
     

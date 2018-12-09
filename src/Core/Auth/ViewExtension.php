@@ -87,29 +87,32 @@ class ViewExtension extends Twig_Extension {
 	}
     
     /**
-     * @param string $group
+     * @param $group
      * @return bool
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     public function hasAccessToGroup($group) {
         return $this->permissions->hasUserAccessToGroup($group);
 	}
     
     /**
-     * @param string $group
-     * @param string $permission
-     * @param int|null $access
+     * @param $group
+     * @param $permission
+     * @param null $access
      * @return bool
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     public function hasAccessToPermission($group, $permission, $access = null) {
         return $this->permissions->hasUserAccessToPermission($group, $permission, $this->getAccess($access));
     }
     
     /**
-     * @param string $group
-     * @param string $permission
-     * @param int $resource
-     * @param int|null $access
+     * @param $group
+     * @param $permission
+     * @param $resource
+     * @param null $access
      * @return bool
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     public function hasAccessToResource($group, $permission, $resource, $access = null) {
         return $this->permissions->hasUserAccessToResource($group, $permission, $resource, $this->getAccess($access));
