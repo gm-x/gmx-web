@@ -3,7 +3,7 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/punishments.twig' as punishments %}
 
-{#{% block title %}{{ parent() }} | {{ trans('admin_menu', 'players') }} | {{ player.name }}{% endblock %}#}
+{% block title %}{{ parent() }} | {{ trans('admin_menu', 'players') }} | {{ player.nick }}{% endblock %}
 
 {% block style %}
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
@@ -45,10 +45,6 @@
                 <h3 class="uk-card-title">{{ player.nick }}</h3>
                 <div f-table f-divider>
                     <ul>
-                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Emulator</li>
-                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.emulator }}</li>
-                    </ul>
-                    <ul>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">STEAM_ID</li>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.steamid }}</li>
                     </ul>
@@ -75,6 +71,16 @@
                         </ul>
                     {% endif %}
                     <ul>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Status</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">
+                            {% if player.server_id %}
+                                Online: {{ player.server.name }}
+                            {% else %}
+                                Offline
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <ul>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Create At</li>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.created_at }}</li>
                     </ul>
@@ -88,6 +94,7 @@
     </div>
 </div>
 <div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
+    <h3 class="uk-card-title">Punishments</h3>
     <div f-table f-divider>
         <ul th>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Punisher</li>
