@@ -52,24 +52,8 @@ class PlayersController extends BaseAdminController {
     public function viewAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
         
-        $permissions = $this->getPermissions();
-        
-        $user = $permissions->hasUserAccessToPermission(
-            UsersConstants::PERMISSION_GROUP,
-            UsersConstants::PERMISSION_KEY,
-            Permissions::ACCESS_VIEW
-        ) ? $player->user : null;
-        
-        $punishments = $permissions->hasUserAccessToPermission(
-            PunishmentsConstants::PERMISSION_GROUP,
-            PunishmentsConstants::PERMISSION_KEY,
-            Permissions::ACCESS_VIEW
-        ) ? $player->punishments : null;
-        
         return $this->render('admin/players/view.twig', [
             'player' => $player,
-            'user' => $user,
-            'punishments' => $punishments,
         ]);
     }
 

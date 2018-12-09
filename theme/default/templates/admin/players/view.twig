@@ -55,6 +55,24 @@
                         <li>IP</li>
                         <li>{{ player.ip }}</li>
                     </ul>
+                    {% if has_access_permission(
+                        constants.admin.users.PERMISSION_GROUP,
+                        constants.admin.users.PERMISSION_KEY,
+                        premissions.ACCESS_VIEW
+                    ) %}
+                        <ul>
+                            <li>User</li>
+                            <li>
+                            {% if player.user_id %}
+                                <a href="{{ path_for(constants.admin.users.ROUTE_VIEW, {'user': player.user.id}) }}">
+                                    {{ player.user.login }}
+                                </a>
+                            {% else %}
+                                -
+                            {% endif %}
+                            </li>
+                        </ul>
+                    {% endif %}
                     <ul>
                         <li>Create At</li>
                         <li>{{ player.created_at }}</li>
