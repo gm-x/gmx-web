@@ -12,6 +12,9 @@
             {{ punishment.punisher.nick }}
         {% endif %}
     {% elseif punishment.punisher_user_id %}
+        {% if punishment.punisherUser.avatar %}
+            <img src="{{ upload_url(punishment.punisherUser.avatar) }}" width="30">
+        {% endif %}
         {% if has_access_permission(
             constants.admin.users.PERMISSION_GROUP,
             constants.admin.users.PERMISSION_KEY,
@@ -33,7 +36,7 @@
         constants.admin.servers.PERMISSION_GROUP,
         constants.admin.servers.PERMISSION_KEY,
         premissions.ACCESS_VIEW
-        ) %}
+    ) %}
         <a href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': punishment.server_id}) }}">
             {{ punishment.server.name }}
         </a>
@@ -52,6 +55,10 @@
     {% if punishment.type b-and models.punishment.TYPE_MUTED %}
         Mute
     {% endif %}
+{% endmacro %}
+
+{% macro comment(punishment) %}
+    {{ punishment.comment | default('-') }}
 {% endmacro %}
 
 {% macro expired(punishment) %}

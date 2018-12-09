@@ -99,17 +99,11 @@
         </ul>
         {% for punishment in player.punishments %}
             <ul>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">
-                    {{ punishments.punisher(punishment) }}
-                </li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">
-                    {{ punishments.server(punishment) }}
-                </li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">
-                    {{ punishments.type(punishment) }}
-                </li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.punisher(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.server(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.type(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishment.reason.title }}</li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishment.comment }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.comment(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.expired(punishment) }}</li>
             </ul>
         {% endfor %}

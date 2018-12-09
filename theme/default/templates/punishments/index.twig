@@ -26,17 +26,11 @@
 						{% endif %}
 						{{ punishment.player.nick }}
 					</td>
-					<td class="text-nowrap">
-						{{ punishments_macro.punisher(punishment) }}
-					</td>
-					<td>
-						{{ punishments_macro.server(punishment) }}
-					</td>
-					<td class="text-nowrap">
-						{{ punishments_macro.type(punishment) }}
-					</td>
+					<td class="text-nowrap">{{ punishments_macro.punisher(punishment) }}</td>
+					<td>{{ punishments_macro.server(punishment) }}</td>
+					<td class="text-nowrap">{{ punishments_macro.type(punishment) }}</td>
 					<td class="text-nowrap">{{ punishment.reason.title }}</td>
-					<td class="text-nowrap">{{ punishment.comment }}</td>
+					<td class="text-nowrap">{{ punishments.comment(punishment) }}</td>
 					<td>{{ punishments_macro.expired(punishment) }}</td>
 				</tr>
 			{% else %}
