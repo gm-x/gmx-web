@@ -14,7 +14,7 @@
         constants.admin.players.PERMISSION_GROUP,
         constants.admin.players.PERMISSION_KEY,
         permissions.ACCESS_LIST
-        ) %}
+    ) %}
         <div class="uk-float-left">
             {{ admin.back_btn(path_for(constants.admin.players.ROUTE_LIST), 'l') }}
         </div>
@@ -24,16 +24,16 @@
         constants.admin.players.PERMISSION_GROUP,
         constants.admin.players.PERMISSION_KEY,
         permissions.ACCESS_EDIT
-        ) %}
-        {{ admin.edit_btn(path_for(constants.admin.players.ROUTE_EDIT, {'player': players.id}), 'l') }}
+    ) %}
+        {{ admin.edit_btn(path_for(constants.admin.players.ROUTE_EDIT, {'player': player.id}), 'l') }}
     {% endif %}
 
     {% if has_access_permission(
         constants.admin.players.PERMISSION_GROUP,
         constants.admin.players.PERMISSION_KEY,
         permissions.ACCESS_DELETE
-        ) %}
-        {{ admin.delete_btn(path_for(constants.admin.players.ROUTE_DELETE, {'player': players.id}), 'l') }}
+    ) %}
+        {{ admin.delete_btn(path_for(constants.admin.players.ROUTE_DELETE, {'player': player.id}), 'l') }}
     {% endif %}
 {% endblock %}
 
@@ -111,7 +111,35 @@
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.reason(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.comment(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.status(punishment) }}</li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">ACTIONS</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
+                    {% if has_access_resource(
+                        constants.admin.punishments.PERMISSION_GROUP,
+                        constants.admin.punishments.PERMISSION_KEY,
+                        punishment.server_id,
+                        permissions.ACCESS_EDIT
+                    ) %}
+                        {{ admin.edit_btn(
+                            path_for(constants.admin.punishments.ROUTE_EDIT, {
+                                'player': player.id,
+                                'punishment': punishment.id
+                            })
+                        ) }}
+                    {% endif %}
+
+                    {% if has_access_resource(
+                        constants.admin.punishments.PERMISSION_GROUP,
+                        constants.admin.punishments.PERMISSION_KEY,
+                        punishment.server_id,
+                        permissions.ACCESS_DELETE
+                    ) %}
+                        {{ admin.delete_btn(
+                            path_for(constants.admin.punishments.ROUTE_DELETE, {
+                                'player': player.id,
+                                'punishment': punishment.id
+                            })
+                        ) }}
+                    {% endif %}
+                </li>
             </ul>
         {% endfor %}
     </div>

@@ -26,18 +26,34 @@ class PunishmentsController extends BaseAdminController {
     protected function getActiveMenu() {
         return PlayersConstants::ROUTE_LIST;
     }
-
+    
     /**
      * @param Request $request
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotAllowedException
      * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
-    public function indexAction(Request $request, Response $response, array $args = []) {
+    public function viewAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
-        return $this->render('admin/players/punishments/index.twig', [
-            'player' => $player
+        $punishment = $this->getPunishment($request, $response, $args, $player);
+        
+        $hasAccess = $this->getPermissions()->hasUserAccessToResource(
+            PunishmentsConstants::PERMISSION_GROUP,
+            PunishmentsConstants::PERMISSION_KEY,
+            $punishment->server_id,
+            Permissions::ACCESS_VIEW
+        );
+        
+        if (!$hasAccess) {
+            throw new NotAllowedException();
+        }
+
+        return $this->render('admin/players/punishments/view.twig', [
+            'player' => $player,
+            'punishment' => $punishment,
         ]);
     }
 
@@ -71,6 +87,7 @@ class PunishmentsController extends BaseAdminController {
         
         return $this->render('admin/players/punishments/form.twig', [
             'player' => $player,
+            'punishment' => $punishment,
             'form' => $form->getForm(),
             'create' => true,
         ]);
@@ -106,6 +123,7 @@ class PunishmentsController extends BaseAdminController {
         
         return $this->render('admin/players/punishments/form.twig', [
             'player' => $player,
+            'punishment' => $punishment,
             'form' => $form->getForm(),
             'create' => false,
         ]);

@@ -93,10 +93,16 @@ return function () {
         
         /** @var Permissions $permissions */
         $permissions = $this->getContainer()->get('permissions');
-        
+    
         $this
-            ->get('', BaseController::action(PunishmentsController::class, 'index'))
-            ->setName(PunishmentsConstants::ROUTE_LIST);
+            ->get('/{punishment}', BaseController::action(PunishmentsController::class, 'view'))
+            ->setName(PunishmentsConstants::ROUTE_VIEW)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                PunishmentsConstants::PERMISSION_GROUP,
+                PunishmentsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_VIEW
+            ));
     
         $this
             ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PunishmentsController::class, 'create'))

@@ -45,9 +45,16 @@
     {% endif %}
 {% endmacro %}
 
+{% macro type(punishment) %}
+    <ul>
+        {% for type in punishment.types %}
+            <li>{{ type }}</li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
 {% macro reason(punishment) %}
-    {{ punishment.reason.title | default('-') }}<br>
-    ({{ punishment.types | join(', ') }})
+    {{ punishment.reason.title | default('-') }}
 {% endmacro %}
 
 {% macro comment(punishment) %}
@@ -55,6 +62,7 @@
 {% endmacro %}
 
 {% macro status(punishment) %}
+    {#{% if punishment.status === models.punishment.STATUS_PUNISHED %}#}
     Expired:
     {% if punishment.expired_at %}
         {{ punishment.expired_at | date('d.m.Y H:i') }}
