@@ -45,25 +45,20 @@
     {% endif %}
 {% endmacro %}
 
-{% macro type(punishment) %}
-    {% if punishment.type b-and models.punishment.TYPE_BANNED %}
-        Ban
-    {% endif %}
-    {% if punishment.type b-and models.punishment.TYPE_GAGED %}
-        Gag
-    {% endif %}
-    {% if punishment.type b-and models.punishment.TYPE_MUTED %}
-        Mute
-    {% endif %}
+{% macro reason(punishment) %}
+    {{ punishment.reason.title | default('-') }}<br>
+    ({{ punishment.types | join(', ') }})
 {% endmacro %}
 
 {% macro comment(punishment) %}
     {{ punishment.comment | default('-') }}
 {% endmacro %}
 
-{% macro expired(punishment) %}
+{% macro status(punishment) %}
+    Expired:
     {% if punishment.expired_at %}
         {{ punishment.expired_at | date('d.m.Y H:i') }}
+        ({{ punishment.expired_at - punishment.created_at }})
     {% else %}
         Never
     {% endif %}

@@ -99,19 +99,19 @@
         <ul th>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Punisher</li>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Server</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Type</li>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Reason</li>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Comment</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Expired at</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Status</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m"></li>
         </ul>
         {% for punishment in player.punishments %}
             <ul>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.punisher(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.server(punishment) }}</li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.type(punishment) }}</li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishment.reason.title }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.reason(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.comment(punishment) }}</li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.expired(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.status(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">ACTIONS</li>
             </ul>
         {% endfor %}
     </div>

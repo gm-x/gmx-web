@@ -62,6 +62,11 @@ class Punishment extends BaseModel {
      * @var array
      */
     protected $hidden = ['reason_id', 'updated_at'];
+    
+    /**
+     * @var array
+     */
+    protected $appends = ['types', 'time'];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -96,6 +101,32 @@ class Punishment extends BaseModel {
      */
 	public function reason() {
 	    return $this->belongsTo(Reason::class, 'reason_id', 'id');
+    }
+    
+    /**
+     * @return array
+     */
+    public function getTypesAttribute() {
+        $types = [];
+        if ($this->attributes['type'] && self::TYPE_BANNED) {
+            $types[] = 'ban';
+        }
+        if ($this->attributes['type'] && self::TYPE_GAGED) {
+            $types[] = 'gag';
+        }
+        if ($this->attributes['type'] && self::TYPE_MUTED) {
+            $types[] = 'mute';
+        }
+        return $types;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getTimeAttribute() {
+        return $this->attributes['expired_at'] !== null
+            ? $this->attributes['expired_at']->diffInSeconds($this->attributes['created_at'])
+            : 0;
     }
     
     /**
