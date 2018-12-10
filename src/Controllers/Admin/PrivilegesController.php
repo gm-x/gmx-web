@@ -238,38 +238,12 @@ class PrivilegesController extends BaseAdminController {
         return $privilege;
     }
 
-    /**
-     * @param int $serverId
-     * @param int $access
-     * @return bool
-     */
     protected function hasAccess($serverId, $access) {
-        /** @var Permissions $permissions */
-        $permissions = $this->getContainer('permissions');
-
-        $user = $this->getUser();
-        if (!$user) {
-            return false;
-        }
-
-        if ($permissions->isRootUser($user)) {
-            return true;
-        }
-
-        if (!$user->role) {
-            return false;
-        }
-
-        if (!$permissions->hasAccessToResource(
-            $user->role,
+        return $this->getPermissions()->hasUserAccessToResource(
             PrivilegesConstants::PERMISSION_GROUP,
             PrivilegesConstants::PERMISSION_KEY,
             $serverId,
             $access
-        )) {
-            return false;
-        }
-
-        return true;
+        );
     }
 }

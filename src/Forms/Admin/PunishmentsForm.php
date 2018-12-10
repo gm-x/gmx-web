@@ -14,7 +14,6 @@ use \GameX\Core\Forms\Rules\BitMask as BitMaskRule;
 use \GameX\Core\Forms\Rules\Boolean;
 use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\Date as DateRule;
-use \GameX\Core\Forms\Rules\Callback;
 use \GameX\Core\Exceptions\PunishmentsFormException;
 
 class PunishmentsForm extends BaseForm {

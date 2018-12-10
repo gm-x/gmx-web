@@ -9,9 +9,10 @@ use \GameX\Core\Auth\Permissions;
 use \GameX\Forms\Admin\PlayersForm;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Player;
+use \GameX\Models\Server;
+use \GameX\Models\Privilege;
 use \GameX\Constants\Admin\PlayersConstants;
-use \GameX\Constants\Admin\UsersConstants;
-use \GameX\Constants\Admin\PunishmentsConstants;
+use \GameX\Constants\Admin\PrivilegesConstants;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -51,9 +52,34 @@ class PlayersController extends BaseAdminController {
      */
     public function viewAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
-        
+    
+        $privileges = [];
+        /** @var Server $server */
+        foreach (Server::get() as $server) {
+            if ($this->getPermissions()->hasUserAccessToResource(
+                PrivilegesConstants::PERMISSION_GROUP,
+                PrivilegesConstants::PERMISSION_KEY,
+                $server->id,
+                Permissions::ACCESS_LIST
+            )) {
+                $privileges[$server->id] = [
+                    'name' => $server->name,
+                    'privileges' => []
+                ];
+            }
+        }
+    
+        /** @var Privilege $privilege */
+        foreach($player->privileges()->with('group')->get() as $privilege) {
+            $serverId = $privilege->group->server_id;
+            if (array_key_exists($serverId, $privileges)) {
+                $privileges[$serverId]['privileges'][] = $privilege;
+            }
+        }
+
         return $this->render('admin/players/view.twig', [
             'player' => $player,
+            'privileges' => $privileges,
         ]);
     }
 
