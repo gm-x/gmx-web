@@ -75,7 +75,7 @@ class PunishmentsController extends BaseAdminController {
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect(PunishmentsConstants::ROUTE_EDIT, [
+                return $this->redirect(PunishmentsConstants::ROUTE_VIEW, [
                     'player' => $player->id,
                     'punishment' => $punishment->id,
                 ]);
@@ -111,7 +111,7 @@ class PunishmentsController extends BaseAdminController {
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect(PunishmentsConstants::ROUTE_EDIT, [
+                return $this->redirect(PunishmentsConstants::ROUTE_VIEW, [
                     'player' => $player->id,
                     'punishment' => $punishment->id,
                 ]);

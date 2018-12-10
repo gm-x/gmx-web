@@ -2,6 +2,7 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
+use GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Models\Server;
 use \GameX\Models\Punishment;
 use \GameX\Core\Forms\Validator;
@@ -13,6 +14,7 @@ use \GameX\Core\Forms\Rules\BitMask as BitMaskRule;
 use \GameX\Core\Forms\Rules\Boolean;
 use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\Date as DateRule;
+use \GameX\Core\Forms\Rules\Callback;
 use \GameX\Core\Exceptions\PunishmentsFormException;
 
 class PunishmentsForm extends BaseForm {
@@ -61,7 +63,7 @@ class PunishmentsForm extends BaseForm {
                 Punishment::TYPE_GAGED => 'Gag',
                 Punishment::TYPE_MUTED => 'Mute',
             ]))
-            ->add(new DateElement('forever', $this->punishment->expired_at === null, [
+            ->add(new Checkbox('forever', $this->punishment->expired_at === null, [
                 'title' => 'Forever',
             ]))
             ->add(new DateElement('expired', $this->punishment->expired_at, [
@@ -96,7 +98,8 @@ class PunishmentsForm extends BaseForm {
 	}
     
     /**
-     * @return boolean
+     * @return bool
+     * @throws \Exception
      */
     protected function processForm() {
         $this->punishment->reason_id = $this->form->getValue('reason');

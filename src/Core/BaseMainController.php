@@ -130,12 +130,12 @@ abstract class BaseMainController extends BaseController {
             }
 
             $form->process($request);
-            $result = $form->getIsSubmitted() && $form->getIsValid();
+            $success = $form->getIsSubmitted() && $form->getIsValid();
             if ($withTransaction) {
                 $connection->commit();
             }
             
-            return $result;
+            return $success;
         } catch (FormException $e) {
             if ($withTransaction) {
                 $connection->rollBack();
