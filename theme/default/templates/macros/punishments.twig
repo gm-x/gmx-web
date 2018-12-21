@@ -57,8 +57,8 @@
     {{ punishment.reason.title | default('-') }}
 {% endmacro %}
 
-{% macro comment(punishment) %}
-    {{ punishment.comment | default('-') }}
+{% macro details(punishment) %}
+    {{ punishment.details | default('-') }}
 {% endmacro %}
 
 {% macro status(punishment) %}

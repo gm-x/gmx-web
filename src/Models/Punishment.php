@@ -14,7 +14,7 @@ use \GameX\Core\Auth\Models\UserModel;
  * @property integer $punisher_user_id
  * @property integer $server_id
  * @property integer $reason_id
- * @property string $comment
+ * @property string $details
  * @property integer $type
  * @property string $expired_at
  * @property string $status
@@ -51,7 +51,7 @@ class Punishment extends BaseModel {
     /**
      * @var array
      */
-    protected $fillable = ['player_id', 'punisher_id', 'punisher_user_id', 'server_id', 'reason_id', 'comment', 'type', 'expired_at', 'status'];
+    protected $fillable = ['player_id', 'punisher_id', 'punisher_user_id', 'server_id', 'reason_id', 'details', 'type', 'expired_at', 'status'];
     
     /**
      * @var array
@@ -104,23 +104,6 @@ class Punishment extends BaseModel {
     }
     
     /**
-     * @return array
-     */
-    public function getTypesAttribute() {
-        $types = [];
-        if ($this->attributes['type'] && self::TYPE_BANNED) {
-            $types[] = 'ban';
-        }
-        if ($this->attributes['type'] && self::TYPE_GAGED) {
-            $types[] = 'gag';
-        }
-        if ($this->attributes['type'] && self::TYPE_MUTED) {
-            $types[] = 'mute';
-        }
-        return $types;
-    }
-    
-    /**
      * @return int
      */
     public function getTimeAttribute() {
@@ -137,23 +120,19 @@ class Punishment extends BaseModel {
     }
     
     /**
-     * @return bool
+     * @return array
      */
-	public function isBanned() {
-	    return (bool) $this->attributes['type'] & self::TYPE_BANNED;
-    }
-    
-    /**
-     * @return bool
-     */
-	public function isGaged() {
-	    return (bool) $this->attributes['type'] & self::TYPE_GAGED;
-    }
-    
-    /**
-     * @return bool
-     */
-	public function isMuted() {
-	    return (bool) $this->attributes['type'] & self::TYPE_MUTED;
+    public function getTypesAttribute() {
+        $types = [];
+        if ($this->attributes['type'] && self::TYPE_BANNED) {
+            $types[] = 'ban';
+        }
+        if ($this->attributes['type'] && self::TYPE_GAGED) {
+            $types[] = 'gag';
+        }
+        if ($this->attributes['type'] && self::TYPE_MUTED) {
+            $types[] = 'mute';
+        }
+        return $types;
     }
 }

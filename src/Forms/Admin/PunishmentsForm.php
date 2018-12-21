@@ -6,6 +6,7 @@ use GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Models\Server;
 use \GameX\Models\Punishment;
 use \GameX\Core\Forms\Validator;
+use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\BitMask as BitMaskElement;
 use \GameX\Core\Forms\Elements\Date as DateElement;
@@ -57,6 +58,10 @@ class PunishmentsForm extends BaseForm {
                 'required' => true,
                 'empty_option' => 'Choose reason',
             ]))
+            ->add(new Text('details', $this->punishment->details, [
+                'title' => 'Details',
+                'required' => false,
+            ]))
             ->add(new BitMaskElement('type', $this->punishment->type, [
                 Punishment::TYPE_BANNED => 'Ban',
                 Punishment::TYPE_GAGED => 'Gag',
@@ -75,6 +80,7 @@ class PunishmentsForm extends BaseForm {
                 new Number(1),
                 new InArray(array_keys($reasons)),
             ])
+            ->set('details', false)
             ->set('type', true, [
                 new BitMaskRule([
                     Punishment::TYPE_BANNED,

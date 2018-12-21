@@ -184,10 +184,10 @@
 		<div class="uk-margin uk-inline uk-width-1-1">
 			<label class="switcher">
 				<input
-						type="checkbox"
-						name="{{ element.getFormName() }}[{{ element.getName() }}][]"
-						value="{{ value }}"
-						class="{{ classes | join(' ') }}"
+					type="checkbox"
+					name="{{ element.getFormName() }}[{{ element.getName() }}][]"
+					value="{{ value }}"
+					class="{{ classes | join(' ') }}"
 				{% for key, value in attributes %}
 					{{ key }}="{{ value }}"
 				{% endfor %}

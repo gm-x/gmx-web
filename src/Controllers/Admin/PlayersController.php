@@ -13,6 +13,7 @@ use \GameX\Models\Server;
 use \GameX\Models\Privilege;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
+use \GameX\Constants\Admin\PunishmentsConstants;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -54,8 +55,18 @@ class PlayersController extends BaseAdminController {
         $player = $this->getPlayer($request, $response, $args);
     
         $privileges = [];
+        $servers = [];
         /** @var Server $server */
         foreach (Server::get() as $server) {
+            if ($this->getPermissions()->hasUserAccessToResource(
+                PunishmentsConstants::PERMISSION_GROUP,
+                PunishmentsConstants::PERMISSION_KEY,
+                $server->id,
+                Permissions::ACCESS_CREATE
+            )) {
+                $servers[$server->id] = $server->name;
+            }
+            
             if ($this->getPermissions()->hasUserAccessToResource(
                 PrivilegesConstants::PERMISSION_GROUP,
                 PrivilegesConstants::PERMISSION_KEY,
@@ -80,6 +91,7 @@ class PlayersController extends BaseAdminController {
         return $this->render('admin/players/view.twig', [
             'player' => $player,
             'privileges' => $privileges,
+            'servers' => $servers,
         ]);
     }
 

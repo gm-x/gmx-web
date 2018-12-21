@@ -16,7 +16,9 @@
         permissions.ACCESS_VIEW
     ) %}
         <div class="uk-float-left">
-            {{ admin.back_btn(path_for(constants.admin.players.ROUTE_VEW, {'player': players.id}), 'l') }}
+            {{ admin.back_btn(path_for(constants.admin.players.ROUTE_VIEW, {
+                'player': player.id
+            }), 'l') }}
         </div>
     {% endif %}
 

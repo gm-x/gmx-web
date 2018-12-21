@@ -170,30 +170,69 @@
 </div>
 
 <div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
-    <h3 class="uk-card-title">Punishments</h3>
+    <div>
+        <h3 class="uk-card-title">Punishments</h3>
+    </div>
     <div f-table f-divider>
         <ul th>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Punisher</li>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Server</li>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Reason</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Comment</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Details</li>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Status</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m"></li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
+                <span class="dropdown">
+                    <button
+                            class="uk-icon-button  uk-margin-small-right"
+                            type="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            id="actionButtons{{ actionId }}"
+                    >
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div uk-dropdown>
+                         <ul class="uk-nav uk-dropdown-nav">
+                            {% for serverId, serverName in servers %}
+                                {% set href = path_for(constants.admin.punishments.ROUTE_CREATE, {
+                                    'player': player.id,
+                                    'server': serverId
+                                }) %}
+                                <li>
+                                    <a href="{{ href }}" class="dropdown-item">{{ serverName }}</a>
+                                </li>
+                            {% endfor %}
+                         </ul>
+                    </div>
+                </span>
+            </li>
         </ul>
         {% for punishment in player.punishments %}
             <ul>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.punisher(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.server(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.reason(punishment) }}</li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.comment(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.details(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.status(punishment) }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
+                    {% set href = path_for(constants.admin.punishments.ROUTE_VIEW, {
+                        'player': player.id,
+                        'punishment': punishment.id
+                    }) %}
+                    {{ admin.circle_btn({
+                        "href": href,
+                        "title": trans('buttons', 'view'),
+                        "icon": "fas fa-info",
+                        "size": "m"
+                    }) }}
+
                     {% if has_access_resource(
                         constants.admin.punishments.PERMISSION_GROUP,
                         constants.admin.punishments.PERMISSION_KEY,
                         punishment.server_id,
                         permissions.ACCESS_EDIT
-                        ) %}
+                    ) %}
                         {{ admin.edit_btn(
                             path_for(constants.admin.punishments.ROUTE_EDIT, {
                                 'player': player.id,
@@ -207,7 +246,7 @@
                         constants.admin.punishments.PERMISSION_KEY,
                         punishment.server_id,
                         permissions.ACCESS_DELETE
-                        ) %}
+                    ) %}
                         {{ admin.delete_btn(
                             path_for(constants.admin.punishments.ROUTE_DELETE, {
                                 'player': player.id,
