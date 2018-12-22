@@ -1,0 +1,262 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/admin.twig' as admin %}
+{% import 'macros/punishments.twig' as punishments %}
+
+{% block title %}{{ parent() }} | {{ trans('admin_menu', 'players') }} | {{ player.nick }}{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block subnav %}
+    {% if has_access_permission(
+        constants.admin.players.PERMISSION_GROUP,
+        constants.admin.players.PERMISSION_KEY,
+        permissions.ACCESS_LIST
+    ) %}
+        <div class="uk-float-left">
+            {{ admin.back_btn(path_for(constants.admin.players.ROUTE_LIST), 'l') }}
+        </div>
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.players.PERMISSION_GROUP,
+        constants.admin.players.PERMISSION_KEY,
+        permissions.ACCESS_EDIT
+    ) %}
+        {{ admin.edit_btn(path_for(constants.admin.players.ROUTE_EDIT, {'player': player.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.players.PERMISSION_GROUP,
+        constants.admin.players.PERMISSION_KEY,
+        permissions.ACCESS_DELETE
+    ) %}
+        {{ admin.delete_btn(path_for(constants.admin.players.ROUTE_DELETE, {'player': player.id}), 'l') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+        <div>
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">{{ player.nick }}</h3>
+                <div f-table f-divider>
+                    <ul>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">STEAM_ID</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.steamid }}</li>
+                    </ul>
+                    <ul>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">IP</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.ip }}</li>
+                    </ul>
+                    {% if has_access_permission(
+                        constants.admin.users.PERMISSION_GROUP,
+                        constants.admin.users.PERMISSION_KEY,
+                        premissions.ACCESS_VIEW
+                    ) %}
+                        <ul>
+                            <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">User</li>
+                            <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">
+                            {% if player.user_id %}
+                                <a href="{{ path_for(constants.admin.users.ROUTE_VIEW, {'user': player.user.id}) }}">
+                                    {{ player.user.login }}
+                                </a>
+                            {% else %}
+                                -
+                            {% endif %}
+                            </li>
+                        </ul>
+                    {% endif %}
+                    <ul>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Status</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">
+                            {% if player.server_id %}
+                                Online: {{ player.server.name }}
+                            {% else %}
+                                Offline
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <ul>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Create At</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.created_at }}</li>
+                    </ul>
+                    <ul>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Update At</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.updated_at }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
+    <h3 class="uk-card-title">Privileges</h3>
+    <div f-table f-divider>
+        {% for serverId, serverData in privileges %}
+            <ul th uk-sticky="offset: 80" style="background: #263137;">
+                <li class="uk-width-expand"><h3>{{ serverData.name }}</h3></li>
+                <li class="uk-width-xxs">
+                    {% if has_access_resource(
+                        constants.admin.privileges.PERMISSION_GROUP,
+                        constants.admin.privileges.PERMISSION_KEY,
+                        serverId,
+                        permissions.ACCESS_CREATE
+                        ) %}
+                        {{ admin.add_btn(
+                            path_for(constants.admin.privileges.ROUTE_CREATE, {
+                                'player': player.id,
+                                'server': serverId
+                            })
+                        ) }}
+                    {% endif %}
+                </li>
+            </ul>
+            {% for privilege in serverData.privileges %}
+                <ul>
+                    <li class="uk-width-expand">
+                        {{ privilege.group.title }}
+                    </li>
+                    <li class="uk-width-expand">
+                        {{ privilege.expired_at }}
+                    </li>
+                    <li class="uk-width-expand">
+                        {{ privilege.prefix }}
+                    </li>
+
+                    {% if has_access_resource(
+                        constants.admin.privileges.PERMISSION_GROUP,
+                        constants.admin.privileges.PERMISSION_KEY,
+                        serverId,
+                        permissions.ACCESS_EDIT
+                        ) %}
+                        <li class="uk-width-xxs">
+                            {{ admin.edit_btn(
+                                path_for(constants.admin.privileges.ROUTE_EDIT, {
+                                    'player': player.id,
+                                    'privilege' : privilege.id
+                                })
+                            ) }}
+                        </li>
+                    {% endif %}
+
+                    {% if has_access_resource(
+                        constants.admin.privileges.PERMISSION_GROUP,
+                        constants.admin.privileges.PERMISSION_KEY,
+                        serverId,
+                        permissions.ACCESS_DELETE
+                        ) %}
+                        <li class="uk-width-xxs">
+                            {{ admin.delete_btn(
+                                path_for(constants.admin.privileges.ROUTE_DELETE, {
+                                    'player': player.id,
+                                    'privilege' : privilege.id
+                                })
+                            ) }}
+                        </li>
+                    {% endif %}
+                </ul>
+            {% else %}
+                <ul>
+                    <li>Empty list</li>
+                </ul>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+<div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
+    <div>
+        <h3 class="uk-card-title">Punishments</h3>
+    </div>
+    <div f-table f-divider>
+        <ul th>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Punisher</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Server</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Reason</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Details</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Status</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
+                <span class="dropdown">
+                    <button
+                            class="uk-icon-button  uk-margin-small-right"
+                            type="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            id="actionButtons{{ actionId }}"
+                    >
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div uk-dropdown>
+                         <ul class="uk-nav uk-dropdown-nav">
+                            {% for serverId, serverName in servers %}
+                                {% set href = path_for(constants.admin.punishments.ROUTE_CREATE, {
+                                    'player': player.id,
+                                    'server': serverId
+                                }) %}
+                                <li>
+                                    <a href="{{ href }}" class="dropdown-item">{{ serverName }}</a>
+                                </li>
+                            {% endfor %}
+                         </ul>
+                    </div>
+                </span>
+            </li>
+        </ul>
+        {% for punishment in player.punishments %}
+            <ul>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.punisher(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.server(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.reason(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.details(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.status(punishment) }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
+                    {% set href = path_for(constants.admin.punishments.ROUTE_VIEW, {
+                        'player': player.id,
+                        'punishment': punishment.id
+                    }) %}
+                    {{ admin.circle_btn({
+                        "href": href,
+                        "title": trans('buttons', 'view'),
+                        "icon": "fas fa-info",
+                        "size": "m"
+                    }) }}
+
+                    {% if has_access_resource(
+                        constants.admin.punishments.PERMISSION_GROUP,
+                        constants.admin.punishments.PERMISSION_KEY,
+                        punishment.server_id,
+                        permissions.ACCESS_EDIT
+                    ) %}
+                        {{ admin.edit_btn(
+                            path_for(constants.admin.punishments.ROUTE_EDIT, {
+                                'player': player.id,
+                                'punishment': punishment.id
+                            })
+                        ) }}
+                    {% endif %}
+
+                    {% if has_access_resource(
+                        constants.admin.punishments.PERMISSION_GROUP,
+                        constants.admin.punishments.PERMISSION_KEY,
+                        punishment.server_id,
+                        permissions.ACCESS_DELETE
+                    ) %}
+                        {{ admin.delete_btn(
+                            path_for(constants.admin.punishments.ROUTE_DELETE, {
+                                'player': player.id,
+                                'punishment': punishment.id
+                            })
+                        ) }}
+                    {% endif %}
+                </li>
+            </ul>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

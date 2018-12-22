@@ -5,7 +5,6 @@ use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Password;
-use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Length;
 use \GameX\Core\Forms\Rules\PasswordRepeat;
 use \GameX\Core\Exceptions\FormException;

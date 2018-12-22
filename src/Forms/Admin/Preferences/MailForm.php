@@ -10,8 +10,6 @@ use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Rules\Boolean;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\Email as EmailRule;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\InArray;

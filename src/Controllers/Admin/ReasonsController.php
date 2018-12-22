@@ -21,12 +21,13 @@ class ReasonsController extends BaseAdminController {
 	protected function getActiveMenu() {
 		return ServersConstants::ROUTE_LIST;
 	}
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
      */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -37,12 +38,14 @@ class ReasonsController extends BaseAdminController {
             'pagination' => $pagination,
         ]);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -52,6 +55,7 @@ class ReasonsController extends BaseAdminController {
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(ReasonsConstants::ROUTE_EDIT, [
+                'server' => $server->id,
                 'reason' => $reason->id
             ]);
         }
@@ -62,12 +66,14 @@ class ReasonsController extends BaseAdminController {
             'create' => true,
         ]);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -77,6 +83,7 @@ class ReasonsController extends BaseAdminController {
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(ReasonsConstants::ROUTE_EDIT, [
+                'server' => $server->id,
                 'reason' => $reason->id
             ]);
         }
@@ -87,12 +94,13 @@ class ReasonsController extends BaseAdminController {
             'create' => false,
         ]);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
      */
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -100,7 +108,7 @@ class ReasonsController extends BaseAdminController {
         
         try {
             $group->delete();
-            $this->addSuccessMessage($this->getTranslate('admins_players', 'removed'));
+            $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);

@@ -1,0 +1,35 @@
+div[f-table] > ul, div[f-table] > ol {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+}
+div[f-divider] > ul:not([th]), div[f-divider] > ol:not([th]) {
+    border-top: 1px solid #38464e;
+    box-shadow: 0 -1px #151d20;
+}
+div[f-table] > ul[th], div[f-table] > ol[th] {
+    font-weight: 700;
+}
+div[f-table] > ul > li, div[f-table] > ol > li {
+    padding: 14px;
+    display: inline-flex;
+}
+
+div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
+    font-weight: 700;
+}
+
+@media (max-width: 640px) {
+    div[f-table] > ul > li::after {
+        content: attr(s-title);
+        top: 1em;
+        position: relative;
+    }
+
+    div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
+        font-size: 1.5em;
+    }
+}

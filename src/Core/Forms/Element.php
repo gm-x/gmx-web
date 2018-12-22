@@ -54,6 +54,11 @@ interface Element {
     public function getTitle();
 
     /**
+     * @return string|null
+     */
+    public function getDescription();
+
+    /**
      * @return array
      */
     public function getClasses();

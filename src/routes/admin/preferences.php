@@ -37,4 +37,14 @@ return function () {
             PreferencesConstants::PERMISSION_EMAIL_KEY,
             Permissions::ACCESS_VIEW | Permissions::ACCESS_EDIT
         ));
+
+	$this
+		->map(['GET', 'POST'], '/update', BaseController::action(PreferencesController::class, 'update'))
+		->setName(PreferencesConstants::ROUTE_UPDATE)
+		->setArgument('csrf_skip', true)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_UPDATE_KEY,
+            Permissions::ACCESS_VIEW | Permissions::ACCESS_EDIT
+        ));
 };

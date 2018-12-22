@@ -2,6 +2,7 @@
 	"required": "Required",
 	"are_you_sure": "Are you sure?",
 	"saved": "Saved successfully",
+	"removed": "Removed successfully",
 	"exception": "Something wrong. Please Try again later.",
 	"search": "Search",
 	"index": "Index",

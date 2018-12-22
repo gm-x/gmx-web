@@ -3,8 +3,8 @@ namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
 use \Slim\Http\Request;
+use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Models\Server;
 use \GameX\Core\Lang\Language;
 
 class IndexController extends BaseMainController {
@@ -18,11 +18,11 @@ class IndexController extends BaseMainController {
 
 	/**
 	 * @param Request $request
-	 * @param ResponseInterface $response
+	 * @param Response $response
 	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function indexAction(Request $request, ResponseInterface $response, array $args) {
+    public function indexAction(Request $request, Response $response, array $args) {
         return $this->render('index/index.twig', [
         	'servers' => [],
 		]);
@@ -30,15 +30,15 @@ class IndexController extends BaseMainController {
 
     /**
      * @param Request $request
-     * @param ResponseInterface $response
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws \GameX\Core\Lang\Exceptions\BadLanguageException
      */
-    public function languageAction(Request $request, ResponseInterface $response, array $args) {
+    public function languageAction(Request $request, Response $response, array $args) {
         /** @var Language $lang */
         $lang = $this->getContainer('lang');
-        $lang->setUserLang($request->getParam('lang'));
-        return $this->redirectTo($request->getParam('r'));
+        $lang->setUserLang($request->getParsedBodyParam('lang'));
+        return $response->withJson(['success', true]);
     }
 }

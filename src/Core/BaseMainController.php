@@ -3,6 +3,7 @@ namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\Models\UserModel;
 use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
@@ -11,7 +12,6 @@ use \GameX\Core\Forms\Form;
 use \GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\RedirectException;
-use \Exception;
 
 abstract class BaseMainController extends BaseController {
 
@@ -84,27 +84,6 @@ abstract class BaseMainController extends BaseController {
     }
     
     /**
-     * @param Exception $e
-     * @param Form $form
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    protected function failRedirect(Exception $e, Form $form) {
-        if ($e instanceof FormException) {
-            $form->setError($e->getField(), $e->getMessage());
-        } elseif ($e instanceof ValidationException) {
-            $this->addErrorMessage($e->getMessage());
-        } else {
-            $this->addErrorMessage('Something wrong. Please Try again later.');
-        }
-
-        $form->saveValues();
-    
-        $this->getLogger()->exception($e);
-
-        return $this->redirectTo($form->getAction());
-    }
-    
-    /**
      * Menu initialization
      */
 	protected function initMenu() {
@@ -151,12 +130,12 @@ abstract class BaseMainController extends BaseController {
             }
 
             $form->process($request);
-            $result = $form->getIsSubmitted() && $form->getIsValid();
+            $success = $form->getIsSubmitted() && $form->getIsValid();
             if ($withTransaction) {
                 $connection->commit();
             }
             
-            return $result;
+            return $success;
         } catch (FormException $e) {
             if ($withTransaction) {
                 $connection->rollBack();
@@ -174,5 +153,12 @@ abstract class BaseMainController extends BaseController {
             $form->getForm()->saveValues();
             throw new RedirectException($form->getForm()->getAction(), 302);
         }
+    }
+    
+    /**
+     * @return Permissions
+     */
+    protected function getPermissions() {
+	    return $this->getContainer('permissions');
     }
 }

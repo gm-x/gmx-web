@@ -1,9 +1,6 @@
 <?php
 function redirectToInstall() {
-    $path = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $path = str_replace('/public', '', $path);
-    header('Location: ' . $path . '/install',true,302);
-    die();
+    die('Need to be installed first');
 }
 
 if (!is_file(__DIR__ . '/../vendor/autoload.php')) {
@@ -11,6 +8,8 @@ if (!is_file(__DIR__ . '/../vendor/autoload.php')) {
 }
 
 require __DIR__ . '/../vendor/autoload.php';
+
+$_SERVER['SCRIPT_NAME'] = str_replace('/public', '', $_SERVER['SCRIPT_NAME']);
 
 $container = new \Slim\Container([
 	'settings' => [

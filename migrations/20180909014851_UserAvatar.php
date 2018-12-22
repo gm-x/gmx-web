@@ -2,8 +2,8 @@
 use \GameX\Core\Migration;
 use \Illuminate\Database\Schema\Blueprint;
 
-class UserAvatar extends Migration
-{
+class UserAvatar extends Migration {
+
     /**
      * Do the migration
      */

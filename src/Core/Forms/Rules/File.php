@@ -1,19 +1,17 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
-use \Slim\Http\UploadedFile;
+use \Psr\Http\Message\UploadedFileInterface;
 
 class File extends BaseRule {
     
     /**
-     * @param UploadedFile|null $value
+     * @param UploadedFileInterface|null $value
      * @param array $values
-     * @return UploadedFile|null
+     * @return UploadedFileInterface|null
      */
     public function validate($value, array $values) {
-        if ($value === null) {
+        if ($value === null || !($value instanceof UploadedFileInterface)) {
             return null;
         }
 

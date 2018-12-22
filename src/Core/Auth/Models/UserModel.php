@@ -3,6 +3,7 @@ namespace GameX\Core\Auth\Models;
 
 use \GameX\Core\BaseModel;
 use \GameX\Models\Player;
+use \GameX\Models\Punishment;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
@@ -52,6 +53,10 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
 	 */
 	protected $hidden = [
 		'password',
+        'token',
+        'email',
+        'role_id',
+        'avatar'
 	];
     
     /**
@@ -152,5 +157,12 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
      */
 	public function players() {
         return $this->hasMany(Player::class, 'user_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+	public function punishments() {
+        return $this->hasMany(Punishment::class, 'punisher_user_id', 'id');
     }
 }

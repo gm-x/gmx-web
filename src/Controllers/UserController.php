@@ -61,7 +61,13 @@ class UserController extends BaseMainController {
                     ],
                 ]);
             }
-            return $this->redirect('login');
+            if ($this->mailEnabled) {
+                $this->addSuccessMessage($this->getTranslate('user', 'registered_email'));
+                return $this->redirect('index');
+            } else {
+                $this->addSuccessMessage($this->getTranslate('user', 'registered'));
+                return $this->redirect('login');
+            }
         }
 
         return $this->render('user/register.twig', [
@@ -85,6 +91,7 @@ class UserController extends BaseMainController {
 		$authHelper = new AuthHelper($this->container);
 		$form = new ActivationForm($authHelper, $args['code']);
 		if ($this->processForm($request, $form, true)) {
+            $this->addSuccessMessage($this->getTranslate('user', 'activated'));
             return $this->redirect('login');
         }
 
@@ -149,6 +156,7 @@ class UserController extends BaseMainController {
                     'link' => $this->pathFor('reset_password_complete', ['code' => $form->getCode()], [], true)
                 ],
             ]);
+            $this->addSuccessMessage($this->getTranslate('user', 'reset_password_sent'));
             return $this->redirect('index');
         }
 
@@ -172,6 +180,7 @@ class UserController extends BaseMainController {
 
 		$form = new ResetPasswordCompleteForm(new AuthHelper($this->container), $args['code']);
         if ($this->processForm($request, $form, true)) {
+            $this->addSuccessMessage($this->getTranslate('user', 'reset_password_done'));
             return $this->redirect('login');
         }
 

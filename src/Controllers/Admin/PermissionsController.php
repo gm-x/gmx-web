@@ -2,11 +2,12 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
-use \GameX\Forms\Admin\PermissionsForm;
-use \Psr\Http\Message\ServerRequestInterface;
+use \Slim\Http\Request;
+use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Cache\Cache;
 use \GameX\Core\Auth\Models\RoleModel;
+use \GameX\Forms\Admin\PermissionsForm;
 use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Constants\Admin\PermissionsConstants;
 use \Slim\Exception\NotFoundException;
@@ -21,14 +22,15 @@ class PermissionsController extends BaseAdminController {
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
+     * @throws \GameX\Core\Cache\NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function indexAction(Request $request, Response $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
         $form = new PermissionsForm($role);
         if ($this->processForm($request, $form)) {
@@ -49,13 +51,13 @@ class PermissionsController extends BaseAdminController {
     }
     
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return RoleModel
      * @throws NotFoundException
      */
-    protected function getRole(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    protected function getRole(Request $request, Response $response, array $args) {
         if (!array_key_exists('role', $args)) {
             throw new NotFoundException($request, $response);
         }

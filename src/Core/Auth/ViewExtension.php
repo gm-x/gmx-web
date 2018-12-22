@@ -87,55 +87,35 @@ class ViewExtension extends Twig_Extension {
 	}
     
     /**
-     * @param string $group
+     * @param $group
      * @return bool
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     public function hasAccessToGroup($group) {
-        return $this->hasAccess('hasAccessToGroup', [$group]);
+        return $this->permissions->hasUserAccessToGroup($group);
 	}
     
     /**
-     * @param string $group
-     * @param string $permission
-     * @param int|null $access
+     * @param $group
+     * @param $permission
+     * @param null $access
      * @return bool
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     public function hasAccessToPermission($group, $permission, $access = null) {
-        return $this->hasAccess('hasAccessToPermission', [$group, $permission, $this->getAccess($access)]);
+        return $this->permissions->hasUserAccessToPermission($group, $permission, $this->getAccess($access));
     }
     
     /**
-     * @param string $group
-     * @param string $permission
-     * @param int $resource
-     * @param int|null $access
+     * @param $group
+     * @param $permission
+     * @param $resource
+     * @param null $access
      * @return bool
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        return $this->hasAccess('hasAccessToResource', [$group, $permission, $resource, $this->getAccess($access)]);
-    }
-
-    /**
-     * @param string $method
-     * @param array $args
-     * @return bool
-     */
-    protected function hasAccess($method, array $args) {
-        if ($this->isGuest()) {
-            return false;
-        }
-
-        if ($this->permissions->isRootUser($this->user)) {
-            return true;
-        }
-
-        if (!$this->user->role) {
-            return false;
-        }
-
-        array_unshift($args, $this->user->role);
-
-        return call_user_func_array([$this->permissions, $method], $args);
+        return $this->permissions->hasUserAccessToResource($group, $permission, $resource, $this->getAccess($access));
     }
 
     /**

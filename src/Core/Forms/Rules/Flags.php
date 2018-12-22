@@ -14,6 +14,6 @@ class Flags extends BaseRule {
      * @return array
      */
     public function getMessage() {
-        return ['regexp'];
+        return ['flags'];
     }
 }

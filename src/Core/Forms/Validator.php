@@ -83,7 +83,6 @@ class Validator {
             $this->required[$key] = false;
         }
 
-        // TODO: Remove this
         if ($rule instanceof Trim) {
             $this->options[$key]['trim'] = true;
         } elseif ($rule instanceof Required) {

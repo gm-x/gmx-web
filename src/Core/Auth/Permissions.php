@@ -30,6 +30,11 @@ class Permissions {
      * @var ContainerInterface
      */
     protected $container;
+    
+    /**
+     * @var UserModel
+     */
+    protected $user;
 
     /**
      * @var \Closure
@@ -68,6 +73,7 @@ class Permissions {
     
     /**
      * @param ContainerInterface $container
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
@@ -79,6 +85,8 @@ class Permissions {
         /** @var Cache $cache */
         $cache = $container->get('cache');
         $this->cachedPermissions = $cache->get('permissions');
+
+        $this->user = $container->get('auth')->check();
     }
 
     /**
@@ -88,11 +96,12 @@ class Permissions {
     public function isRootUser(UserModel $user) {
         return ($user->id === $this->rootUserId);
     }
-
+    
     /**
      * @param RoleModel $role
-     * @param string $group
+     * @param $group
      * @return bool
+     * @throws RoleNotFoundException
      */
     public function hasAccessToGroup(RoleModel $role, $group) {
         $permissions = $this->cacheRole($role);
@@ -101,10 +110,11 @@ class Permissions {
     
     /**
      * @param RoleModel $role
-     * @param string $group
-     * @param string $permission
-     * @param int|null $access
+     * @param $group
+     * @param $permission
+     * @param null $access
      * @return bool
+     * @throws RoleNotFoundException
      */
     public function hasAccessToPermission(RoleModel $role, $group, $permission, $access = null) {
         $permissions = $this->cacheRole($role);
@@ -126,11 +136,12 @@ class Permissions {
     
     /**
      * @param RoleModel $role
-     * @param string $group
-     * @param string $permission
-     * @param int $resource
-     * @param int|null $access
+     * @param $group
+     * @param $permission
+     * @param $resource
+     * @param null $access
      * @return bool
+     * @throws RoleNotFoundException
      */
     public function hasAccessToResource(RoleModel $role, $group, $permission, $resource, $access = null) {
         $permissions = $this->cacheRole($role);
@@ -210,7 +221,74 @@ class Permissions {
                 : false;
         });
     }
+    
+    /**
+     * @param string $group
+     * @return bool
+     * @throws RoleNotFoundException
+     */
+    public function hasUserAccessToGroup($group) {
+        if (!$this->user) {
+            return false;
+        }
+        
+        if ($this->isRootUser($this->user)) {
+            return true;
+        }
+        
+        if (!$this->user->role_id) {
+            return false;
+        }
 
+        return $this->hasAccessToGroup($this->user->role, $group);
+    }
+    
+    /**
+     * @param string $group
+     * @param string $permission
+     * @param int|null $access
+     * @return bool
+     * @throws RoleNotFoundException
+     */
+    public function hasUserAccessToPermission($group, $permission, $access = null) {
+        if (!$this->user) {
+            return false;
+        }
+        
+        if ($this->isRootUser($this->user)) {
+            return true;
+        }
+        
+        if (!$this->user->role_id) {
+            return false;
+        }
+        
+        return $this->hasAccessToPermission($this->user->role, $group, $permission, $access);
+    }
+    
+    /**
+     * @param string $group
+     * @param string $permission
+     * @param string $resource
+     * @param int|null $access
+     * @return bool
+     * @throws RoleNotFoundException
+     */
+    public function hasUserAccessToResource($group, $permission, $resource, $access = null) {
+        if (!$this->user) {
+            return false;
+        }
+    
+        if ($this->isRootUser($this->user)) {
+            return true;
+        }
+    
+        if (!$this->user->role_id) {
+            return false;
+        }
+    
+        return $this->hasAccessToResource($this->user->role, $group, $permission, $resource, $access);
+    }
     
     protected function cacheRole(RoleModel $role) {
         $key = $role->getKey();

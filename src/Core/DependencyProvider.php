@@ -50,6 +50,9 @@ use \GameX\Core\CSRF\Token;
 
 use \GameX\Core\Upload\Upload;
 
+use \GameX\Core\Update\Updater;
+use \GameX\Core\Update\Manifest;
+
 class DependencyProvider  implements ServiceProviderInterface {
 
     /**
@@ -116,6 +119,10 @@ class DependencyProvider  implements ServiceProviderInterface {
 
         $container['upload'] = function (ContainerInterface $container) {
             return $this->getUpload($container);
+        };
+
+        $container['updater'] = function (ContainerInterface $container) {
+            return $this->getUpdater($container);
         };
 
         $container['modules'] = function (ContainerInterface $container) {
@@ -225,10 +232,11 @@ class DependencyProvider  implements ServiceProviderInterface {
             $config->getNode('main')->get('language')
         );
     }
-
+    
     /**
      * @param ContainerInterface $container
      * @return Permissions
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function getPermissions(ContainerInterface $container) {
         return new Permissions($container);
@@ -255,13 +263,25 @@ class DependencyProvider  implements ServiceProviderInterface {
     public function getView(ContainerInterface $container) {
         /** @var Config $config */
         $config = $container->get('config');
-        /** @var Config $config */
+        /** @var Config $preferences */
         $preferences = $container->get('preferences');
 
         $settings = $config->getNode('view')->toArray();
         $settings['cache'] = $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache';
+        $theme = $preferences->getNode('main')->get('theme', 'default');
+        
+        $root = $container->get('root') . 'theme' . DIRECTORY_SEPARATOR;
 
-        $view = new Twig($container->get('root') . 'templates', $settings);
+        $paths = [
+            $root . $theme . DIRECTORY_SEPARATOR . 'templates'
+        ];
+
+        // Fallback for custom theme haven't needed template
+        if ($theme !== 'default') {
+            $paths[] = $root . 'default' . DIRECTORY_SEPARATOR . 'templates';
+        }
+
+        $view = new Twig($paths, $settings);
 
         /** @var \Psr\Http\Message\UriInterface $uri */
         $uri = $container->get('request')->getUri();
@@ -314,6 +334,11 @@ class DependencyProvider  implements ServiceProviderInterface {
     }
     
     public function getUpload(ContainerInterface $container) {
-        return new Upload($container->get('root') . 'upload', $container->get('base_url') . '/upload');
+        return new Upload($container->get('root') . 'public/upload', $container->get('base_url') . '/upload');
+    }
+
+    public function getUpdater(ContainerInterface $container) {
+        $manifest = new Manifest($container->get('root') . 'manifest.json');
+        return new Updater($manifest);
     }
 }

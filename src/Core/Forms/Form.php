@@ -266,16 +266,6 @@ class Form implements ArrayAccess {
     public function getValidator() {
         return $this->validator;
     }
-    
-    /**
-     * @param $key
-     * @param Rule $rule
-     * @return Form
-     */
-    public function addRule($key, Rule $rule) {
-        $this->validator->add($key, $rule);
-        return $this;
-    }
 
     public function offsetExists($name) {
         return $this->exists($name);
