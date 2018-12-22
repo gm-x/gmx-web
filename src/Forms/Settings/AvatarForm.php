@@ -2,10 +2,10 @@
 namespace GameX\Forms\Settings;
 
 use \GameX\Core\BaseForm;
+use \GameX\Core\Upload\Upload;
 use \GameX\Core\Auth\Models\UserModel;
-use \Slim\Http\UploadedFile;
+use \GameX\Core\Forms\Validator;
 use \GameX\Core\Forms\Elements\File as FileElement;
-use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\File as FileRule;
 use \GameX\Core\Forms\Rules\FileExtension;
 use \GameX\Core\Forms\Rules\Image;
@@ -24,17 +24,17 @@ class AvatarForm extends BaseForm {
 	protected $user;
 
 	/**
-	 * @var string
+	 * @var Upload
 	 */
-	protected $root;
+	protected $upload;
 
 	/**
 	 * @param UserModel $user
-	 * @param string $root
+	 * @param Upload $upload
 	 */
-	public function __construct(UserModel $user, $root) {
+	public function __construct(UserModel $user, Upload $upload) {
 		$this->user = $user;
-		$this->root = $root;
+		$this->upload = $upload;
 	}
 
 	/**
@@ -45,11 +45,17 @@ class AvatarForm extends BaseForm {
 			->add(new FileElement('avatar', '', [
 				'title' => 'Avatar',
 				'required' => true
-			]))
-			->addRule('avatar', new Required())
-			->addRule('avatar', new FileRule())
-			->addRule('avatar', new FileExtension(['jpg', 'png', 'gif']))
-			->addRule('avatar', new Image([IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF], [100, 200], [100, 200]));
+			]));
+		
+		$this->form->getValidator()
+			->set('avatar', true, [
+                new FileRule(),
+                new FileExtension(['jpg', 'png', 'gif']),
+                new Image([IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF], [100, 1000], [100, 1000])
+            ], [
+                'check' => Validator::CHECK_EMPTY,
+                'trim' => false,
+            ]);
 	}
 
 	/**
@@ -58,10 +64,9 @@ class AvatarForm extends BaseForm {
 	 */
 	protected function processForm() {
 		$element = $this->form->get('avatar');
-		/** @var UploadedFile $file */
-		$file = $element->getValue();
-		$path = $this->root . 'avatar_' . $this->user->id . '.' . $element->getExtension();
-	    $file->moveTo($path);
+		$model = $this->upload->upload($this->user, $element->getValue());
+	    $this->user->avatar = $model->id;
+	    $this->user->save();
 		return true;
 	}
 }

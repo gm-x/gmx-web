@@ -1,0 +1,34 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <form action="{{ form.getAction() }}" method="post">
+        {{ csrf_token() }}
+        {{ forms.element_input(form.nick, {"label": true}) }}
+        {{ forms.element_input(form.steamid, {"label": true}) }}
+        {{ forms.element_input(form.ip, {"label": true}) }}
+		{{ forms.element_select(form.auth_type) }}
+		{{ forms.element_input(form.password, {"label": true}) }}
+		{{ forms.element_checkbox(form.access_reserve_nick) }}
+		{{ forms.element_checkbox(form.access_block_change_nick) }}
+        <div class="form-group">
+			{% if create %}
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
+			{% else %}
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
+			{% endif %}
+            {% if has_access_permission(
+                constants.admin.players.PERMISSION_GROUP,
+                constants.admin.players.PERMISSION_KEY,
+                permissions.ACCESS_EDIT
+            ) %}
+                <a href="{{ path_for(constants.admin.players.ROUTE_LIST) }}" class="uk-button uk-button-secondary">
+                    {{ trans('buttons', 'cancel') }}
+                </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

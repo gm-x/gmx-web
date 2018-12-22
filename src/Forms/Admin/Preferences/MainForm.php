@@ -5,8 +5,6 @@ use \GameX\Core\BaseForm;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
-use \GameX\Core\Forms\Rules\Required;
-use \GameX\Core\Forms\Rules\Trim;
 use \GameX\Core\Forms\Rules\InArray;
 
 class MainForm extends BaseForm {
@@ -19,21 +17,22 @@ class MainForm extends BaseForm {
 	/**
 	 * @var Config
 	 */
-	protected $config;
+	protected $preferences;
 
 	/**
-	 * @param Config $config
+	 * @param Config $preferences
 	 */
-	public function __construct(Config $config) {
-		$this->config = $config;
+	public function __construct(Config $preferences) {
+		$this->preferences = $preferences;
 	}
 
 	/**
 	 * @noreturn
 	 */
 	protected function createForm() {
-        $main = $this->config->getNode('main');
-        $languages = $this->config->getNode('languages')->toArray();
+        $main = $this->preferences->getNode('main');
+        $languages = $this->preferences->getNode('languages')->toArray();
+        $themes = $this->preferences->getNode('themes')->toArray();
 		$this->form
             ->add(new Text('title', $main->get('title'), [
                 'title' => $this->getTranslate('admin_preferences', 'title'),
@@ -42,12 +41,19 @@ class MainForm extends BaseForm {
             ->add(new Select('language', $main->get('language'), $languages, [
                 'title' => $this->getTranslate('admin_preferences', 'language'),
                 'required' => true,
+            ]))
+            ->add(new Select('theme', $main->get('theme'), $themes, [
+                'title' => $this->getTranslate('admin_preferences', 'theme'),
+                'required' => true,
             ]));
 		
 		$this->form->getValidator()
             ->set('title', true)
             ->set('language', true, [
                 new InArray(array_keys($languages))
+            ])
+            ->set('theme', true, [
+                new InArray(array_keys($themes))
             ]);
 	}
 
@@ -56,10 +62,11 @@ class MainForm extends BaseForm {
      * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
      */
     protected function processForm() {
-        $main = $this->config->getNode('main');
+        $main = $this->preferences->getNode('main');
         $main->set('title', $this->form->getValue('title'));
         $main->set('language', $this->form->getValue('language'));
-        $this->config->save();
+        $main->set('theme', $this->form->getValue('theme'));
+        $this->preferences->save();
         return true;
     }
 }

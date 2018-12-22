@@ -1,0 +1,14 @@
+{% import 'macros/tabs.twig' as tabs %}
+
+{# TODO: check permissions here #}
+
+{{ tabs.render([{
+	'href': path_for(constants.admin.preferences.ROUTE_MAIN),
+	'title': trans('admin_preferences', 'tab_main')
+}, {
+    'href': path_for(constants.admin.preferences.ROUTE_EMAIL),
+    'title': trans('admin_preferences', 'tab_email')
+}, {
+    'href': path_for(constants.admin.preferences.ROUTE_UPDATE),
+    'title': trans('admin_preferences', 'tab_update')
+}], href) }}

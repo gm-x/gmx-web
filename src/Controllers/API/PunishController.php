@@ -47,7 +47,7 @@ class PunishController extends BaseApiController {
                 new Number(0),
             ])
             ->set('reason', true)
-            ->set('comment', false)
+            ->set('details', false)
             ->set('time', true, [
                 new Number(0)
             ]);
@@ -69,7 +69,7 @@ class PunishController extends BaseApiController {
             'server_id' => $serverId,
             'type' => $result->getValue('type'),
             'reason_id' => $reason->id,
-            'comment' => $result->getValue('comment'),
+            'details' => $result->getValue('details'),
             'expired_at' => $time > 0 ? time() + ($time * 60) : null,
             'status' => Punishment::STATUS_PUNISHED
         ]);
@@ -92,13 +92,13 @@ class PunishController extends BaseApiController {
         
         $validator = new Validator($this->getContainer('lang'));
         $validator
-            ->set('steamid', true, [
-                new SteamID()
-            ])
+            ->set('nick', true)
             ->set('emulator', true, [
                 new Number()
             ])
-            ->set('nick', true)
+            ->set('steamid', true, [
+                new SteamID()
+            ])
             ->set('ip', true, [
                 new IPv4()
             ])
@@ -106,7 +106,7 @@ class PunishController extends BaseApiController {
                 new Number(0),
             ])
             ->set('reason', true)
-            ->set('comment', false)
+            ->set('details', false)
             ->set('time', true, [
                 new Number(0)
             ]);
@@ -134,7 +134,7 @@ class PunishController extends BaseApiController {
             'server_id' => $serverId,
             'type' => $result->getValue('type'),
             'reason_id' => $reason->id,
-            'comment' => $result->getValue('comment'),
+            'details' => $result->getValue('details'),
             'expired_at' => $time > 0 ? time() + ($time * 60) : null,
             'status' => Punishment::STATUS_PUNISHED
         ]);

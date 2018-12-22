@@ -12,7 +12,7 @@ class Persistences extends Migration {
 			->create($this->getTableName(), function (Blueprint $table) {
 				$table->increments('id');
 				$table->unsignedInteger('user_id');
-				$table->string('code', 255)->unique();
+				$table->string('code')->unique();
 				$table->timestamps();
 			});
 	}

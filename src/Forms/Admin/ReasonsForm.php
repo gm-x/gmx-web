@@ -8,6 +8,7 @@ use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Forms\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Rules\Boolean;
+use \GameX\Core\Forms\Rules\Callback;
 
 class ReasonsForm extends BaseForm {
 
@@ -27,8 +28,20 @@ class ReasonsForm extends BaseForm {
 	public function __construct(Reason $reason) {
 		$this->reason = $reason;
 	}
-
-	/**
+    
+    /**
+     * @param mixed $value
+     * @return mixed|null
+     */
+    public function checkExists($value) {
+        return !Reason::where([
+            'server_id' => $this->reason->server_id,
+            'title' => $value
+        ])->exists() ? $value : null;
+    }
+    
+    
+    /**
 	 * @noreturn
 	 */
 	protected function createForm() {
@@ -66,8 +79,9 @@ class ReasonsForm extends BaseForm {
                 'title' => 'Active',
                 'required' => false,
             ]));
-		
-		$this->form->getValidator()
+
+        $validator = $this->form->getValidator();
+        $validator
             ->set('title', true)
             ->set('time_enabled', false, [
                 new Boolean()
@@ -84,6 +98,13 @@ class ReasonsForm extends BaseForm {
             ->set('active', false, [
                 new Boolean()
             ]);
+		
+		if (!$this->reason->exists) {
+            $validator->add(
+                'title',
+                new Callback([$this, 'checkExists'], $this->getTranslate('admin_reasons', 'exists'))
+            );
+        }
 	}
     
     /**

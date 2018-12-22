@@ -1,0 +1,72 @@
+{% macro punisher(punishment) %}
+    {% if punishment.punisher_id %}
+        {% if has_access_permission(
+            constants.admin.players.PERMISSION_GROUP,
+            constants.admin.players.PERMISSION_KEY,
+            premissions.ACCESS_VIEW
+        ) %}
+            <a href="{{ path_for(constants.admin.players.ROUTE_VIEW, {'player': punishment.punisher_id}) }}">
+                {{ punishment.punisher.nick }}
+            </a>
+        {% else %}
+            {{ punishment.punisher.nick }}
+        {% endif %}
+    {% elseif punishment.punisher_user_id %}
+        {% if punishment.punisherUser.avatar %}
+            <img src="{{ upload_url(punishment.punisherUser.avatar) }}" width="30">
+        {% endif %}
+        {% if has_access_permission(
+            constants.admin.users.PERMISSION_GROUP,
+            constants.admin.users.PERMISSION_KEY,
+            premissions.ACCESS_VIEW
+        ) %}
+            <a href="{{ path_for(constants.admin.users.ROUTE_VIEW, {'user': punishment.punisher_user_id}) }}">
+                {{ punishment.punisherUser.login }}
+            </a>
+        {% else %}
+            {{ punishment.punisherUser.login }}
+        {% endif %}
+    {% else %}
+        {{ self.server(punishment) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro server(punishment) %}
+    {% if has_access_permission(
+        constants.admin.servers.PERMISSION_GROUP,
+        constants.admin.servers.PERMISSION_KEY,
+        premissions.ACCESS_VIEW
+    ) %}
+        <a href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': punishment.server_id}) }}">
+            {{ punishment.server.name }}
+        </a>
+    {% else %}
+        {{ punishment.server.name }}
+    {% endif %}
+{% endmacro %}
+
+{% macro type(punishment) %}
+    <ul>
+        {% for type in punishment.types %}
+            <li>{{ type }}</li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro reason(punishment) %}
+    {{ punishment.reason.title | default('-') }}
+{% endmacro %}
+
+{% macro details(punishment) %}
+    {{ punishment.details | default('-') }}
+{% endmacro %}
+
+{% macro status(punishment) %}
+    {#{% if punishment.status === models.punishment.STATUS_PUNISHED %}#}
+    Expired:
+    {% if punishment.expired_at %}
+        {{ punishment.expired_at | date('d.m.Y H:i') }}
+    {% else %}
+        Never
+    {% endif %}
+{% endmacro %}

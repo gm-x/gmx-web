@@ -1,8 +1,6 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
 use \Slim\Http\UploadedFile;
 
 class FileSize extends BaseRule {

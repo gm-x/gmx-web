@@ -16,6 +16,6 @@ class IPv4 extends BaseRule {
      * @return array
      */
 	protected function getMessage() {
-        return ['ip'];
+        return ['ipv4'];
     }
 }

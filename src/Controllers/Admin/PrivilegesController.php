@@ -1,15 +1,22 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Slim\Http\Request;
+use \Slim\Http\Response;
+use \GameX\Constants\Admin\PlayersConstants;
+use \GameX\Constants\Admin\PrivilegesConstants;
+use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Core\BaseAdminController;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Models\Player;
-use \GameX\Models\Privilege;
 use \GameX\Models\Server;
+use \GameX\Models\Privilege;
 use \GameX\Forms\Admin\PrivilegesForm;
-use \GameX\Core\Pagination\Pagination;
+use \GameX\Core\Exceptions\PrivilegeFormException;
+use \GameX\Core\Exceptions\RedirectException;
 use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\NotAllowedException;
 use \Exception;
 
 class PrivilegesController extends BaseAdminController {
@@ -18,130 +25,145 @@ class PrivilegesController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_players_list';
+		return PlayersConstants::ROUTE_LIST;
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     */
+    public function indexAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
-		$pagination = new Pagination($player->privileges()->get(), $request);
+
+        $data = [];
+        /** @var Server $server */
+        foreach (Server::get() as $server) {
+            if ($this->hasAccess($server->id, Permissions::ACCESS_LIST)) {
+                $data[$server->id] = [
+                    'name' => $server->name,
+                    'privileges' => []
+                ];
+            }
+        }
+
+        /** @var Privilege $privilege */
+        foreach($player->privileges()->with('group')->get() as $privilege) {
+            $serverId = $privilege->group->server_id;
+            if (array_key_exists($serverId, $data)) {
+                $data[$serverId]['privileges'][] = $privilege;
+            }
+        }
+
 		return $this->render('admin/players/privileges/index.twig', [
             'player' => $player,
-			'privileges' => $pagination->getCollection(),
-			'pagination' => $pagination,
+			'data' => $data,
 		]);
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws RedirectException
      */
-    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function createAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
-        $privilege = $this->getPrivilege($request, $response, $args);
-        $privilege->player_id = $player->id;
+        $server = $this->getServer($request, $response, $args);
+        $privilege = $this->getPrivilege($request, $response, $args, $player);
     
-        $form = new PrivilegesForm($privilege);
-        if ($this->processForm($request, $form)) {
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_players_privileges_edit', [
-                'player' => $player->id,
-                'privilege' => $privilege->id,
-            ]);
+        $form = new PrivilegesForm($server, $privilege);
+        try {
+            if ($this->processForm($request, $form)) {
+                $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+                return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
+                    'player' => $player->id,
+                    'privilege' => $privilege->id,
+                ]);
+            }
+        } catch (PrivilegeFormException $e) {
+            $this->addErrorMessage($this->getTranslate('admin_privileges', 'empty_groups_list'));
+            return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => true,
-            'servers' => $this->getServers(),
         ]);
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotAllowedException
+     * @throws NotFoundException
+     * @throws RedirectException
      */
-    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function editAction(Request $request, Response $response, array $args = []) {
         $player = $this->getPlayer($request, $response, $args);
-        $privilege = $this->getPrivilege($request, $response, $args);
+        $privilege = $this->getPrivilege($request, $response, $args, $player);
+        $server = $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_EDIT);
         
-        $form = new PrivilegesForm($privilege);
-        if ($this->processForm($request, $form)) {
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_players_privileges_edit', [
-                'player' => $player->id,
-                'privilege' => $privilege->id,
-            ]);
+        $form = new PrivilegesForm($server, $privilege);
+        try {
+            if ($this->processForm($request, $form)) {
+                $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+                return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
+                    'player' => $player->id,
+                    'privilege' => $privilege->id,
+                ]);
+            }
+        } catch (PrivilegeFormException $e) {
+            $this->addErrorMessage($this->getTranslate('admin_privileges', 'empty_groups_list'));
+            return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
 
         return $this->render('admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => false,
-            'servers' => $this->getServers(),
         ]);
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotAllowedException
+     * @throws NotFoundException
      */
-    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function deleteAction(Request $request, Response $response, array $args = []) {
 		$player = $this->getPlayer($request, $response, $args);
-		$privilege = $this->getPrivilege($request, $response, $args);
+		$privilege = $this->getPrivilege($request, $response, $args, $player);
+        $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_DELETE);
 
         try {
 			$privilege->delete();
-            $this->addSuccessMessage($this->getTranslate('admins_privileges', 'removed'));
+            $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
 
-		return $this->redirect('admin_players_privileges_list', ['player' => $player->id]);
+		return $this->redirect(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id]);
     }
 
 	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return \Slim\Http\Response
-	 * @throws NotFoundException
-	 */
-    public function groupsAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
-        if (!array_key_exists('server', $_GET)) {
-            throw new NotFoundException($request, $response);
-        }
-        $server = Server::find($_GET['server']);
-        if (!$server) {
-            throw new NotFoundException($request, $response);
-        }
-
-        return $response->withJson([
-            'groups' => $this->getGroups($server),
-        ]);
-    }
-
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
+	 * @param Request $request
+	 * @param Response $response
 	 * @param array $args
 	 * @return Player
 	 * @throws NotFoundException
 	 */
-	protected function getPlayer(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+	protected function getPlayer(Request $request, Response $response, array $args) {
 	    if (!array_key_exists('player', $args)) {
 	        return new Player();
         }
@@ -154,16 +176,58 @@ class PrivilegesController extends BaseAdminController {
 		return $player;
 	}
 
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Server
+	 * @throws NotFoundException
+	 */
+	protected function getServer(Request $request, Response $response, array $args) {
+		$server = Server::find($args['server']);
+		if (!$server) {
+			throw new NotFoundException($request, $response);
+		}
+
+		return $server;
+	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param Privilege $privilege
+	 * @param int $access
+	 * @return Server
+	 * @throws NotFoundException
+	 * @throws NotAllowedException
+	 */
+	protected function getServerForPrivilege(Request $request, Response $response, Privilege $privilege, $access) {
+	    if (!$privilege->group || !$privilege->group->server) {
+            throw new NotFoundException($request, $response);
+        }
+        
+        $server = $privilege->group->server;
+        
+        if (!$this->hasAccess($server->id, $access)) {
+            throw new NotAllowedException();
+        }
+
+		return $server;
+	}
+
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
+     * @param Player $player
      * @return Privilege
      * @throws NotFoundException
      */
-	protected function getPrivilege(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+	protected function getPrivilege(Request $request, Response $response, array $args, Player $player) {
         if (!array_key_exists('privilege', $args)) {
-            return new Privilege();
+            return new Privilege([
+                'player_id' => $player->id
+            ]);
         }
 
         $privilege = Privilege::with('group')->find($args['privilege']);
@@ -174,27 +238,12 @@ class PrivilegesController extends BaseAdminController {
         return $privilege;
     }
 
-	/**
-	 * @return array
-	 */
-    protected function getServers() {
-    	$servers = [];
-    	/** @var Server $server */
-		foreach (Server::all() as $server) {
-    		$servers[$server->id] = $server->name;
-		}
-		return $servers;
+    protected function hasAccess($serverId, $access) {
+        return $this->getPermissions()->hasUserAccessToResource(
+            PrivilegesConstants::PERMISSION_GROUP,
+            PrivilegesConstants::PERMISSION_KEY,
+            $serverId,
+            $access
+        );
     }
-
-	/**
-	 * @param Server $server
-	 * @return array
-	 */
-    protected function getGroups(Server $server) {
-    	$groups = [];
-    	foreach ($server->groups as $group) {
-    		$groups[$group->id] = $group->title;
-		}
-		return $groups;
-	}
 }

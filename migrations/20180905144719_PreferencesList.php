@@ -18,7 +18,7 @@ class PreferencesList extends Migration
      */
     public function down() {
         foreach ($this->getList() as $item) {
-            Preference::where($item)->delete();
+            Preference::where('key', $item['key'])->delete();
         }
     }
 
@@ -31,7 +31,8 @@ class PreferencesList extends Migration
                 'key' => 'main',
                 'value' => [
                     'title' => 'GameX',
-                    'language' => 'en'
+                    'language' => 'en',
+                    'theme' => 'default'
                 ]
             ], [
                 'key' => 'mail',
@@ -48,6 +49,11 @@ class PreferencesList extends Migration
                 'value' => [
                     'en' => 'English',
                     'ru' => 'Русский',
+                ]
+            ], [
+                'key' => 'themes',
+                'value' => [
+                    'default' => 'Default'
                 ]
             ]
         ];

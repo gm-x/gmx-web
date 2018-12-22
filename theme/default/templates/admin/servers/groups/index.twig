@@ -1,0 +1,73 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/admin.twig' as admin %}
+{% import 'macros/paginator.twig' as paginator %}
+
+{% block title %}{{ parent() }} | {{ trans('admin_menu', 'servers') }} | {{ server.name }} | Groups{% endblock %}
+
+{% block subnav %}
+    {% if has_access_permission(
+		constants.admin.servers.PERMISSION_GROUP,
+		constants.admin.servers.PERMISSION_KEY,
+		permissions.ACCESS_LIST
+    ) %}
+        {{ admin.back_btn(path_for(constants.admin.servers.ROUTE_LIST), 'l') }}
+    {% endif %}
+
+    {% if has_access_resource(
+		constants.admin.groups.PERMISSION_GROUP,
+		constants.admin.groups.PERMISSION_KEY,
+		server.id,
+		permissions.ACCESS_CREATE
+    ) %}
+        {{ admin.add_btn(path_for(constants.admin.groups.ROUTE_CREATE, {'server': server.id}), 'l') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+	<div class="uk-overflow-auto">
+		<table class="uk-table uk-table-divider">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Flags</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for group in groups %}
+				<tr>
+					<td class="text-nowrap">{{ group.title }}</td>
+					<td class="text-nowrap">{{ get_flags(group.flags) }}</td>
+					<td class="text-nowrap">
+                        {% if has_access_resource(
+							constants.admin.groups.PERMISSION_GROUP,
+							constants.admin.groups.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_EDIT
+                        ) %}
+                        	{{ admin.edit_btn(
+								path_for(constants.admin.groups.ROUTE_EDIT, {'server': server.id, 'group': group.id})
+							) }}
+						{% endif %}
+
+                        {% if has_access_resource(
+							constants.admin.groups.PERMISSION_GROUP,
+							constants.admin.groups.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_DELETE
+                        ) %}
+                        	{{ admin.delete_btn(
+								path_for(constants.admin.groups.ROUTE_DELETE, {'server': server.id, 'group': group.id})
+							) }}
+                        {% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{{ paginator.render(pagination) }}
+</div>
+{% endblock %}

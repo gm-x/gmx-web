@@ -54,6 +54,13 @@ class ValidationResult {
     public function hasError($key) {
         return array_key_exists($key, $this->errors) && $this->errors[$key] !== null;
     }
+
+    /**
+     * @return array
+     */
+    public function getErrors() {
+        return $this->errors;
+    }
     
     /**
      * @param string $key

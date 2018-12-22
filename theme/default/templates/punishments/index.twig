@@ -1,0 +1,43 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/punishments.twig' as punishments_macro %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+	<div class="uk-overflow-auto">
+		<table class="uk-table uk-table-divider">
+			<thead>
+				<tr>
+					<th>Player</th>
+					<th>Punisher</th>
+					<th>Server</th>
+					<th>Reason</th>
+					<th>Comment</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for punishment in punishments %}
+				<tr>
+					<td class="text-nowrap">
+						{% if punishment.player.user_id %}
+							<img src="{{ upload_url(punishment.player.user.avatar) }}" width="100">
+						{% endif %}
+						{{ punishment.player.nick }}
+					</td>
+					<td class="text-nowrap">{{ punishments_macro.punisher(punishment) }}</td>
+					<td>{{ punishments_macro.server(punishment) }}</td>
+					<td class="text-nowrap">{{ punishments_macro.reason(punishment) }}</td>
+					<td class="text-nowrap">{{ punishments.comment(punishment) }}</td>
+					<td>{{ punishments_macro.status(punishment) }}</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="7">Nothing to show</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}

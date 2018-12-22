@@ -1,8 +1,6 @@
 <?php
 namespace GameX\Core\Forms\Rules;
 
-use \GameX\Core\Forms\Form;
-use \GameX\Core\Forms\Element;
 use \Slim\Http\UploadedFile;
 
 class Image extends BaseRule {
@@ -107,7 +105,7 @@ class Image extends BaseRule {
     		$this->message = ['image_' . $prefix . '_min', [$min]];
     		return false;
 		} elseif ($max && $size > $max) {
-			$this->message = ['image_' . $prefix . '_max', [$min]];
+			$this->message = ['image_' . $prefix . '_max', [$max]];
 			return false;
 		} else {
     		return true;

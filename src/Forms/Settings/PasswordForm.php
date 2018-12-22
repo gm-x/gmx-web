@@ -5,7 +5,6 @@ use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Password;
-use \GameX\Core\Forms\Rules\Required;
 use \GameX\Core\Forms\Rules\Length;
 use \GameX\Core\Forms\Rules\PasswordRepeat;
 use \GameX\Core\Exceptions\FormException;
@@ -52,12 +51,18 @@ class PasswordForm extends BaseForm {
             ->add(new Password('repeat_password', '', [
                 'title' => 'Repeat password',
                 'required' => true,
-            ]))
-            ->addRule('old_password', new Required())
-            ->addRule('old_password', new Length(AuthHelper::MIN_PASSWORD_LENGTH))
-            ->addRule('new_password', new Required())
-            ->addRule('new_password', new Length(AuthHelper::MIN_PASSWORD_LENGTH))
-            ->addRule('repeat_password', new PasswordRepeat('new_password'));
+            ]));
+
+        $this->form->getValidator()
+            ->set('old_password', true, [
+                new Length(AuthHelper::MIN_PASSWORD_LENGTH)
+            ])
+            ->set('new_password', true, [
+                new Length(AuthHelper::MIN_PASSWORD_LENGTH)
+            ])
+            ->set('repeat_password', true, [
+                new PasswordRepeat('new_password')
+            ]);
     }
     
     /**

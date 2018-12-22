@@ -16,6 +16,7 @@ use \GameX\Core\Session\Session;
 use \Stash\Driver\FileSystem;
 use \GameX\Core\Cache\Cache;
 use \GameX\Core\Cache\Items\Preferences;
+use \GameX\Core\Cache\Items\Permissions as PermissionsCache;
 
 use \GameX\Core\Log\Logger;
 use \Monolog\Formatter\LineFormatter;
@@ -40,10 +41,17 @@ use \GameX\Core\CSRF\Extension as CSRFExtension;
 use \GameX\Core\Auth\ViewExtension as AuthViewExtension;
 use \GameX\Core\Lang\Extension\ViewExtension as LangViewExtension;
 use \GameX\Core\AccessFlags\ViewExtension as AccessFlagsViewExtension;
+use \GameX\Core\Upload\ViewExtension as UploadFlagsViewExtension;
+use \GameX\Core\Constants\ViewExtension as ConstantsViewExtension;
 
 use \GameX\Core\Mail\Helpers\MailHelper;
 
 use \GameX\Core\CSRF\Token;
+
+use \GameX\Core\Upload\Upload;
+
+use \GameX\Core\Update\Updater;
+use \GameX\Core\Update\Manifest;
 
 class DependencyProvider  implements ServiceProviderInterface {
 
@@ -51,6 +59,12 @@ class DependencyProvider  implements ServiceProviderInterface {
      * @inheritdoc
      */
     public function register(Container $container) {
+        $container['base_url'] = function (ContainerInterface $container) {
+            /** @var \Slim\Http\Uri $uri */
+            $uri = $container->get('request')->getUri();
+            return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
+        };
+        
         $container['config'] = function (ContainerInterface $container) {
             return $this->getConfig($container);
         };
@@ -103,6 +117,14 @@ class DependencyProvider  implements ServiceProviderInterface {
             return $this->getFlashMessages($container);
         };
 
+        $container['upload'] = function (ContainerInterface $container) {
+            return $this->getUpload($container);
+        };
+
+        $container['updater'] = function (ContainerInterface $container) {
+            return $this->getUpdater($container);
+        };
+
         $container['modules'] = function (ContainerInterface $container) {
             $modules = new \GameX\Core\Module\Module();
             //	$modules->addModule(new \GameX\Modules\TestModule\Module());
@@ -148,6 +170,7 @@ class DependencyProvider  implements ServiceProviderInterface {
         ]);
         $cache = new Cache($driver);
         $cache->add('preferences', new Preferences());
+        $cache->add('permissions', new PermissionsCache());
         return $cache;
     }
 
@@ -209,10 +232,11 @@ class DependencyProvider  implements ServiceProviderInterface {
             $config->getNode('main')->get('language')
         );
     }
-
+    
     /**
      * @param ContainerInterface $container
      * @return Permissions
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function getPermissions(ContainerInterface $container) {
         return new Permissions($container);
@@ -239,20 +263,30 @@ class DependencyProvider  implements ServiceProviderInterface {
     public function getView(ContainerInterface $container) {
         /** @var Config $config */
         $config = $container->get('config');
-        /** @var Config $config */
+        /** @var Config $preferences */
         $preferences = $container->get('preferences');
 
         $settings = $config->getNode('view')->toArray();
         $settings['cache'] = $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache';
+        $theme = $preferences->getNode('main')->get('theme', 'default');
+        
+        $root = $container->get('root') . 'theme' . DIRECTORY_SEPARATOR;
 
-        $view = new Twig($container->get('root') . 'templates', $settings);
+        $paths = [
+            $root . $theme . DIRECTORY_SEPARATOR . 'templates'
+        ];
+
+        // Fallback for custom theme haven't needed template
+        if ($theme !== 'default') {
+            $paths[] = $root . 'default' . DIRECTORY_SEPARATOR . 'templates';
+        }
+
+        $view = new Twig($paths, $settings);
 
         /** @var \Psr\Http\Message\UriInterface $uri */
         $uri = $container->get('request')->getUri();
 
-        // Instantiate and add Slim specific extension
-        $basePath = rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
-        $view->addExtension(new TwigExtension($container->get('router'), $basePath));
+        $view->addExtension(new TwigExtension($container->get('router'), $container->get('base_url')));
         $view->addExtension(new CSRFExtension($container->get('csrf')));
         $view->addExtension(new AuthViewExtension(
             $container->get('auth'),
@@ -261,6 +295,8 @@ class DependencyProvider  implements ServiceProviderInterface {
         $view->addExtension(new LangViewExtension($container->get('lang')));
         $view->addExtension(new AccessFlagsViewExtension());
         $view->addExtension(new Twig_Dump());
+        $view->addExtension(new UploadFlagsViewExtension($container->get('upload')));
+        $view->addExtension(new ConstantsViewExtension());
 
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
         $view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
@@ -295,5 +331,14 @@ class DependencyProvider  implements ServiceProviderInterface {
      */
     public function getFlashMessages(ContainerInterface $container) {
         return new FlashMessages($container->get('session'), 'flash_messages');
+    }
+    
+    public function getUpload(ContainerInterface $container) {
+        return new Upload($container->get('root') . 'public/upload', $container->get('base_url') . '/upload');
+    }
+
+    public function getUpdater(ContainerInterface $container) {
+        $manifest = new Manifest($container->get('root') . 'manifest.json');
+        return new Updater($manifest);
     }
 }

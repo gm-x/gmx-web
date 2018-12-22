@@ -4,11 +4,14 @@ namespace GameX\Controllers\Admin;
 use \GameX\Models\Server;
 use \GameX\Models\Group;
 use \GameX\Core\BaseAdminController;
+use \GameX\Constants\Admin\GroupsConstants;
+use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Slim\Exception\NotFoundException;
 use \GameX\Forms\Admin\GroupsForm;
+use \Slim\Exception\NotFoundException;
+use \GameX\Core\Exceptions\RedirectException;
 use \Exception;
 
 class GroupsController extends BaseAdminController {
@@ -17,15 +20,16 @@ class GroupsController extends BaseAdminController {
 	 * @return string
 	 */
 	protected function getActiveMenu() {
-		return 'admin_servers_list';
+		return ServersConstants::ROUTE_LIST;
 	}
 
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
 		$pagination = new Pagination($server->groups()->get(), $request);
@@ -41,6 +45,8 @@ class GroupsController extends BaseAdminController {
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws RedirectException
      */
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -49,7 +55,7 @@ class GroupsController extends BaseAdminController {
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_groups_edit', [
+            return $this->redirect(GroupsConstants::ROUTE_EDIT, [
                 'server' => $server->id,
                 'group' => $group->id
             ]);
@@ -67,6 +73,8 @@ class GroupsController extends BaseAdminController {
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws RedirectException
      */
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -75,7 +83,7 @@ class GroupsController extends BaseAdminController {
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_servers_groups_edit', [
+            return $this->redirect(GroupsConstants::ROUTE_EDIT, [
                 'server' => $server->id,
                 'group' => $group->id
             ]);
@@ -93,6 +101,7 @@ class GroupsController extends BaseAdminController {
      * @param ResponseInterface $response
      * @param array $args
      * @return ResponseInterface
+     * @throws NotFoundException
      */
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
         $server = $this->getServer($request, $response, $args);
@@ -100,13 +109,13 @@ class GroupsController extends BaseAdminController {
 
         try {
             $group->delete();
-            $this->addSuccessMessage($this->getTranslate('admins_players', 'removed'));
+            $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
 
-        return $this->redirect('admin_servers_groups_list', ['server' => $server->id]);
+        return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
     }
 
 	/**

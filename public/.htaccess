@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteRule ^(install|assets) - [L]
+RewriteRule ^ index.php [QSA,L]

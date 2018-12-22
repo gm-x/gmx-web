@@ -1,7 +1,11 @@
 <?php
 use \GameX\Core\BaseController;
+use \GameX\Constants\Admin\PlayersConstants;
+use \GameX\Constants\Admin\PrivilegesConstants;
+use \GameX\Constants\Admin\PunishmentsConstants;
 use \GameX\Controllers\Admin\PlayersController;
 use \GameX\Controllers\Admin\PrivilegesController;
+use \GameX\Controllers\Admin\PunishmentsController;
 use \GameX\Core\Auth\Permissions;
 
 return function () {
@@ -12,45 +16,110 @@ return function () {
 
     $this
         ->get('', BaseController::action(PlayersController::class, 'index'))
-        ->setName('admin_players_list')
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_LIST));
+        ->setName(PlayersConstants::ROUTE_LIST)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_LIST
+        ));
+    
+    $this
+        ->get('/{player}/view', BaseController::action(PlayersController::class, 'view'))
+        ->setName(PlayersConstants::ROUTE_VIEW)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_VIEW
+        ));
 
 	$this
 		->map(['GET', 'POST'], '/create', BaseController::action(PlayersController::class, 'create'))
-		->setName('admin_players_create')
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_CREATE));
+		->setName(PlayersConstants::ROUTE_CREATE)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_CREATE
+        ));
 
     $this
         ->map(['GET', 'POST'], '/{player}/edit', BaseController::action(PlayersController::class, 'edit'))
-        ->setName('admin_players_edit')
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_EDIT));
+        ->setName(PlayersConstants::ROUTE_EDIT)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_EDIT
+        ));
 
 	$this
 		->post('/{player}/delete', BaseController::action(PlayersController::class, 'delete'))
-		->setName('admin_players_delete')
-        ->add($permissions->hasAccessToPermissionMiddleware('admin', 'player', Permissions::ACCESS_DELETE));
+		->setName(PlayersConstants::ROUTE_DELETE)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PlayersConstants::PERMISSION_GROUP,
+            PlayersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_DELETE
+        ));
 
-	// TODO: Check permissions
     $this->group('/{player}/privileges', function () {
         /** @var \Slim\App $this */
-        $this
-            ->get('', BaseController::action(PrivilegesController::class, 'index'))
-            ->setName('admin_players_privileges_list');
+
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer()->get('permissions');
 
         $this
-            ->map(['GET', 'POST'], '/create', BaseController::action(PrivilegesController::class, 'create'))
-            ->setName('admin_players_privileges_create');
+            ->get('', BaseController::action(PrivilegesController::class, 'index'))
+            ->setName(PrivilegesConstants::ROUTE_LIST);
+
+        $this
+            ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PrivilegesController::class, 'create'))
+            ->setName(PrivilegesConstants::ROUTE_CREATE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                PrivilegesConstants::PERMISSION_GROUP,
+                PrivilegesConstants::PERMISSION_KEY,
+                Permissions::ACCESS_CREATE
+            ));
 
         $this
             ->map(['GET', 'POST'], '/{privilege}/edit', BaseController::action(PrivilegesController::class, 'edit'))
-            ->setName('admin_players_privileges_edit');
+            ->setName(PrivilegesConstants::ROUTE_EDIT);
 
         $this
             ->post('/{privilege}/delete', BaseController::action(PrivilegesController::class, 'delete'))
-            ->setName('admin_players_privileges_delete');
-
+            ->setName(PrivilegesConstants::ROUTE_DELETE);
+    });
+    
+    $this->group('/{player}/punishments', function () {
+        /** @var \Slim\App $this */
+        
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer()->get('permissions');
+    
         $this
-            ->get('/groups', BaseController::action(PrivilegesController::class, 'groups'))
-            ->setName('admin_players_privileges_groups');
+            ->get('/{punishment}', BaseController::action(PunishmentsController::class, 'view'))
+            ->setName(PunishmentsConstants::ROUTE_VIEW)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                PunishmentsConstants::PERMISSION_GROUP,
+                PunishmentsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_VIEW
+            ));
+    
+        $this
+            ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PunishmentsController::class, 'create'))
+            ->setName(PunishmentsConstants::ROUTE_CREATE)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                PunishmentsConstants::PERMISSION_GROUP,
+                PunishmentsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_CREATE
+            ));
+    
+        $this
+            ->map(['GET', 'POST'], '/{punishment}/edit', BaseController::action(PunishmentsController::class, 'edit'))
+            ->setName(PunishmentsConstants::ROUTE_EDIT);
+    
+        $this
+            ->post('/{punishment}/delete', BaseController::action(PunishmentsController::class, 'delete'))
+            ->setName(PunishmentsConstants::ROUTE_DELETE);
     });
 };

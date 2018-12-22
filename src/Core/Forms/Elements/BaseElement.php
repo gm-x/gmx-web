@@ -25,6 +25,11 @@ abstract class BaseElement implements Element {
     protected $title;
     
     /**
+     * @var string|null
+     */
+    protected $description;
+    
+    /**
      * @var string
      */
     protected $icon;
@@ -67,6 +72,7 @@ abstract class BaseElement implements Element {
             array_key_exists('id', $options) ? (string) $options['id'] : $this->generateFieldId($name)
         );
         $this->title = array_key_exists('title', $options) ? (string) $options['title'] : ucfirst($name);
+        $this->description = array_key_exists('description', $options) ? (string) $options['description'] : null;
         if (array_key_exists('required', $options)) {
             $this->isRequired = (bool) $options['required'];
         }
@@ -115,6 +121,13 @@ abstract class BaseElement implements Element {
      */
     public function getTitle() {
         return $this->title;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function getDescription() {
+        return $this->description;
     }
     
     /**

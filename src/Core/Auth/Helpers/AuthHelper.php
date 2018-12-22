@@ -1,8 +1,9 @@
 <?php
 namespace GameX\Core\Auth\Helpers;
 
-use GameX\Core\Auth\Models\UserModel;
 use \Psr\Container\ContainerInterface;
+use \GameX\Core\Utils;
+use \GameX\Core\Auth\Models\UserModel;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Sentinel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;
@@ -61,6 +62,7 @@ class AuthHelper {
 	 * @param string $login
 	 * @param string $email
 	 * @param string $password
+	 * @param bool $activate
 	 * @return UserModel
 	 * @throws FormException
 	 * @throws ValidationException
@@ -70,6 +72,7 @@ class AuthHelper {
 			'login'  => $login,
 			'email'  => $email,
 			'password' => $password,
+            'token' => Utils::generateToken(16),
 		], $activate ? true : null);
 	}
 

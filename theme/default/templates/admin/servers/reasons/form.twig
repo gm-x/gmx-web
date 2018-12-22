@@ -1,0 +1,48 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <form action="{{ form.getAction() }}" method="post">
+        {{ csrf_token() }}
+        {{ forms.element_input(form.title) }}
+        {{ forms.element_checkbox(form.time_enabled) }}
+        {{ forms.element_input(form.time) }}
+        {{ forms.element_checkbox(form.overall) }}
+        {{ forms.element_checkbox(form.menu) }}
+        {{ forms.element_checkbox(form.active) }}
+        <div class="form-group">
+            {% if create %}
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
+            {% else %}
+                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'update') }}">
+            {% endif %}
+
+            {% if has_access_resource(
+                constants.admin.reasons.PERMISSION_GROUP,
+                constants.admin.reasons.PERMISSION_KEY,
+                server.id,
+                permissions.ACCESS_LIST
+            ) %}
+                <a
+                    href="{{ path_for(constants.admin.reasons.ROUTE_LIST, {'server': server.id}) }}"
+                    class="uk-button uk-button-secondary"
+                >
+                    {{ trans('buttons', 'cancel') }}
+                </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        $('#reason-time-enabled').on('change', function (e) {
+            $('#reason-time').prop('disabled', !this.checked);
+        });
+    });
+</script>
+{% endblock %}

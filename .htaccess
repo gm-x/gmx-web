@@ -1,4 +1,5 @@
+Options +FollowSymlinks
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L]
+
+RewriteRule ^(upload) - [L]
+RewriteRule ^(.*)$ public/$1 [L]

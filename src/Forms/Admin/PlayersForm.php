@@ -98,8 +98,9 @@ class PlayersForm extends BaseForm {
                 'title' => $this->getTranslate('admin_players', 'block_nickname'),
                 'required' => false,
             ]));
-		
-		$this->form->getValidator()
+
+		$validator = $this->form->getValidator();
+        $validator
             ->set('nick', true)
             ->set('steamid', true, [
                 new SteamID()
@@ -121,7 +122,7 @@ class PlayersForm extends BaseForm {
             ]);
         
         if (!$this->player->exists) {
-            $this->form->addRule('steamid', new Callback([$this, 'checkExists'], $this->getTranslate('admin_players', 'player_exists')));
+            $validator->add('steamid', new Callback([$this, 'checkExists'], $this->getTranslate('admin_players', 'player_exists')));
         }
 	}
     

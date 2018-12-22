@@ -131,6 +131,7 @@ class Form implements ArrayAccess {
      */
     public function get($name) {
         if (!$this->exists($name)) {
+            \GameX\Core\Utils::logBacktrace();
             throw new Exception('Element not found');
         }
 
@@ -147,7 +148,7 @@ class Form implements ArrayAccess {
 
     /**
      * @param ServerRequestInterface|null $request
-     * @return $this
+     * @return Form
      */
     public function processRequest(ServerRequestInterface $request) {
         if (!$request->isPost()) {
@@ -155,17 +156,26 @@ class Form implements ArrayAccess {
         }
 
         $body = $request->getParsedBody();
-        $data = array_key_exists($this->name, $body) && is_array($body[$this->name])
-            ? $body[$this->name]
-            : [];
-
-        $body = $request->getUploadedFiles();
-        $files = array_key_exists($this->name, $body) && is_array($body[$this->name])
-            ? $body[$this->name]
-            : [];
+        $files = $request->getUploadedFiles();
+        
+        $fails = 0;
+        if (array_key_exists($this->name, $body) && is_array($body[$this->name])) {
+            $body = $body[$this->name];
+        } else {
+            $fails++;
+        }
+        if (array_key_exists($this->name, $files) && is_array($files[$this->name])) {
+            $files = $files[$this->name];
+        } else {
+            $fails++;
+        }
+        
+        if ($fails >= 2) {
+            return $this;
+        }
 
         $this->isSubmitted = true;
-        $values = array_merge($data, $files);
+        $values = array_merge($body, $files);
         $result = $this->validator->validate($values);
         
         $this->isValid = $result->getIsValid();
@@ -185,6 +195,13 @@ class Form implements ArrayAccess {
     public function saveValues() {
         $this->writeValues();
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() {
+        return $this->name;
     }
 
     /**
@@ -214,7 +231,8 @@ class Form implements ArrayAccess {
 
     /**
      * @param $name
-     * @return string|null
+     * @return mixed
+     * @throws Exception
      */
     public function getValue($name) {
         return $this->get($name)->getValue();
@@ -231,6 +249,7 @@ class Form implements ArrayAccess {
      * @param $name
      * @param $error
      * @return $this
+     * @throws Exception
      */
     public function setError($name, $error) {
         $this
@@ -246,16 +265,6 @@ class Form implements ArrayAccess {
      */
     public function getValidator() {
         return $this->validator;
-    }
-    
-    /**
-     * @param $key
-     * @param Rule $rule
-     * @return Form
-     */
-    public function addRule($key, Rule $rule) {
-        $this->validator->add($key, $rule);
-        return $this;
     }
 
     public function offsetExists($name) {

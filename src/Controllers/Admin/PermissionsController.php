@@ -1,71 +1,68 @@
 <?php
 namespace GameX\Controllers\Admin;
 
-
 use \GameX\Core\BaseAdminController;
-use \GameX\Forms\Admin\PermissionsForm;
-use \Psr\Http\Message\ServerRequestInterface;
+use \Slim\Http\Request;
+use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
-use \Cartalyst\Sentinel\Roles\RoleRepositoryInterface;
-use \Cartalyst\Sentinel\Roles\RoleInterface;
+use \GameX\Core\Cache\Cache;
+use \GameX\Core\Auth\Models\RoleModel;
+use \GameX\Forms\Admin\PermissionsForm;
+use \GameX\Constants\Admin\RolesConstants;
+use \GameX\Constants\Admin\PermissionsConstants;
 use \Slim\Exception\NotFoundException;
 
 class PermissionsController extends BaseAdminController {
-    
-    /** @var  RoleRepositoryInterface */
-    protected $roleRepository;
-    
+
     /**
      * @return string
      */
     protected function getActiveMenu() {
-        return 'admin_roles_list';
-    }
-    
-    /**
-     * Init
-     */
-    public function init() {
-        $this->roleRepository = $this->getContainer('auth')->getRoleRepository();
+        return RolesConstants::ROUTE_LIST;
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
+     * @throws \GameX\Core\Cache\NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function indexAction(Request $request, Response $response, array $args = []) {
         $role = $this->getRole($request, $response, $args);
-        $form = new PermissionsForm($role, $this->getContainer('permissions'));
+        $form = new PermissionsForm($role);
         if ($this->processForm($request, $form)) {
+            /** @var Cache $cache */
+            $cache = $this->getContainer('cache');
+            $cache->clear('permissions');
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect('admin_role_permissions', [
+            return $this->redirect(PermissionsConstants::ROUTE_LIST, [
                 'role' => $role->id,
             ]);
         }
         
         return $this->render('admin/roles/permissions/index.twig', [
             'form' => $form->getForm(),
-            'list' => $form->getList()
+            'list' => $form->getList(),
+            'servers' => $form->getServers()
         ]);
     }
     
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Request $request
+     * @param Response $response
      * @param array $args
-     * @return RoleInterface
+     * @return RoleModel
      * @throws NotFoundException
      */
-    protected function getRole(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    protected function getRole(Request $request, Response $response, array $args) {
         if (!array_key_exists('role', $args)) {
             throw new NotFoundException($request, $response);
         }
-        
-        $role = $this->roleRepository->findById($args['role']);
+    
+        $role = RoleModel::find($args['role']);
         if (!$role) {
             throw new NotFoundException($request, $response);
         }

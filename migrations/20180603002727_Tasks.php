@@ -12,10 +12,11 @@ class Tasks extends Migration{
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('key', 255);
+                $table->unsignedTinyInteger('key_id')->nullable();
                 $table->text('data');
-                $table->unsignedTinyInteger('status');
-                $table->unsignedTinyInteger('retries');
-                $table->unsignedTinyInteger('max_retries');
+                $table->unsignedTinyInteger('status')->default(0);
+                $table->unsignedTinyInteger('retries')->default(0);
+                $table->unsignedTinyInteger('max_retries')->default(0);
                 $table->unsignedInteger('execute_at');
                 $table->timestamps();
             });
