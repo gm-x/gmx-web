@@ -91,6 +91,13 @@ class Player extends BaseModel {
         return $this->belongsTo(Server::class, 'server_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sessions() {
+        return $this->hasMany(PlayerSession::class, 'player_id', 'id');
+    }
+
 	/**
 	 * @param $value
 	 */
@@ -104,6 +111,17 @@ class Player extends BaseModel {
      */
     public function hasAccess($access) {
         return ($this->access & $access) === $access;
+    }
+    
+    /**
+     * @return PlayerSession|null
+     */
+    public function getActiveSession() {
+        return $this->sessions()
+            ->select('*')
+            ->where('status', '=', PlayerSession::STATUS_ONLINE)
+            ->orderBy('created_at', 'DESC')
+            ->first();
     }
     
     /**

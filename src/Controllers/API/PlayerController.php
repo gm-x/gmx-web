@@ -1,16 +1,18 @@
 <?php
 namespace GameX\Controllers\API;
 
+use \Carbon\Carbon;
 use \GameX\Core\BaseApiController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
+use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Models\Player;
+use \GameX\Models\PlayerSession;
 use \GameX\Core\Forms\Validator;
 use \GameX\Core\Forms\Rules\SteamID;
 use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\IPv4;
 use \GameX\Core\Forms\Rules\Length;
-use \GameX\Core\Auth\Models\UserModel;
-use \GameX\Models\Player;
 use \GameX\Core\Exceptions\ApiException;
 
 class PlayerController extends BaseApiController {
@@ -47,6 +49,7 @@ class PlayerController extends BaseApiController {
         }
 
         $server = $this->getServer($request);
+        $session = null;
 
         /** @var Player|null $player */
         $player = Player::query()
@@ -89,12 +92,43 @@ class PlayerController extends BaseApiController {
 //            $player->steamid = $result->getValue('steamid');
 //        } else {
 //            $player->nick = $result->getValue('nick');
+            $player->save();
+        } else {
+            $session = $player->getActiveSession();
         }
+        
+        if (!$session) {
+            $session = new PlayerSession();
+            $session->fill([
+                'player_id' => $player->id,
+                'server_id' => $server->id,
+                'status' => PlayerSession::STATUS_ONLINE,
+                'disconnected_at' => null
+            ]);
+        } elseif ($session->server_id != $server->id) {
+            $session->status = PlayerSession::STATUS_OFFLINE;
+            $session->disconnected_at = Carbon::now();
+            $session->save();
+            $session->fill([
+                'player_id' => $player->id,
+                'server_id' => $server->id,
+                'status' => PlayerSession::STATUS_ONLINE,
+                'disconnected_at' => null
+            ]);
+        } else {
+            $session->updated_at = Carbon::now();
+        }
+        
+        $session->save();
 
-        $player->server_id = $server->id;
-        $player->save();
+//        $player->server_id = $server->id;
+//        $player->save();
 
-        $server->num_players = Player::where('server_id', $server->id)->count();
+        // TODO: place into cache instead of DB
+        $server->num_players = PlayerSession::where([
+            'server_id' => $server->id,
+            'status' => PlayerSession::STATUS_ONLINE
+        ])->count();
         $server->save();
 
         $punishments = $player->getActivePunishments($server);
@@ -102,6 +136,7 @@ class PlayerController extends BaseApiController {
         return $this->response($response, 200, [
             'success' => true,
             'player_id' => $player->id,
+            'session_id' => $session->id,
             'user' => $player->user,
             'punishments' => $punishments,
         ]);
@@ -130,8 +165,14 @@ class PlayerController extends BaseApiController {
         $server = $this->getServer($request);
     
         $player = Player::where('id', $result->getValue('id'))->first();
-        $player->server_id = null;
         $player->save();
+        
+        $session = $player->getActiveSession();
+        if ($session) {
+            $session->status = PlayerSession::STATUS_OFFLINE;
+            $session->disconnected_at = Carbon::now();
+            $session->save();
+        }
         
         $server->num_players = Player::where('server_id', $server->id)->count();
         $server->save();
