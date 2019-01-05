@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
@@ -17,71 +18,66 @@ use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Forms\Rules\Date as DateRule;
 use \GameX\Core\Exceptions\PunishmentsFormException;
 
-class PunishmentsForm extends BaseForm {
-
-	/**
-	 * @var string
-	 */
-	protected $name = 'admin_punishments';
-
+class PunishmentsForm extends BaseForm
+{
+    
+    /**
+     * @var string
+     */
+    protected $name = 'admin_punishments';
+    
     /**
      * @var Server
      */
-	protected $server;
-
-	/**
-	 * @var Punishment
-	 */
-	protected $punishment;
-
-	/**
-	 * @param Server $server
-	 * @param Punishment $punishment
-	 */
-	public function __construct(Server $server, Punishment $punishment) {
-		$this->server = $server;
-		$this->punishment = $punishment;
-	}
-
-	/**
-	 * @noreturn
-	 */
-	protected function createForm() {
+    protected $server;
+    
+    /**
+     * @var Punishment
+     */
+    protected $punishment;
+    
+    /**
+     * @param Server $server
+     * @param Punishment $punishment
+     */
+    public function __construct(Server $server, Punishment $punishment)
+    {
+        $this->server = $server;
+        $this->punishment = $punishment;
+    }
+    
+    /**
+     * @noreturn
+     */
+    protected function createForm()
+    {
         $reasons = $this->getReasons();
-		if (!count($reasons)) {
-			throw new PunishmentsFormException();
-		}
-		
-		$this->form
-            ->add(new Select('reason', $this->punishment->reason_id, $reasons, [
+        if (!count($reasons)) {
+            throw new PunishmentsFormException();
+        }
+        
+        $this->form->add(new Select('reason', $this->punishment->reason_id, $reasons, [
                 'title' => 'Reason',
                 'required' => true,
                 'empty_option' => 'Choose reason',
-            ]))
-            ->add(new Text('details', $this->punishment->details, [
+            ]))->add(new Text('details', $this->punishment->details, [
                 'title' => 'Details',
                 'required' => false,
-            ]))
-            ->add(new BitMaskElement('type', $this->punishment->type, [
+            ]))->add(new BitMaskElement('type', $this->punishment->type, [
                 Punishment::TYPE_BANNED => 'Ban',
                 Punishment::TYPE_GAGED => 'Gag',
                 Punishment::TYPE_MUTED => 'Mute',
-            ]))
-            ->add(new Checkbox('forever', $this->punishment->expired_at === null, [
+            ]))->add(new Checkbox('forever', $this->punishment->expired_at === null, [
                 'title' => 'Forever',
-            ]))
-            ->add(new DateElement('expired', $this->punishment->expired_at, [
+            ]))->add(new DateElement('expired', $this->punishment->expired_at, [
                 'title' => 'Expired',
                 'required' => false,
             ]));
-		
-		$this->form->getValidator()
-            ->set('reason', true, [
+        
+        $this->form->getValidator()->set('reason', true, [
                 new Number(1),
                 new InArray(array_keys($reasons)),
-            ])
-            ->set('details', false)
-            ->set('type', true, [
+            ])->set('details', false)->set('type', true, [
                 new BitMaskRule([
                     Punishment::TYPE_BANNED,
                     Punishment::TYPE_GAGED,
@@ -91,27 +87,24 @@ class PunishmentsForm extends BaseForm {
                 'check' => Validator::CHECK_ARRAY,
                 'trim' => false,
                 'default' => 0
-            ])
-            ->set('forever',false, [
+            ])->set('forever', false, [
                 new Boolean()
             ], [
                 'default' => false
-            ])
-            ->set('expired',false, [
+            ])->set('expired', false, [
                 new DateRule()
             ]);
-	}
+    }
     
     /**
      * @return bool
      * @throws \Exception
      */
-    protected function processForm() {
+    protected function processForm()
+    {
         $this->punishment->reason_id = $this->form->getValue('reason');
         $this->punishment->type = $this->form->getValue('type');
-        $this->punishment->expired_at = !$this->form->getValue('forever')
-            ? $this->form->getValue('expired')
-            : null;
+        $this->punishment->expired_at = !$this->form->getValue('forever') ? $this->form->getValue('expired') : null;
         $this->punishment->status = Punishment::STATUS_PUNISHED;
         return $this->punishment->save();
     }
@@ -119,7 +112,8 @@ class PunishmentsForm extends BaseForm {
     /**
      * @return array
      */
-    protected function getReasons() {
+    protected function getReasons()
+    {
         $reasons = [];
         foreach ($this->server->reasons as $reason) {
             $reasons[$reason->id] = $reason->title;

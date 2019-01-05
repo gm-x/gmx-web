@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Core;
 
 use \Slim\Views\Twig;
@@ -10,43 +11,32 @@ use \GameX\Constants\Admin\UsersConstants;
 use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Constants\Admin\PreferencesConstants;
 
-abstract class BaseAdminController extends BaseMainController {
-
-	protected function initMenu() {
-		/** @var \GameX\Core\Lang\Language $lang */
-		$lang = $this->getContainer('lang');
-
-		$menu = new Menu();
-
-		$menu
-			->setActiveRoute($this->getActiveMenu())
-			->add(new MenuItem(
-			    $lang->format('admin_menu','preferences'),
-                PreferencesConstants::ROUTE_MAIN, []
-            ))
-			->add(new MenuItem(
-			    $lang->format('admin_menu','users'),
-                UsersConstants::ROUTE_LIST, [],
-                [ServersConstants::PERMISSION_GROUP, ServersConstants::PERMISSION_KEY]
-            ))
-			->add(new MenuItem(
-			    $lang->format('admin_menu','roles'),
-                RolesConstants::ROUTE_LIST, [],
-                [RolesConstants::PERMISSION_GROUP, RolesConstants::PERMISSION_KEY]
-            ))
-			->add(new MenuItem(
-			    $lang->format('admin_menu','servers'),
-                ServersConstants::ROUTE_LIST, [],
-                [ServersConstants::PERMISSION_GROUP, ServersConstants::PERMISSION_KEY]
-            ))
-			->add(new MenuItem(
-			    $lang->format('admin_menu','players'),
-                PlayersConstants::ROUTE_LIST, [],
-                [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY]
-            ));
-
+abstract class BaseAdminController extends BaseMainController
+{
+    
+    protected function initMenu()
+    {
+        /** @var \GameX\Core\Lang\Language $lang */
+        $lang = $this->getContainer('lang');
+        
+        $menu = new Menu();
+        
+        $menu->setActiveRoute($this->getActiveMenu())->add(new MenuItem($lang->format('admin_menu', 'preferences'),
+                PreferencesConstants::ROUTE_MAIN, []))->add(new MenuItem($lang->format('admin_menu', 'users'),
+                UsersConstants::ROUTE_LIST, [], [
+                    ServersConstants::PERMISSION_GROUP,
+                    ServersConstants::PERMISSION_KEY
+                ]))->add(new MenuItem($lang->format('admin_menu', 'roles'), RolesConstants::ROUTE_LIST, [], [
+                    RolesConstants::PERMISSION_GROUP,
+                    RolesConstants::PERMISSION_KEY
+                ]))->add(new MenuItem($lang->format('admin_menu', 'servers'), ServersConstants::ROUTE_LIST, [], [
+                    ServersConstants::PERMISSION_GROUP,
+                    ServersConstants::PERMISSION_KEY
+                ]))->add(new MenuItem($lang->format('admin_menu', 'players'), PlayersConstants::ROUTE_LIST, [],
+                [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY]));
+        
         /** @var Twig $view */
         $view = $this->getContainer('view');
-		$view->getEnvironment()->addGlobal('menu', $menu);
-	}
+        $view->getEnvironment()->addGlobal('menu', $menu);
+    }
 }

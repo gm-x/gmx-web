@@ -1,11 +1,12 @@
 <?php
+
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
 use \Carbon\Carbon;
 
 /**
- * Class Group
+ * Class PlayerSession
  * @package GameX\Models
  *
  * @property integer $id
@@ -18,27 +19,28 @@ use \Carbon\Carbon;
  * @property Player $player
  * @property Server $server
  */
-class PlayerSession extends BaseModel {
+class PlayerSession extends BaseModel
+{
     
     const STATUS_ONLINE = 'online';
     const STATUS_OFFLINE = 'offline';
-
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'players_sessions';
-
-	/**
-	 * @var string
-	 */
-	protected $primaryKey = 'id';
-
-	/**
-	 * @var array
-	 */
-	protected $fillable = ['player_id', 'server_id', 'status', 'disconnected_at'];
+    
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'players_sessions';
+    
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'id';
+    
+    /**
+     * @var array
+     */
+    protected $fillable = ['player_id', 'server_id', 'status', 'disconnected_at'];
     
     /**
      * @var array
@@ -48,14 +50,16 @@ class PlayerSession extends BaseModel {
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function player() {
+    public function player()
+    {
         return $this->belongsTo(Player::class, 'player_id', 'id');
     }
-
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-	public function server() {
-	    return $this->belongsTo(Server::class, 'server_id', 'id');
+    public function server()
+    {
+        return $this->belongsTo(Server::class, 'server_id', 'id');
     }
 }

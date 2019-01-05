@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
@@ -11,28 +12,29 @@ use \GameX\Core\Forms\Elements\PermissionAccess as PermissionAccessElement;
 use \GameX\Core\Forms\Rules\PermissionAccess as PermissionAccessRule;
 use \Exception;
 
-class PermissionsForm extends BaseForm {
-
-	/**
-	 * @var string
-	 */
-	protected $name = 'admin_role_permissions';
+class PermissionsForm extends BaseForm
+{
+    
+    /**
+     * @var string
+     */
+    protected $name = 'admin_role_permissions';
     
     /**
      * @var RoleModel
      */
-	protected $role;
-
+    protected $role;
+    
     /**
      * @var array|null
      */
     protected $rolePermissions = null;
-
+    
     /**
      * @var PermissionsModel[]|null
      */
     protected $permissions = null;
-
+    
     /**
      * @var Server[]|null
      */
@@ -41,44 +43,49 @@ class PermissionsForm extends BaseForm {
     /**
      * @var array
      */
-	protected $list = [
-	    'admin' => [
-	        'all' => [],
+    protected $list = [
+        'admin' => [
+            'all' => [],
             'server' => []
         ]
     ];
-
-	/**
-	 * @param RoleModel $role
-	 */
-	public function __construct(RoleModel $role) {
-		$this->role = $role;
-	}
+    
+    /**
+     * @param RoleModel $role
+     */
+    public function __construct(RoleModel $role)
+    {
+        $this->role = $role;
+    }
     
     /**
      * @return array
      */
-	public function getList() {
+    public function getList()
+    {
         return $this->list;
     }
-
+    
     /**
      * @throws Exception
      */
-	protected function createForm() {
+    protected function createForm()
+    {
         foreach ($this->getServers() as $resource => $tmp) {
             $this->list['admin']['servers'][$resource] = [];
         }
-
+        
         foreach ($this->getPermissions() as $permission) {
             if ($permission->type === null) {
                 $this->addToForm($permission);
             } else {
                 $resources = null;
                 switch ($permission->type) {
-                    case 'server': {
-                        $resources = $this->getServers();
-                    } break;
+                    case 'server':
+                        {
+                            $resources = $this->getServers();
+                        }
+                        break;
                 }
                 if ($resources !== null) {
                     foreach ($resources as $resource => $tmp) {
@@ -87,14 +94,15 @@ class PermissionsForm extends BaseForm {
                 }
             }
         }
-	}
-
+    }
+    
     /**
      * @return bool
      * @throws Exception
      */
-    protected function processForm() {
-        /** @var \Illuminate\Database\Connection$db */
+    protected function processForm()
+    {
+        /** @var \Illuminate\Database\Connection $db */
         $db = static::$container->get('db')->getConnection();
         $db->beginTransaction();
         try {
@@ -114,30 +122,29 @@ class PermissionsForm extends BaseForm {
             return false;
         }
     }
-
+    
     /**
      * @param PermissionsModel $permission
      * @param int|null $resource
      * @throws Exception
      */
-    protected function addToForm(PermissionsModel $permission, $resource = null) {
+    protected function addToForm(PermissionsModel $permission, $resource = null)
+    {
         $key = $this->getElementKey($permission, $resource);
         if ($resource === null) {
             $this->list['admin']['all'][] = $key;
         } else {
             $this->list['admin'][$permission->type][$resource][] = $key;
         }
-
+        
         $value = $this->getAccessForPermission($permission, $resource);
         $title = $this->getTranslate('permissions', $permission->group . '_' . $permission->key);
-
-        $this->form
-            ->add(new PermissionAccessElement($key, $value, [
+        
+        $this->form->add(new PermissionAccessElement($key, $value, [
                 'title' => $title,
             ]));
-
-        $this->form->getValidator()
-            ->set($key, false, [
+        
+        $this->form->getValidator()->set($key, false, [
                 new PermissionAccessRule()
             ], [
                 'check' => Validator::CHECK_ARRAY,
@@ -145,13 +152,14 @@ class PermissionsForm extends BaseForm {
                 'default' => 0
             ]);
     }
-
+    
     /**
      * @param PermissionsModel $permission
      * @param int|null $resource
      * @throws Exception
      */
-    protected function saveAccess(PermissionsModel $permission, $resource = null) {
+    protected function saveAccess(PermissionsModel $permission, $resource = null)
+    {
         $key = $this->getElementKey($permission, $resource);
         $access = $this->form->getValue($key);
         if ($access !== null && $access > 0) {
@@ -184,7 +192,8 @@ class PermissionsForm extends BaseForm {
      * @param int|null $resource
      * @return string
      */
-    protected function getElementKey(PermissionsModel $permission, $resource = null) {
+    protected function getElementKey(PermissionsModel $permission, $resource = null)
+    {
         $key = $permission->group . '_' . $permission->key;
         
         if ($resource !== null) {
@@ -192,21 +201,23 @@ class PermissionsForm extends BaseForm {
         }
         return $key;
     }
-
+    
     /**
      * @return PermissionsModel[]
      */
-    protected function getPermissions() {
+    protected function getPermissions()
+    {
         if ($this->permissions === null) {
             $this->permissions = PermissionsModel::get();
         }
         return $this->permissions;
     }
-
+    
     /**
      * @return Server[]
      */
-    public function getServers() {
+    public function getServers()
+    {
         if ($this->servers === null) {
             $this->servers = [];
             /** @var Server $server */
@@ -223,7 +234,8 @@ class PermissionsForm extends BaseForm {
      * @param int|null $resource
      * @return int
      */
-    protected function getAccessForPermission(PermissionsModel $permission, $resource = null) {
+    protected function getAccessForPermission(PermissionsModel $permission, $resource = null)
+    {
         if ($this->rolePermissions === null) {
             $this->rolePermissions = [
                 'admin' => [
@@ -250,9 +262,7 @@ class PermissionsForm extends BaseForm {
         $tmp = $this->rolePermissions[$permission->group];
         
         if ($permission->type === null) {
-            return array_key_exists($permission->key, $tmp['all'])
-                ? $tmp['all'][$permission->key]
-                : 0;
+            return array_key_exists($permission->key, $tmp['all']) ? $tmp['all'][$permission->key] : 0;
         }
         
         if ($resource === null) {
@@ -267,10 +277,8 @@ class PermissionsForm extends BaseForm {
         if (!array_key_exists($resource, $tmp)) {
             return 0;
         }
-    
+        
         $tmp = $tmp[$resource];
-        return array_key_exists($permission->key, $tmp)
-            ? $tmp[$permission->key]
-            : 0;
+        return array_key_exists($permission->key, $tmp) ? $tmp[$permission->key] : 0;
     }
 }

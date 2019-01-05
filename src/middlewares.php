@@ -1,12 +1,16 @@
 <?php
 $app->add(new \RKA\Middleware\IpAddress(true));
 
-$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) use ($app) {
+$app->add(function (
+    \Psr\Http\Message\ServerRequestInterface $request,
+    \Psr\Http\Message\ResponseInterface $response,
+    callable $next
+) use ($app) {
     $response = $next($request, $response);
     
     /** @var GameX\Core\Configuration\Config $config */
     $config = $app->getContainer()->get('config');
-
+    
     if ($config->getNode('log')->get('queries', false)) {
         /** @var \Monolog\Logger $log */
         $logger = $app->getContainer()->get('log');
@@ -19,11 +23,15 @@ $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http
             $logger->debug($log, $query['bindings']);
         }
     }
-
+    
     return $response;
 });
 
-$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) {
+$app->add(function (
+    \Psr\Http\Message\ServerRequestInterface $request,
+    \Psr\Http\Message\ResponseInterface $response,
+    callable $next
+) {
     try {
         return $next($request, $response);
     } catch (\GameX\Core\Exceptions\RedirectException $e) {
@@ -31,7 +39,11 @@ $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http
     }
 });
 
-$app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, callable $next) {
+$app->add(function (
+    \Psr\Http\Message\ServerRequestInterface $request,
+    \Psr\Http\Message\ResponseInterface $response,
+    callable $next
+) {
     $uri = $request->getUri();
     $path = $uri->getPath();
     if ($path != '/' && substr($path, -1) == '/') {
@@ -39,10 +51,9 @@ $app->add(function (\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http
         // to their non-trailing counterpart
         $uri = $uri->withPath(substr($path, 0, -1));
         
-        if($request->getMethod() == 'GET') {
+        if ($request->getMethod() == 'GET') {
             return $response->withRedirect((string)$uri, 301);
-        }
-        else {
+        } else {
             return $next($request->withUri($uri), $response);
         }
     }

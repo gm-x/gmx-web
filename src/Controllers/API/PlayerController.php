@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Controllers\API;
 
 use \Carbon\Carbon;
@@ -15,8 +16,9 @@ use \GameX\Core\Forms\Rules\IPv4;
 use \GameX\Core\Forms\Rules\Length;
 use \GameX\Core\Exceptions\ApiException;
 
-class PlayerController extends BaseApiController {
-
+class PlayerController extends BaseApiController
+{
+    
     /**
      * @param Request $request
      * @param Response $response
@@ -24,62 +26,50 @@ class PlayerController extends BaseApiController {
      * @return Response
      * @throws ApiException
      */
-    public function connectAction(Request $request, Response $response, array $args) {
+    public function connectAction(Request $request, Response $response, array $args)
+    {
         $validator = new Validator($this->getContainer('lang'));
-        $validator
-            ->set('id', false, [
+        $validator->set('id', false, [
                 new Number(1)
-            ])
-            ->set('emulator', true, [
+            ])->set('emulator', true, [
                 new Number(0)
-            ])
-            ->set('steamid', true, [
+            ])->set('steamid', true, [
                 new SteamID()
-            ])
-            ->set('nick', true)
-            ->set('ip', true, [
+            ])->set('nick', true)->set('ip', true, [
                 new IPv4()
             ]);
-            
-    
+        
+        
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
-
+        
         $server = $this->getServer($request);
         $session = null;
-
+        
         /** @var Player|null $player */
-        $player = Player::query()
-            ->when($result->getValue('id'), function ($query) use ($result) {
+        $player = Player::query()->when($result->getValue('id'), function ($query) use ($result) {
                 $query->where('id', $result->getValue('id'));
-            })
-            ->orWhere(function ($query) use ($result) {
-                $query
-                    ->whereIn('auth_type', [
+            })->orWhere(function ($query) use ($result) {
+                $query->whereIn('auth_type', [
                         Player::AUTH_TYPE_STEAM,
                         Player::AUTH_TYPE_STEAM_AND_PASS,
                         Player::AUTH_TYPE_STEAM_AND_HASH,
-                    ])
-                    ->where([
+                    ])->where([
                         'emulator' => $result->getValue('emulator'),
                         'steamid' => $result->getValue('steamid')
                     ]);
-            })
-            ->orWhere(function ($query) use ($result) {
-                $query
-                    ->whereIn('auth_type', [
+            })->orWhere(function ($query) use ($result) {
+                $query->whereIn('auth_type', [
                         Player::AUTH_TYPE_NICK_AND_PASS,
                         Player::AUTH_TYPE_NICK_AND_HASH,
-                    ])
-                    ->where([
+                    ])->where([
                         'nick' => $result->getValue('nick')
                     ]);
-            })
-            ->first();
-
+            })->first();
+        
         if (!$player) {
             $player = new Player();
             $player->steamid = $result->getValue('steamid');
@@ -123,16 +113,16 @@ class PlayerController extends BaseApiController {
 
 //        $player->server_id = $server->id;
 //        $player->save();
-
+        
         // TODO: place into cache instead of DB
         $server->num_players = PlayerSession::where([
             'server_id' => $server->id,
             'status' => PlayerSession::STATUS_ONLINE
         ])->count();
         $server->save();
-
+        
         $punishments = $player->getActivePunishments($server);
-
+        
         return $this->response($response, 200, [
             'success' => true,
             'player_id' => $player->id,
@@ -149,21 +139,21 @@ class PlayerController extends BaseApiController {
      * @return Response
      * @throws ApiException
      */
-    public function disconnectAction(Request $request, Response $response, array $args) {
+    public function disconnectAction(Request $request, Response $response, array $args)
+    {
         $validator = new Validator($this->getContainer('lang'));
-        $validator
-            ->set('id', true, [
+        $validator->set('id', true, [
                 new Number(1)
             ]);
-    
+        
         $result = $validator->validate($this->getBody($request));
-    
+        
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
         
         $server = $this->getServer($request);
-    
+        
         $player = Player::where('id', $result->getValue('id'))->first();
         $player->save();
         
@@ -176,7 +166,7 @@ class PlayerController extends BaseApiController {
         
         $server->num_players = Player::where('server_id', $server->id)->count();
         $server->save();
-
+        
         return $this->response($response, 200, [
             'success' => true,
         ]);
@@ -189,18 +179,17 @@ class PlayerController extends BaseApiController {
      * @return Response
      * @throws ApiException
      */
-    public function assignAction(Request $request, Response $response, array $args) {
+    public function assignAction(Request $request, Response $response, array $args)
+    {
         $validator = new Validator($this->getContainer('lang'));
-        $validator
-            ->set('id', true, [
+        $validator->set('id', true, [
                 new Number(1)
-            ])
-            ->set('token', true, [
+            ])->set('token', true, [
                 new Length(32, 32)
             ]);
-
+        
         $result = $validator->validate($this->getBody($request));
-
+        
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
@@ -215,10 +204,10 @@ class PlayerController extends BaseApiController {
         if (!$user) {
             throw new ApiException('Invalid user token', ApiException::ERROR_VALIDATION);
         }
-
+        
         $player->user_id = $user->id;
         $player->save();
-
+        
         return $this->response($response, 200, [
             'success' => true,
         ]);

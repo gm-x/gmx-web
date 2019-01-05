@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Controllers\API;
 
 use \GameX\Core\BaseApiController;
@@ -12,32 +13,31 @@ use \GameX\Core\Forms\Validator;
 use \GameX\Core\Forms\Rules\Number;
 use \GameX\Core\Exceptions\ApiException;
 
-class ServerController extends BaseApiController {
-
-	/**
-	 * @param Request $request
-	 * @param Response $response
-	 * @param array $args
-	 * @return Response
-	 */
-    public function infoAction(Request $request, Response $response, array $args) {
-        $server = $this->getServer($request);
+class ServerController extends BaseApiController
+{
     
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
+    public function infoAction(Request $request, Response $response, array $args)
+    {
+        $server = $this->getServer($request);
+        
         $groups = [];
         foreach ($server->groups as $group) {
             $groups[] = $group->id;
         }
         
-        $privileges = Privilege::with('player')
-            ->where('active', 1)
-            ->whereIn('group_id', $groups)
-            ->where('expired_at', '>=', Carbon::today()->toDateString())
-            ->get();
+        $privileges = Privilege::with('player')->where('active', 1)->whereIn('group_id', $groups)->where('expired_at',
+                '>=', Carbon::today()->toDateString())->get();
         
         $reasons = $server->reasons()->where('active', 1)->get();
-
+        
         return $response->withStatus(200)->withJson([
-			'success' => true,
+            'success' => true,
             'server_id' => $server->id,
             'groups' => $server->groups,
             'privileges' => $privileges,
@@ -52,16 +52,15 @@ class ServerController extends BaseApiController {
      * @return static
      * @throws ApiException
      */
-    public function mapAction(Request $request, Response $response, array $args) {
+    public function mapAction(Request $request, Response $response, array $args)
+    {
         $validator = new Validator($this->getContainer('lang'));
-        $validator
-            ->set('map', true)
-            ->set('max_players', true, [
+        $validator->set('map', true)->set('max_players', true, [
                 new Number(0),
             ]);
-    
+        
         $result = $validator->validate($this->getBody($request));
-    
+        
         if (!$result->getIsValid()) {
             throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
         }
@@ -71,13 +70,13 @@ class ServerController extends BaseApiController {
         ], [
             'map' => $result->getValue('map'),
         ]);
-    
+        
         $server = $this->getServer($request);
         $server->map_id = $map->id;
         $server->num_players = 0;
         $server->max_players = $result->getValue('max_players');
         $server->save();
-    
+        
         Player::where('server_id', $server->id)->update(['server_id' => null]);
         
         return $response->withStatus(200)->withJson([
@@ -92,13 +91,12 @@ class ServerController extends BaseApiController {
      * @return static
      * @throws ApiException
      */
-    public function updateAction(Request $request, Response $response, array $args) {
+    public function updateAction(Request $request, Response $response, array $args)
+    {
         $validator = new Validator($this->getContainer('lang'));
-        $validator
-            ->set('num_players', true, [
+        $validator->set('num_players', true, [
                 new Number(0)
-            ])
-            ->set('max_players', true, [
+            ])->set('max_players', true, [
                 new Number(0),
             ]);
         

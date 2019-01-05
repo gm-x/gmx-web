@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
@@ -20,15 +21,17 @@ use \GameX\Core\Mail\Exceptions\SendException;
 use \GameX\Core\Exceptions\ValidationException;
 use \Exception;
 
-class PreferencesController extends BaseAdminController {
-
-	/**
-	 * @return string
-	 */
-	protected function getActiveMenu() {
-		return PreferencesConstants::ROUTE_MAIN;
-	}
-
+class PreferencesController extends BaseAdminController
+{
+    
+    /**
+     * @return string
+     */
+    protected function getActiveMenu()
+    {
+        return PreferencesConstants::ROUTE_MAIN;
+    }
+    
     /**
      * @param Request $request
      * @param Response $response
@@ -36,7 +39,8 @@ class PreferencesController extends BaseAdminController {
      * @return ResponseInterface
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function indexAction(Request $request, Response $response, array $args = []) {
+    public function indexAction(Request $request, Response $response, array $args = [])
+    {
         /** @var Config $preferences */
         $preferences = $this->getContainer('preferences');
         $form = new MainForm($preferences);
@@ -44,13 +48,13 @@ class PreferencesController extends BaseAdminController {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_MAIN);
         }
-
-		return $this->render('admin/preferences/index.twig', [
+        
+        return $this->render('admin/preferences/index.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
-			'form' => $form->getForm(),
-		]);
+            'form' => $form->getForm(),
+        ]);
     }
-
+    
     /**
      * @param Request $request
      * @param Response $response
@@ -60,7 +64,8 @@ class PreferencesController extends BaseAdminController {
      * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function emailAction(Request $request, Response $response, array $args = []) {
+    public function emailAction(Request $request, Response $response, array $args = [])
+    {
         /** @var Config $config */
         $config = clone $this->getContainer('preferences');
         $form = new MailForm($config->getNode('mail'));
@@ -69,30 +74,31 @@ class PreferencesController extends BaseAdminController {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_EMAIL);
         }
-
-		return $this->render('admin/preferences/email.twig', [
+        
+        return $this->render('admin/preferences/email.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
-			'form' => $form->getForm(),
-		]);
+            'form' => $form->getForm(),
+        ]);
     }
-
-	/**
-	 * @param Request $request
-	 * @param Response $response
-	 * @param array $args
-	 * @return ResponseInterface
-	 */
-    public function testAction(Request $request, Response $response, array $args = []) {
-    	try {
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+    public function testAction(Request $request, Response $response, array $args = [])
+    {
+        try {
             /** @var Config $config */
             $config = $this->getContainer('preferences');
             $form = new MailForm($config->getNode('mail'));
             $form->create();
-
+            
             if (!$form->process($request)) {
                 throw new ValidationException();
             }
-
+            
             /** @var \GameX\Core\Mail\Helper $mail */
             $mail = $this->getContainer('mail');
             $mail->setConfiguration($config->getNode('mail'));
@@ -119,21 +125,22 @@ class PreferencesController extends BaseAdminController {
         } catch (CodeException $e) {
             return $response->withJson([
                 'success' => false,
-                'message' => $this->getTranslate('admin_preferences', 'email_code_fail', $e->getExpected(), $e->getReceived()),
+                'message' => $this->getTranslate('admin_preferences', 'email_code_fail', $e->getExpected(),
+                    $e->getReceived()),
             ]);
         } catch (SendException $e) {
             return $response->withJson([
                 'success' => false,
                 'message' => $this->getTranslate('admin_preferences', 'email_send_fail'),
             ]);
-		} catch (Exception $e) {
-			return $response->withJson([
-				'success' => false,
-				'message' => $e->getMessage(),
-			]);
-		}
-	}
-
+        } catch (Exception $e) {
+            return $response->withJson([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+    
     /**
      * @param Request $request
      * @param Response $response
@@ -141,13 +148,14 @@ class PreferencesController extends BaseAdminController {
      * @return ResponseInterface
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function updateAction(Request $request, Response $response, array $args = []) {
+    public function updateAction(Request $request, Response $response, array $args = [])
+    {
         $form = new UpdateForm($this->getContainer('updater'));
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
         }
-
+        
         return $this->render('admin/preferences/update.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm()
