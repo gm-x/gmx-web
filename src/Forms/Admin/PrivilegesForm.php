@@ -65,22 +65,22 @@ class PrivilegesForm extends BaseForm {
 		
 		$this->form
             ->add(new Select('group', $this->privilege->group_id, $groups, [
-                'title' => 'Group',
+                'title' => $this->getTranslate($this->name, 'group'),
                 'required' => true,
-                'empty_option' => 'Choose group',
+                'empty_option' => $this->getTranslate($this->name, 'group_empty'),
             ]))
             ->add(new Text('prefix', $this->privilege->prefix, [
-                'title' => 'Prefix',
+                'title' => $this->getTranslate($this->name, 'prefix'),
             ]))
             ->add(new DateElement('forever', $this->privilege->expired_at === null, [
-                'title' => 'Forever',
+                'title' => $this->getTranslate($this->name, 'forever'),
             ]))
             ->add(new DateElement('expired', $this->privilege->expired_at, [
-                'title' => 'Expired',
+                'title' => $this->getTranslate($this->name, 'expired'),
                 'required' => true,
             ]))
             ->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
-                'title' => 'Active',
+                'title' => $this->getTranslate($this->name, 'active'),
             ]));
 
         $validator = $this->form->getValidator();

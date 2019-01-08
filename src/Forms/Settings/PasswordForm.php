@@ -41,15 +41,15 @@ class PasswordForm extends BaseForm {
     public function createForm() {
         $this->form
             ->add(new Password('old_password', '', [
-                'title' => 'Old password',
+                'title' => $this->getTranslate('inputs', 'current_password'),
                 'required' => true,
             ]))
             ->add(new Password('new_password', '', [
-                'title' => 'New password',
+                'title' => $this->getTranslate('inputs', 'new_password'),
                 'required' => true,
             ]))
             ->add(new Password('repeat_password', '', [
-                'title' => 'Repeat password',
+                'title' => $this->getTranslate('inputs', 'password_repeat'),
                 'required' => true,
             ]));
 
@@ -71,7 +71,7 @@ class PasswordForm extends BaseForm {
      */
     protected function processForm() {
         if (!$this->authHelper->validatePassword($this->user, $this->form->getValue('old_password'))) {
-            throw new FormException('old_password', "Bad password");
+            throw new FormException('old_password', $this->getTranslate('forms', 'bad_password'));
         }
         $this->authHelper->changePassword($this->user, $this->form->getValue('new_password'));
         return true;

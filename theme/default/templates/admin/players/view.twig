@@ -45,11 +45,11 @@
                 <h3 class="uk-card-title">{{ player.nick }}</h3>
                 <div f-table f-divider>
                     <ul>
-                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">STEAM_ID</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ trans('admin_players', 'steam_id') }}</li>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.steamid }}</li>
                     </ul>
                     <ul>
-                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">IP</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ trans('admin_players', 'ip') }}</li>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.ip }}</li>
                     </ul>
                     {% if has_access_permission(
@@ -58,7 +58,7 @@
                         premissions.ACCESS_VIEW
                     ) %}
                         <ul>
-                            <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">User</li>
+                            <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ trans('admin_players', 'user') }}</li>
                             <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">
                             {% if player.user_id %}
                                 <a href="{{ path_for(constants.admin.users.ROUTE_VIEW, {'user': player.user.id}) }}">
@@ -71,7 +71,7 @@
                         </ul>
                     {% endif %}
                     <ul>
-                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Status</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ trans('admin_players', 'status') }}</li>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">
                             {% if player.server_id %}
                                 Online: {{ player.server.name }}
@@ -81,11 +81,11 @@
                         </li>
                     </ul>
                     <ul>
-                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Create At</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ trans('labels', 'created_at') }}</li>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.created_at }}</li>
                     </ul>
                     <ul>
-                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">Update At</li>
+                        <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ trans('labels', 'updated_at') }}</li>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ player.updated_at }}</li>
                     </ul>
                 </div>
@@ -95,7 +95,7 @@
 </div>
 
 <div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
-    <h3 class="uk-card-title">Privileges</h3>
+    <h3 class="uk-card-title">{{ trans('admin_privileges', 'privileges') }}</h3>
     <div f-table f-divider>
         {% for serverId, serverData in privileges %}
             <ul th uk-sticky="offset: 80" style="background: #263137;">
@@ -162,7 +162,7 @@
                 </ul>
             {% else %}
                 <ul>
-                    <li>Empty list</li>
+                    <li>{{ trans('admin_privileges', 'empty_list') }}</li>
                 </ul>
             {% endfor %}
         {% endfor %}
@@ -171,15 +171,15 @@
 
 <div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
     <div>
-        <h3 class="uk-card-title">Punishments</h3>
+        <h3 class="uk-card-title">{{ trans('admin_punishments', 'punishments') }}</h3>
     </div>
     <div f-table f-divider>
         <ul th>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Punisher</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Server</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Reason</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Details</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">Status</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ trans('admin_punishments', 'punisher') }}</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ trans('admin_punishments', 'server') }}</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ trans('admin_punishments', 'reason') }}</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ trans('admin_punishments', 'details') }}</li>
+            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ trans('admin_punishments', 'status') }}</li>
             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
                 <span class="dropdown">
                     <button

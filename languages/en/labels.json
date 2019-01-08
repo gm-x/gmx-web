@@ -1,11 +1,19 @@
 {
-	"required": "Required",
-	"are_you_sure": "Are you sure?",
-	"saved": "Saved successfully",
-	"removed": "Removed successfully",
-	"exception": "Something wrong. Please Try again later.",
-	"search": "Search",
-	"index": "Index",
-	"punishments": "Punishments",
-	"admin_panel": "Admin Panel"
+    "required": "Required",
+    "are_you_sure": "Are you sure?",
+    "saved": "Saved successfully",
+    "removed": "Removed successfully",
+    "exception": "Something wrong. Please Try again later.",
+    "search": "Search",
+    "index": "Index",
+    "punishments": "Punishments",
+    "admin_panel": "Admin Panel",
+    "server_name": "Server name",
+    "server_address": "Server address",
+    "server_map": "Current map",
+    "server_players": "Players",
+    "created_at": "Created At",
+    "updated_at": "Updated At",
+    "main_tab": "Main",
+    "assign_tab": "Assign"
 }

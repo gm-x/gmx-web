@@ -1,9 +1,11 @@
 {
-	"login_email": "Login or Email",
-	"login": "Login",
-	"email": "Email",
-	"password": "Password",
-	"password_repeat": "Repeat password",
-	"remember_me": "Remember me",
-	"avatar": "Avatar"
+    "login_email": "Login or Email",
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "password_repeat": "Repeat password",
+    "remember_me": "Remember me",
+    "avatar": "Avatar"
 }

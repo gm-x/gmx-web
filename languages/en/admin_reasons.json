@@ -1,0 +1,8 @@
+{
+    "reason": "Reason title",
+    "time_checkbox": "Admin can choose time",
+    "time": "Duration",
+    "overall_checkbox": "Punish at all servers",
+    "menushow_checkbox": "Show in punish menu",
+    "active_checkbox": "Active"
+}

@@ -14,7 +14,7 @@ class GroupsForm extends BaseForm {
 	/**
 	 * @var string
 	 */
-	protected $name = 'admin_group';
+	protected $name = 'admin_groups';
 
 	/**
 	 * @var Group
@@ -34,17 +34,17 @@ class GroupsForm extends BaseForm {
 	protected function createForm() {
 		$this->form
 			->add(new Text('title', $this->group->title, [
-                'title' => 'Title',
+                'title' => $this->getTranslate($this->name, 'group'),
                 'error' => 'Required',
                 'required' => true,
             ]))
             ->add(new FlagsElement('flags', $this->group->flags, [
-                'title' => 'Flags',
+                'title' => $this->getTranslate($this->name, 'flags'),
                 'error' => 'Required',
                 'required' => true,
             ]))
             ->add(new NumberElement('priority', $this->group->priority, [
-                'title' => 'Priority',
+                'title' => $this->getTranslate($this->name, 'priority'),
                 'required' => false,
             ]));
 		
