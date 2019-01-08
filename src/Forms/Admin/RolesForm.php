@@ -30,9 +30,9 @@ class RolesForm extends BaseForm {
 	protected function createForm() {
 		$this->form
             ->add(new Text('name', $this->role->name, [
-                'title' => 'Name',
+				'title' => $this->getTranslate($this->name, 'name'),
                 'required' => true,
-            ]));
+			]));
 		
 		$this->form->getValidator()
             ->set('name', true);

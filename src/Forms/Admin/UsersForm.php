@@ -40,9 +40,9 @@ class UsersForm extends BaseForm {
 	    $roles = $this->roleHelper->getRolesAsArray();
 		$this->form
             ->add(new Select('role', $this->user->role ? $this->user->role->id : '', $roles, [
-                'title' => 'Role',
+                'title' => $this->getTranslate('admin_users', 'role'),
                 'required' => true,
-                'empty_option' => 'Choose role'
+                'empty_option' => $this->getTranslate('admin_users', 'role_empty')
             ]));
         
         $this->form->getValidator()

@@ -54,9 +54,9 @@ class PunishmentsForm extends BaseForm {
 		
 		$this->form
             ->add(new Select('reason', $this->punishment->reason_id, $reasons, [
-                'title' => 'Reason',
+                'title' => $this->getTranslate($this->name, 'reason'),
                 'required' => true,
-                'empty_option' => 'Choose reason',
+                'empty_option' => $this->getTranslate($this->name, 'reason_empty'),
             ]))
             ->add(new Text('details', $this->punishment->details, [
                 'title' => 'Details',
@@ -68,10 +68,10 @@ class PunishmentsForm extends BaseForm {
                 Punishment::TYPE_MUTED => 'Mute',
             ]))
             ->add(new Checkbox('forever', $this->punishment->expired_at === null, [
-                'title' => 'Forever',
+                'title' => $this->getTranslate($this->name, 'forever'),
             ]))
             ->add(new DateElement('expired', $this->punishment->expired_at, [
-                'title' => 'Expired',
+                'title' => $this->getTranslate($this->name, 'expired'),
                 'required' => false,
             ]));
 		

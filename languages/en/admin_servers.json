@@ -1,10 +1,10 @@
 {
-	"name": "Server name",
-	"ip": "IP",
-	"port": "Port",
-	"address": "Server address",
-	"token": "Server token",
-	"groups": "Privileges groups",
-	"reasons": "Bans reasons",
-	"already_exists": "Server already exists"
+    "name": "Server name",
+    "ip": "IP",
+    "port": "Port",
+    "address": "Server address",
+    "token": "Server token",
+    "groups": "Privileges groups",
+    "reasons": "Bans reasons",
+    "already_exists": "Server already exists"
 }

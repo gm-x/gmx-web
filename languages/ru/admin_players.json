@@ -12,5 +12,7 @@
   "reserve_nickname": "Резервация никнейма",
   "block_nickname": "Запрет смены никнейма",
   "pass_error": "Password must be provided",
-  "player_exists": "Такой игрок уже существует"
+  "player_exists": "Такой игрок уже существует",
+  "user": "Пользователь",
+  "status": "Status"
 }

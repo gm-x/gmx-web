@@ -14,7 +14,7 @@ class ServersForm extends BaseForm {
 	/**
 	 * @var string
 	 */
-	protected $name = 'admin_server';
+	protected $name = 'admin_servers';
 
 	/**
 	 * @var Server
@@ -46,15 +46,15 @@ class ServersForm extends BaseForm {
 	protected function createForm() {
 		$this->form
 			->add(new Text('name', $this->server->name, [
-				'title' => $this->getTranslate('admin_servers', 'name'),
+				'title' => $this->getTranslate($this->name, 'name'),
 				'required' => true,
 			]))
 			->add(new Text('ip', $this->server->ip, [
-				'title' => $this->getTranslate('admin_servers', 'ip'),
+				'title' => $this->getTranslate($this->name, 'ip'),
 				'required' => true,
 			]))
 			->add(new NumberElement('port', $this->server->port, [
-				'title' => $this->getTranslate('admin_servers', 'port'),
+				'title' => $this->getTranslate($this->name, 'port'),
 				'required' => true,
 			]));
         
@@ -70,7 +70,7 @@ class ServersForm extends BaseForm {
         if (!$this->server->exists) {
             $this->form->getValidator()
                 ->add('port', new Callback(
-                    [$this, 'checkExists'], $this->getTranslate('admin_servers', 'already_exists')
+                    [$this, 'checkExists'], $this->getTranslate($this->name, 'already_exists')
                 ));
         }
 	}

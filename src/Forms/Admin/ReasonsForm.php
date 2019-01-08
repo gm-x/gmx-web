@@ -15,7 +15,7 @@ class ReasonsForm extends BaseForm {
 	/**
 	 * @var string
 	 */
-	protected $name = 'admin_reason';
+	protected $name = 'admin_reasons';
 
 	/**
 	 * @var Reason
@@ -51,32 +51,32 @@ class ReasonsForm extends BaseForm {
         ];
 		$this->form
 			->add(new Text('title', $this->reason->title, [
-                'title' => 'Title',
+                'title' => $this->getTranslate($this->name, 'reason'),
                 'error' => 'Required',
                 'required' => true,
             ]))
             ->add(new Checkbox('time_enabled', $timeEnabled, [
                 'id' => 'reason-time-enabled',
-                'title' => 'Admin can choose time',
+                'title' => $this->getTranslate($this->name, 'time_checkbox'),
                 'required' => false,
             ]))
             ->add(new NumberElement('time', $this->reason->time, [
                 'id' => 'reason-time',
-                'title' => 'Time',
+                'title' => $this->getTranslate($this->name, 'time'),
                 'error' => 'Required',
                 'required' => false,
                 'attributes' => $timeAttributes
             ]))
             ->add(new Checkbox('overall', $this->reason->overall, [
-                'title' => 'Punish at all servers',
+                'title' => $this->getTranslate($this->name, 'overall_checkbox'),
                 'required' => false,
             ]))
             ->add(new Checkbox('menu', $this->reason->menu, [
-                'title' => 'Show in punish menu',
+                'title' => $this->getTranslate($this->name, 'menushow_checkbox'),
                 'required' => false,
             ]))
             ->add(new Checkbox('active', $this->reason->active, [
-                'title' => 'Active',
+                'title' => $this->getTranslate($this->name, 'active_checkbox'),
                 'required' => false,
             ]));
 
@@ -102,7 +102,7 @@ class ReasonsForm extends BaseForm {
 		if (!$this->reason->exists) {
             $validator->add(
                 'title',
-                new Callback([$this, 'checkExists'], $this->getTranslate('admin_reasons', 'exists'))
+                new Callback([$this, 'checkExists'], $this->getTranslate($this->name, 'exists'))
             );
         }
 	}

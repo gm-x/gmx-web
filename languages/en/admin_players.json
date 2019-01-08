@@ -12,5 +12,7 @@
   "reserve_nickname": "Reserve nickname",
   "block_nickname": "Block change nick",
   "pass_error": "Password must be provided",
-  "player_exists": "Player already exists"
+  "player_exists": "Player already exists",
+  "user": "User",
+  "status": "Статус"
 }

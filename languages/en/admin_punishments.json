@@ -1,3 +1,12 @@
 {
-  "empty_reasons_list": "Add reasons before punish player"
+  "punishments": "Punishments",
+  "empty_reasons_list": "Add reasons before punish player",
+  "reason": "Reason",
+  "reason_empty": "Choose reason",
+  "forever": "Forever",
+  "expired": "Expired",
+  "punisher": "Punisher",
+  "server": "Server",
+  "details": "Details",
+  "status": "Status"
 }

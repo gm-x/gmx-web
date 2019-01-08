@@ -1,10 +1,10 @@
 {
-	"preferences": "Настройки",
-	"users": "Пользователи",
-	"roles": "Роли",
-	"servers": "Сервера",
-	"players": "Игроки",
-	"permissions": "Права",
-	"role": "Роль",
-	"name": "Имя"
+    "preferences": "Настройки",
+    "users": "Пользователи",
+    "roles": "Роли",
+    "servers": "Сервера",
+    "players": "Игроки",
+    "permissions": "Права",
+    "role": "Роль",
+    "name": "Имя"
 }

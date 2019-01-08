@@ -18,7 +18,7 @@
             {{ csrf_token() }}
             <div f-table f-divider>
                 <ul th uk-sticky="offset: 80" style="background: #263137;" class="uk-visible@s">
-                    <li class="uk-width-expand">Permission</li>
+                    <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
                     <li class="uk-width-xxs"><i class="fas fa-list" uk-tooltip="Список"></i></li>
                     <li class="uk-width-xxs"><i class="fas fa-eye" uk-tooltip="Просмотр"></i></li>
                     <li class="uk-width-xxs"><i class="fas fa-plus" uk-tooltip="Добавление"></i></li>
@@ -36,7 +36,7 @@
                     <div class="uk-accordion-content">
                         <div f-table f-divider>
                             <ul th uk-sticky="offset: 80" style="background: #263137;" class="uk-visible@s">
-                                <li class="uk-width-expand">Permission</li>
+                                <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
                                 <li class="uk-width-xxs"><i class="fas fa-list" uk-tooltip="Список"></i></li>
                                 <li class="uk-width-xxs"><i class="fas fa-eye" uk-tooltip="Просмотр"></i></li>
                                 <li class="uk-width-xxs"><i class="fas fa-plus" uk-tooltip="Добавление"></i></li>
