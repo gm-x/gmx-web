@@ -26,6 +26,7 @@ use \GameX\Core\Utils;
  * @property Reason[] $reasons
  * @property Map $map
  * @property Player[] $players
+ * @property PlayerSession[] $sessions
  */
 class Server extends BaseModel
 {
@@ -90,7 +91,29 @@ class Server extends BaseModel
     }
     
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sessions()
+    {
+        return $this->hasMany(PlayerSession::class, 'server_id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Relations\HasMany[]
+     */
+    public function getActiveSessions()
+    {
+        return $this
+            ->sessions()
+            ->with('player')
+            ->where('status', '=', PlayerSession::STATUS_ONLINE)
+            ->orderBy('created_at', 'DESC')
+            ->get();
+    }
+    
+    /**
      * @return string
+     * @throws \Exception
      */
     public function generateNewToken()
     {

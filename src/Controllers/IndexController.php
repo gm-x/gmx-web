@@ -3,6 +3,7 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
+use GameX\Models\Server;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
@@ -24,11 +25,15 @@ class IndexController extends BaseMainController
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function indexAction(Request $request, Response $response, array $args)
     {
+        /** @var \GameX\Core\Cache\Cache $cache */
+        $cache = $this->getContainer('cache');
         return $this->render('index/index.twig', [
-            'servers' => [],
+            'servers' => Server::with('map')->where('active', true)->get(),
+            'players_online' => $cache->get('players_online'),
         ]);
     }
     

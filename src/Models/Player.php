@@ -127,8 +127,12 @@ class Player extends BaseModel
      */
     public function getActiveSession()
     {
-        return $this->sessions()->select('*')->where('status', '=', PlayerSession::STATUS_ONLINE)->orderBy('created_at',
-                'DESC')->first();
+        return $this
+            ->sessions()
+            ->select('*')
+            ->where('status', '=', PlayerSession::STATUS_ONLINE)
+            ->orderBy('created_at', 'DESC')
+            ->first();
     }
     
     /**
