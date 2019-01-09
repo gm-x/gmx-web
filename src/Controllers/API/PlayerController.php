@@ -25,6 +25,7 @@ class PlayerController extends BaseApiController
      * @param array $args
      * @return Response
      * @throws ApiException
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function connectAction(Request $request, Response $response, array $args)
     {
@@ -110,18 +111,12 @@ class PlayerController extends BaseApiController
         }
         
         $session->save();
-
-//        $player->server_id = $server->id;
-//        $player->save();
-        
-        // TODO: place into cache instead of DB
-        $server->num_players = PlayerSession::where([
-            'server_id' => $server->id,
-            'status' => PlayerSession::STATUS_ONLINE
-        ])->count();
-        $server->save();
         
         $punishments = $player->getActivePunishments($server);
+    
+        /** @var \GameX\Core\Cache\Cache $cache */
+        $cache = $this->getContainer('cache');
+        $cache->clear('online_players');
         
         return $this->response($response, 200, [
             'success' => true,
@@ -138,6 +133,7 @@ class PlayerController extends BaseApiController
      * @param array $args
      * @return Response
      * @throws ApiException
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function disconnectAction(Request $request, Response $response, array $args)
     {
@@ -152,8 +148,6 @@ class PlayerController extends BaseApiController
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
         
-        $server = $this->getServer($request);
-        
         $player = Player::where('id', $result->getValue('id'))->first();
         $player->save();
         
@@ -163,9 +157,10 @@ class PlayerController extends BaseApiController
             $session->disconnected_at = Carbon::now();
             $session->save();
         }
-        
-        $server->num_players = Player::where('server_id', $server->id)->count();
-        $server->save();
+    
+        /** @var \GameX\Core\Cache\Cache $cache */
+        $cache = $this->getContainer('cache');
+        $cache->clear('online_players');
         
         return $this->response($response, 200, [
             'success' => true,
