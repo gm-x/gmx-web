@@ -1,6 +1,19 @@
 # GameX
 
+### Installation
+```
+composer install
+```
+Go to `http://example.com/install`
 
+### Tests
+```
+./vendor/bin/phpunit --bootstrap vendor/autoload.php tests
+```
+
+### Configuration
+
+#### Nginx
 ```
 server {
 	listen 80 default_server;
