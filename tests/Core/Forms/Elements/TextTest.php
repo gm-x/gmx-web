@@ -15,6 +15,7 @@ class TextTest extends TestCase
             'attributes' => ['test' => 'TestAttribute']
         ]);
         
+        $this->assertEquals('text', $element->getType());
         $this->assertEquals('testName', $element->getName());
         $this->assertEquals('testValue', $element->getValue());
         $this->assertEquals('testid', $element->getId());
