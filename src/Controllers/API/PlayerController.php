@@ -116,7 +116,7 @@ class PlayerController extends BaseApiController
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
-        $cache->clear('online_players');
+        $cache->clear('players_online');
         
         return $this->response($response, 200, [
             'success' => true,

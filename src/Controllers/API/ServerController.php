@@ -31,8 +31,11 @@ class ServerController extends BaseApiController
             $groups[] = $group->id;
         }
         
-        $privileges = Privilege::with('player')->where('active', 1)->whereIn('group_id', $groups)->where('expired_at',
-                '>=', Carbon::today()->toDateString())->get();
+        $privileges = Privilege::with('player')
+            ->where('active', 1)
+            ->whereIn('group_id', $groups)
+            ->where('expired_at','>=', Carbon::today()->toDateString())
+            ->get();
         
         $reasons = $server->reasons()->where('active', 1)->get();
         
