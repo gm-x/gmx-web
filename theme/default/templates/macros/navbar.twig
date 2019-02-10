@@ -37,7 +37,14 @@
                     </div>
                 </li>
                 <li>
-                    <a href="#"><i class="fas fa-user-circle"></i></a>
+                    {% set avatar = upload_url(get_user_avatar()) %}
+                    <a href="#">
+                        {% if avatar %}
+                            <img src="{{ avatar }}" width="25" class="uk-border-circle">
+                        {% else %}
+                            <i class="fas fa-user-circle"></i>
+                        {% endif %}
+                    </a>
                     <div class="uk-navbar-dropdown">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             {% if is_guest() %}

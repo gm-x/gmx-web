@@ -56,6 +56,10 @@ class ViewExtension extends Twig_Extension {
                 [$this, 'getUserName']
             ),
             new Twig_SimpleFunction(
+                'get_user_avatar',
+                [$this, 'getUserAvatar']
+            ),
+            new Twig_SimpleFunction(
                 'has_access_group',
                 [$this, 'hasAccessToGroup']
             ),
@@ -85,6 +89,15 @@ class ViewExtension extends Twig_Extension {
 			? $this->user->getUserLogin()
 			: '';
 	}
+
+    /**
+     * @return int
+     */
+    public function getUserAvatar() {
+        return !$this->isGuest()
+            ? ($this->user->avatar ?: '')
+            : '';
+    }
     
     /**
      * @param $group

@@ -1,5 +1,5 @@
 html {
-    background: #151d20;
+    background: #202020;
     color: #cac5b6;
     font-size: 14px;
 }
@@ -14,7 +14,7 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 
 .uk-accordion-content {
     margin-top: 20px;
-    background: #1e282d;
+    background: #292929;
     border-radius: 4px;
 }
 
@@ -29,7 +29,7 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 }
 
 .uk-card-secondary {
-    background: #1e282d !important;
+    background: #232323 !important;
 }
 
 .avatar__holder:after {
@@ -64,12 +64,12 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 }
 
 .uk-navbar-container:not(.uk-navbar-transparent) {
-    background: #151d20;
+    background: #202020;
 }
 
 .uk-card-default {
-    background: #263137;
-    color: #cac5b6;
+    background: #333333;
+    color: #fff;
     border-radius: 4px;
 }
 
@@ -105,7 +105,7 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 
 .uk-icon-button:hover, .uk-icon-button:focus {
     background-color: rgba(158, 158, 158, 0.2);
-    color: #757575;
+    color: #44a1d1;
     outline: none;
 }
 
@@ -151,21 +151,21 @@ a:hover, .uk-link:hover {
 }
 
 .uk-navbar-nav > li.uk-active > a {
-    color: #f5ebb8;
+    color: #44a1d1;
+    font-weight: 700;
     position: relative;
+    background: #2d2d2d;
+    border-bottom: 2px solid #44a1d1;
 }
 
-.uk-navbar-nav > li.uk-active > a:before {
-    content: '';
-    position: absolute;
-    z-index: 2;
-    left: 0;
-    top: 48px;
-    border-left: 10px solid #b53838;
-    border-top: 10px solid transparent;
+.uk-navbar-dropdown-nav .uk-nav-header {
+    color: #f5ebb8;
+    font-weight: 700;
 }
 
-
+.uk-navbar-nav > li > a, .uk-navbar-item, .uk-navbar-toggle {
+    height: 60px;
+}
 
 .uk-modal-dialog {
     background: #263137;
@@ -179,15 +179,27 @@ a:hover, .uk-link:hover {
     }
 
 .uk-button-primary {
-    background-color: transparent;
-    color: #b9b9b9;
-    border: 1px solid #b9b9b9;
+    background-color: #202020;
+    color: #929292;
+    border-bottom: 2px solid #44a1d1;
 }
 
 .uk-button-primary:active, .uk-button-primary.uk-active, .uk-button-primary:hover, .uk-button-primary:focus {
-    background-color: transparent;
-    color: #f5ebb8;
-    border: 1px solid #f5ebb8;
+    background-color: #272727;
+    color: #44a1d1;
+    border-bottom: 2px solid #44a1d1;
+}
+
+.uk-button-secondary {
+    background-color: #292929;
+    color: #a0a0a0;
+    border-bottom: 2px solid #525252;
+}
+
+.uk-button-secondary:hover, .uk-button-secondary:focus {
+    background-color: #161616;
+    color: #525252;
+    border-bottom: 2px solid #525252;
 }
 
 .uk-button-default {
@@ -198,8 +210,8 @@ a:hover, .uk-link:hover {
 
 .uk-alert-success {
     text-align: center;
-    background: #1d262a;
-    color: #3d8116;
+    background: #333333;
+    color: #9dc387;
 }
 
 .uk-button-default:hover, .uk-button-default:focus {
@@ -209,8 +221,8 @@ a:hover, .uk-link:hover {
 }
 
 .uk-card-default .uk-card-header {
-    border-bottom: 0;
-    background: #212a2f;
+    border-bottom: 2px solid rgba(68, 161, 209, 0.65);
+    background: #191919;
     border-radius: 4px 4px 0 0;
 }
 
@@ -230,18 +242,6 @@ a:hover, .uk-link:hover {
 
 .dropdown-item > .svg-inline--fa {
     font-size: .875em;
-}
-
-.uk-button-secondary {
-    background-color: transparent;
-    color: #565656;
-    border: 1px solid #565656;
-}
-
-.uk-button-secondary:hover, .uk-button-secondary:focus {
-    color: #6c6c6c;
-    background-color: transparent;
-    border: 1px solid #6c6c6c;
 }
 
 .uk-input:disabled, .uk-select:disabled, .uk-textarea:disabled {
@@ -276,7 +276,7 @@ fieldset {
 }
 
 .uk-card-default .uk-card-title {
-    color: #f5ebb8;
+    color: #D7A17C;
 }
 
 .inputGroup {
@@ -382,12 +382,12 @@ fieldset {
     left: 0;
     width: 40px;
     height: 20px;
-    background-color: #40525d;
+    background-color: #202020;
     border-radius: 10px;
     transition: all .3s ease;
 }
 .switcher input:checked + .switcher__indicator::after {
-    background-color: #f5ebb8;
+    background-color: #44a1d1;
     -webkit-transform: translateX(20px);
     transform: translateX(20px);
     -webkit-animation-name: pulseout;
