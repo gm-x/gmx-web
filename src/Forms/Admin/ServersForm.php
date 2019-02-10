@@ -52,6 +52,9 @@ class ServersForm extends BaseForm {
 			->add(new Text('ip', $this->server->ip, [
 				'title' => $this->getTranslate($this->name, 'ip'),
 				'required' => true,
+                'attributes' => [
+                    'pattern' => '((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$',
+                ],
 			]))
 			->add(new NumberElement('port', $this->server->port, [
 				'title' => $this->getTranslate($this->name, 'port'),

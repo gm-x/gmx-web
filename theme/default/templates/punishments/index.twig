@@ -8,12 +8,12 @@
 		<table class="uk-table uk-table-divider">
 			<thead>
 				<tr>
-					<th>Player</th>
-					<th>Punisher</th>
-					<th>Server</th>
-					<th>Reason</th>
-					<th>Comment</th>
-					<th>Status</th>
+					<th>{{ trans('punishments', 'player') }}</th>
+					<th>{{ trans('punishments', 'punisher') }}</th>
+					<th>{{ trans('punishments', 'server') }}</th>
+					<th>{{ trans('punishments', 'reason') }}</th>
+					<th>{{ trans('punishments', 'comment') }}</th>
+					<th>{{ trans('punishments', 'status') }}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -33,7 +33,7 @@
 				</tr>
 			{% else %}
 				<tr>
-					<td colspan="7">Nothing to show</td>
+					<td colspan="7">{{ trans('punishments', 'nothing_to_show') }}</td>
 				</tr>
 			{% endfor %}
 			</tbody>

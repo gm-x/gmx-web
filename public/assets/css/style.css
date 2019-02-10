@@ -110,8 +110,8 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 }
 
 .uk-table-divider > tr:not(:first-child), .uk-table-divider > :not(:first-child) > tr, .uk-table-divider > :first-child > tr:not(:first-child) {
-    border-top: 1px solid #38464e;
-    box-shadow: 0px -1px #151d20;
+    border-top: 1px solid #4c4c4c;
+    box-shadow: 0px -1px #1f1f1f;
 }
 
 .uk-navbar-dropdown, .uk-dropdown {
@@ -168,7 +168,7 @@ a:hover, .uk-link:hover {
 }
 
 .uk-modal-dialog {
-    background: #263137;
+    background: #222222;
 }
 
 .uk-modal-footer {
@@ -253,7 +253,9 @@ a:hover, .uk-link:hover {
 .uk-input, .uk-select, .uk-textarea {
     background: rgba(0, 0, 0, 0.2);
     color: #a0a0a0;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 0px solid rgba(255,255,255,0.1);
+    border-bottom: 2px solid #525252;
+    height: 41px;
 }
 
 .uk-form-label {
@@ -266,13 +268,23 @@ fieldset {
     min-width: 100%;
 }
 
+.uk-background-secondary {
+    background-color: #171717;
+}
 
+.uk-modal-header {
+    padding: 15px 30px;
+    background: #505050;
+    border-bottom: 1px solid #333333;
+}
 
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
+    background: rgba(0, 0, 0, 0.3);
+    border: 0px solid rgba(255,255,255,0.1);
+    border-bottom: 2px solid #44a1d1;
+    height: 41px;
     outline: none;
-    background-color: rgba(0, 0, 0, 0.3);
     color: #999;
-    border: 1px solid rgba(255,255,255,0.2);
 }
 
 .uk-card-default .uk-card-title {
