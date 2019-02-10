@@ -25,29 +25,29 @@ class Payment
     }
 
     /**
-     * @param $provider_id
+     * @param Order $order
      * @return bool
      */
-    public function setProvider($provider_id)
+    public function setProvider(Order $order)
     {
-        $provider_class = 'GameX\\Billing\\Providers\\' . ucfirst((string) $provider_id) . 'ProviderInterface';
-        if (class_exists($provider_class) && ($provider = new $provider_class($this->app) instanceof PayInterface)) {
+        $provider_class = 'GameX\\Billing\\Providers\\' . ucfirst((string) $order->getPayProvider()) . 'ProviderInterface';
+        if (class_exists($provider_class) && ($provider = new $provider_class($order, $this->app) instanceof PayInterface)) {
             $this->provider = $provider;
             return true;
         }
         return false;
     }
 
-    public function pay($order)
+    public function pay()
     {
         try {
-            $this->provider->pay($order);
+            $this->provider->pay();
         } catch (\Exception $e) {
             user_error($e->getMessage());
         }
     }
 
-    public function checkResult($order)
+    public function checkResult()
     {
 
     }
