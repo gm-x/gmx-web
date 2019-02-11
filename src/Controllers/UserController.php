@@ -5,6 +5,7 @@ namespace GameX\Controllers;
 use \GameX\Core\BaseMainController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Constants\PreferencesConstants;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Forms\User\LoginForm;
@@ -24,6 +25,11 @@ class UserController extends BaseMainController
     protected $mailEnabled = false;
     
     /**
+     * @var bool
+     */
+    protected $autoActivateUsers = true;
+    
+    /**
      * @return string
      */
     protected function getActiveMenu()
@@ -38,7 +44,10 @@ class UserController extends BaseMainController
     {
         /** @var \GameX\Core\Configuration\Config $preferences */
         $preferences = $this->getContainer('preferences');
-        $this->mailEnabled = (bool)$preferences->getNode('mail')->get('enabled', false);
+        $this->mailEnabled = (bool)$preferences->getNode('main')->get('enabled', false);
+        $this->autoActivateUsers = (bool)$preferences
+            ->getNode(PreferencesConstants::CATEGORY_MAIN)
+            ->get(PreferencesConstants::MAIN_AUTO_ACTIVATE_USERS, false);
     }
     
     /**
@@ -51,9 +60,12 @@ class UserController extends BaseMainController
     public function registerAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
         $authHelper = new AuthHelper($this->container);
-        $form = new RegisterForm($authHelper, !$this->mailEnabled);
+        $form = new RegisterForm($authHelper, $this->autoActivateUsers);
         if ($this->processForm($request, $form, true)) {
-            if ($this->mailEnabled) {
+            if ($this->autoActivateUsers) {
+                $this->addSuccessMessage($this->getTranslate('user', 'registered'));
+                return $this->redirect('login');
+            } elseif ($this->mailEnabled) {
                 $user = $form->getUser();
                 $activationCode = $authHelper->getActivationCode($user);
                 JobHelper::createTask('sendmail', [
@@ -65,12 +77,10 @@ class UserController extends BaseMainController
                         'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
                     ],
                 ]);
-            }
-            if ($this->mailEnabled) {
                 $this->addSuccessMessage($this->getTranslate('user', 'registered_email'));
                 return $this->redirect('index');
             } else {
-                $this->addSuccessMessage($this->getTranslate('user', 'registered'));
+                $this->addSuccessMessage($this->getTranslate('user', 'registered_moderate'));
                 return $this->redirect('login');
             }
         }

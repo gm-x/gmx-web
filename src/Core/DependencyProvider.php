@@ -5,6 +5,7 @@ namespace GameX\Core;
 use \Pimple\ServiceProviderInterface;
 use \Pimple\Container;
 use \Psr\Container\ContainerInterface;
+use \GameX\Constants\PreferencesConstants;
 
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Providers\JsonProvider;
@@ -238,8 +239,10 @@ class DependencyProvider implements ServiceProviderInterface
         
         $loader = new JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
         $provider = new SlimProvider($container->get('request'));
-        return new Language($loader, $provider, $config->getNode('languages')->toArray(),
-            $config->getNode('main')->get('language'));
+        return new Language($loader, $provider,
+            $config->getNode('languages')->toArray(),
+            $config->getNode(PreferencesConstants::CATEGORY_MAIN)->get(PreferencesConstants::MAIN_LANGUAGE)
+        );
     }
     
     /**
@@ -277,7 +280,9 @@ class DependencyProvider implements ServiceProviderInterface
         
         $settings = $config->getNode('view')->toArray();
         $settings['cache'] = $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache';
-        $theme = $preferences->getNode('main')->get('theme', 'default');
+        $theme = $preferences
+            ->getNode(PreferencesConstants::CATEGORY_MAIN)
+            ->get(PreferencesConstants::MAIN_THEME, 'default');
         
         $root = $container->get('root') . 'theme' . DIRECTORY_SEPARATOR;
         
@@ -306,7 +311,10 @@ class DependencyProvider implements ServiceProviderInterface
         
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
         $view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
-        $view->getEnvironment()->addGlobal('title', $preferences->getNode('main')->get('title'));
+        $view->getEnvironment()->addGlobal('title', $preferences
+            ->getNode(PreferencesConstants::CATEGORY_MAIN)
+            ->get(PreferencesConstants::MAIN_TITLE)
+        );
         
         return $view;
     }

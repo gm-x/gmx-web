@@ -94,10 +94,11 @@ class RegisterForm extends BaseForm {
                 new PasswordRepeat('password')
             ]);
 	}
-
-	/**
-	 * @return bool
-	 */
+    
+    /**
+     * @return bool
+     * @throws \Exception
+     */
 	protected function processForm() {
 
 		$this->user = $this->authHelper->registerUser(
