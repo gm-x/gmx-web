@@ -5,7 +5,7 @@
         </a>
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
-                {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
+                {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
                     <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
                         <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
                     </li>
