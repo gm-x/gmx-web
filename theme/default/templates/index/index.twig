@@ -47,32 +47,33 @@
                     {% for server in servers %}
 						<li>
 							<div class="uk-card uk-card-default">
-								<div class="uk-card-badge uk-label">
+								<div class="uk-inline">
                                     {% if server.success %}
+										<img src="{{ base_url() }}/assets/images/maps/{{ server.map }}.jpg" alt="{{ server.map }}" onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';" class="border-10">
+                                    {% else %}
+										<img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" class="border-10">
+                                    {% endif %}
+									<div class="uk-overlay-primary uk-position-cover"></div>
+									<div class="uk-overlay uk-position-bottom uk-light">
+										<h3 class="uk-card-title">{{ server.name }}</h3>
+										<p>
+											<b>{{ trans('labels', 'server_address') }}</b>: {{ server.ip }}:{{ server.port }}
+											<br>
+											<b>{{ trans('labels', 'server_players') }}</b>:
+											{% if server.success %}
+                                                {{ players_online[server.id] | length }}/{{ server.max_players }}
+                                            {% else %}
+												-/-
+                                            {% endif %}
+										</p>
+									</div>
+								</div>
+								<div class="uk-card-badge uk-label">
+									{% if server.success %}
                                         {{ server.map }}
                                     {% else %}
 										OFFLINE
                                     {% endif %}
-								</div>
-								<div class="uk-card-media-top">
-                                    {% if server.success %}
-										<img src="{{ base_url() }}/assets/images/maps/{{ server.map }}.jpg" alt="{{ server.map }}" onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';">
-                    				{% else %}
-										<img src="{{ base_url() }}/assets/images/blank600x400.png" alt="">
-                                    {% endif %}
-								</div>
-								<div class="uk-card-body">
-									<h3 class="uk-card-title">{{ server.name }}</h3>
-									<p>
-										{{ trans('labels', 'server_address') }}: {{ server.ip }}:{{ server.port }}
-										<br>
-                                        {{ trans('labels', 'server_players') }}:
-                                        {% if server.success %}
-                                            {{ players_online[server.id] | length }}/{{ server.max_players }}
-                                        {% else %}
-											-/-
-                                        {% endif %}
-									</p>
 								</div>
 							</div>
 						</li>
