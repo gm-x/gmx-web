@@ -1,10 +1,10 @@
 <?php
+
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
 use \GameX\Models\Server;
 use \GameX\Models\Privilege;
-use \GameX\Models\Group;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Date as DateElement;
@@ -16,70 +16,69 @@ use \GameX\Core\Forms\Rules\Date as DateRule;
 use \GameX\Core\Forms\Rules\Callback;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 
-class PrivilegesForm extends BaseForm {
+class PrivilegesForm extends BaseForm
+{
 
-	/**
-	 * @var string
-	 */
-	protected $name = 'admin_privileges';
+    /**
+     * @var string
+     */
+    protected $name = 'admin_privileges';
 
     /**
      * @var Server
      */
-	protected $server;
+    protected $server;
 
-	/**
-	 * @var Privilege
-	 */
-	protected $privilege;
+    /**
+     * @var Privilege
+     */
+    protected $privilege;
 
-	/**
-	 * @param Server $server
-	 * @param Privilege $privilege
-	 */
-	public function __construct(Server $server, Privilege $privilege) {
-		$this->server = $server;
-		$this->privilege = $privilege;
-	}
+    /**
+     * @param Server $server
+     * @param Privilege $privilege
+     */
+    public function __construct(Server $server, Privilege $privilege)
+    {
+        $this->server = $server;
+        $this->privilege = $privilege;
+    }
     
     /**
      * @param mixed $value
      * @param array $values
      * @return mixed|null
      */
-    public function checkPrivilegeExists($value, array $values) {
+    public function checkPrivilegeExists($value, array $values)
+    {
         return !Privilege::where([
-        	'player_id' => $this->privilege->player_id,
-        	'group_id' => $value,
-		])->exists() ? $value : null;
+            'player_id' => $this->privilege->player_id,
+            'group_id' => $value,
+        ])->exists() ? $value : null;
     }
 
-	/**
-	 * @noreturn
-	 */
-	protected function createForm() {
+    /**
+     * @noreturn
+     */
+    protected function createForm()
+    {
         $groups = $this->getGroups();
-		if (!count($groups)) {
-			throw new PrivilegeFormException();
-		}
-		
-		$this->form
-            ->add(new Select('group', $this->privilege->group_id, $groups, [
+        if (!count($groups)) {
+            throw new PrivilegeFormException();
+        }
+
+        $this->form->add(new Select('group', $this->privilege->group_id, $groups, [
                 'title' => $this->getTranslate($this->name, 'group'),
                 'required' => true,
                 'empty_option' => $this->getTranslate($this->name, 'group_empty'),
-            ]))
-            ->add(new Text('prefix', $this->privilege->prefix, [
+            ]))->add(new Text('prefix', $this->privilege->prefix, [
                 'title' => $this->getTranslate($this->name, 'prefix'),
-            ]))
-            ->add(new DateElement('forever', $this->privilege->expired_at === null, [
+            ]))->add(new Checkbox('forever', $this->privilege->expired_at === null, [
                 'title' => $this->getTranslate($this->name, 'forever'),
-            ]))
-            ->add(new DateElement('expired', $this->privilege->expired_at, [
+            ]))->add(new DateElement('expired', $this->privilege->expired_at, [
                 'title' => $this->getTranslate($this->name, 'expired'),
                 'required' => true,
-            ]))
-            ->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
+            ]))->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
                 'title' => $this->getTranslate($this->name, 'active'),
             ]));
 
@@ -90,28 +89,32 @@ class PrivilegesForm extends BaseForm {
                 new InArray(array_keys($groups)),
             ])
             ->set('prefix', false)
-            ->set('forever',false, [
+            ->set('forever', false, [
                 new Boolean()
             ])
-            ->set('expired',true, [
+            ->set('expired', true, [
                 new DateRule()
             ])
             ->set('active', false, [
                 new Boolean()
             ]);
-		
-		if (!$this->privilege->exists) {
+
+        if (!$this->privilege->exists) {
             $validator->add('group', new Callback([$this, 'checkPrivilegeExists'], 'Privilege already exists'));
         }
-	}
+    }
     
     /**
-     * @return boolean
+     * @return bool
+     * @throws \Exception
      */
-    protected function processForm() {
+    protected function processForm()
+    {
         $this->privilege->group_id = $this->form->getValue('group');
         $this->privilege->prefix = $this->form->getValue('prefix');
-        $this->privilege->expired_at = $this->form->getValue('expired');
+        $this->privilege->expired_at = !$this->form->getValue('forever')
+            ? $this->form->getValue('expired')
+            : null;
         $this->privilege->active = $this->form->getValue('active') ? 1 : 0;
         return $this->privilege->save();
     }
@@ -119,7 +122,8 @@ class PrivilegesForm extends BaseForm {
     /**
      * @return array
      */
-    protected function getGroups() {
+    protected function getGroups()
+    {
         $groups = [];
         foreach ($this->server->groups as $group) {
             $groups[$group->id] = $group->title;

@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Controllers\Admin;
 
 use \GameX\Models\Server;
@@ -14,15 +15,17 @@ use \Slim\Exception\NotFoundException;
 use \GameX\Core\Exceptions\RedirectException;
 use \Exception;
 
-class GroupsController extends BaseAdminController {
-
-	/**
-	 * @return string
-	 */
-	protected function getActiveMenu() {
-		return ServersConstants::ROUTE_LIST;
-	}
-
+class GroupsController extends BaseAdminController
+{
+    
+    /**
+     * @return string
+     */
+    protected function getActiveMenu()
+    {
+        return ServersConstants::ROUTE_LIST;
+    }
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -30,16 +33,17 @@ class GroupsController extends BaseAdminController {
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
         $server = $this->getServer($request, $response, $args);
-		$pagination = new Pagination($server->groups()->get(), $request);
-		return $this->render('admin/servers/groups/index.twig', [
+        $pagination = new Pagination($server->groups()->get(), $request);
+        return $this->render('admin/servers/groups/index.twig', [
             'server' => $server,
-			'groups' => $pagination->getCollection(),
-			'pagination' => $pagination,
-		]);
+            'groups' => $pagination->getCollection(),
+            'pagination' => $pagination,
+        ]);
     }
-
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -48,10 +52,11 @@ class GroupsController extends BaseAdminController {
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getGroup($request, $response, $args, $server);
-    
+        
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -60,14 +65,14 @@ class GroupsController extends BaseAdminController {
                 'group' => $group->id
             ]);
         }
-
+        
         return $this->render('admin/servers/groups/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => true,
         ]);
     }
-
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -76,10 +81,11 @@ class GroupsController extends BaseAdminController {
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getGroup($request, $response, $args, $server);
-    
+        
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -88,14 +94,14 @@ class GroupsController extends BaseAdminController {
                 'group' => $group->id
             ]);
         }
-
+        
         return $this->render('admin/servers/groups/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => false,
         ]);
     }
-
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -103,10 +109,11 @@ class GroupsController extends BaseAdminController {
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getGroup($request, $response, $args, $server);
-
+        
         try {
             $group->delete();
             $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
@@ -114,30 +121,31 @@ class GroupsController extends BaseAdminController {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
-
+        
         return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
     }
-
-	/**
-	 * @param ServerRequestInterface $request
-	 * @param ResponseInterface $response
-	 * @param array $args
-	 * @return Server
-	 * @throws NotFoundException
-	 */
-	protected function getServer(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-	    if (!array_key_exists('server', $args)) {
-	        return new Server();
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return Server
+     * @throws NotFoundException
+     */
+    protected function getServer(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    {
+        if (!array_key_exists('server', $args)) {
+            return new Server();
         }
-
-		$server = Server::find($args['server']);
-		if (!$server) {
-			throw new NotFoundException($request, $response);
-		}
-
-		return $server;
-	}
-
+        
+        $server = Server::find($args['server']);
+        if (!$server) {
+            throw new NotFoundException($request, $response);
+        }
+        
+        return $server;
+    }
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -146,7 +154,12 @@ class GroupsController extends BaseAdminController {
      * @return Group
      * @throws NotFoundException
      */
-	protected function getGroup(ServerRequestInterface $request, ResponseInterface $response, array $args, Server $server) {
+    protected function getGroup(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $args,
+        Server $server
+    ) {
         if (!array_key_exists('group', $args)) {
             $group = new Group();
             $group->server_id = $server->id;
@@ -157,7 +170,7 @@ class GroupsController extends BaseAdminController {
         if (!$group) {
             throw new NotFoundException($request, $response);
         }
-
+        
         
         return $group;
     }

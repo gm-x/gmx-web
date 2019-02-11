@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Forms\Admin\Preferences;
 
 use \GameX\Core\BaseForm;
@@ -18,40 +19,42 @@ use \GameX\Core\Update\Exceptions\FileNotExistsException;
 use \GameX\Core\Update\Exceptions\CanWriteException;
 use \GameX\Core\Update\Exceptions\ActionException;
 
-class UpdateForm extends BaseForm {
-
-	/**
-	 * @var string
-	 */
-	protected $name = 'admin_preferences_update';
-
-	/**
-	 * @var Updater
-	 */
-	protected $updater;
-
+class UpdateForm extends BaseForm
+{
+    
+    /**
+     * @var string
+     */
+    protected $name = 'admin_preferences_update';
+    
+    /**
+     * @var Updater
+     */
+    protected $updater;
+    
     /**
      * @var Manifest
      */
-	protected $manifest;
-
-	/**
-	 * @param Updater $updater
-	 */
-	public function __construct(Updater $updater) {
-		$this->updater = $updater;
-	}
-
-	/**
-	 * @noreturn
-	 */
-	protected function createForm() {
-	    $this->form->add(new FileInput('updates', '', [
+    protected $manifest;
+    
+    /**
+     * @param Updater $updater
+     */
+    public function __construct(Updater $updater)
+    {
+        $this->updater = $updater;
+    }
+    
+    /**
+     * @noreturn
+     */
+    protected function createForm()
+    {
+        $this->form->add(new FileInput('updates', '', [
             'title' => 'Updates',
             'required' => true
         ]));
-	    $this->form->getValidator()
-            ->set('updates', true, [
+        $this->form->getValidator()->set('updates', true, [
                 new FileRule(),
                 new FileExtension(['zip']),
                 new FileSize('10M'),
@@ -60,30 +63,31 @@ class UpdateForm extends BaseForm {
                 'trim' => false,
             ]);
     }
-
+    
     /**
      * @return bool
      * @throws \Exception
      */
-    protected function processForm() {
+    protected function processForm()
+    {
         try {
             /** @var UploadedFileInterface $value */
             $value = $this->form->getValue('updates');
             $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('GameX', true) . DIRECTORY_SEPARATOR;
-    
+            
             if (!is_dir($tempDir)) {
                 if (!mkdir($tempDir, 0777, true)) {
                     throw new \Exception('Can\'t create folder ' . $tempDir);
                 }
             }
-    
+            
             $value->moveTo($tempDir . 'uploads.zip');
-    
+            
             $archive = new ZipArchive();
             $archive->open($tempDir . 'uploads.zip', ZipArchive::CHECKCONS);
             $archive->extractTo($tempDir);
-    
-    
+            
+            
             $updates = new Manifest($tempDir . 'manifest.json');
             $this->updater->run($updates);
             return true;

@@ -68,7 +68,7 @@
 										<br>
                                         {{ trans('labels', 'server_players') }}:
                                         {% if server.success %}
-                                            {{ server.players }}/{{ server.maxPlayers }}
+                                            {{ players_online[server.id] | length }}/{{ server.max_players }}
                                         {% else %}
 											-/-
                                         {% endif %}
