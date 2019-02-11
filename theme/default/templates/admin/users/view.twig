@@ -11,7 +11,7 @@
         constants.admin.users.PERMISSION_GROUP,
         constants.admin.users.PERMISSION_KEY,
         permissions.ACCESS_LIST
-        ) %}
+    ) %}
         <div class="uk-float-left">
             {{ admin.back_btn(path_for(constants.admin.users.ROUTE_LIST), 'l') }}
         </div>
@@ -21,7 +21,7 @@
         constants.admin.users.PERMISSION_GROUP,
         constants.admin.users.PERMISSION_KEY,
         permissions.ACCESS_EDIT
-        ) %}
+    ) %}
         {{ admin.edit_btn(path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id}), 'l') }}
     {% endif %}
 {% endblock %}
@@ -46,16 +46,28 @@
         <div class="uk-card-body">
             <div f-table f-divider>
                 <ul>
-                    <li>Email</li>
-                    <li>{{ user.email }}</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">Email</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.email }}</li>
                 </ul>
                 <ul>
-                    <li>Update At</li>
-                    <li>{{ user.updated_at }}</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">Update At</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.updated_at }}</li>
                 </ul>
                 <ul>
-                    <li>Role</li>
-                    <li>{{ user.role.name }}</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">Role</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.role.name }}</li>
+                </ul>
+                <ul>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">Status</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">
+                        {% if user.status == 'pending' %}
+                            PENDING
+                        {% elseif user.status == 'active' %}
+                            Active
+                        {% else %}
+                            BANNED
+                        {% endif %}
+                    </li>
                 </ul>
             </div>
         </div>

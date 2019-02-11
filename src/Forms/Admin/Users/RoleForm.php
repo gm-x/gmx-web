@@ -1,6 +1,6 @@
 <?php
 
-namespace GameX\Forms\Admin;
+namespace GameX\Forms\Admin\Users;
 
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\RoleHelper;
@@ -8,7 +8,7 @@ use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Rules\InArray;
 
-class UsersForm extends BaseForm
+class RoleForm extends BaseForm
 {
 
     /**
@@ -54,7 +54,8 @@ class UsersForm extends BaseForm
     }
     
     /**
-     * @return boolean
+     * @return bool
+     * @throws \Exception
      */
     protected function processForm()
     {

@@ -14,7 +14,7 @@
 	{% endif %}
 
 	<div class="uk-margin uk-inline uk-width-1-1">
-        {% if config.label %}
+        {% if config is null or config.label %}
         <label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
         <div class="uk-form-controls">
         {% endif %}
