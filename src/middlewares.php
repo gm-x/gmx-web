@@ -60,5 +60,3 @@ $app->add(function (
     
     return $next($request, $response);
 });
-
-
