@@ -9,8 +9,8 @@ use \Carbon\Carbon;
 use \GameX\Models\Privilege;
 use \GameX\Models\Map;
 use \GameX\Models\Player;
-use \GameX\Core\Forms\Validator;
-use \GameX\Core\Forms\Rules\Number;
+use \GameX\Core\Validate\Validator;
+use \GameX\Core\Validate\Rules\Number;
 use \GameX\Core\Exceptions\ApiException;
 
 class ServerController extends BaseApiController

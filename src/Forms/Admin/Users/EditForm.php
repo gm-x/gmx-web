@@ -6,9 +6,9 @@ use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Email as EmailElement;
-use \GameX\Core\Forms\Rules\Email as EmailRule;
-use \GameX\Core\Forms\Rules\InArray;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Rules\Email as EmailRule;
+use \GameX\Core\Validate\Rules\InArray;
+use \GameX\Core\Validate\Rules\Callback;
 
 class EditForm extends BaseForm
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace GameX\Core\Forms;
+namespace GameX\Core\Validate;
 
 class ValidationResult {
     

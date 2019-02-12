@@ -7,8 +7,8 @@ use \GameX\Models\Group;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Flags as FlagsElement;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
-use \GameX\Core\Forms\Rules\Number as NumberRule;
-use \GameX\Core\Forms\Rules\Flags as FlagsRule;
+use \GameX\Core\Validate\Rules\Number as NumberRule;
+use \GameX\Core\Validate\Rules\Flags as FlagsRule;
 
 class GroupsForm extends BaseForm
 {

@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Core\Forms\Rules;
+namespace GameX\Core\Validate\Rules;
 
 class Trim extends BaseRule {
     

@@ -1,19 +1,19 @@
 <?php
-namespace GameX\Core\Forms\Rules;
+namespace GameX\Core\Validate\Rules;
 
-class Flags extends BaseRule {
+class Required extends BaseRule {
     
     /**
      * @inheritdoc
      */
     public function validate($value, array $values) {
-        return preg_match('/^[a-z]+$/', $value) ? $value : null;
+        return $value !== null && strlen($value) > 0 ? $value : null;
     }
     
     /**
      * @return array
      */
     public function getMessage() {
-        return ['flags'];
+        return ['required'];
     }
 }

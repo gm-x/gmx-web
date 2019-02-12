@@ -6,9 +6,9 @@ use \GameX\Core\BaseForm;
 use \GameX\Models\Server;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
-use \GameX\Core\Forms\Rules\Number as NumberRule;
-use \GameX\Core\Forms\Rules\IPv4;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Rules\Number as NumberRule;
+use \GameX\Core\Validate\Rules\IPv4;
+use \GameX\Core\Validate\Rules\Callback;
 
 class ServersForm extends BaseForm
 {

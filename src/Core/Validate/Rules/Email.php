@@ -1,19 +1,19 @@
 <?php
-namespace GameX\Core\Forms\Rules;
+namespace GameX\Core\Validate\Rules;
 
-class Boolean extends BaseRule {
+class Email extends BaseRule {
     
     /**
      * @inheritdoc
      */
     public function validate($value, array $values) {
-        return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false ? $value : null;
     }
     
     /**
      * @return array
      */
 	protected function getMessage() {
-        return ['boolean'];
+        return ['email'];
     }
 }

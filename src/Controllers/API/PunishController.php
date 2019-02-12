@@ -8,11 +8,11 @@ use \Slim\Http\Response;
 use \GameX\Models\Player;
 use \GameX\Models\Punishment;
 use \GameX\Models\Reason;
-use \GameX\Core\Forms\Validator;
-use \GameX\Core\Forms\Rules\Number;
-use \GameX\Core\Forms\Rules\IPv4;
-use \GameX\Core\Forms\Rules\SteamID;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Validator;
+use \GameX\Core\Validate\Rules\Number;
+use \GameX\Core\Validate\Rules\IPv4;
+use \GameX\Core\Validate\Rules\SteamID;
+use \GameX\Core\Validate\Rules\Callback;
 use \GameX\Core\Exceptions\ApiException;
 
 class PunishController extends BaseApiController

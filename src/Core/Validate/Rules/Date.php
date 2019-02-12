@@ -1,7 +1,7 @@
 <?php
-namespace GameX\Core\Forms\Rules;
+namespace GameX\Core\Validate\Rules;
 
-use \GameX\Core\Forms\Rules\DateTime as DateTimeRule;
+use \GameX\Core\Validate\Rules\DateTime as DateTimeRule;
 
 class Date extends DateTimeRule {
     

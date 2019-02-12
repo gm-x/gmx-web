@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Core\Forms;
+namespace GameX\Core\Validate;
 
 use \GameX\Core\Lang\Language;
 

@@ -9,11 +9,11 @@ use \Slim\Http\Response;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Models\Player;
 use \GameX\Models\PlayerSession;
-use \GameX\Core\Forms\Validator;
-use \GameX\Core\Forms\Rules\SteamID;
-use \GameX\Core\Forms\Rules\Number;
-use \GameX\Core\Forms\Rules\IPv4;
-use \GameX\Core\Forms\Rules\Length;
+use \GameX\Core\Validate\Validator;
+use \GameX\Core\Validate\Rules\SteamID;
+use \GameX\Core\Validate\Rules\Number;
+use \GameX\Core\Validate\Rules\IPv4;
+use \GameX\Core\Validate\Rules\Length;
 use \GameX\Core\Exceptions\ApiException;
 
 class PlayerController extends BaseApiController

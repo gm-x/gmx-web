@@ -5,7 +5,7 @@ use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Text;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Rules\Callback;
 
 class ResetPasswordForm extends BaseForm {
 

@@ -1,7 +1,7 @@
 <?php
-namespace GameX\Core\Forms\Rules;
+namespace GameX\Core\Validate\Rules;
 
-use \GameX\Core\Forms\Rule;
+use \GameX\Core\Validate\Rule;
 use \GameX\Core\Lang\Language;
 
 abstract class BaseRule implements Rule {

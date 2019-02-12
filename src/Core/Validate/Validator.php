@@ -1,10 +1,10 @@
 <?php
 
-namespace GameX\Core\Forms;
+namespace GameX\Core\Validate;
 
 use \GameX\Core\Lang\Language;
-use \GameX\Core\Forms\Rules\Trim;
-use \GameX\Core\Forms\Rules\Required;
+use \GameX\Core\Validate\Rules\Trim;
+use \GameX\Core\Validate\Rules\Required;
 
 class Validator {
     

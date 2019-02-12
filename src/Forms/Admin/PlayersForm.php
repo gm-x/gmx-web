@@ -3,16 +3,16 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
-use GameX\Core\Forms\Rules\IPv4;
+use GameX\Core\Validate\Rules\IPv4;
 use \GameX\Models\Player;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Rules\InArray;
-use \GameX\Core\Forms\Rules\Boolean;
-use \GameX\Core\Forms\Rules\SteamID;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Rules\InArray;
+use \GameX\Core\Validate\Rules\Boolean;
+use \GameX\Core\Validate\Rules\SteamID;
+use \GameX\Core\Validate\Rules\Callback;
 
 class PlayersForm extends BaseForm
 {
