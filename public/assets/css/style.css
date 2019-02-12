@@ -41,6 +41,15 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
     font-size: 50px;
 }
 
+.sidenav {
+    left: 10px;
+    max-width: 250px;
+}
+
+.admin > .uk-sticky-placeholder {
+    height: 40px !important;
+}
+
 .xxl {
     font-size: 20vh;
 }
