@@ -9,7 +9,7 @@ use \GameX\Core\BaseAdminController;
 use \GameX\Constants\Admin\UsersConstants;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Forms\Admin\Users\RoleForm;
-use \GameX\Forms\Admin\Users\EmailForm;
+use \GameX\Forms\Admin\Users\EditForm;
 use \GameX\Core\Auth\Helpers\RoleHelper;
 use \GameX\Core\Pagination\Pagination;
 use \Slim\Exception\NotFoundException;
@@ -83,8 +83,8 @@ class UsersController extends BaseAdminController
             ]);
         }
     
-        $emailForm = new EmailForm($user);
-        if ($this->processForm($request, $emailForm, true)) {
+        $editForm = new EditForm($user);
+        if ($this->processForm($request, $editForm, true)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(UsersConstants::ROUTE_VIEW, [
                 'user' => $user->id,
@@ -94,7 +94,7 @@ class UsersController extends BaseAdminController
         return $this->render('admin/users/form.twig', [
             'user' => $user,
             'roleForm' => $roleForm->getForm(),
-            'emailForm' => $emailForm->getForm(),
+            'editForm' => $editForm->getForm(),
         ]);
     }
     

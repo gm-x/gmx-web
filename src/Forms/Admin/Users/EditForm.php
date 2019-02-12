@@ -4,11 +4,13 @@ namespace GameX\Forms\Admin\Users;
 
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Email as EmailElement;
 use \GameX\Core\Forms\Rules\Email as EmailRule;
+use \GameX\Core\Forms\Rules\InArray;
 use \GameX\Core\Forms\Rules\Callback;
 
-class EmailForm extends BaseForm
+class EditForm extends BaseForm
 {
 
     /**
@@ -34,8 +36,17 @@ class EmailForm extends BaseForm
      */
     protected function createForm()
     {
-        $this->form->add(new EmailElement('email', $this->user->email, [
+        $this->form
+            ->add(new EmailElement('email', $this->user->email, [
                 'title' => $this->getTranslate('admin_users', 'email'),
+                'required' => true,
+            ]))
+            ->add(new Select('status', $this->user->status, [
+                UserModel::STATUS_PENDING => 'Pending',
+                UserModel::STATUS_ACTIVE => 'Active',
+                UserModel::STATUS_BANNED => 'Banned',
+            ], [
+                'title' => $this->getTranslate('admin_users', 'status'),
                 'required' => true,
             ]));
         
@@ -50,6 +61,13 @@ class EmailForm extends BaseForm
             ->set('email', true, [
                 new EmailRule(),
                 new Callback($checkUnique, 'Already exists')
+            ])
+            ->set('status', true, [
+                new InArray([
+                    UserModel::STATUS_PENDING,
+                    UserModel::STATUS_ACTIVE,
+                    UserModel::STATUS_BANNED,
+                ])
             ]);
     }
     
@@ -60,6 +78,7 @@ class EmailForm extends BaseForm
     protected function processForm()
     {
         $this->user->email = $this->form->getValue('email');
+        $this->user->status = $this->form->getValue('status');
         return $this->user->save();
     }
 }
