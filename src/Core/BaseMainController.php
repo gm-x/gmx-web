@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Core;
 
 use \Psr\Container\ContainerInterface;
@@ -13,45 +14,49 @@ use \GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\RedirectException;
 
-abstract class BaseMainController extends BaseController {
-
-	/**
-	 * @var UserModel
-	 */
-	protected $user = null;
-
-	/**
-	 * @return string
-	 */
-	abstract protected function getActiveMenu();
-
-	/**
-	 * BaseController constructor.
-	 * @param ContainerInterface $container
-	 */
-    public function __construct(ContainerInterface $container) {
+abstract class BaseMainController extends BaseController
+{
+    
+    /**
+     * @var UserModel
+     */
+    protected $user = null;
+    
+    /**
+     * @return string
+     */
+    abstract protected function getActiveMenu();
+    
+    /**
+     * BaseController constructor.
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
         parent::__construct($container);
-		$this->initMenu();
+        $this->initMenu();
     }
-
-	/**
-	 * @return UserModel
-	 */
-    public function getUser() {
-    	if ($this->user === null) {
-    		$this->user = $this->getContainer('auth')->getUser();
-		}
-    	return $this->user;
-	}
+    
+    /**
+     * @return UserModel
+     */
+    public function getUser()
+    {
+        if ($this->user === null) {
+            $this->user = $this->getContainer('auth')->getUser();
+        }
+        return $this->user;
+    }
     
     /**
      * @param string $name
      * @return Form
      */
-	public function createForm($name) {
+    public function createForm($name)
+    {
         return $this->getContainer('form')->createForm($name);
     }
-
+    
     /**
      * @param string $template
      * @param array $data
@@ -59,57 +64,59 @@ abstract class BaseMainController extends BaseController {
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function render($template, array $data = []) {
+    public function render($template, array $data = [])
+    {
         /** @var Twig $view */
         $view = $this->getContainer('view');
         return $view->render($this->getContainer('response'), $template, $data);
     }
-
+    
     /**
      * @param string $message
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function addErrorMessage($message) {
+    public function addErrorMessage($message)
+    {
         $this->getContainer('flash')->addMessage('error', $message);
     }
-
+    
     /**
      * @param string $message
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function addSuccessMessage($message) {
+    public function addSuccessMessage($message)
+    {
         $this->getContainer('flash')->addMessage('success', $message);
     }
     
     /**
      * Menu initialization
      */
-	protected function initMenu() {
-		/** @var Twig $view */
-		$view = $this->getContainer('view');
-
+    protected function initMenu()
+    {
+        /** @var Twig $view */
+        $view = $this->getContainer('view');
+        
         /** @var \GameX\Core\Lang\Language $lang */
         $lang = $this->getContainer('lang');
-
-		$menu = new Menu();
-		$menu
-			->setActiveRoute($this->getActiveMenu())
-			->add(new MenuItem($lang->format('labels',  'index'), 'index', [], null))
-			->add(new MenuItem($lang->format('labels',  'punishments'), 'punishments', [], null));
-
-		$modules = $this->getContainer('modules');
-		/** @var \GameX\Core\Module\ModuleInterface $module */
-		foreach ($modules as $module) {
-			$items = $module->getMenuItems();
-			foreach ($items as $item) {
-				$menu->add($item);
-			}
-		}
-
-		$view->getEnvironment()->addGlobal('menu', $menu);
-	}
+        
+        $menu = new Menu();
+        $menu->setActiveRoute($this->getActiveMenu())->add(new MenuItem($lang->format('labels', 'index'), 'index', [],
+                null))->add(new MenuItem($lang->format('labels', 'punishments'), 'punishments', [], null));
+        
+        $modules = $this->getContainer('modules');
+        /** @var \GameX\Core\Module\ModuleInterface $module */
+        foreach ($modules as $module) {
+            $items = $module->getMenuItems();
+            foreach ($items as $item) {
+                $menu->add($item);
+            }
+        }
+        
+        $view->getEnvironment()->addGlobal('menu', $menu);
+    }
     
     /**
      * @param ServerRequestInterface $request
@@ -118,7 +125,8 @@ abstract class BaseMainController extends BaseController {
      * @return bool
      * @throws RedirectException
      */
-	protected function processForm(ServerRequestInterface $request, BaseForm $form, $withTransaction = false) {
+    protected function processForm(ServerRequestInterface $request, BaseForm $form, $withTransaction = false)
+    {
         /** @var \Illuminate\Database\Connection|null $connection */
         $connection = $withTransaction ? $this->getContainer('db')->getConnection() : null;
         
@@ -128,7 +136,7 @@ abstract class BaseMainController extends BaseController {
             if ($withTransaction) {
                 $connection->beginTransaction();
             }
-
+            
             $form->process($request);
             $success = $form->getIsSubmitted() && $form->getIsValid();
             if ($withTransaction) {
@@ -158,7 +166,8 @@ abstract class BaseMainController extends BaseController {
     /**
      * @return Permissions
      */
-    protected function getPermissions() {
-	    return $this->getContainer('permissions');
+    protected function getPermissions()
+    {
+        return $this->getContainer('permissions');
     }
 }

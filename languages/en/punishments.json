@@ -1,0 +1,9 @@
+{
+    "player": "Player",
+    "punisher": "Punisher",
+    "server": "Server",
+    "reason": "Reason",
+    "comment": "Comment",
+    "status": "Status",
+    "nothing_to_show": "Nothing to show"
+}

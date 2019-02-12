@@ -2,7 +2,6 @@
 namespace GameX\Core\Auth\Models;
 
 use \Carbon\Carbon;
-use \Cartalyst\Sentinel\Roles\RoleInterface;
 use \GameX\Core\BaseModel;
 
 /**

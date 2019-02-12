@@ -7,8 +7,8 @@ div[f-table] > ul, div[f-table] > ol {
     width: 100%;
 }
 div[f-divider] > ul:not([th]), div[f-divider] > ol:not([th]) {
-    border-top: 1px solid #38464e;
-    box-shadow: 0 -1px #151d20;
+    border-top: 1px solid rgba(74, 74, 74, 0.5);
+    box-shadow: 0 -1px rgba(21, 20, 20, 0.5);
 }
 div[f-table] > ul[th], div[f-table] > ol[th] {
     font-weight: 700;

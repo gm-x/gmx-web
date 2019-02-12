@@ -1,31 +1,36 @@
 <?php
+
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
 
 /**
+ * Class Preference
+ * @package GameX\Models
+ *
  * @property string $key
  * @property array $value
  * @property Server[] $servers
  */
-class Preference extends BaseModel {
-
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'preferences';
-
-	/**
-	 * @var string
-	 */
-	protected $primaryKey = 'key';
-
-	/**
-	 * @var array
-	 */
-	protected $fillable = ['key', 'value'];
+class Preference extends BaseModel
+{
+    
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'preferences';
+    
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'key';
+    
+    /**
+     * @var array
+     */
+    protected $fillable = ['key', 'value'];
     
     /**
      * @var bool
@@ -36,7 +41,7 @@ class Preference extends BaseModel {
      * @var bool
      */
     public $incrementing = false;
-
+    
     /**
      * @param string $value
      * @return array|mixed
@@ -45,7 +50,7 @@ class Preference extends BaseModel {
     {
         return $value ? json_decode($value, true) : [];
     }
-
+    
     /**
      * @param array $value
      */

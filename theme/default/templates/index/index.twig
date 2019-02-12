@@ -1,33 +1,125 @@
 {% extends 'base.twig' %}
 
+{% block style %}
+	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
 {% block content %}
-<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-	<div class="uk-overflow-auto">
-		<table class="uk-table uk-table-divider">
-			<thead>
-				<tr>
-					<th>{{ trans('labels', 'server_name') }}</th>
-					<th>{{ trans('labels', 'server_address') }}</th>
-					<th>{{ trans('labels', 'server_map') }}</th>
-					<th>{{ trans('labels', 'server_players') }}</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for server in servers %}
-					<tr>
-						<td class="text-nowrap">{{ server.name }}</td>
-						<td class="text-nowrap">{{ server.ip }}:{{ server.port }}</td>
-						{% if server.success %}
-							<td>{{ server.map }}</td>
-							<td>{{ server.players }}/{{ server.maxPlayers }}</td>
-						{% else %}
-							<td>-</td>
-							<td>-</td>
-						{% endif %}
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+<div class="uk-child-width-1-2@m uk-grid-small uk-grid-match" uk-grid="masonry: true">
+	<div>
+		<div uk-slider="center: true">
+			<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
+				<ul class="uk-slider-items uk-child-width-1-1@s uk-grid">
+					<li>
+						<div class="uk-card uk-card-default">
+							<div class="uk-inline">
+								<img src="{{ base_url() }}/assets/images/maps/de_nuke.jpg" alt="" class="border-10">
+								<div class="uk-overlay-primary uk-position-cover"></div>
+								<div class="uk-overlay uk-position-bottom uk-light">
+									<h3 class="uk-card-title">Сервер 1</h3>
+									<p>
+										<b>{{ trans('labels', 'server_address') }}</b>: 127.0.0.1:27015
+										<br>
+										<b>{{ trans('labels', 'server_players') }}</b>: 15/32
+									</p>
+								</div>
+							</div>
+							<div class="uk-card-badge uk-label">de_nuke</div>
+						</div>
+					</li>
+					<li>
+						<div class="uk-card uk-card-default">
+							<div class="uk-inline">
+								<img src="{{ base_url() }}/assets/images/maps/cs_italy.jpg" alt="" class="border-10">
+								<div class="uk-overlay-primary uk-position-cover"></div>
+								<div class="uk-overlay uk-position-bottom uk-light">
+									<h3 class="uk-card-title">Сервер 2</h3>
+									<p>
+										<b>{{ trans('labels', 'server_address') }}</b>: 127.0.0.1:27015
+										<br>
+										<b>{{ trans('labels', 'server_players') }}</b>: 15/32
+									</p>
+								</div>
+							</div>
+							<div class="uk-card-badge uk-label">cs_italy</div>
+						</div>
+					</li>
+                    {% for server in servers %}
+						<li>
+							<div class="uk-card uk-card-default">
+								<div class="uk-inline">
+                                    {% if server.success %}
+										<img src="{{ base_url() }}/assets/images/maps/{{ server.map }}.jpg" alt="{{ server.map }}" onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';" class="border-10">
+                                    {% else %}
+										<img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" class="border-10">
+                                    {% endif %}
+									<div class="uk-overlay-primary uk-position-cover"></div>
+									<div class="uk-overlay uk-position-bottom uk-light">
+										<h3 class="uk-card-title">{{ server.name }}</h3>
+										<p>
+											<b>{{ trans('labels', 'server_address') }}</b>: {{ server.ip }}:{{ server.port }}
+											<br>
+											<b>{{ trans('labels', 'server_players') }}</b>:
+											{% if server.success %}
+                                                {{ players_online[server.id] | length }}/{{ server.max_players }}
+                                            {% else %}
+												-/-
+                                            {% endif %}
+										</p>
+									</div>
+								</div>
+								<div class="uk-card-badge uk-label">
+									{% if server.success %}
+                                        {{ server.map }}
+                                    {% else %}
+										OFFLINE
+                                    {% endif %}
+								</div>
+							</div>
+						</li>
+                    {% endfor %}
+				</ul>
+				<a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+				<a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+			</div>
+			<ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
+		</div>
+	</div>
+	<div>
+		<div class="uk-card uk-card-default uk-margin-large-top">
+			<div class="uk-card-body">
+				<h3 class="uk-card-title">Последние наказания</h3>
+				<div f-table f-divider>
+					<ul th>
+						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Nick</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Reason</li>
+					</ul>
+					<ul>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
+					</ul>
+					<ul>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
+					</ul>
+					<ul>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
+					</ul>
+					<ul>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div class="uk-card uk-card-default">
+			<div class="uk-card-body">
+				<h1>Somebody else :)</h1>
+			</div>
+		</div>
 	</div>
 </div>
 {% endblock %}

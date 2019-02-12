@@ -1,11 +1,12 @@
 <?php
+
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
 use \DateTime;
 
 /**
- * Class Group
+ * Class Privilege
  * @package GameX\Models
  *
  * @property integer $player_id
@@ -16,24 +17,25 @@ use \DateTime;
  * @property Group $group
  * @property Player $player
  */
-class Privilege extends BaseModel {
-
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'privileges';
-
-	/**
-	 * @var string
-	 */
-	protected $primaryKey = 'id';
-
-	/**
-	 * @var array
-	 */
-	protected $fillable = ['player_id', 'group_id', 'prefix', 'expired_at', 'active'];
+class Privilege extends BaseModel
+{
+    
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'privileges';
+    
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'id';
+    
+    /**
+     * @var array
+     */
+    protected $fillable = ['player_id', 'group_id', 'prefix', 'expired_at', 'active'];
     
     /**
      * @var array
@@ -44,28 +46,31 @@ class Privilege extends BaseModel {
      * @var array
      */
     protected $hidden = ['server_id', 'player_id', 'created_at', 'updated_at'];
-
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-	public function group() {
-	    return $this->belongsTo(Group::class, 'group_id', 'id');
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'group_id', 'id');
     }
-
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function player() {
-	    return $this->belongsTo(Player::class, 'player_id', 'id');
+    public function player()
+    {
+        return $this->belongsTo(Player::class, 'player_id', 'id');
     }
-
-	/**
-	 * @return DateTime
-	 */
-    public function expired() {
-    	return new DateTime($this->expired_at);
-	}
-
+    
+    /**
+     * @return DateTime
+     */
+    public function expired()
+    {
+        return new DateTime($this->expired_at);
+    }
+    
     /**
      * @param string $value
      * @return string

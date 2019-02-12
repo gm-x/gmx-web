@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Controllers\API;
 
 use \GameX\Core\BaseApiController;
@@ -14,7 +15,8 @@ use \GameX\Core\Forms\Rules\SteamID;
 use \GameX\Core\Forms\Rules\Callback;
 use \GameX\Core\Exceptions\ApiException;
 
-class PunishController extends BaseApiController {
+class PunishController extends BaseApiController
+{
     /**
      * @param Request $request
      * @param Response $response
@@ -22,7 +24,8 @@ class PunishController extends BaseApiController {
      * @return Response
      * @throws ApiException
      */
-    public function indexAction(Request $request, Response $response, array $args) {
+    public function indexAction(Request $request, Response $response, array $args)
+    {
         $serverId = $this->getServer($request)->id;
         
         $playerExists = function ($value, array $values) {
@@ -34,21 +37,15 @@ class PunishController extends BaseApiController {
         };
         
         $validator = new Validator($this->getContainer('lang'));
-        $validator
-            ->set('player_id', true, [
+        $validator->set('player_id', true, [
                 new Number(1),
                 new Callback($playerExists)
-            ])
-            ->set('punisher_id', true, [
+            ])->set('punisher_id', true, [
                 new Number(0),
                 new Callback($punisherExists)
-            ])
-            ->set('type', true, [
+            ])->set('type', true, [
                 new Number(0),
-            ])
-            ->set('reason', true)
-            ->set('details', false)
-            ->set('time', true, [
+            ])->set('reason', true)->set('details', false)->set('time', true, [
                 new Number(0)
             ]);
         
@@ -87,47 +84,37 @@ class PunishController extends BaseApiController {
      * @return Response
      * @throws ApiException
      */
-    public function immediatelyAction(Request $request, Response $response, array $args) {
+    public function immediatelyAction(Request $request, Response $response, array $args)
+    {
         $serverId = $this->getServer($request)->id;
         
         $validator = new Validator($this->getContainer('lang'));
-        $validator
-            ->set('nick', true)
-            ->set('emulator', true, [
+        $validator->set('nick', true)->set('emulator', true, [
                 new Number()
-            ])
-            ->set('steamid', true, [
+            ])->set('steamid', true, [
                 new SteamID()
-            ])
-            ->set('ip', true, [
+            ])->set('ip', true, [
                 new IPv4()
-            ])
-            ->set('type', true, [
+            ])->set('type', true, [
                 new Number(0),
-            ])
-            ->set('reason', true)
-            ->set('details', false)
-            ->set('time', true, [
+            ])->set('reason', true)->set('details', false)->set('time', true, [
                 new Number(0)
             ]);
-    
-    
+        
+        
         $result = $validator->validate($this->getBody($request));
-    
+        
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
         
-        $player = $this->getPlayer(
-            $result->getValue('steamid'),
-            $result->getValue('emulator'),
-            $result->getValue('nick')
-        );
-    
+        $player = $this->getPlayer($result->getValue('steamid'), $result->getValue('emulator'),
+            $result->getValue('nick'));
+        
         $reason = $this->getReason($serverId, $result->getValue('reason'));
-    
+        
         $time = $result->getValue('time');
-    
+        
         $punishment = new Punishment([
             'player_id' => $player->id,
             'punisher_id' => null,
@@ -152,7 +139,8 @@ class PunishController extends BaseApiController {
      * @param $title
      * @return Reason
      */
-    protected function getReason($serverId, $title) {
+    protected function getReason($serverId, $title)
+    {
         return Reason::firstOrCreate([
             'server_id' => $serverId,
             'title' => $title
@@ -172,7 +160,8 @@ class PunishController extends BaseApiController {
      * @param $mick
      * @return Player
      */
-    protected function getPlayer($steamId, $emulator, $mick) {
+    protected function getPlayer($steamId, $emulator, $mick)
+    {
         return Player::firstOrCreate([
             'steamid' => $steamId,
             'emulator' => $emulator

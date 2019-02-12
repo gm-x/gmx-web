@@ -1,10 +1,11 @@
 <?php
+
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
 
 /**
- * Class Server
+ * Class Reason
  * @package GameX\Models
  *
  * @property integer $id
@@ -17,24 +18,25 @@ use \GameX\Core\BaseModel;
  * @property Server $server
  * @property Punishment $punishments
  */
-class Reason extends BaseModel {
-
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'reasons';
-
-	/**
-	 * @var string
-	 */
-	protected $primaryKey = 'id';
-
-	/**
-	 * @var array
-	 */
-	protected $fillable = ['server_id', 'title', 'time', 'overall', 'menu', 'active'];
+class Reason extends BaseModel
+{
+    
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'reasons';
+    
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'id';
+    
+    /**
+     * @var array
+     */
+    protected $fillable = ['server_id', 'title', 'time', 'overall', 'menu', 'active'];
     
     /**
      * @var array
@@ -49,14 +51,16 @@ class Reason extends BaseModel {
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function server() {
+    public function server()
+    {
         return $this->hasMany(Server::class, 'server_id');
     }
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function punishments() {
+    public function punishments()
+    {
         return $this->hasMany(Punishment::class, 'reason_id', 'id');
     }
 }
