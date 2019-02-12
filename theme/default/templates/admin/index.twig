@@ -10,7 +10,7 @@
 			<h3 class="uk-card-title">
 				<a href="{{ path_for(constants.admin.servers.ROUTE_LIST) }}">{{ trans('admin_menu', 'servers') }}</a>
 			</h3>
-            {{ progress.render(servers.active ~ ' / ' ~ servers.total, 100*servers.active/servers.total) }}
+            {{ progress.render(servers.active ~ ' / ' ~ servers.total, 100*servers.active/servers.total, 150) }}
 		</div>
 	</div>
 
@@ -19,7 +19,7 @@
 			<h3 class="uk-card-title">
 				<a href="{{ path_for(constants.admin.users.ROUTE_LIST) }}">{{ trans('admin_menu', 'users') }}</a>
 			</h3>
-            {{ progress.render(users.new ~ ' / ' ~ users.total, 100*users.new/users.total) }}
+            {{ progress.render(users.new ~ ' / ' ~ users.total, 100*users.new/users.total, 150) }}
 		</div>
 	</div>
 
@@ -28,7 +28,7 @@
 			<h3 class="uk-card-title">
 				<a href="{{ path_for(constants.admin.players.ROUTE_LIST) }}">{{ trans('admin_menu', 'players') }}</a>
 			</h3>
-			{{ progress.render(players.new ~ ' / ' ~ players.total, 100*players.new/players.total) }}
+			{{ progress.render(players.new ~ ' / ' ~ players.total, 100*players.new/players.total, 150) }}
 		</div>
 	</div>
 

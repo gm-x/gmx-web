@@ -500,17 +500,17 @@ svg.progress_circle {
     width: 100px;
 }
 
-.progress_circle-50 {
+svg.progress_circle.r-50 {
     height: 50px;
     width: 50px;
 }
 
-.progress_circle-75 {
+svg.progress_circle.r-75 {
     height: 75px;
     width: 75px;
 }
 
-.progress_circle-150 {
+svg.progress_circle.r-150 {
     height: 150px;
     width: 150px;
 }
