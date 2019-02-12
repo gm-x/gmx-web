@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
@@ -15,24 +16,25 @@ use \GameX\Core\BaseModel;
  * @property Server $server
  * @property Privilege[] $players
  */
-class Group extends BaseModel {
-
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'groups';
-
-	/**
-	 * @var string
-	 */
-	protected $primaryKey = 'id';
-
-	/**
-	 * @var array
-	 */
-	protected $fillable = ['server_id', 'title', 'flags', 'priority'];
+class Group extends BaseModel
+{
+    
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'groups';
+    
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'id';
+    
+    /**
+     * @var array
+     */
+    protected $fillable = ['server_id', 'title', 'flags', 'priority'];
     
     /**
      * @var array
@@ -43,18 +45,20 @@ class Group extends BaseModel {
      * @var array
      */
     protected $hidden = ['server_id', 'created_at', 'updated_at'];
-
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-	public function server() {
-	    return $this->belongsTo(Server::class, 'server_id', 'id');
+    public function server()
+    {
+        return $this->belongsTo(Server::class, 'server_id', 'id');
     }
-
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function players() {
-	    return $this->hasMany(Privilege::class, 'group_id');
+    public function players()
+    {
+        return $this->hasMany(Privilege::class, 'group_id');
     }
 }

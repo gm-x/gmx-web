@@ -5,7 +5,7 @@
         </a>
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
-                {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
+                {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
                     <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
                         <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
                     </li>
@@ -28,7 +28,7 @@
             <ul class="uk-navbar-nav">
                 <li>
                     <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
-                    <div class="uk-navbar-dropdown">
+                    <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
                         <ul class="uk-nav uk-navbar-dropdown-nav lang-select">
                             {% for key,value in siteLanguages %}
                                 <li><a data-lang="{{ key }}">{{ value }}</a></li>
@@ -37,8 +37,15 @@
                     </div>
                 </li>
                 <li>
-                    <a href="#"><i class="fas fa-user-circle"></i></a>
-                    <div class="uk-navbar-dropdown">
+                    {% set avatar = upload_url(get_user_avatar()) %}
+                    <a href="#">
+                        {% if avatar %}
+                            <img src="{{ avatar }}" width="25" class="uk-border-circle">
+                        {% else %}
+                            <i class="fas fa-user-circle"></i>
+                        {% endif %}
+                    </a>
+                    <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             {% if is_guest() %}
                                 <li><a class="dropdown-item" href="{{ path_for('login') }}">
@@ -47,9 +54,9 @@
                             {% else %}
                                 <li class="uk-nav-header">{{ get_user_name() }}</li>
                                 {% if has_access_group('admin') %}
-                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> Admin</a></li>
+                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('buttons', 'acp') }}</a></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}"><i class="fas fa-user uk-margin-small-right"></i> Settings</a></li>
+                                <li><a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}"><i class="fas fa-user uk-margin-small-right"></i> {{ trans('buttons', 'ucp') }}</a></li>
                                 <li class="uk-nav-divider"></li>
                                 <li><a class="dropdown-item" href="{{ path_for('logout') }}"><i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('buttons', 'logout') }}</a></li>
                             {% endif %}
@@ -83,7 +90,7 @@
                             </li>
                         {% endif %}
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
                                 <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a>
                         </li>
                         <li class="uk-nav-divider"></li>
@@ -103,4 +110,125 @@
             </div>
         </div>
     </nav>
+{% endmacro %}
+
+{% macro adminbar(menu) %}
+    <nav class="uk-navbar-container uk-visible@xl" uk-navbar>
+        <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}">
+            <img src="{{ base_url() }}/assets/images/logo.svg" width="100">
+        </a>
+        <div class="uk-navbar-left nav-overlay">
+
+        </div>
+        <div class="nav-overlay uk-navbar-left uk-flex-1" hidden>
+
+            <div class="uk-navbar-item uk-width-expand">
+                <form class="uk-search uk-search-navbar uk-width-1-1">
+                    <input class="uk-search-input" type="search" placeholder="{{ trans('labels', 'search') }}..." autofocus>
+                </form>
+            </div>
+
+            <a class="uk-navbar-toggle" uk-close uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#"></a>
+
+        </div>
+        <div class="nav-overlay uk-navbar-right">
+            <a class="uk-navbar-toggle" uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#"><i class="fas fa-search"></i></a>
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
+                    <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
+                        <ul class="uk-nav uk-navbar-dropdown-nav lang-select">
+                            {% for key,value in siteLanguages %}
+                                <li><a data-lang="{{ key }}">{{ value }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    {% set avatar = upload_url(get_user_avatar()) %}
+                    <a href="#">
+                        {% if avatar %}
+                            <img src="{{ avatar }}" width="25" class="uk-border-circle">
+                        {% else %}
+                            <i class="fas fa-user-circle"></i>
+                        {% endif %}
+                    </a>
+                    <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            {% if is_guest() %}
+                                <li><a class="dropdown-item" href="{{ path_for('login') }}">
+                                        {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
+                                    </a></li>
+                            {% else %}
+                                <li class="uk-nav-header">{{ get_user_name() }}</li>
+                                {% if has_access_group('admin') %}
+                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('buttons', 'acp') }}</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}"><i class="fas fa-user uk-margin-small-right"></i> {{ trans('buttons', 'ucp') }}</a></li>
+                                <li class="uk-nav-divider"></li>
+                                <li><a class="dropdown-item" href="{{ path_for('logout') }}"><i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('buttons', 'logout') }}</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <nav class="uk-navbar-container uk-hidden@xl" uk-navbar>
+        <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}">
+            <img src="{{ base_url() }}/assets/images/logo.svg" width="80">
+        </a>
+        <div class="uk-navbar-left">
+            <a class="uk-navbar-toggle" uk-navbar-toggle-icon href="#" uk-toggle="target: #offcanvas-nav"></a>
+        </div>
+        <div id="offcanvas-nav" uk-offcanvas="overlay: true">
+            <div class="uk-offcanvas-bar">
+                <ul class="uk-nav uk-nav-default">
+                    {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
+                        <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
+                            <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <ul class="uk-nav uk-nav-default">
+                    {% if is_guest() %}
+                        <li><a class="dropdown-item" href="{{ path_for('login') }}">
+                                {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
+                            </a></li>
+                    {% else %}
+                        <li class="uk-nav-header">{{ get_user_name() }}</li>
+                        {% if has_access_group('admin') %}
+                            <li>
+                                <a class="dropdown-item" href="{{ path_for('admin_index') }}">
+                                    <span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
+                                <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a>
+                        </li>
+                        <li class="uk-nav-divider"></li>
+                        <li><a class="dropdown-item" href="{{ path_for('logout') }}">
+                                <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('buttons', 'logout') }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endmacro %}
+
+{% macro sidebar(menu) %}
+    <div uk-sticky="offset: 140" class="sidenav uk-visible@xl">
+        <ul class="uk-nav uk-nav-primary uk-margin-auto-vertical">
+            {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
+                <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
+                    <a class="nav-link" href="{{ path_for(item.route, item.params) }}" id="{{ item.route }}">{{ item.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endmacro %}

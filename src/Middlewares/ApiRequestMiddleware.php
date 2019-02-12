@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Middlewares;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -7,7 +8,8 @@ use \GameX\Core\Log\Logger;
 use \GameX\Core\Exceptions\ApiException;
 use \Exception;
 
-class ApiRequestMiddleware {
+class ApiRequestMiddleware
+{
     
     /**
      * @var Logger
@@ -17,7 +19,8 @@ class ApiRequestMiddleware {
     /**
      * @param Logger $logger
      */
-    public function __construct(Logger $logger) {
+    public function __construct(Logger $logger)
+    {
         $this->logger = $logger;
     }
     
@@ -27,12 +30,12 @@ class ApiRequestMiddleware {
      * @param callable $next
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    {
         try {
             return $next($request, $response);
         } catch (ApiException $e) {
-            return $response
-                ->withStatus(500) // TODO: set status code
+            return $response->withStatus(500)// TODO: set status code
                 ->withJson([
                     'success' => false,
                     'error' => [
@@ -42,9 +45,7 @@ class ApiRequestMiddleware {
                 ]);
         } catch (Exception $e) {
             $this->logger->exception($e);
-            return $response
-                ->withStatus(500)
-                ->withJson([
+            return $response->withStatus(500)->withJson([
                     'success' => false,
                     'error' => [
                         'code' => \GameX\Core\Exceptions\ApiException::ERROR_SERVER,

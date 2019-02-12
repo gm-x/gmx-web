@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="icon" href="{{ base_url() }}/assets/favicon.ico">
     <title>{% block title %}{{ title }} | {{ trans('labels', 'admin_panel') }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/all.css" />
@@ -16,12 +16,14 @@
     {% block style %}{% endblock %}
 </head>
 <body>
-<div class="uk-container">
+<div class="uk-container admin">
     <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
-        {{ navbar.mainbar(menu) }}
+        {{ navbar.adminbar(menu) }}
     </div>
+</div>
+<div class="uk-container admin">
+    {{ navbar.sidebar(menu) }}
     <main role="main" class="container">
-        <button class="uk-button uk-button-default" type="button" uk-toggle="target: #offcanvas-nav2">Default Nav</button>
         <div class="uk-margin uk-flex uk-flex-right">
             {% block subnav %}{% endblock %}
         </div>
@@ -38,7 +40,6 @@
                 <h5>{{ message }}</h5>
             </div>
         {% endfor %}
-
         {% block content %}{% endblock %}
     </main>
     {% block modals %}{% endblock %}

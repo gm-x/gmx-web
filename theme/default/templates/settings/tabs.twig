@@ -1,8 +1,8 @@
 {% import 'macros/tabs.twig' as tabs %}
 {{ tabs.render([{
     'href': path_for(constants.settings.ROUTE_MAIN),
-    'title': 'Main'
+    'title': trans('labels', 'main_tab')
 }, {
     'href': path_for(constants.settings.ROUTE_ASSIGN),
-    'title': 'Assign'
+    'title': trans('labels', 'assign_tab')
 }], href) }}

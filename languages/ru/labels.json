@@ -1,11 +1,19 @@
 {
-	"required": "Обьязательно",
-	"are_you_sure": "Вы уверены?",
-	"saved": "Успешно сохранено",
-	"removed": "Saved removed",
-	"exception": "Что-то не так. Пожалуйста, повторите попытку позже.",
-	"search": "Поиск",
-	"index": "Главная",
-	"punishments": "Наказания",
-	"admin_panel": "Админ панель"
+    "required": "Обьязательно",
+    "are_you_sure": "Вы уверены?",
+    "saved": "Успешно сохранено",
+    "removed": "Успешно удалено",
+    "exception": "Что-то не так. Пожалуйста, повторите попытку позже.",
+    "search": "Поиск",
+    "index": "Главная",
+    "punishments": "Наказания",
+    "admin_panel": "Админ панель",
+    "server_name": "Имя сервера",
+    "server_address": "Адрес сервера",
+    "server_map": "Текущая карта",
+    "server_players": "Игроков",
+    "created_at": "Создан",
+    "updated_at": "Изменен",
+    "main_tab": "Основное",
+    "assign_tab": "Другое"
 }

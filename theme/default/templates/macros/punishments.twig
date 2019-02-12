@@ -13,7 +13,9 @@
         {% endif %}
     {% elseif punishment.punisher_user_id %}
         {% if punishment.punisherUser.avatar %}
-            <img src="{{ upload_url(punishment.punisherUser.avatar) }}" width="30">
+            <div>
+                <img src="{{ upload_url(punishment.punisherUser.avatar) }}" width="30" class="uk-border-circle uk-margin-small-right">
+            </div>
         {% endif %}
         {% if has_access_permission(
             constants.admin.users.PERMISSION_GROUP,

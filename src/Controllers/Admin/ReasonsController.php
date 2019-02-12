@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
@@ -13,15 +14,17 @@ use \GameX\Forms\Admin\ReasonsForm;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
-class ReasonsController extends BaseAdminController {
-
-	/**
-	 * @return string
-	 */
-	protected function getActiveMenu() {
-		return ServersConstants::ROUTE_LIST;
-	}
-
+class ReasonsController extends BaseAdminController
+{
+    
+    /**
+     * @return string
+     */
+    protected function getActiveMenu()
+    {
+        return ServersConstants::ROUTE_LIST;
+    }
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -29,7 +32,8 @@ class ReasonsController extends BaseAdminController {
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
         $server = $this->getServer($request, $response, $args);
         $pagination = new Pagination($server->reasons()->get(), $request);
         return $this->render('admin/servers/reasons/index.twig', [
@@ -38,7 +42,7 @@ class ReasonsController extends BaseAdminController {
             'pagination' => $pagination,
         ]);
     }
-
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -47,7 +51,8 @@ class ReasonsController extends BaseAdminController {
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
         $server = $this->getServer($request, $response, $args);
         $reason = $this->getReason($request, $response, $args, $server);
         
@@ -66,7 +71,7 @@ class ReasonsController extends BaseAdminController {
             'create' => true,
         ]);
     }
-
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -75,7 +80,8 @@ class ReasonsController extends BaseAdminController {
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
         $server = $this->getServer($request, $response, $args);
         $reason = $this->getReason($request, $response, $args, $server);
         
@@ -94,7 +100,7 @@ class ReasonsController extends BaseAdminController {
             'create' => false,
         ]);
     }
-
+    
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -102,7 +108,8 @@ class ReasonsController extends BaseAdminController {
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = []) {
+    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getReason($request, $response, $args, $server);
         
@@ -124,7 +131,8 @@ class ReasonsController extends BaseAdminController {
      * @return Server
      * @throws NotFoundException
      */
-    protected function getServer(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    protected function getServer(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    {
         if (!array_key_exists('server', $args)) {
             return new Server();
         }
@@ -145,19 +153,24 @@ class ReasonsController extends BaseAdminController {
      * @return Reason
      * @throws NotFoundException
      */
-    protected function getReason(ServerRequestInterface $request, ResponseInterface $response, array $args, Server $server) {
+    protected function getReason(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $args,
+        Server $server
+    ) {
         if (!array_key_exists('reason', $args)) {
             $reason = new Reason();
             $reason->server_id = $server->id;
         } else {
             $reason = Reason::find($args['reason']);
         }
-    
+        
         if (!$reason) {
             throw new NotFoundException($request, $response);
         }
-    
-    
+        
+        
         return $reason;
     }
 }

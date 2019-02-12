@@ -1,11 +1,12 @@
 <?php
+
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
 use \GameX\Core\Auth\Models\UserModel;
 
 /**
- * Class Group
+ * Class Punishment
  * @package GameX\Models
  *
  * @property integer $id
@@ -25,8 +26,9 @@ use \GameX\Core\Auth\Models\UserModel;
  * @property Reason $reason
  * @property bool $permanent
  */
-class Punishment extends BaseModel {
-
+class Punishment extends BaseModel
+{
+    
     const STATUS_NONE = 'none';
     const STATUS_PUNISHED = 'punished';
     const STATUS_EXPIRED = 'expired';
@@ -51,7 +53,17 @@ class Punishment extends BaseModel {
     /**
      * @var array
      */
-    protected $fillable = ['player_id', 'punisher_id', 'punisher_user_id', 'server_id', 'reason_id', 'details', 'type', 'expired_at', 'status'];
+    protected $fillable = [
+        'player_id',
+        'punisher_id',
+        'punisher_user_id',
+        'server_id',
+        'reason_id',
+        'details',
+        'type',
+        'expired_at',
+        'status'
+    ];
     
     /**
      * @var array
@@ -67,62 +79,68 @@ class Punishment extends BaseModel {
      * @var array
      */
     protected $appends = ['types', 'time'];
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function player() {
-		return $this->belongsTo(Player::class, 'player_id', 'id');
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function punisher() {
-		return $this->belongsTo(Player::class, 'punisher_id', 'id');
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function punisherUser() {
-		return $this->belongsTo(UserModel::class, 'punisher_user_id', 'id');
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function server() {
-		return $this->belongsTo(Server::class, 'server_id', 'id');
-	}
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-	public function reason() {
-	    return $this->belongsTo(Reason::class, 'reason_id', 'id');
+    public function player()
+    {
+        return $this->belongsTo(Player::class, 'player_id', 'id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function punisher()
+    {
+        return $this->belongsTo(Player::class, 'punisher_id', 'id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function punisherUser()
+    {
+        return $this->belongsTo(UserModel::class, 'punisher_user_id', 'id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function server()
+    {
+        return $this->belongsTo(Server::class, 'server_id', 'id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function reason()
+    {
+        return $this->belongsTo(Reason::class, 'reason_id', 'id');
     }
     
     /**
      * @return int
      */
-    public function getTimeAttribute() {
-        return $this->attributes['expired_at'] !== null
-            ? $this->attributes['expired_at']->diffInSeconds($this->attributes['created_at'])
-            : 0;
+    public function getTimeAttribute()
+    {
+        return $this->attributes['expired_at'] !== null ? $this->attributes['expired_at']->diffInSeconds($this->attributes['created_at']) : 0;
     }
     
     /**
      * @return bool
      */
-	public function getPermanentAttribute() {
-	    return $this->attributes['expired_at'] === null;
+    public function getPermanentAttribute()
+    {
+        return $this->attributes['expired_at'] === null;
     }
     
     /**
      * @return array
      */
-    public function getTypesAttribute() {
+    public function getTypesAttribute()
+    {
         $types = [];
         if ($this->attributes['type'] && self::TYPE_BANNED) {
             $types[] = 'ban';

@@ -57,22 +57,22 @@ class AuthHelper {
 
 		return $query->exists();
 	}
-
-	/**
-	 * @param string $login
-	 * @param string $email
-	 * @param string $password
-	 * @param bool $activate
-	 * @return UserModel
-	 * @throws FormException
-	 * @throws ValidationException
-	 */
+    
+    /**
+     * @param $login
+     * @param $email
+     * @param $password
+     * @param bool $activate
+     * @return bool|\Cartalyst\Sentinel\Users\UserInteface
+     * @throws \Exception
+     */
 	public function registerUser($login, $email, $password, $activate = false) {
 		return $this->auth->register([
 			'login'  => $login,
 			'email'  => $email,
 			'password' => $password,
             'token' => Utils::generateToken(16),
+            'status' => $activate ? UserModel::STATUS_ACTIVE : UserModel::STATUS_PENDING
 		], $activate ? true : null);
 	}
 
@@ -85,12 +85,17 @@ class AuthHelper {
 	}
 
 	/**
-	 * @param UserInterface $user
+	 * @param UserModel $user
 	 * @param string $code
 	 * @return bool
 	 */
-	public function activateUser(UserInterface $user, $code) {
-		return $this->auth->getActivationRepository()->complete($user, $code);
+	public function activateUser(UserModel $user, $code) {
+		if (!$this->auth->getActivationRepository()->complete($user, $code)) {
+		    return false;
+        }
+		
+		$user->status = UserModel::STATUS_ACTIVE;
+		return $user->save();
 	}
 
 	/**

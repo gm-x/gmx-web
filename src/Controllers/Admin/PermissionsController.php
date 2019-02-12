@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
@@ -12,15 +13,17 @@ use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Constants\Admin\PermissionsConstants;
 use \Slim\Exception\NotFoundException;
 
-class PermissionsController extends BaseAdminController {
-
+class PermissionsController extends BaseAdminController
+{
+    
     /**
      * @return string
      */
-    protected function getActiveMenu() {
+    protected function getActiveMenu()
+    {
         return RolesConstants::ROUTE_LIST;
     }
-
+    
     /**
      * @param Request $request
      * @param Response $response
@@ -30,7 +33,8 @@ class PermissionsController extends BaseAdminController {
      * @throws \GameX\Core\Cache\NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function indexAction(Request $request, Response $response, array $args = []) {
+    public function indexAction(Request $request, Response $response, array $args = [])
+    {
         $role = $this->getRole($request, $response, $args);
         $form = new PermissionsForm($role);
         if ($this->processForm($request, $form)) {
@@ -57,11 +61,12 @@ class PermissionsController extends BaseAdminController {
      * @return RoleModel
      * @throws NotFoundException
      */
-    protected function getRole(Request $request, Response $response, array $args) {
+    protected function getRole(Request $request, Response $response, array $args)
+    {
         if (!array_key_exists('role', $args)) {
             throw new NotFoundException($request, $response);
         }
-    
+        
         $role = RoleModel::find($args['role']);
         if (!$role) {
             throw new NotFoundException($request, $response);
