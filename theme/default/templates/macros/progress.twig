@@ -1,0 +1,9 @@
+{% macro render(text, percent) %}
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 34 34" class="progress_circle">
+		<circle cx="16" cy="16" r="15.9155"	class="progress-bar__background" />
+		<circle cx="16" cy="16" r="15.9155"	class="progress-bar__progress" stroke-dashoffset="{{ percent }}"/>
+		<text x="-16" y="-13" font-family="Arial" font-size="6" text-anchor="middle" class="progress-bar__text">
+            {{ text }}
+		</text>
+	</svg>
+{% endmacro %}
