@@ -7,6 +7,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Lang\Language;
 use \GameX\Core\Forms\Form;
+use \GameX\Core\Validate\Validator;
 use \GameX\Core\Exceptions\ValidationException;
 
 abstract class BaseForm
@@ -110,7 +111,22 @@ abstract class BaseForm
     /**
      * @noreturn
      */
-    abstract protected function createForm();
+    protected function createForm()
+    {
+        $this->makeForm($this->form);
+        $this->makeValidator($this->form->getValidator());
+    }
+    
+    /**
+     * @param Form $form
+     */
+    protected function makeForm(Form $form) {}
+    
+    /**
+     * @param Validator $validator
+     * @throws \Exception
+     */
+    protected function makeValidator(Validator $validator) {}
     
     /**
      * @return boolean
