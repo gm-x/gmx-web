@@ -38,7 +38,7 @@ class AuthMiddleware
         /** @var UserModel $user */
         $user = $this->auth->getUser();
         
-        if ($user->status === UserModel::STATUS_BANNED) {
+        if ($user && $user->status === UserModel::STATUS_BANNED) {
             return $response->withStatus(403);
         }
         return $next($request->withAttribute('user', $user), $response);
