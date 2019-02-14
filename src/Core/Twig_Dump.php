@@ -20,7 +20,9 @@ class Twig_Dump extends Twig_Extension
     public function dump($var)
     {
         ob_start();
+        echo '<pre>';
         var_dump($var);
+        echo '</pre>';
         return ob_get_clean();
     }
 }

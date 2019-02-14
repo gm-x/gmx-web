@@ -1,4 +1,5 @@
 {% extends 'admin/admin.twig' %}
+{% import 'macros/progress.twig' as progress %}
 
 {% block title %}{{ title }} | {{ trans('labels', 'admin_panel') }} | {{ trans('labels', 'index') }}{% endblock %}
 
@@ -9,7 +10,7 @@
 			<h3 class="uk-card-title">
 				<a href="{{ path_for(constants.admin.servers.ROUTE_LIST) }}">{{ trans('admin_menu', 'servers') }}</a>
 			</h3>
-			<span>Active {{ servers.active }} of {{ servers.total }}</span>
+            {{ progress.render(servers.active ~ ' / ' ~ servers.total, 100*servers.active/servers.total, 150) }}
 		</div>
 	</div>
 
@@ -18,7 +19,7 @@
 			<h3 class="uk-card-title">
 				<a href="{{ path_for(constants.admin.users.ROUTE_LIST) }}">{{ trans('admin_menu', 'users') }}</a>
 			</h3>
-			<span>New {{ users.new }} of {{ users.total }}</span>
+            {{ progress.render(users.new ~ ' / ' ~ users.total, 100*users.new/users.total, 150) }}
 		</div>
 	</div>
 
@@ -27,7 +28,7 @@
 			<h3 class="uk-card-title">
 				<a href="{{ path_for(constants.admin.players.ROUTE_LIST) }}">{{ trans('admin_menu', 'players') }}</a>
 			</h3>
-			<span>New {{ players.new }} of {{ players.total }}</span>
+			{{ progress.render(players.new ~ ' / ' ~ players.total, 100*players.new/players.total, 150) }}
 		</div>
 	</div>
 
