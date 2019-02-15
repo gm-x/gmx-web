@@ -111,22 +111,7 @@ abstract class BaseForm
     /**
      * @noreturn
      */
-    protected function createForm()
-    {
-        $this->makeForm($this->form);
-        $this->makeValidator($this->form->getValidator());
-    }
-    
-    /**
-     * @param Form $form
-     */
-    protected function makeForm(Form $form) {}
-    
-    /**
-     * @param Validator $validator
-     * @throws \Exception
-     */
-    protected function makeValidator(Validator $validator) {}
+    abstract protected function createForm();
     
     /**
      * @return boolean

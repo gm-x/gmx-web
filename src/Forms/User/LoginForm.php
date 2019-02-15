@@ -35,9 +35,9 @@ class LoginForm extends BaseForm
     /**
      * @inheritdoc
      */
-    protected function makeForm(Form $form)
+    protected function createForm()
     {
-        $form->add(new Text('login', '', [
+        $this->form->add(new Text('login', '', [
                 'title' => $this->getTranslate('inputs', 'login_email'),
                 'required' => true,
                 'icon' => 'user',
@@ -49,14 +49,11 @@ class LoginForm extends BaseForm
                 'title' => $this->getTranslate('inputs', 'remember_me'),
                 'required' => false,
             ]));
-    }
     
-    /**
-     * @inheritdoc
-     */
-    protected function makeValidator(Validator $validator)
-    {
-        $validator->set('login', true)->set('password', true)->set('remember_me', false, [
+        $this->form->getValidator()
+            ->set('login', true)
+            ->set('password', true)
+            ->set('remember_me', false, [
                 new Boolean()
             ]);
     }
