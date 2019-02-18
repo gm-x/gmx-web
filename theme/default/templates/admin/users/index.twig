@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
 
+{% block subnav %}
+    <div class="uk-float-left">
+        {{ admin.back_btn(path_for('admin_index'), 'l') }}
+    </div>
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     {% set hasPermissionsForView = has_access_permission(
