@@ -136,7 +136,11 @@ class SentinelBootstrapper {
      */
     protected function createCookie() {
         if ($this->request) {
-            return new SentinelCookie($this->request, 'persistence_key');
+            return new SentinelCookie($this->request, [
+                'name' => 'persistence_key',
+                'secure' => $this->request->getUri()->getScheme() == 'https',
+                'http_only' => true
+            ]);
         } else {
             return new SentinelFakeCookie();
         }
