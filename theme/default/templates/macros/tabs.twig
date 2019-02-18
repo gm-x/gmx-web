@@ -1,6 +1,6 @@
 {% macro render(tabs, href) %}
     <ul class="uk-dark uk-subnav uk-subnav-divider" uk-margin>
-    {% for tab in tabs %}
+    {% for tab in tabs if tab.enabled %}
         <li{{ tab.href == href ? ' class="uk-active"' : '' }}>
             <a href="{{ tab.href }}">
                 {{ tab.title }}

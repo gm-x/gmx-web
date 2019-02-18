@@ -1,17 +1,35 @@
 {% import 'macros/tabs.twig' as tabs %}
 
-{# TODO: check permissions here #}
-
 {{ tabs.render([{
 	'href': path_for(constants.admin.preferences.ROUTE_MAIN),
-	'title': trans('admin_preferences', 'tab_main')
+	'title': trans('admin_preferences', 'tab_main'),
+    'enabled': has_access_permission(
+        constants.preferences.players.PERMISSION_GROUP,
+        constants.preferences.players.PERMISSION_MAIN_KEY,
+        permissions.ACCESS_EDIT
+    )
 }, {
     'href': path_for(constants.admin.preferences.ROUTE_EMAIL),
-    'title': trans('admin_preferences', 'tab_email')
+    'title': trans('admin_preferences', 'tab_email'),
+    'enabled': has_access_permission(
+        constants.preferences.players.PERMISSION_GROUP,
+        constants.preferences.players.PERMISSION_EMAIL_KEY,
+        permissions.ACCESS_EDIT
+    )
 }, {
     'href': path_for(constants.admin.preferences.ROUTE_UPDATE),
-    'title': trans('admin_preferences', 'tab_update')
+    'title': trans('admin_preferences', 'tab_update'),
+    'enabled': has_access_permission(
+        constants.preferences.players.PERMISSION_GROUP,
+        constants.preferences.players.PERMISSION_UPDATE_KEY,
+        permissions.ACCESS_EDIT
+    )
 }, {
     'href': path_for(constants.admin.preferences.ROUTE_CACHE),
-    'title': trans('admin_preferences', 'tab_cache')
+    'title': trans('admin_preferences', 'tab_cache'),
+    'enabled': has_access_permission(
+        constants.preferences.players.PERMISSION_GROUP,
+        constants.preferences.players.PERMISSION_CACHE_KEY,
+        permissions.ACCESS_EDIT
+    )
 }], href) }}
