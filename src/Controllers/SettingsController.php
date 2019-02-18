@@ -41,17 +41,18 @@ class SettingsController extends BaseMainController
         $passwordForm = new PasswordForm($user, new AuthHelper($this->container));
         if ($this->processForm($request, $passwordForm, true)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(SettingsConstants::ROUTE_MAIN);
+            return $this->redirect(SettingsConstants::ROUTE_MAIN, [], ['form' => 'password']);
         }
         
         $avatarForm = new AvatarForm($user, $this->getContainer('upload'));
         if ($this->processForm($request, $avatarForm, true)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(SettingsConstants::ROUTE_MAIN);
+            return $this->redirect(SettingsConstants::ROUTE_MAIN, [], ['form' => 'avatar']);
         }
         
         return $this->render('settings/main.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri()),
+            'currentForm' => $request->getParam('form', 'email'),
             'user' => $user,
             'emailForm' => $emailForm->getForm(),
             'passwordForm' => $passwordForm->getForm(),
