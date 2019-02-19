@@ -85,9 +85,22 @@ function composerInstall() {
 }
 
 function checkDbConnection($config) {
-	$dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
-	$dbh = new PDO($dsn, $config['user'], $config['pass']);
-	$dbh = null;
+    if (empty($config['host']) || empty($config['port']) || empty($config['name']) || empty($config['user'])) {
+        throw new Exception('Bad connection params');
+    }
+    $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
+    $dbh = new PDO($dsn, $config['user'], $config['pass']);
+    $dbh = null;
+}
+
+function checkAdminCredentials($config) {
+    if (empty($config['login']) || empty($config['email']) || empty($config['pass'])) {
+        throw new Exception('Bad credentials for admin');
+    }
+    
+    if (filter_var($config['email'], FILTER_VALIDATE_EMAIL) === false) {
+        throw new Exception('Bad credentials for admin');
+    }
 }
 
 function generateSecretKey() {

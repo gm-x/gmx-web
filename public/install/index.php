@@ -27,9 +27,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     BASE_DIR . 'runtime' . DS . 'logs',
                     BASE_DIR . 'runtime' . DS . 'twig_cache',
                 ]);
-
+    
                 clearTwigCache();
+
+                $databaseCfg = array_merge([
+                    'host' => '127.0.0.1',
+                    'port' => 3306,
+                    'user' => 'root',
+                    'pass' => '',
+                    'name' => 'test'
+                ], isset($_POST['db']) && is_array($_POST['db']) ? $_POST['db'] : []);
+    
+                checkDbConnection($databaseCfg);
+                checkAdminCredentials(isset($_POST['admin']) && is_array($_POST['admin']) ? $_POST['admin'] : []);
+    
                 json(true);
+            } catch (PDOException $e) {
+                logException($e);
+                json(false, 'Can\'t connect to database');
             } catch (Exception $e) {
                 logException($e);
                 json(false, $e->getMessage());
@@ -49,18 +64,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		case 'config': {
 			try {
-				checkDbConnection($_POST['db']);
-
+                $databaseCfg = array_merge([
+                    'host' => '127.0.0.1',
+                    'port' => 3306,
+                    'user' => 'root',
+                    'pass' => '',
+                    'name' => 'test',
+                    'prefix' => 'gmx_'
+                ], isset($_POST['db']) && is_array($_POST['db']) ? $_POST['db'] : []);
+                
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
                 $provider = new \GameX\Core\Configuration\Providers\JsonProvider();
 				$config = new \GameX\Core\Configuration\Config($provider);
 				$db = $config->getNode('db');
-				$db->set('host', $_POST['db']['host']);
-				$db->set('port', (int) $_POST['db']['port']);
-				$db->set('username', $_POST['db']['user']);
-				$db->set('password', $_POST['db']['pass']);
-				$db->set('database', $_POST['db']['name']);
-				$db->set('prefix', $_POST['db']['prefix']);
+				$db->set('host', $databaseCfg['host']);
+				$db->set('port', (int) $databaseCfg['port']);
+				$db->set('username', $databaseCfg['user']);
+				$db->set('password', $databaseCfg['pass']);
+				$db->set('database', $databaseCfg['name']);
+				$db->set('prefix', $databaseCfg['prefix']);
 
                 $provider->setPath(BASE_DIR . 'config.json');
 				$config->save();

@@ -83,16 +83,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
     var statusList;
-	function result(step, nextCall) {
+	function result(message, nextCall) {
 		var el= $('<li/>');
-		el.addClass('list-group-item').text('Install ' + step + ': installing ...');
+		el.addClass('list-group-item').text(message + '...');
 		statusList.append(el);
 		return function (data) {
 			if (data.status) {
-				el.text('Install ' + step + ': installed');
+				el.text(message);
+                el.addClass('uk-text-success');
 				nextCall();
 			} else {
-				el.text('Install ' + step + ': error ' + data.message);
+				el.text(message + ': ' + data.message);
                 el.addClass('uk-text-danger');
                 $('#close-btn').prop('disabled', false);
                 $('#formSubmitButton').prop('disabled', false);
@@ -111,14 +112,29 @@
     }
 
     function installChecks() {
-        var nextFunc = result('checks', installComposer);
-        $.post('?step=checks')
+        var nextFunc = result('Checks requirements', installComposer);
+        var data = {
+            db: {
+                host: $('#formDatabaseHost').val(),
+                port: $('#formDatabasePort').val(),
+                user: $('#formDatabaseUser').val(),
+                pass: $('#formDatabasePass').val(),
+                name: $('#formDatabaseName').val(),
+                prefix: $('#formDatabasePrefix').val()
+            },
+            admin: {
+                login: $('#formAdminLogin').val(),
+                email: $('#formAdminEmail').val(),
+                pass: $('#formAdminPass').val()
+            }
+        };
+        $.post('?step=checks', data)
             .done(nextFunc)
             .fail(fail(nextFunc));
     }
 
 	function installComposer() {
-	    var nextFunc = result('composer', installConfig);
+	    var nextFunc = result('Download dependencies', installConfig);
 		$.post('?step=composer')
             .done(nextFunc)
             .fail(fail(nextFunc));
@@ -135,14 +151,14 @@
 				prefix: $('#formDatabasePrefix').val()
 			}
 		};
-        var nextFunc = result('config', installMigrations);
+        var nextFunc = result('Create config file', installMigrations);
 		$.post('?step=config', data)
             .done(nextFunc)
             .fail(fail(nextFunc));
 	}
 
 	function installMigrations() {
-        var nextFunc = result('migrations', installAdmin);
+        var nextFunc = result('Create tables', installAdmin);
 		$.post('?step=migrations')
             .done(nextFunc)
             .fail(fail(nextFunc));
@@ -154,7 +170,7 @@
 			email: $('#formAdminEmail').val(),
 			pass: $('#formAdminPass').val()
 		};
-        var nextFunc = result('administrator', finish);
+        var nextFunc = result('Create administrator', finish);
 		$.post('?step=admin', data)
             .done(nextFunc)
             .fail(fail(nextFunc));

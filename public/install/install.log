@@ -136,3 +136,32 @@ Stack trace:
 #1 C:\OpenServer\domains\GameX\install\index.php(49): checkDbConnection(Array)
 #2 {main}
 
+exception 'PDOException' with message 'SQLSTATE[HY000] [2002] No such file or directory' in /var/www/GameX/GameX/public/install/functions.php:89
+Stack trace:
+#0 /var/www/GameX/GameX/public/install/functions.php(89): PDO->__construct('mysql:host=;por...', NULL, NULL)
+#1 /var/www/GameX/GameX/public/install/index.php(33): checkDbConnection(NULL)
+#2 {main}
+
+exception 'PDOException' with message 'SQLSTATE[HY000] [2002] Connection refused' in /var/www/GameX/GameX/public/install/functions.php:89
+Stack trace:
+#0 /var/www/GameX/GameX/public/install/functions.php(89): PDO->__construct('mysql:host=127....', 'root', '')
+#1 /var/www/GameX/GameX/public/install/index.php(33): checkDbConnection(Array)
+#2 {main}
+
+exception 'PDOException' with message 'SQLSTATE[HY000] [2002] Connection refused' in /var/www/GameX/GameX/public/install/functions.php:89
+Stack trace:
+#0 /var/www/GameX/GameX/public/install/functions.php(89): PDO->__construct('mysql:host=127....', 'root', '')
+#1 /var/www/GameX/GameX/public/install/index.php(33): checkDbConnection(Array)
+#2 {main}
+
+exception 'PDOException' with message 'SQLSTATE[HY000] [2002] Connection refused' in /var/www/GameX/GameX/public/install/functions.php:89
+Stack trace:
+#0 /var/www/GameX/GameX/public/install/functions.php(89): PDO->__construct('mysql:host=127....', 'root', '')
+#1 /var/www/GameX/GameX/public/install/index.php(33): checkDbConnection(Array)
+#2 {main}
+
+exception 'Exception' with message 'Bad credentials for admin' in /var/www/GameX/GameX/public/install/functions.php:98
+Stack trace:
+#0 /var/www/GameX/GameX/public/install/index.php(42): checkAdminCredentials(Array)
+#1 {main}
+
