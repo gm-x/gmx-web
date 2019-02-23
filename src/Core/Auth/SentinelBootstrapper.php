@@ -3,7 +3,6 @@ namespace GameX\Core\Auth;
 
 use \Slim\Http\Request;
 use \Illuminate\Events\Dispatcher;
-use \Cartalyst\Sentinel\Native\ConfigRepository;
 use \Cartalyst\Sentinel\Activations\EloquentActivation;
 use \Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
 use \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
@@ -27,6 +26,7 @@ use \GameX\Core\Auth\Http\Cookie as SentinelCookie;
 use \GameX\Core\Auth\Http\FakeCookie as SentinelFakeCookie;
 use \GameX\Core\Auth\Http\Session as SentinelSession;
 use \GameX\Core\Auth\Http\FakeSession as SentinelFakeSession;
+use \GameX\Core\Helpers\IpHelper;
 
 class SentinelBootstrapper {
     
@@ -39,13 +39,6 @@ class SentinelBootstrapper {
      * @var Session|null
      */
     protected $session;
-
-    /**
-     * Configuration.
-     *
-     * @var array
-     */
-    protected $config;
 
     /**
      * The event dispatcher.
@@ -63,7 +56,6 @@ class SentinelBootstrapper {
     public function __construct(Request $request = null, Session $session = null) {
         $this->request = $request;
         $this->session = $session;
-        $this->config = new ConfigRepository(__DIR__ . '/config.php');
     }
 
     /**
@@ -92,7 +84,7 @@ class SentinelBootstrapper {
 
         if ($this->request !== null) {
             $sentinel->addCheckpoint('throttle',
-                new ThrottleCheckpoint($throttle, $this->request->getAttribute('ip_address'))
+                new ThrottleCheckpoint($throttle, IpHelper::getIPAddress($this->request))
             );
         }
 
@@ -210,22 +202,36 @@ class SentinelBootstrapper {
      * @return \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository
      */
     protected function createThrottling() {
-        $model = $this->config['throttling']['model'];
-
-        foreach (['global', 'ip', 'user'] as $type) {
-            ${"{$type}Interval"} = $this->config['throttling'][$type]['interval'];
-
-            ${"{$type}Thresholds"} = $this->config['throttling'][$type]['thresholds'];
-        }
-
+//        $model = $this->config['throttling']['model'];
+//
+//        foreach (['global', 'ip', 'user'] as $type) {
+//            ${"{$type}Interval"} = $this->config['throttling'][$type]['interval'];
+//
+//            ${"{$type}Thresholds"} = $this->config['throttling'][$type]['thresholds'];
+//        }
+//
+//        return new IlluminateThrottleRepository(
+//            $model,
+//            $globalInterval,
+//            $globalThresholds,
+//            $ipInterval,
+//            $ipThresholds,
+//            $userInterval,
+//            $userThresholds
+//        );
+    
         return new IlluminateThrottleRepository(
-            $model,
-            $globalInterval,
-            $globalThresholds,
-            $ipInterval,
-            $ipThresholds,
-            $userInterval,
-            $userThresholds
+            'Cartalyst\Sentinel\Throttling\EloquentThrottle',
+            900, [
+                10 => 1,
+                20 => 2,
+                30 => 4,
+                40 => 8,
+                50 => 16,
+                60 => 12
+            ],
+            900, 5,
+            900, 5
         );
     }
 

@@ -1,5 +1,5 @@
 <?php
-$app->add(new \RKA\Middleware\IpAddress(true));
+$app->add(new \GameX\Middlewares\IpAddressMiddleware());
 
 $app->add(function (
     \Psr\Http\Message\ServerRequestInterface $request,
