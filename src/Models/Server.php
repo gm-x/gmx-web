@@ -4,6 +4,7 @@ namespace GameX\Models;
 
 use \Carbon\Carbon;
 use \GameX\Core\BaseModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use \GameX\Core\Utils;
 
 /**
@@ -30,6 +31,7 @@ use \GameX\Core\Utils;
  */
 class Server extends BaseModel
 {
+    use SoftDeletes;
     
     /**
      * The table associated with the model.
@@ -51,12 +53,12 @@ class Server extends BaseModel
     /**
      * @var array
      */
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     
     /**
      * @var array
      */
-    protected $hidden = ['rcon', 'token', 'created_at', 'updated_at'];
+    protected $hidden = ['rcon', 'token', 'created_at', 'updated_at', 'deleted_at'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
