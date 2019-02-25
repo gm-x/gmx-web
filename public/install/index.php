@@ -116,10 +116,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $container = getContainer(true);
                 /** @var \Illuminate\Database\Capsule\Manager $db */
                 $db = $container['db'];
-				$db->getConnection()->statement("SET foreign_key_checks=0");
+                $isPgSQL = $db->getConnection()->getDriverName() === 'pgsql';
+                if (!$isPgSQL) {
+                    $db->getConnection()->statement("SET foreign_key_checks=0");
+                }
 				\GameX\Core\Auth\Models\UserModel::truncate();
 				\GameX\Core\Auth\Models\PersistenceModel::truncate();
-				$db->getConnection()->statement("SET foreign_key_checks=1");
+                if (!$isPgSQL) {
+                    $db->getConnection()->statement("SET foreign_key_checks=1");
+                }
 				createUser($container, $_POST['login'], $_POST['email'], $_POST['pass']);
                 json(true);
 			} catch (Exception $e) {
