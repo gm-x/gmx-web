@@ -21,6 +21,13 @@
                     </div>
                     <div class="uk-card-body">
                         <div class="form-group">
+                            <label>Engine:</label>
+                            <select class="uk-select" id="formDatabaseEngine">
+                                <option value="mysql" selected>MySQL</option>
+                                <option value="postgresql">PostgreSQL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Host:</label>
                             <input type="text" class="uk-input" id="formDatabaseHost" value="127.0.0.1">
                         </div>
@@ -115,6 +122,7 @@
         var nextFunc = result('Checks requirements', installComposer);
         var data = {
             db: {
+                engine: $('#formDatabaseEngine').val(),
                 host: $('#formDatabaseHost').val(),
                 port: $('#formDatabasePort').val(),
                 user: $('#formDatabaseUser').val(),
@@ -143,6 +151,7 @@
 	function installConfig() {
 		var data = {
 			db: {
+                engine: $('#formDatabaseEngine').val(),
 				host: $('#formDatabaseHost').val(),
 				port: $('#formDatabasePort').val(),
 				user: $('#formDatabaseUser').val(),

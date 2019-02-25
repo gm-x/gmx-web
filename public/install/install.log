@@ -165,3 +165,397 @@ Stack trace:
 #0 /var/www/GameX/GameX/public/install/index.php(42): checkAdminCredentials(Array)
 #1 {main}
 
+PDOException: PDO::__construct(): php_network_getaddresses: getaddrinfo failed: Name does not resolve in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+Next PDOException: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed: Name does not resolve in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: PDO::__construct(): php_network_getaddresses: getaddrinfo failed: Name does not resolve in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+Next PDOException: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed: Name does not resolve in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: PDO::__construct(): php_network_getaddresses: getaddrinfo failed: Name does not resolve in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+Next PDOException: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed: Name does not resolve in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: PDO::__construct(): php_network_getaddresses: getaddrinfo failed: Name does not resolve in /var/www/app/public/install/functions.php:100
+Stack trace:
+#0 /var/www/app/public/install/functions.php(100): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+Next PDOException: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed: Name does not resolve in /var/www/app/public/install/functions.php:100
+Stack trace:
+#0 /var/www/app/public/install/functions.php(100): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=127....', 'root', '')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/functions.php(98): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese')
+#1 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#2 {main}
+
+PDOException: could not find driver in /var/www/app/vendor/illuminate/database/Connectors/Connector.php:68
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(68): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(44): Illuminate\Database\Connectors\Connector->createPdoConnection('mysql:host=dock...', 'postgres', 'cheese', Array)
+#2 /var/www/app/vendor/illuminate/database/Connectors/MySqlConnector.php(24): Illuminate\Database\Connectors\Connector->createConnection('mysql:host=dock...', Array, Array)
+#3 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(183): Illuminate\Database\Connectors\MySqlConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /var/www/app/vendor/illuminate/database/Connection.php(883): call_user_func(Object(Closure))
+#6 /var/www/app/vendor/illuminate/database/Connection.php(904): Illuminate\Database\Connection->getPdo()
+#7 /var/www/app/vendor/illuminate/database/Connection.php(392): Illuminate\Database\Connection->getReadPdo()
+#8 /var/www/app/vendor/illuminate/database/Connection.php(318): Illuminate\Database\Connection->getPdoForSelect(true)
+#9 /var/www/app/vendor/illuminate/database/Connection.php(640): Illuminate\Database\Connection->Illuminate\Database\{closure}('select * from i...', Array)
+#10 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#11 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#12 /var/www/app/vendor/illuminate/database/Schema/MySqlBuilder.php(18): Illuminate\Database\Connection->select('select * from i...', Array)
+#13 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\MySqlBuilder->hasTable('gmx_migrations')
+#14 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#15 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#16 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#17 {main}
+
+Next Illuminate\Database\QueryException: could not find driver (SQL: select * from information_schema.tables where table_schema = gmx and table_name = gmx_migrations) in /var/www/app/vendor/illuminate/database/Connection.php:647
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#1 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#2 /var/www/app/vendor/illuminate/database/Schema/MySqlBuilder.php(18): Illuminate\Database\Connection->select('select * from i...', Array)
+#3 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\MySqlBuilder->hasTable('gmx_migrations')
+#4 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#5 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#6 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#7 {main}
+
+Exception: Bad credentials for admin in /var/www/app/public/install/functions.php:104
+Stack trace:
+#0 /var/www/app/public/install/index.php(43): checkAdminCredentials(Array)
+#1 {main}
+
+PDOException: could not find driver in /var/www/app/vendor/illuminate/database/Connectors/Connector.php:68
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(68): PDO->__construct('mysql:host=dock...', 'postgres', 'cheese', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(44): Illuminate\Database\Connectors\Connector->createPdoConnection('mysql:host=dock...', 'postgres', 'cheese', Array)
+#2 /var/www/app/vendor/illuminate/database/Connectors/MySqlConnector.php(24): Illuminate\Database\Connectors\Connector->createConnection('mysql:host=dock...', Array, Array)
+#3 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(183): Illuminate\Database\Connectors\MySqlConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /var/www/app/vendor/illuminate/database/Connection.php(883): call_user_func(Object(Closure))
+#6 /var/www/app/vendor/illuminate/database/Connection.php(904): Illuminate\Database\Connection->getPdo()
+#7 /var/www/app/vendor/illuminate/database/Connection.php(392): Illuminate\Database\Connection->getReadPdo()
+#8 /var/www/app/vendor/illuminate/database/Connection.php(318): Illuminate\Database\Connection->getPdoForSelect(true)
+#9 /var/www/app/vendor/illuminate/database/Connection.php(640): Illuminate\Database\Connection->Illuminate\Database\{closure}('select * from i...', Array)
+#10 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#11 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#12 /var/www/app/vendor/illuminate/database/Schema/MySqlBuilder.php(18): Illuminate\Database\Connection->select('select * from i...', Array)
+#13 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\MySqlBuilder->hasTable('gmx_migrations')
+#14 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#15 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#16 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#17 {main}
+
+Next Illuminate\Database\QueryException: could not find driver (SQL: select * from information_schema.tables where table_schema = gmx and table_name = gmx_migrations) in /var/www/app/vendor/illuminate/database/Connection.php:647
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#1 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#2 /var/www/app/vendor/illuminate/database/Schema/MySqlBuilder.php(18): Illuminate\Database\Connection->select('select * from i...', Array)
+#3 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\MySqlBuilder->hasTable('gmx_migrations')
+#4 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#5 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#6 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#7 {main}
+
+InvalidArgumentException: Unsupported driver [postgresql] in /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php:286
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(77): Illuminate\Database\Connectors\ConnectionFactory->createConnection('postgresql', Object(Closure), 'gmx', 'gmx_', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(51): Illuminate\Database\Connectors\ConnectionFactory->createSingleConnection(Array)
+#2 /var/www/app/vendor/illuminate/database/DatabaseManager.php(119): Illuminate\Database\Connectors\ConnectionFactory->make(Array, 'default')
+#3 /var/www/app/vendor/illuminate/database/DatabaseManager.php(74): Illuminate\Database\DatabaseManager->makeConnection('default')
+#4 /var/www/app/vendor/illuminate/database/Capsule/Manager.php(108): Illuminate\Database\DatabaseManager->connection('default')
+#5 /var/www/app/vendor/illuminate/database/Capsule/Manager.php(74): Illuminate\Database\Capsule\Manager->getConnection('')
+#6 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(30): Illuminate\Database\Capsule\Manager::connection('')
+#7 /var/www/app/phpmig.php(46): Phpmig\Adapter\Illuminate\Database->__construct(Object(Illuminate\Database\Capsule\Manager), 'migrations')
+#8 /var/www/app/vendor/pimple/pimple/src/Pimple/Container.php(118): {closure}(Object(Pimple\Container))
+#9 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(37): Pimple\Container->offsetGet('phpmig.adapter')
+#10 /var/www/app/public/install/functions.php(118): Phpmig\Api\PhpmigApplication->__construct(Object(Pimple\Container), Object(Symfony\Component\Console\Output\NullOutput))
+#11 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#12 {main}
+
+PDOException: SQLSTATE[08006] [7] could not translate host name "docker_db_1" to address: Name does not resolve in /var/www/app/vendor/illuminate/database/Connectors/Connector.php:68
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(68): PDO->__construct('pgsql:host=dock...', 'postgres', 'cheese', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(44): Illuminate\Database\Connectors\Connector->createPdoConnection('pgsql:host=dock...', 'postgres', 'cheese', Array)
+#2 /var/www/app/vendor/illuminate/database/Connectors/PostgresConnector.php(33): Illuminate\Database\Connectors\Connector->createConnection('pgsql:host=dock...', Array, Array)
+#3 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(183): Illuminate\Database\Connectors\PostgresConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /var/www/app/vendor/illuminate/database/Connection.php(883): call_user_func(Object(Closure))
+#6 /var/www/app/vendor/illuminate/database/Connection.php(904): Illuminate\Database\Connection->getPdo()
+#7 /var/www/app/vendor/illuminate/database/Connection.php(392): Illuminate\Database\Connection->getReadPdo()
+#8 /var/www/app/vendor/illuminate/database/Connection.php(318): Illuminate\Database\Connection->getPdoForSelect(true)
+#9 /var/www/app/vendor/illuminate/database/Connection.php(640): Illuminate\Database\Connection->Illuminate\Database\{closure}('select * from i...', Array)
+#10 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#11 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#12 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#13 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#14 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#15 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#16 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#17 {main}
+
+Next Illuminate\Database\QueryException: SQLSTATE[08006] [7] could not translate host name "docker_db_1" to address: Name does not resolve (SQL: select * from information_schema.tables where table_schema = public and table_name = gmx_migrations) in /var/www/app/vendor/illuminate/database/Connection.php:647
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#1 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#2 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#3 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#4 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#5 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#6 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#7 {main}
+
+Exception: pgsql:host=docker_db_1;port=5432;dbname=gmx in /var/www/app/public/install/functions.php:98
+Stack trace:
+#0 /var/www/app/public/install/index.php(42): checkDbConnection(Array)
+#1 {main}
+
+PDOException: SQLSTATE[08006] [7] could not translate host name "docker_db_1" to address: Name does not resolve in /var/www/app/vendor/illuminate/database/Connectors/Connector.php:68
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(68): PDO->__construct('pgsql:host=dock...', 'postgres', 'cheese', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(44): Illuminate\Database\Connectors\Connector->createPdoConnection('pgsql:host=dock...', 'postgres', 'cheese', Array)
+#2 /var/www/app/vendor/illuminate/database/Connectors/PostgresConnector.php(33): Illuminate\Database\Connectors\Connector->createConnection('pgsql:host=dock...', Array, Array)
+#3 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(183): Illuminate\Database\Connectors\PostgresConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /var/www/app/vendor/illuminate/database/Connection.php(883): call_user_func(Object(Closure))
+#6 /var/www/app/vendor/illuminate/database/Connection.php(904): Illuminate\Database\Connection->getPdo()
+#7 /var/www/app/vendor/illuminate/database/Connection.php(392): Illuminate\Database\Connection->getReadPdo()
+#8 /var/www/app/vendor/illuminate/database/Connection.php(318): Illuminate\Database\Connection->getPdoForSelect(true)
+#9 /var/www/app/vendor/illuminate/database/Connection.php(640): Illuminate\Database\Connection->Illuminate\Database\{closure}('select * from i...', Array)
+#10 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#11 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#12 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#13 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#14 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#15 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#16 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#17 {main}
+
+Next Illuminate\Database\QueryException: SQLSTATE[08006] [7] could not translate host name "docker_db_1" to address: Name does not resolve (SQL: select * from information_schema.tables where table_schema = public and table_name = gmx_migrations) in /var/www/app/vendor/illuminate/database/Connection.php:647
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#1 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#2 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#3 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#4 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#5 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#6 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#7 {main}
+
+PDOException: SQLSTATE[08006] [7] could not translate host name "b1d672e293c8" to address: Name does not resolve in /var/www/app/vendor/illuminate/database/Connectors/Connector.php:68
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(68): PDO->__construct('pgsql:host=b1d6...', 'postgres', 'cheese', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(44): Illuminate\Database\Connectors\Connector->createPdoConnection('pgsql:host=b1d6...', 'postgres', 'cheese', Array)
+#2 /var/www/app/vendor/illuminate/database/Connectors/PostgresConnector.php(33): Illuminate\Database\Connectors\Connector->createConnection('pgsql:host=b1d6...', Array, Array)
+#3 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(183): Illuminate\Database\Connectors\PostgresConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /var/www/app/vendor/illuminate/database/Connection.php(883): call_user_func(Object(Closure))
+#6 /var/www/app/vendor/illuminate/database/Connection.php(904): Illuminate\Database\Connection->getPdo()
+#7 /var/www/app/vendor/illuminate/database/Connection.php(392): Illuminate\Database\Connection->getReadPdo()
+#8 /var/www/app/vendor/illuminate/database/Connection.php(318): Illuminate\Database\Connection->getPdoForSelect(true)
+#9 /var/www/app/vendor/illuminate/database/Connection.php(640): Illuminate\Database\Connection->Illuminate\Database\{closure}('select * from i...', Array)
+#10 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#11 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#12 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#13 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#14 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#15 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#16 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#17 {main}
+
+Next Illuminate\Database\QueryException: SQLSTATE[08006] [7] could not translate host name "b1d672e293c8" to address: Name does not resolve (SQL: select * from information_schema.tables where table_schema = public and table_name = gmx_migrations) in /var/www/app/vendor/illuminate/database/Connection.php:647
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#1 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#2 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#3 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#4 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#5 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#6 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#7 {main}
+
+PDOException: SQLSTATE[08006] [7] could not translate host name "b1d672e293c8" to address: Name does not resolve in /var/www/app/vendor/illuminate/database/Connectors/Connector.php:68
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(68): PDO->__construct('pgsql:host=b1d6...', 'postgres', 'cheese', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(44): Illuminate\Database\Connectors\Connector->createPdoConnection('pgsql:host=b1d6...', 'postgres', 'cheese', Array)
+#2 /var/www/app/vendor/illuminate/database/Connectors/PostgresConnector.php(33): Illuminate\Database\Connectors\Connector->createConnection('pgsql:host=b1d6...', Array, Array)
+#3 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(183): Illuminate\Database\Connectors\PostgresConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /var/www/app/vendor/illuminate/database/Connection.php(883): call_user_func(Object(Closure))
+#6 /var/www/app/vendor/illuminate/database/Connection.php(904): Illuminate\Database\Connection->getPdo()
+#7 /var/www/app/vendor/illuminate/database/Connection.php(392): Illuminate\Database\Connection->getReadPdo()
+#8 /var/www/app/vendor/illuminate/database/Connection.php(318): Illuminate\Database\Connection->getPdoForSelect(true)
+#9 /var/www/app/vendor/illuminate/database/Connection.php(640): Illuminate\Database\Connection->Illuminate\Database\{closure}('select * from i...', Array)
+#10 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#11 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#12 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#13 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#14 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#15 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#16 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#17 {main}
+
+Next Illuminate\Database\QueryException: SQLSTATE[08006] [7] could not translate host name "b1d672e293c8" to address: Name does not resolve (SQL: select * from information_schema.tables where table_schema = public and table_name = gmx_migrations) in /var/www/app/vendor/illuminate/database/Connection.php:647
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#1 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#2 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#3 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#4 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#5 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#6 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#7 {main}
+
+PDOException: SQLSTATE[08006] [7] could not connect to server: Connection refused
+	Is the server running on host "127.0.0.1" and accepting
+	TCP/IP connections on port 5432? in /var/www/app/vendor/illuminate/database/Connectors/Connector.php:68
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(68): PDO->__construct('pgsql:host=127....', 'postgres', 'cheese', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(44): Illuminate\Database\Connectors\Connector->createPdoConnection('pgsql:host=127....', 'postgres', 'cheese', Array)
+#2 /var/www/app/vendor/illuminate/database/Connectors/PostgresConnector.php(33): Illuminate\Database\Connectors\Connector->createConnection('pgsql:host=127....', Array, Array)
+#3 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(183): Illuminate\Database\Connectors\PostgresConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /var/www/app/vendor/illuminate/database/Connection.php(883): call_user_func(Object(Closure))
+#6 /var/www/app/vendor/illuminate/database/Connection.php(904): Illuminate\Database\Connection->getPdo()
+#7 /var/www/app/vendor/illuminate/database/Connection.php(392): Illuminate\Database\Connection->getReadPdo()
+#8 /var/www/app/vendor/illuminate/database/Connection.php(318): Illuminate\Database\Connection->getPdoForSelect(true)
+#9 /var/www/app/vendor/illuminate/database/Connection.php(640): Illuminate\Database\Connection->Illuminate\Database\{closure}('select * from i...', Array)
+#10 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#11 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#12 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#13 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#14 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#15 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#16 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#17 {main}
+
+Next Illuminate\Database\QueryException: SQLSTATE[08006] [7] could not connect to server: Connection refused
+	Is the server running on host "127.0.0.1" and accepting
+	TCP/IP connections on port 5432? (SQL: select * from information_schema.tables where table_schema = public and table_name = gmx_migrations) in /var/www/app/vendor/illuminate/database/Connection.php:647
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#1 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#2 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#3 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#4 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#5 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#6 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#7 {main}
+
+PDOException: SQLSTATE[08006] [7] could not translate host name "b1d672e293c8" to address: Name does not resolve in /var/www/app/vendor/illuminate/database/Connectors/Connector.php:68
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(68): PDO->__construct('pgsql:host=b1d6...', 'postgres', 'cheese', Array)
+#1 /var/www/app/vendor/illuminate/database/Connectors/Connector.php(44): Illuminate\Database\Connectors\Connector->createPdoConnection('pgsql:host=b1d6...', 'postgres', 'cheese', Array)
+#2 /var/www/app/vendor/illuminate/database/Connectors/PostgresConnector.php(33): Illuminate\Database\Connectors\Connector->createConnection('pgsql:host=b1d6...', Array, Array)
+#3 /var/www/app/vendor/illuminate/database/Connectors/ConnectionFactory.php(183): Illuminate\Database\Connectors\PostgresConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /var/www/app/vendor/illuminate/database/Connection.php(883): call_user_func(Object(Closure))
+#6 /var/www/app/vendor/illuminate/database/Connection.php(904): Illuminate\Database\Connection->getPdo()
+#7 /var/www/app/vendor/illuminate/database/Connection.php(392): Illuminate\Database\Connection->getReadPdo()
+#8 /var/www/app/vendor/illuminate/database/Connection.php(318): Illuminate\Database\Connection->getPdoForSelect(true)
+#9 /var/www/app/vendor/illuminate/database/Connection.php(640): Illuminate\Database\Connection->Illuminate\Database\{closure}('select * from i...', Array)
+#10 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#11 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#12 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#13 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#14 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#15 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#16 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#17 {main}
+
+Next Illuminate\Database\QueryException: SQLSTATE[08006] [7] could not translate host name "b1d672e293c8" to address: Name does not resolve (SQL: select * from information_schema.tables where table_schema = public and table_name = gmx_migrations) in /var/www/app/vendor/illuminate/database/Connection.php:647
+Stack trace:
+#0 /var/www/app/vendor/illuminate/database/Connection.php(607): Illuminate\Database\Connection->runQueryCallback('select * from i...', Array, Object(Closure))
+#1 /var/www/app/vendor/illuminate/database/Connection.php(326): Illuminate\Database\Connection->run('select * from i...', Array, Object(Closure))
+#2 /var/www/app/vendor/illuminate/database/Schema/PostgresBuilder.php(24): Illuminate\Database\Connection->select('select * from i...', Array)
+#3 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Adapter/Illuminate/Database.php(109): Illuminate\Database\Schema\PostgresBuilder->hasTable('gmx_migrations')
+#4 /var/www/app/vendor/davedevelopment/phpmig/src/Phpmig/Api/PhpmigApplication.php(69): Phpmig\Adapter\Illuminate\Database->hasSchema()
+#5 /var/www/app/public/install/functions.php(120): Phpmig\Api\PhpmigApplication->up()
+#6 /var/www/app/public/install/index.php(106): runMigrations(Object(Pimple\Container))
+#7 {main}
+

@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 clearTwigCache();
 
                 $databaseCfg = array_merge([
+                    'engine' => 'mysql',
                     'host' => '127.0.0.1',
                     'port' => 3306,
                     'user' => 'root',
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 json(true);
             } catch (PDOException $e) {
                 logException($e);
-                json(false, 'Can\'t connect to database');
+                json(false, 'db: ' . $e->getMessage());
             } catch (Exception $e) {
                 logException($e);
                 json(false, $e->getMessage());
@@ -65,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		case 'config': {
 			try {
                 $databaseCfg = array_merge([
+                    'engine' => 'mysql',
                     'host' => '127.0.0.1',
                     'port' => 3306,
                     'user' => 'root',
@@ -77,6 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $provider = new \GameX\Core\Configuration\Providers\JsonProvider();
 				$config = new \GameX\Core\Configuration\Config($provider);
 				$db = $config->getNode('db');
+				if ($databaseCfg['engine'] === 'postgresql') {
+                    $db->set('driver', 'pgsql');
+                    $db->set('charset', 'utf-8');
+                    $db->remove('collation');
+                }
 				$db->set('host', $databaseCfg['host']);
 				$db->set('port', (int) $databaseCfg['port']);
 				$db->set('username', $databaseCfg['user']);

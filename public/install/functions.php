@@ -88,7 +88,13 @@ function checkDbConnection($config) {
     if (empty($config['host']) || empty($config['port']) || empty($config['name']) || empty($config['user'])) {
         throw new Exception('Bad connection params');
     }
-    $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
+
+    if ($config['engine'] === 'postgresql') {
+        $dsn = sprintf('pgsql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
+    } else {
+        $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
+    }
+
     $dbh = new PDO($dsn, $config['user'], $config['pass']);
     $dbh = null;
 }
