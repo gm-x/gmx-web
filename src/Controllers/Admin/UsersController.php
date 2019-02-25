@@ -74,16 +74,8 @@ class UsersController extends BaseAdminController
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $user = $this->getUserFromRequest($request, $response, $args);
-        
-        $roleForm = new RoleForm($user, new RoleHelper($this->container));
-        if ($this->processForm($request, $roleForm)) {
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(UsersConstants::ROUTE_VIEW, [
-                'user' => $user->id,
-            ]);
-        }
     
-        $editForm = new EditForm($user);
+        $editForm = new EditForm($user, new RoleHelper($this->container));
         if ($this->processForm($request, $editForm, true)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(UsersConstants::ROUTE_VIEW, [
@@ -93,7 +85,6 @@ class UsersController extends BaseAdminController
         
         return $this->render('admin/users/form.twig', [
             'user' => $user,
-            'roleForm' => $roleForm->getForm(),
             'editForm' => $editForm->getForm(),
         ]);
     }

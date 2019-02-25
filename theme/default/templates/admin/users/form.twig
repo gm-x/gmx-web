@@ -19,24 +19,12 @@
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <ul uk-accordion="multiple: false">
         <li class="uk-open">
-            <a class="uk-accordion-title" href="#">Role</a>
-            <div class="uk-accordion-content uk-padding">
-                <form action="{{ roleForm.getAction() }}" method="post">
-                    {{ csrf_token() }}
-                    {{ forms.element_select(roleForm.role) }}
-                    <div class="form-group">
-                        <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'save') }}">
-                    </div>
-                </form>
-            </div>
-        </li>
-        <li>
-            <a class="uk-accordion-title" href="#">Other</a>
+            <a class="uk-accordion-title" href="#">Edit</a>
             <div class="uk-accordion-content uk-padding">
                 <form action="{{ editForm.getAction() }}" method="post">
                     {{ csrf_token() }}
                     {{ forms.element_input(editForm.email) }}
-                    {{ forms.element_select(editForm.status) }}
+                    {{ forms.element_select(editForm.role) }}
                     <div class="form-group">
                         <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'save') }}">
                     </div>
