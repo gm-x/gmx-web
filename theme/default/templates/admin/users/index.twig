@@ -50,11 +50,11 @@
             <li class="uk-width-1-4@m uk-width-1-4@s">{{ user.email }}</li>
             <li class="uk-width-1-4@m uk-width-1-4@s">
                 {% if user.status == 'pending' %}
-                    PENDING
+                    <span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>
                 {% elseif user.status == 'active' %}
-                    Active
+                    <span class="uk-label uk-label-success">{{ trans('admin_users', 'status_active') }}</span>
                 {% else %}
-                    BANNED
+                    <span class="uk-label uk-label-danger">{{ trans('admin_users', 'status_banned') }}</span>
                 {% endif %}
             </li>
             {% if has_access_permission(
