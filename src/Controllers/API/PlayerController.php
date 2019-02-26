@@ -116,7 +116,7 @@ class PlayerController extends BaseApiController
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
-        $cache->clear('players_online');
+        $cache->clear('players_online', $server);
         
         return $this->response($response, 200, [
             'success' => true,
@@ -157,10 +157,12 @@ class PlayerController extends BaseApiController
             $session->disconnected_at = Carbon::now();
             $session->save();
         }
-    
+
+        $server = $this->getServer($request);
+
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
-        $cache->clear('players_online');
+        $cache->clear('players_online', $server);
         
         return $this->response($response, 200, [
             'success' => true,
