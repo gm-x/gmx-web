@@ -3,13 +3,13 @@ namespace GameX\Core\Auth;
 
 use \Slim\Http\Request;
 use \Illuminate\Events\Dispatcher;
-use \Cartalyst\Sentinel\Activations\EloquentActivation;
 use \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
 use \Cartalyst\Sentinel\Activations\ActivationRepositoryInterface;
 use \GameX\Core\Auth\Repository\ActivationRepository;
 use \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint;
 use \Cartalyst\Sentinel\Hashing\NativeHasher;
-use \Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository;
+use \Cartalyst\Sentinel\Persistences\PersistenceRepositoryInterface;
+use \GameX\Core\Auth\Repository\PersistenceRepository;
 use \GameX\Core\Auth\Models\PersistenceModel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;
 use \Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
@@ -103,10 +103,10 @@ class SentinelBootstrapper {
     /**
      * Creates a persistences repository.
      *
-     * @return \Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository
+     * @return PersistenceRepositoryInterface
      */
     protected function createPersistence() {
-        return new IlluminatePersistenceRepository($this->createSession('auth_data'), $this->createCookie(), PersistenceModel::class, false);
+        return new PersistenceRepository($this->createSession('auth_data'), $this->createCookie(), false);
     }
 
     /**
