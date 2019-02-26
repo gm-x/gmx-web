@@ -109,7 +109,7 @@ class SentinelBootstrapper {
         return new PersistenceRepository(
             $this->createSession('auth_code'),
             $this->createSession('auth_user'),
-            $this->createCookie(),
+            $this->createCookie('gmx_key'),
             false
         );
     }
@@ -130,13 +130,13 @@ class SentinelBootstrapper {
 
     /**
      * Creates a cookie.
-     *
+     * @param string $key
      * @return CookieInterface
      */
-    protected function createCookie() {
+    protected function createCookie($key) {
         if ($this->request) {
             return new SentinelCookie($this->request, [
-                'name' => 'persistence_key',
+                'name' => $key,
                 'secure' => $this->request->getUri()->getScheme() == 'https',
                 'http_only' => true
             ]);

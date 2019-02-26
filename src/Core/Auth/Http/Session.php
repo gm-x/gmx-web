@@ -30,7 +30,7 @@ class Session implements SessionInterface {
      * {@inheritDoc}
      */
     public function put($value) {
-        $this->session->set($this->key, serialize($value));
+        $this->session->set($this->key, json_encode($value));
     }
 
     /**
@@ -38,7 +38,7 @@ class Session implements SessionInterface {
      */
     public function get() {
         $session = $this->session->get($this->key);
-        return $session ? unserialize($session) : null;
+        return $session ? json_decode($session, true) : null;
     }
 
     /**

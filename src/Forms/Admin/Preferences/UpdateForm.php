@@ -71,6 +71,8 @@ class UpdateForm extends BaseForm
     protected function processForm()
     {
         try {
+            ignore_user_abort(true);
+            set_time_limit(60);
             /** @var UploadedFileInterface $value */
             $value = $this->form->getValue('updates');
             $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('GameX', true) . DIRECTORY_SEPARATOR;

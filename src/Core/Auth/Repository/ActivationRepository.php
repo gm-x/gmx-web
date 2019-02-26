@@ -105,14 +105,21 @@ class ActivationRepository implements ActivationRepositoryInterface
     public function completed(UserInterface $user)
     {
         $completed = $this->session->get();
-        if ($completed === null) {
-            $activation = EloquentActivation::where('user_id', $user->getUserId())
-                ->where('completed', true)
-                ->first();
-            $completed = $activation ?: false;
-            $this->session->put($completed);
+        if ($completed !== null && $completed['user_id'] !== $user->id && $completed['expired'] < time()) {
+            return $completed['completed'];
         }
+        
+        /** @var EloquentActivation|null $activation */
+        $activation = EloquentActivation::where('user_id', $user->getUserId())
+            ->where('completed', true)
+            ->first();
 
+        $completed = (bool)$activation;
+        $this->session->put([
+            'completed' => $completed,
+            'user_id' => $completed ? $activation->user_id : null,
+            'expired' => time() + 60
+        ]);
         return $completed;
     }
 
