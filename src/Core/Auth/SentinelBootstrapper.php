@@ -106,7 +106,12 @@ class SentinelBootstrapper {
      * @return PersistenceRepositoryInterface
      */
     protected function createPersistence() {
-        return new PersistenceRepository($this->createSession('auth_data'), $this->createCookie(), false);
+        return new PersistenceRepository(
+            $this->createSession('auth_code'),
+            $this->createSession('auth_user'),
+            $this->createCookie(),
+            false
+        );
     }
 
     /**

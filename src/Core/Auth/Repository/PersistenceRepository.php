@@ -7,6 +7,7 @@ use \Cartalyst\Sentinel\Persistences\PersistableInterface;
 use \Cartalyst\Sentinel\Sessions\SessionInterface;
 use \Cartalyst\Sentinel\Cookies\CookieInterface;
 use \GameX\Core\Auth\Models\PersistenceModel;
+use \GameX\Core\Auth\Models\UserModel;
 
 class PersistenceRepository implements PersistenceRepositoryInterface
 {
@@ -22,7 +23,8 @@ class PersistenceRepository implements PersistenceRepositoryInterface
      *
      * @var \Cartalyst\Sentinel\Sessions\SessionInterface
      */
-    protected $session;
+    protected $sessionCode;
+    protected $sessionUser;
 
     /**
      * Cookie storage driver.
@@ -34,21 +36,17 @@ class PersistenceRepository implements PersistenceRepositoryInterface
     /**
      * Create a new Sentinel persistence repository.
      *
-     * @param  \Cartalyst\Sentinel\Sessions\SessionInterface  $session
+     * @param  \Cartalyst\Sentinel\Sessions\SessionInterface  $sessionCode
+     * @param  \Cartalyst\Sentinel\Sessions\SessionInterface  $sessionUser
      * @param  \Cartalyst\Sentinel\Cookies\CookieInterface  $cookie
      * @param  bool  $single
      * @return void
      */
-    public function __construct(SessionInterface $session, CookieInterface $cookie, $single = false)
+    public function __construct(SessionInterface $sessionCode, SessionInterface $sessionUser, CookieInterface $cookie, $single = false)
     {
-        if (isset($session)) {
-            $this->session = $session;
-        }
-
-        if (isset($cookie)) {
-            $this->cookie  = $cookie;
-        }
-
+        $this->sessionCode = $sessionCode;
+        $this->sessionUser = $sessionUser;
+        $this->cookie = $cookie;
         $this->single = $single;
     }
 
@@ -57,7 +55,7 @@ class PersistenceRepository implements PersistenceRepositoryInterface
      */
     public function check()
     {
-        if ($code = $this->session->get()) {
+        if ($code = $this->sessionCode->get()) {
             return $code;
         }
 
@@ -82,9 +80,23 @@ class PersistenceRepository implements PersistenceRepositoryInterface
      */
     public function findUserByPersistenceCode($code)
     {
-        $persistence = $this->findByPersistenceCode($code);
+        $sessionUser = $this->sessionUser->get();
+        if ($sessionUser !== null && $sessionUser['expired'] < time()) {
+            return UserModel::find($sessionUser['user']);
+        }
 
-        return $persistence ? $persistence->user : false;
+        $persistence = $this->findByPersistenceCode($code);
+        if (!$persistence) {
+            return false;
+        }
+        /** @var UserModel $user */
+        $user = $persistence->user;
+        $this->sessionUser->put([
+            'user' => $user->id,
+            'expired' => time() + 60
+        ]);
+
+        return $user;
     }
 
     /**
@@ -98,15 +110,16 @@ class PersistenceRepository implements PersistenceRepositoryInterface
 
         $code = $persistable->generatePersistenceCode();
 
-        $this->session->put($code);
+        $this->sessionCode->put($code);
 
         if ($remember === true) {
             $this->cookie->put($code);
         }
 
         $key = $persistable->getPersistableKey();
+        $id = $persistable->getPersistableId();
         $persistence = new PersistenceModel([
-            $key => $persistable->getPersistableId(),
+            $key => $id,
             'code' => $code
         ]);
 
@@ -132,7 +145,8 @@ class PersistenceRepository implements PersistenceRepositoryInterface
             return;
         }
 
-        $this->session->forget();
+        $this->sessionCode->forget();
+        $this->sessionUser->forget();
         $this->cookie->forget();
 
         return $this->remove($code);
