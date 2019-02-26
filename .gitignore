@@ -1,5 +1,5 @@
 vendor/
-install/install.log
+public/install/install.log
 runtime/twig_cache/
 !runtime/twig_cache/.gitkeep
 runtime/cache/

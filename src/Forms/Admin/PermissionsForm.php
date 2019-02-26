@@ -3,13 +3,13 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
-use \GameX\Core\Forms\Validator;
+use \GameX\Core\Validate\Validator;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Auth\Models\PermissionsModel;
 use \GameX\Core\Auth\Models\RolesPermissionsModel;
 use \GameX\Models\Server;
 use \GameX\Core\Forms\Elements\PermissionAccess as PermissionAccessElement;
-use \GameX\Core\Forms\Rules\PermissionAccess as PermissionAccessRule;
+use \GameX\Core\Validate\Rules\PermissionAccess as PermissionAccessRule;
 use \Exception;
 
 class PermissionsForm extends BaseForm

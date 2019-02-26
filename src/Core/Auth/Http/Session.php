@@ -38,9 +38,7 @@ class Session implements SessionInterface {
      */
     public function get() {
         $session = $this->session->get($this->key);
-        if ($session) {
-            return unserialize($session);
-        }
+        return $session ? unserialize($session) : null;
     }
 
     /**

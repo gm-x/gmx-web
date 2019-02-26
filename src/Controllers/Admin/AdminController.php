@@ -8,6 +8,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Models\Server;
 use \GameX\Models\Player;
+use \Carbon\Carbon;
 
 class AdminController extends BaseAdminController
 {
@@ -22,6 +23,7 @@ class AdminController extends BaseAdminController
     
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
+        $today = Carbon::today();
 //		TODO: For active menu checks
 //		$request->getAttribute('route')->getName();
         return $this->render('admin/index.twig', [
@@ -31,11 +33,11 @@ class AdminController extends BaseAdminController
             ],
             'users' => [
                 'total' => UserModel::count(),
-                'new' => UserModel::whereRaw('DATE(`created_at`) = CURDATE()')->count()
+                'new' => UserModel::whereDate('created_at', $today)->count()
             ],
             'players' => [
                 'total' => Player::count(),
-                'new' => Player::whereRaw('DATE(`created_at`) = CURDATE()')->count()
+                'new' => Player::whereDate('created_at', $today)->count()
             ],
         ]);
     }

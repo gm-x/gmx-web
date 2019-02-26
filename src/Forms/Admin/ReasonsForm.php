@@ -7,9 +7,9 @@ use \GameX\Models\Reason;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Rules\Number as NumberRule;
-use \GameX\Core\Forms\Rules\Boolean;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Rules\Number as NumberRule;
+use \GameX\Core\Validate\Rules\Boolean;
+use \GameX\Core\Validate\Rules\Callback;
 
 class ReasonsForm extends BaseForm
 {

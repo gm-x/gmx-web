@@ -4,11 +4,11 @@ namespace GameX\Forms\Settings;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Upload\Upload;
 use \GameX\Core\Auth\Models\UserModel;
-use \GameX\Core\Forms\Validator;
+use \GameX\Core\Validate\Validator;
 use \GameX\Core\Forms\Elements\File as FileElement;
-use \GameX\Core\Forms\Rules\File as FileRule;
-use \GameX\Core\Forms\Rules\FileExtension;
-use \GameX\Core\Forms\Rules\Image;
+use \GameX\Core\Validate\Rules\File as FileRule;
+use \GameX\Core\Validate\Rules\FileExtension;
+use \GameX\Core\Validate\Rules\Image;
 use \GameX\Core\Exceptions\FormException;
 
 class AvatarForm extends BaseForm {
@@ -57,11 +57,11 @@ class AvatarForm extends BaseForm {
                 'trim' => false,
             ]);
 	}
-
-	/**
-	 * @return boolean
-	 * @throws FormException
-	 */
+    
+    /**
+     * @return bool
+     * @throws \Exception
+     */
 	protected function processForm() {
 		$element = $this->form->get('avatar');
 		$model = $this->upload->upload($this->user, $element->getValue());

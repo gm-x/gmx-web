@@ -36,6 +36,7 @@ abstract class BaseModel extends Model
     {
         // TODO: WTF ??? It's need for create connection
         self::$container['db'];
+        parent::boot();
     }
     
     protected function serializeDate(DateTimeInterface $date)

@@ -9,12 +9,60 @@ use \Carbon\Carbon;
 use \GameX\Models\Privilege;
 use \GameX\Models\Map;
 use \GameX\Models\Player;
-use \GameX\Core\Forms\Validator;
-use \GameX\Core\Forms\Rules\Number;
+use \GameX\Core\Validate\Validator;
+use \GameX\Core\Validate\Rules\Number;
 use \GameX\Core\Exceptions\ApiException;
 
 class ServerController extends BaseApiController
 {
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws ApiException
+     */
+    public function privilegesAction(Request $request, Response $response, array $args)
+    {
+        $server = $this->getServer($request);
+    
+        $groups = [];
+        foreach ($server->groups as $group) {
+            $groups[] = $group->id;
+        }
+    
+        $list = Privilege::with('player')
+            ->where('active', 1)
+            ->whereIn('group_id', $groups)
+            ->where(function ($query) {
+                $query
+                    ->whereNull('expired_at')
+                    ->orWhere('expired_at','>=', Carbon::today()->toDateString());
+            })
+            ->get();
+        
+        $privileges = [];
+        /** @var Privilege $privilege */
+        foreach ($list as $privilege) {
+            /** @var Player $player */
+            $player = $privilege->player;
+            if (!array_key_exists($player->id, $privileges)) {
+                $privileges[$player->id] = $player->toArray();
+                $privileges[$player->id]['privileges'] = [];
+            }
+    
+            $privilege = $privilege->toArray();
+            unset($privilege['player']);
+            $privileges[$player->id]['privileges'][] = $privilege;
+        }
+    
+        return $response->withStatus(200)->withJson([
+            'success' => true,
+            'groups' => $server->groups,
+            'privileges' => array_values($privileges),
+        ]);
+    }
     
     /**
      * @param Request $request
@@ -56,7 +104,7 @@ class ServerController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return static
+     * @return Response
      * @throws ApiException
      */
     public function mapAction(Request $request, Response $response, array $args)
@@ -95,7 +143,7 @@ class ServerController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return static
+     * @return Response
      * @throws ApiException
      */
     public function updateAction(Request $request, Response $response, array $args)

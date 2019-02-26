@@ -3,13 +3,14 @@ namespace GameX\Core\Auth;
 
 use \Slim\Http\Request;
 use \Illuminate\Events\Dispatcher;
-use \Cartalyst\Sentinel\Native\ConfigRepository;
-use \Cartalyst\Sentinel\Activations\EloquentActivation;
-use \Cartalyst\Sentinel\Activations\IlluminateActivationRepository;
 use \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
+use \Cartalyst\Sentinel\Activations\ActivationRepositoryInterface;
+use \GameX\Core\Auth\Repository\ActivationRepository;
 use \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint;
 use \Cartalyst\Sentinel\Hashing\NativeHasher;
-use \Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository;
+use \Cartalyst\Sentinel\Persistences\PersistenceRepositoryInterface;
+use \GameX\Core\Auth\Repository\PersistenceRepository;
+use \GameX\Core\Auth\Models\PersistenceModel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;
 use \Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
 use \Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
@@ -19,7 +20,6 @@ use \Cartalyst\Sentinel\Users\IlluminateUserRepository;
 use \Cartalyst\Sentinel\Cookies\CookieInterface;
 use \Cartalyst\Sentinel\Sessions\SessionInterface;
 use \GameX\Core\Session\Session;
-use \GameX\Core\Auth\Models\PersistenceModel;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Auth\Repository\UsersRepository;
@@ -27,6 +27,7 @@ use \GameX\Core\Auth\Http\Cookie as SentinelCookie;
 use \GameX\Core\Auth\Http\FakeCookie as SentinelFakeCookie;
 use \GameX\Core\Auth\Http\Session as SentinelSession;
 use \GameX\Core\Auth\Http\FakeSession as SentinelFakeSession;
+use \GameX\Core\Helpers\IpHelper;
 
 class SentinelBootstrapper {
     
@@ -39,13 +40,6 @@ class SentinelBootstrapper {
      * @var Session|null
      */
     protected $session;
-
-    /**
-     * Configuration.
-     *
-     * @var array
-     */
-    protected $config;
 
     /**
      * The event dispatcher.
@@ -63,7 +57,6 @@ class SentinelBootstrapper {
     public function __construct(Request $request = null, Session $session = null) {
         $this->request = $request;
         $this->session = $session;
-        $this->config = new ConfigRepository(__DIR__ . '/config.php');
     }
 
     /**
@@ -92,7 +85,7 @@ class SentinelBootstrapper {
 
         if ($this->request !== null) {
             $sentinel->addCheckpoint('throttle',
-                new ThrottleCheckpoint($throttle, $this->request->getAttribute('ip_address'))
+                new ThrottleCheckpoint($throttle, IpHelper::getIPAddress($this->request))
             );
         }
 
@@ -110,20 +103,26 @@ class SentinelBootstrapper {
     /**
      * Creates a persistences repository.
      *
-     * @return \Cartalyst\Sentinel\Persistences\IlluminatePersistenceRepository
+     * @return PersistenceRepositoryInterface
      */
     protected function createPersistence() {
-        return new IlluminatePersistenceRepository($this->createSession(), $this->createCookie(), PersistenceModel::class, false);
+        return new PersistenceRepository(
+            $this->createSession('auth_code'),
+            $this->createSession('auth_user'),
+            $this->createCookie(),
+            false
+        );
     }
 
     /**
      * Creates a session.
      *
+     * @param string $key
      * @return SessionInterface
      */
-    protected function createSession() {
+    protected function createSession($key) {
         if ($this->session) {
-            return new SentinelSession($this->session, 'auth_data');
+            return new SentinelSession($this->session, $key);
         } else {
             return new SentinelFakeSession();
         }
@@ -136,7 +135,11 @@ class SentinelBootstrapper {
      */
     protected function createCookie() {
         if ($this->request) {
-            return new SentinelCookie($this->request, 'persistence_key');
+            return new SentinelCookie($this->request, [
+                'name' => 'persistence_key',
+                'secure' => $this->request->getUri()->getScheme() == 'https',
+                'http_only' => true
+            ]);
         } else {
             return new SentinelFakeCookie();
         }
@@ -172,23 +175,23 @@ class SentinelBootstrapper {
     /**
      * Creates an activation repository.
      *
-     * @return \Cartalyst\Sentinel\Activations\IlluminateActivationRepository
+     * @return ActivationRepositoryInterface
      */
     protected function createActivations() {
-        return new IlluminateActivationRepository(EloquentActivation::class, 259200);
+        return new ActivationRepository($this->createSession('auth_activation'),259200);
     }
 
 
     /**
      * Create activation and throttling checkpoints.
      *
-     * @param  \Cartalyst\Sentinel\Activations\IlluminateActivationRepository  $activations
-     * @param  \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository  $throttle
+     * @param  ActivationRepositoryInterface $activations
+     * @param  \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository $throttle
      * @param  string  $ipAddress
      * @return array
      * @throws \InvalidArgumentException
      */
-    protected function createCheckpoints(IlluminateActivationRepository $activations, IlluminateThrottleRepository $throttle, $ipAddress) {
+    protected function createCheckpoints(ActivationRepositoryInterface $activations, IlluminateThrottleRepository $throttle, $ipAddress) {
         $result = [
             'activation' => new ActivationCheckpoint($activations)
         ];
@@ -206,22 +209,18 @@ class SentinelBootstrapper {
      * @return \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository
      */
     protected function createThrottling() {
-        $model = $this->config['throttling']['model'];
-
-        foreach (['global', 'ip', 'user'] as $type) {
-            ${"{$type}Interval"} = $this->config['throttling'][$type]['interval'];
-
-            ${"{$type}Thresholds"} = $this->config['throttling'][$type]['thresholds'];
-        }
-
         return new IlluminateThrottleRepository(
-            $model,
-            $globalInterval,
-            $globalThresholds,
-            $ipInterval,
-            $ipThresholds,
-            $userInterval,
-            $userThresholds
+            'Cartalyst\Sentinel\Throttling\EloquentThrottle',
+            900, [
+                10 => 1,
+                20 => 2,
+                30 => 4,
+                40 => 8,
+                50 => 16,
+                60 => 12
+            ],
+            900, 5,
+            900, 5
         );
     }
 
