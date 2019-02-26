@@ -6,16 +6,16 @@ use \GameX\Core\BaseForm;
 use GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Models\Server;
 use \GameX\Models\Punishment;
-use \GameX\Core\Forms\Validator;
+use \GameX\Core\Validate\Validator;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\BitMask as BitMaskElement;
 use \GameX\Core\Forms\Elements\Date as DateElement;
-use \GameX\Core\Forms\Rules\InArray;
-use \GameX\Core\Forms\Rules\BitMask as BitMaskRule;
-use \GameX\Core\Forms\Rules\Boolean;
-use \GameX\Core\Forms\Rules\Number;
-use \GameX\Core\Forms\Rules\Date as DateRule;
+use \GameX\Core\Validate\Rules\InArray;
+use \GameX\Core\Validate\Rules\BitMask as BitMaskRule;
+use \GameX\Core\Validate\Rules\Boolean;
+use \GameX\Core\Validate\Rules\Number;
+use \GameX\Core\Validate\Rules\Date as DateRule;
 use \GameX\Core\Exceptions\PunishmentsFormException;
 
 class PunishmentsForm extends BaseForm

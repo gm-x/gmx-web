@@ -9,11 +9,11 @@ use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Date as DateElement;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Rules\InArray;
-use \GameX\Core\Forms\Rules\Boolean;
-use \GameX\Core\Forms\Rules\Number;
-use \GameX\Core\Forms\Rules\Date as DateRule;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Rules\InArray;
+use \GameX\Core\Validate\Rules\Boolean;
+use \GameX\Core\Validate\Rules\Number;
+use \GameX\Core\Validate\Rules\Date as DateRule;
+use \GameX\Core\Validate\Rules\Callback;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 
 class PrivilegesForm extends BaseForm

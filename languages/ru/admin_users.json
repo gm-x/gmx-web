@@ -2,5 +2,9 @@
     "login": "Имя пользователя",
     "email": "Email адрес",
     "role": "Роль",
-    "role_empty": "Выберите роль"
+    "role_empty": "Выберите роль",
+    "status": "Статус",
+    "status_pending": "Нeпoдтвepждённый",
+    "status_active": "Активный",
+    "status_banned": "Забанен"
 }

@@ -6,8 +6,8 @@ use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
-use \GameX\Core\Forms\Rules\PasswordRepeat;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Rules\PasswordRepeat;
+use \GameX\Core\Validate\Rules\Callback;
 use \GameX\Core\Exceptions\FormException;
 
 class ResetPasswordCompleteForm extends BaseForm {

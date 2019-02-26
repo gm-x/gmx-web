@@ -2,5 +2,9 @@
     "login": "Login",
     "email": "Email",
     "role": "Role",
-    "role_empty": "Choose role"
+    "role_empty": "Choose role",
+    "status": "Status",
+    "status_pending": "Pending",
+    "status_active": "Active",
+    "status_banned": "Banned"
 }

@@ -5,8 +5,8 @@
 {% block content %}
     <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
         {% include 'settings//tabs.twig' with {'href': currentHref} %}
-        <ul uk-accordion="multiple: true">
-            <li class="uk-open">
+        <ul uk-accordion="multiple: false">
+            <li {% if currentForm == 'email' %}class="uk-open"{% endif %}>
                 <a class="uk-accordion-title" href="#">{{ trans('inputs', 'email') }}</a>
                 <div class="uk-accordion-content uk-padding">
                     <form action="{{ emailForm.getAction() }}" method="post">
@@ -18,7 +18,7 @@
                     </form>
                 </div>
             </li>
-            <li>
+            <li {% if currentForm == 'password' %}class="uk-open"{% endif %}>
                 <a class="uk-accordion-title" href="#">{{ trans('inputs', 'password') }}</a>
                 <div class="uk-accordion-content uk-padding">
                     <form action="{{ passwordForm.getAction() }}" method="post">
@@ -33,7 +33,7 @@
                     </form>
                 </div>
             </li>
-            <li>
+            <li {% if currentForm == 'avatar' %}class="uk-open"{% endif %}>
                 <a class="uk-accordion-title" href="#">{{ trans('inputs', 'avatar') }}</a>
                 <div class="uk-accordion-content uk-padding">
                     <form action="{{ avatarForm.getAction() }}" method="post" enctype="multipart/form-data">

@@ -47,4 +47,14 @@ return function () {
             PreferencesConstants::PERMISSION_UPDATE_KEY,
             Permissions::ACCESS_VIEW | Permissions::ACCESS_EDIT
         ));
+    
+    $this
+        ->map(['GET', 'POST'], '/cache', BaseController::action(PreferencesController::class, 'cache'))
+        ->setName(PreferencesConstants::ROUTE_CACHE)
+//        ->setArgument('csrf_skip', true)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_CACHE_KEY,
+            Permissions::ACCESS_VIEW | Permissions::ACCESS_EDIT
+        ));
 };

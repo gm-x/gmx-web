@@ -2,6 +2,7 @@
     "tab_main": "Main settings",
     "tab_email": "Email settings",
     "tab_update": "Update",
+    "tab_cache": "Clear Cache",
     "test_mail": "Send test email",
     "enabled": "Enabled",
     "from_name": "From Name",
@@ -21,5 +22,6 @@
     "email_connect_fail": "Could not open SMTP Port",
     "email_encrypt_fail": "Start TLS failed to enable crypto",
     "email_code_fail": "Unexpected return code - Expected: %d, Got: %d",
-    "email_send_fail": "Send email failed"
+    "email_send_fail": "Send email failed",
+    "cache_accept": "Clear"
 }

@@ -9,7 +9,7 @@ class Permissions extends CacheItem {
     /**
      * @inheritdoc
      */
-    protected function getData() {
+    protected function getData($element) {
         $data = [];
         /** @var RoleModel $role */
         foreach (RoleModel::get() as $role) {

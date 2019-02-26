@@ -9,11 +9,11 @@ use \Slim\Http\Response;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Models\Player;
 use \GameX\Models\PlayerSession;
-use \GameX\Core\Forms\Validator;
-use \GameX\Core\Forms\Rules\SteamID;
-use \GameX\Core\Forms\Rules\Number;
-use \GameX\Core\Forms\Rules\IPv4;
-use \GameX\Core\Forms\Rules\Length;
+use \GameX\Core\Validate\Validator;
+use \GameX\Core\Validate\Rules\SteamID;
+use \GameX\Core\Validate\Rules\Number;
+use \GameX\Core\Validate\Rules\IPv4;
+use \GameX\Core\Validate\Rules\Length;
 use \GameX\Core\Exceptions\ApiException;
 
 class PlayerController extends BaseApiController
@@ -116,7 +116,7 @@ class PlayerController extends BaseApiController
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
-        $cache->clear('players_online');
+        $cache->clear('players_online', $server);
         
         return $this->response($response, 200, [
             'success' => true,
@@ -157,10 +157,12 @@ class PlayerController extends BaseApiController
             $session->disconnected_at = Carbon::now();
             $session->save();
         }
-    
+
+        $server = $this->getServer($request);
+
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
-        $cache->clear('players_online');
+        $cache->clear('players_online', $server);
         
         return $this->response($response, 200, [
             'success' => true,

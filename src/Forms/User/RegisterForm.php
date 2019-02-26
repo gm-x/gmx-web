@@ -7,10 +7,10 @@ use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Forms\Elements\Email as EmailElement;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
-use \GameX\Core\Forms\Rules\Email as EmailRule;
-use \GameX\Core\Forms\Rules\Length;
-use \GameX\Core\Forms\Rules\PasswordRepeat;
-use \GameX\Core\Forms\Rules\Callback;
+use \GameX\Core\Validate\Rules\Email as EmailRule;
+use \GameX\Core\Validate\Rules\Length;
+use \GameX\Core\Validate\Rules\PasswordRepeat;
+use \GameX\Core\Validate\Rules\Callback;
 
 class RegisterForm extends BaseForm {
 

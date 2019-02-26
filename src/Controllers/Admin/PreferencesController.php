@@ -7,10 +7,10 @@ use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Constants\Admin\PreferencesConstants;
-use \GameX\Core\Update\Manifest;
 use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
 use \GameX\Forms\Admin\Preferences\UpdateForm;
+use \GameX\Forms\Admin\Preferences\CacheForm;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Mail\Email;
@@ -159,6 +159,31 @@ class PreferencesController extends BaseAdminController
         return $this->render('admin/preferences/update.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm()
+        ]);
+    }
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws \GameX\Core\Exceptions\RedirectException
+     */
+    public function cacheAction(Request $request, Response $response, array $args = [])
+    {
+        $root = $this->container->get('root') . 'runtime' . DIRECTORY_SEPARATOR;
+        $form = new CacheForm([
+            $root . 'cache',
+            $root . 'twig_cache',
+        ]);
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect(PreferencesConstants::ROUTE_CACHE);
+        }
+        
+        return $this->render('admin/preferences/cache.twig', [
+            'currentHref' => UriHelper::getUrl($request->getUri(), false),
+            'form' => $form->getForm(),
         ]);
     }
 }
