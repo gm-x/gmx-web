@@ -102,16 +102,10 @@ class AuthHelper
      */
     public function loginUser($login, $password, $remember)
     {
-        $user = $this->getAuth()->authenticate([
+        return $this->getAuth()->authenticate([
             'login' => $login,
             'password' => $password
         ], (bool)$remember);
-
-        if (!$user) {
-            throw new ValidationException('Bad login or password');
-        }
-
-        return $user;
     }
 
     /**
