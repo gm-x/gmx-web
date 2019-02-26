@@ -114,6 +114,7 @@
         UIkit.util.on('#activateUser', 'click', function (e) {
             e.preventDefault();
             e.target.blur();
+            // TODO: refactor this
             $.post($(this).attr('href'), {
                 '{{ csrf.getNameKey() }}' : '{{ csrf.getName() }}',
                 '{{ csrf.getTokenKey() }}' : '{{ csrf.getToken() }}'
