@@ -1,13 +1,15 @@
 <?php
+
 namespace GameX\Core\Auth;
 
+use \Psr\Container\ContainerInterface;
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 use \Cartalyst\Sentinel\Sentinel;
 use \GameX\Core\Auth\Models\UserModel;
 
-class ViewExtension extends Twig_Extension {
-
+class ViewExtension extends Twig_Extension
+{
     const ACCESS_LIST = [
         'list' => Permissions::ACCESS_LIST,
         'view' => Permissions::ACCESS_VIEW,
@@ -16,37 +18,30 @@ class ViewExtension extends Twig_Extension {
         'delete' => Permissions::ACCESS_DELETE,
     ];
 
-	/**
-	 * @var Sentinel
-	 */
-	protected $auth;
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     /**
-     * @var Permissions
+     * ViewExtention constructor.
+     * @param ContainerInterface $container
      */
-	protected $permissions;
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
 
     /**
-     * @var UserModel
-     */
-	protected $user;
-
-	/**
-	 * ViewExtention constructor.
-	 * @param Sentinel $auth
-	 * @param Permissions $permissions
-	 */
-	public function __construct(Sentinel $auth, Permissions $permissions) {
-		$this->auth = $auth;
-		$this->permissions = $permissions;
-		$this->user = $auth->getUser();
-	}
-
-	/**
      * @return array
      */
-    public function getFunctions() {
+    public function getFunctions()
+    {
         return [
+            new Twig_SimpleFunction(
+                'is_user_active',
+                [$this, 'isUserActive']
+            ),
             new Twig_SimpleFunction(
                 'is_guest',
                 [$this, 'isGuest']
@@ -74,40 +69,53 @@ class ViewExtension extends Twig_Extension {
         ];
     }
 
-	/**
-	 * @return bool
-	 */
-    public function isGuest() {
-		return $this->auth->guest();
-	}
+    /**
+     * @param UserModel|null $user
+     * @return bool
+     */
+    public function isUserActive($user = null)
+    {
+        return $this->getAuth()->getActivationRepository()->completed($user ?: $this->getUser());
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getUserName() {
-		return !$this->isGuest()
-			? $this->user->getUserLogin()
-			: '';
-	}
+    /**
+     * @return bool
+     */
+    public function isGuest()
+    {
+        return $this->getAuth()->guest();
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserName()
+    {
+        return !$this->isGuest()
+            ? $this->getUser()->getUserLogin()
+            : '';
+    }
 
     /**
      * @return int
      */
-    public function getUserAvatar() {
+    public function getUserAvatar()
+    {
         return !$this->isGuest()
-            ? ($this->user->avatar ?: '')
+            ? ($this->getUser()->avatar ?: '')
             : '';
     }
-    
+
     /**
      * @param $group
      * @return bool
      * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
-    public function hasAccessToGroup($group) {
-        return $this->permissions->hasUserAccessToGroup($group);
-	}
-    
+    public function hasAccessToGroup($group)
+    {
+        return $this->getPermissions()->hasUserAccessToGroup($group);
+    }
+
     /**
      * @param $group
      * @param $permission
@@ -115,10 +123,11 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
-    public function hasAccessToPermission($group, $permission, $access = null) {
-        return $this->permissions->hasUserAccessToPermission($group, $permission, $this->getAccess($access));
+    public function hasAccessToPermission($group, $permission, $access = null)
+    {
+        return $this->getPermissions()->hasUserAccessToPermission($group, $permission, $this->getAccess($access));
     }
-    
+
     /**
      * @param $group
      * @param $permission
@@ -127,15 +136,17 @@ class ViewExtension extends Twig_Extension {
      * @return bool
      * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
-    public function hasAccessToResource($group, $permission, $resource, $access = null) {
-        return $this->permissions->hasUserAccessToResource($group, $permission, $resource, $this->getAccess($access));
+    public function hasAccessToResource($group, $permission, $resource, $access = null)
+    {
+        return $this->getPermissions()->hasUserAccessToResource($group, $permission, $resource, $this->getAccess($access));
     }
 
     /**
      * @param int|string|int[]|string[]|null $access
      * @return int|null
      */
-    protected function getAccess($access) {
+    protected function getAccess($access)
+    {
         if ($access === null) {
             return null;
         }
@@ -154,5 +165,29 @@ class ViewExtension extends Twig_Extension {
         }
 
         return $result;
+    }
+
+    /**
+     * @return Sentinel
+     */
+    protected function getAuth()
+    {
+        return $this->container->get('auth');
+    }
+
+    /**
+     * @return Permissions
+     */
+    protected function getPermissions()
+    {
+        return $this->container->get('permissions');
+    }
+
+    /**
+     * @return UserModel
+     */
+    protected function getUser()
+    {
+        return $this->getAuth()->getUser();
     }
 }

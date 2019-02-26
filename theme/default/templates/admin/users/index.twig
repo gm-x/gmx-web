@@ -25,12 +25,20 @@
             width: 30px;
         }
     </style>
+    {% set hasAccessToEdit = has_access_permission(
+        constants.admin.users.PERMISSION_GROUP,
+        constants.admin.users.PERMISSION_KEY,
+        premissions.ACCESS_EDIT
+    ) %}
     <div f-table f-divider>
         <ul th>
             <li class="user-avatar-cell"></li>
             <li class="uk-width-1-4@m uk-width-2-4@s uk-visible@s">{{ trans('admin_users', 'login') }}</li>
             <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_users', 'email') }}</li>
-            <li class="uk-width-1-6@m uk-visible@m"></li>
+            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_users', 'status') }}</li>
+            {% if hasAccessToEdit %}
+                <li class="uk-width-1-6@m uk-visible@m"></li>
+            {% endif %}
         </ul>
         {% for user in users %}
         <ul>
@@ -47,11 +55,14 @@
                 {% endif %}
             </li>
             <li class="uk-width-1-4@m uk-width-1-4@s">{{ user.email }}</li>
-            {% if has_access_permission(
-                constants.admin.users.PERMISSION_GROUP,
-                constants.admin.users.PERMISSION_KEY,
-                premissions.ACCESS_EDIT
-            ) %}
+            <li class="uk-width-1-4@m uk-width-1-4@s">
+                {% if not is_user_active(user) %}
+                    <span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>
+                {% else %}
+                    <span class="uk-label uk-label-success">{{ trans('admin_users', 'status_active') }}</span>
+                {% endif %}
+            </li>
+            {% if hasAccessToEdit %}
                 <li class="uk-width-1-6@m">
                     {{ admin.edit_btn(path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id})) }}
                 </li>

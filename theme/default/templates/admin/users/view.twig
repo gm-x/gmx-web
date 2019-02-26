@@ -61,18 +61,16 @@
                     <li class="uk-width-1-6@m uk-width-1-6@s">Role</li>
                     <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.role.name }}</li>
                 </ul>
-                {#<ul>#}
-                    {#<li class="uk-width-1-6@m uk-width-1-6@s">Status</li>#}
-                    {#<li class="uk-width-1-6@m uk-width-1-6@s">#}
-                        {#{% if user.status == 'pending' %}#}
-                            {#<span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>#}
-                        {#{% elseif user.status == 'active' %}#}
-                            {#<span class="uk-label uk-label-success">{{ trans('admin_users', 'status_active') }}</span>#}
-                        {#{% else %}#}
-                            {#<span class="uk-label uk-label-danger">{{ trans('admin_users', 'status_banned') }}</span>#}
-                        {#{% endif %}#}
-                    {#</li>#}
-                {#</ul>#}
+                <ul>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">Status</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">
+                        {% if not is_user_active(user) %}
+                            <span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>
+                        {% else %}
+                            <span class="uk-label uk-label-success">{{ trans('admin_users', 'status_active') }}</span>
+                        {% endif %}
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
