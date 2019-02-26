@@ -18,5 +18,6 @@
     "language": "Язык",
     "theme": "Тема",
     "auto_activate_users": "Авто активация новых пользователей",
-    "cache_accept": "Очистить"
+    "cache_accept": "Очистить",
+    "current_version": "Текущая версия"
 }

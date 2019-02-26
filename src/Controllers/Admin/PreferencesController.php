@@ -6,6 +6,7 @@ use \GameX\Core\BaseAdminController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Update\Updater;
 use \GameX\Constants\Admin\PreferencesConstants;
 use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
@@ -150,7 +151,9 @@ class PreferencesController extends BaseAdminController
      */
     public function updateAction(Request $request, Response $response, array $args = [])
     {
-        $form = new UpdateForm($this->getContainer('updater'));
+        /** @var Updater $updater */
+        $updater = $this->getContainer('updater');
+        $form = new UpdateForm($updater);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
@@ -158,7 +161,8 @@ class PreferencesController extends BaseAdminController
         
         return $this->render('admin/preferences/update.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
-            'form' => $form->getForm()
+            'form' => $form->getForm(),
+            'version' => $updater->getManifest()->getVersion()
         ]);
     }
     
