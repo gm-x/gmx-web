@@ -45,12 +45,19 @@ class ServersController extends BaseAdminController
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function viewAction(Request $request, Response $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
+    
+        /** @var \GameX\Core\Cache\Cache $cache */
+        $cache = $this->getContainer('cache');
+        $players = $cache->get('players_online', $server);
+        
         return $this->render('admin/servers/view.twig', [
             'server' => $server,
+            'players' => $players,
         ]);
     }
     

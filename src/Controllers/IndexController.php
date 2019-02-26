@@ -32,10 +32,14 @@ class IndexController extends BaseMainController
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
 
+        $players = [];
+        foreach (Server::all() as $server) {
+            $players[$server->id] = $cache->get('players_online', $server);
+        }
 
         return $this->render('index/index.twig', [
             'servers' => Server::with('map')->where('active', true)->get(),
-            'players_online' => $cache->get('players_online'), // TODO: Refactoring this
+            'players' => $players,
         ]);
     }
     
