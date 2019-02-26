@@ -105,7 +105,7 @@ class ActivationRepository implements ActivationRepositoryInterface
     public function completed(UserInterface $user)
     {
         $completed = $this->session->get();
-        if ($completed !== null && $completed['user_id'] !== $user->id && $completed['expired'] < time()) {
+        if ($completed !== null && $completed['user_id'] === $user->id && $completed['expired'] < time()) {
             return $completed['completed'];
         }
         
