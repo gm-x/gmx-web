@@ -45,9 +45,9 @@ class Cache
      */
     public function get($key, $element = null)
     {
-        $item = $this->getCacheItem($key);
-        $item = $this->getItem($item->getKey($key, $element));
-        return $item->get($item, $element);
+        $cacheItem = $this->getCacheItem($key);
+        $item = $this->getItem($cacheItem->getKey($key, $element));
+        return $cacheItem->get($item, $element);
     }
 
     /**
@@ -58,9 +58,9 @@ class Cache
      */
     public function clear($key, $element = null)
     {
-        $item = $this->getCacheItem($key);
-        $item = $this->getItem($item->getKey($key, $element));
-        return $item->clear($item);
+        $cacheItem = $this->getCacheItem($key);
+        $item = $this->getItem($cacheItem->getKey($key, $element));
+        return $cacheItem->clear($item);
     }
 
     /**
