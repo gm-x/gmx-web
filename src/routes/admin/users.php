@@ -36,4 +36,13 @@ return function () {
             UsersConstants::PERMISSION_KEY,
             Permissions::ACCESS_EDIT
         ));
+
+    $this
+        ->post('/{user}/activate', BaseController::action(UsersController::class, 'activate'))
+        ->setName(UsersConstants::ROUTE_ACTIVATE)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            UsersConstants::PERMISSION_GROUP,
+            UsersConstants::PERMISSION_KEY,
+            Permissions::ACCESS_EDIT
+        ));
 };

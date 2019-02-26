@@ -89,11 +89,21 @@ class AuthHelper
      * @param string $code
      * @return bool
      */
-    public function activateUser(UserModel $user, $code)
+    public function activateUser(UserModel $user)
     {
         return $this->getAuth()->getActivationRepository()->complete($user, $code);
     }
-
+    
+    /**
+     * @param UserModel $user
+     * @return bool
+     */
+    public function activateUserWithoutCode(UserModel $user)
+    {
+        return $this->getAuth()->activate($user);
+    }
+    
+    
     /**
      * @param string $login
      * @param string $password

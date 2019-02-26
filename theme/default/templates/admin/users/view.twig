@@ -65,7 +65,20 @@
                     <li class="uk-width-1-6@m uk-width-1-6@s">Status</li>
                     <li class="uk-width-1-6@m uk-width-1-6@s">
                         {% if not is_user_active(user) %}
-                            <span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>
+
+                            {% if has_access_permission(
+                                constants.admin.users.PERMISSION_GROUP,
+                                constants.admin.users.PERMISSION_KEY,
+                                permissions.ACCESS_EDIT
+                            ) %}
+                                <a
+                                    id="activateUser"
+                                    href="{{ path_for(constants.admin.users.ROUTE_ACTIVATE, {'user': user.id}) }}"
+                                    class="uk-button"
+                                >
+                                    <span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>
+                                </a>
+                            {% endif %}
                         {% else %}
                             <span class="uk-label uk-label-success">{{ trans('admin_users', 'status_active') }}</span>
                         {% endif %}
@@ -92,4 +105,30 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+<script>
+    $(document).ready(function () {
+        UIkit.util.on('#activateUser', 'click', function (e) {
+            e.preventDefault();
+            e.target.blur();
+            $.post($(this).attr('href'), {
+                '{{ csrf.getNameKey() }}' : '{{ csrf.getName() }}',
+                '{{ csrf.getTokenKey() }}' : '{{ csrf.getToken() }}'
+            })
+                .done(function(data) {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        console.log('error')
+                    }
+                })
+                .fail(function() {
+                    console.log("error");
+                });
+        });
+    });
+</script>
 {% endblock %}
