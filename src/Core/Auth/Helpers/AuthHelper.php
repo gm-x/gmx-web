@@ -72,7 +72,6 @@ class AuthHelper {
 			'email'  => $email,
 			'password' => $password,
             'token' => Utils::generateToken(16),
-            'status' => $activate ? UserModel::STATUS_ACTIVE : UserModel::STATUS_PENDING
 		], $activate ? true : null);
 	}
 
@@ -90,12 +89,7 @@ class AuthHelper {
 	 * @return bool
 	 */
 	public function activateUser(UserModel $user, $code) {
-		if (!$this->auth->getActivationRepository()->complete($user, $code)) {
-		    return false;
-        }
-		
-		$user->status = UserModel::STATUS_ACTIVE;
-		return $user->save();
+		return $this->auth->getActivationRepository()->complete($user, $code);
 	}
 
 	/**

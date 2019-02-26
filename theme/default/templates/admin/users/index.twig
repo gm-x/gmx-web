@@ -30,7 +30,6 @@
             <li class="user-avatar-cell"></li>
             <li class="uk-width-1-4@m uk-width-2-4@s uk-visible@s">{{ trans('admin_users', 'login') }}</li>
             <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_users', 'email') }}</li>
-            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_users', 'status') }}</li>
             <li class="uk-width-1-6@m uk-visible@m"></li>
         </ul>
         {% for user in users %}
@@ -48,15 +47,6 @@
                 {% endif %}
             </li>
             <li class="uk-width-1-4@m uk-width-1-4@s">{{ user.email }}</li>
-            <li class="uk-width-1-4@m uk-width-1-4@s">
-                {% if user.status == 'pending' %}
-                    <span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>
-                {% elseif user.status == 'active' %}
-                    <span class="uk-label uk-label-success">{{ trans('admin_users', 'status_active') }}</span>
-                {% else %}
-                    <span class="uk-label uk-label-danger">{{ trans('admin_users', 'status_banned') }}</span>
-                {% endif %}
-            </li>
             {% if has_access_permission(
                 constants.admin.users.PERMISSION_GROUP,
                 constants.admin.users.PERMISSION_KEY,
