@@ -125,7 +125,7 @@ class UserController extends BaseMainController
      */
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
-        $form = new LoginForm(new AuthHelper($this->container));
+        $form = new LoginForm(new AuthHelper($this->container), $this->mailEnabled);
         if ($this->processForm($request, $form, true)) {
             return $this->redirect('index');
         }

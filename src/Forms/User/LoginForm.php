@@ -33,7 +33,7 @@ class LoginForm extends BaseForm
      * @param AuthHelper $authHelper
      * @param bool $mailEnabled
      */
-    public function __construct(AuthHelper $authHelper, $mailEnabled)
+    public function __construct(AuthHelper $authHelper, $mailEnabled = false)
     {
         $this->authHelper = $authHelper;
         $this->mailEnabled = $mailEnabled;
