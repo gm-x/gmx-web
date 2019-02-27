@@ -19,6 +19,12 @@ abstract class CacheItem
             $item->lock();
             $data = $this->getData($element);
             $item->set($data);
+            
+            $ttl = $this->getTTL();
+            if ($ttl > 0) {
+                $item->setTTL($ttl);
+            }
+            
             $item->save();
         }
         return $data;
@@ -41,6 +47,14 @@ abstract class CacheItem
     public function getKey($key, $element = null)
     {
         return $element !== null ? $key . '_' . (string)$element : $key;
+    }
+    
+    /**
+     * @return int
+     */
+    protected function getTTL()
+    {
+        return 0;
     }
 
     /**

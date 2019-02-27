@@ -4,12 +4,12 @@ namespace GameX\Forms\User;
 
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\AuthHelper;
-use \GameX\Core\Forms\Form;
+use GameX\Core\Exceptions\ValidationException;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\Boolean;
+use \Cartalyst\Sentinel\Checkpoints\NotActivatedException;
 
 class LoginForm extends BaseForm
 {
@@ -25,11 +25,18 @@ class LoginForm extends BaseForm
     protected $authHelper;
     
     /**
-     * @param AuthHelper $authHelper
+     * @var boolean
      */
-    public function __construct(AuthHelper $authHelper)
+    protected $mailEnabled;
+    
+    /**
+     * @param AuthHelper $authHelper
+     * @param bool $mailEnabled
+     */
+    public function __construct(AuthHelper $authHelper, $mailEnabled = false)
     {
         $this->authHelper = $authHelper;
+        $this->mailEnabled = $mailEnabled;
     }
     
     /**
@@ -60,12 +67,28 @@ class LoginForm extends BaseForm
     
     /**
      * @return bool
-     * @throws \GameX\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     protected function processForm()
     {
-        $this->authHelper->loginUser($this->form->getValue('login'), $this->form->getValue('password'),
-            (bool)$this->form->getValue('remember_me'));
-        return true;
+        try {
+            $user = $this->authHelper->loginUser(
+                $this->form->getValue('login'),
+                $this->form->getValue('password'),
+                (bool)$this->form->getValue('remember_me')
+            );
+    
+            if (!$user) {
+                throw new ValidationException($this->getTranslate('user', 'bad_login_pass'));
+            }
+            
+            return true;
+        } catch (NotActivatedException $e) {
+            $message = $this->mailEnabled
+                ? $this->getTranslate('user', 'activate_email')
+                : $this->getTranslate('user', 'activate');
+
+            throw new ValidationException($message, null, $e);
+        }
     }
 }

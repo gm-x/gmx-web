@@ -4,5 +4,8 @@
   "registered_moderate": "You have been registered successfully. Please wait approve by administrator",
   "activated": "You have been activated your account successfully. Please login with your credentials",
   "reset_password_sent": "Link for reset will be send to your email address. Please check it to continue resetting password",
-  "reset_password_done": "You successfully reset your password. Please login with new credentials"
+  "reset_password_done": "You successfully reset your password. Please login with new credentials",
+  "activate_email": "Please check email for verifying your account",
+  "activate": "Please wait approve by administrator",
+  "bad_login_pass": "Invalid login or password"
 }

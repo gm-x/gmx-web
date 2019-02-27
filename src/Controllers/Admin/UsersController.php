@@ -2,6 +2,7 @@
 
 namespace GameX\Controllers\Admin;
 
+use GameX\Core\Auth\Helpers\AuthHelper;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Cartalyst\Sentinel\Users\UserRepositoryInterface;
@@ -58,8 +59,12 @@ class UsersController extends BaseAdminController
     public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $user = $this->getUserFromRequest($request, $response, $args);
+    
+        // TODO: Refactor this
+        $csrf = $this->container->get('csrf');
         return $this->render('admin/users/view.twig', [
-            'user' => $user
+            'user' => $user,
+            'csrf' => $csrf
         ]);
     }
     
@@ -86,6 +91,28 @@ class UsersController extends BaseAdminController
         return $this->render('admin/users/form.twig', [
             'user' => $user,
             'editForm' => $editForm->getForm(),
+        ]);
+    }
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     */
+    public function activateAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    {
+        $user = $this->getUserFromRequest($request, $response, $args);
+        $authHelper = new AuthHelper($this->container);
+        if ($authHelper->checkActivationCompleted($user)) {
+            return $response->withJson([
+                'success' => true,
+            ]);
+        }
+        $success = (bool)$authHelper->activateUserWithoutCode($user);
+        return $response->withJson([
+            'success' =>  $success,
         ]);
     }
     
