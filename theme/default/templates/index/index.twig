@@ -10,49 +10,20 @@
 		<div uk-slider="center: true">
 			<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
 				<ul class="uk-slider-items uk-child-width-1-1@s uk-grid">
-					<li>
-						<div class="uk-card uk-card-default">
-							<div class="uk-inline">
-								<img src="{{ base_url() }}/assets/images/maps/de_nuke.jpg" alt="" class="border-10">
-								<div class="uk-overlay-primary uk-position-cover"></div>
-								<div class="uk-overlay uk-position-bottom uk-light">
-									<h3 class="uk-card-title">Сервер 1</h3>
-									<p>
-										<b>{{ trans('labels', 'server_address') }}</b>: 127.0.0.1:27015
-										<br>
-										<b>{{ trans('labels', 'server_players') }}</b>: 15/32
-									</p>
-								</div>
-							</div>
-							<div class="uk-card-badge uk-label">de_nuke</div>
-						</div>
-					</li>
-					<li>
-						<div class="uk-card uk-card-default">
-							<div class="uk-inline">
-								<img src="{{ base_url() }}/assets/images/maps/cs_italy.jpg" alt="" class="border-10">
-								<div class="uk-overlay-primary uk-position-cover"></div>
-								<div class="uk-overlay uk-position-bottom uk-light">
-									<h3 class="uk-card-title">Сервер 2</h3>
-									<p>
-										<b>{{ trans('labels', 'server_address') }}</b>: 127.0.0.1:27015
-										<br>
-										<b>{{ trans('labels', 'server_players') }}</b>: 15/32
-									</p>
-								</div>
-							</div>
-							<div class="uk-card-badge uk-label">cs_italy</div>
-						</div>
-					</li>
                     {% for server in servers %}
 						<li>
 							<div class="uk-card uk-card-default">
 								<div class="uk-inline">
-                                    {% if server.success %}
-										<img src="{{ base_url() }}/assets/images/maps/{{ server.map }}.jpg" alt="{{ server.map }}" onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';" class="border-10">
-                                    {% else %}
+									{% if server.map.exists() %}
+										<img
+											src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
+											alt="{{ server.map.name }}"
+											onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';"
+											class="border-10"
+										>
+									{% else %}
 										<img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" class="border-10">
-                                    {% endif %}
+									{% endif %}
 									<div class="uk-overlay-primary uk-position-cover"></div>
 									<div class="uk-overlay uk-position-bottom uk-light">
 										<h3 class="uk-card-title">{{ server.name }}</h3>
@@ -60,11 +31,7 @@
 											<b>{{ trans('labels', 'server_address') }}</b>: {{ server.ip }}:{{ server.port }}
 											<br>
 											<b>{{ trans('labels', 'server_players') }}</b>:
-											{% if server.success %}
-                                                {{ players_online[server.id] | length }}/{{ server.max_players }}
-                                            {% else %}
-												-/-
-                                            {% endif %}
+											{{ players[server.id] | length }}/{{ server.max_players }}
 										</p>
 									</div>
 								</div>

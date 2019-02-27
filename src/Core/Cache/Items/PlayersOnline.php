@@ -14,12 +14,9 @@ class PlayersOnline extends CacheItem {
     protected function getData($element) {
         $sessions = [];
         /** @var PlayerSession $session */
-        foreach ( $element->getActiveSessions() as $session) {
+        foreach ($element->getActiveSessions() as $session) {
             $player = $session->player;
-            $sessions[] = [
-                'id' => $player->id,
-                'nick' => $player->nick
-            ];
+            $sessions[] = $player->toArray();
         }
         
         return $sessions;
@@ -33,5 +30,10 @@ class PlayersOnline extends CacheItem {
     public function getKey($key, $element = null)
     {
         return $element !== null ? $key . '_' . (string)$element->id : $key;
+    }
+    
+    protected function getTTL()
+    {
+        return 60;
     }
 }

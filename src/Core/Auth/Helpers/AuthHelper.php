@@ -89,11 +89,21 @@ class AuthHelper
      * @param string $code
      * @return bool
      */
-    public function activateUser(UserModel $user, $code)
+    public function activateUser(UserModel $user)
     {
         return $this->getAuth()->getActivationRepository()->complete($user, $code);
     }
-
+    
+    /**
+     * @param UserModel $user
+     * @return bool
+     */
+    public function activateUserWithoutCode(UserModel $user)
+    {
+        return $this->getAuth()->activate($user);
+    }
+    
+    
     /**
      * @param string $login
      * @param string $password
@@ -102,16 +112,10 @@ class AuthHelper
      */
     public function loginUser($login, $password, $remember)
     {
-        $user = $this->getAuth()->authenticate([
+        return $this->getAuth()->authenticate([
             'login' => $login,
             'password' => $password
         ], (bool)$remember);
-
-        if (!$user) {
-            throw new ValidationException('Bad login or password');
-        }
-
-        return $user;
     }
 
     /**

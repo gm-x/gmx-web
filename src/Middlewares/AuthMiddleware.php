@@ -31,7 +31,6 @@ class AuthMiddleware
      * @param ResponseInterface $response
      * @param callable $next
      * @return mixed
-     * @throws NotAllowedException
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {

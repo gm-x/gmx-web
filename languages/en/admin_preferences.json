@@ -23,5 +23,6 @@
     "email_encrypt_fail": "Start TLS failed to enable crypto",
     "email_code_fail": "Unexpected return code - Expected: %d, Got: %d",
     "email_send_fail": "Send email failed",
-    "cache_accept": "Clear"
+    "cache_accept": "Clear",
+    "current_version": "Current version"
 }
