@@ -29,6 +29,8 @@ class IndexController extends BaseMainController
      */
     public function indexAction(Request $request, Response $response, array $args)
     {
+        $servers = Server::with('map')->where('active', true)->get();
+
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
 
@@ -38,7 +40,7 @@ class IndexController extends BaseMainController
         }
 
         return $this->render('index/index.twig', [
-            'servers' => Server::with('map')->where('active', true)->get(),
+            'servers' => $servers,
             'players' => $players,
         ]);
     }

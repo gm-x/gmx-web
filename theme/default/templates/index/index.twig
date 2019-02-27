@@ -14,12 +14,16 @@
 						<li>
 							<div class="uk-card uk-card-default">
 								<div class="uk-inline">
-									<img
-											src="{{ base_url() }}/assets/images/maps/{{ server.map }}.jpg"
-											alt="{{ server.map }}"
+									{% if server.map.exists() %}
+										<img
+											src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
+											alt="{{ server.map.name }}"
 											onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';"
 											class="border-10"
-									>
+										>
+									{% else %}
+										<img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" class="border-10">
+									{% endif %}
 									<div class="uk-overlay-primary uk-position-cover"></div>
 									<div class="uk-overlay uk-position-bottom uk-light">
 										<h3 class="uk-card-title">{{ server.name }}</h3>
