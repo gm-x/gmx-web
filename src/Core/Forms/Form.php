@@ -5,7 +5,7 @@ use GameX\Core\Forms\Elements\Password;
 use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Session\Session;
 use \GameX\Core\Lang\Language;
-use \GameX\Core\Forms\Elements\File;
+use \GameX\Core\Validate\Validator;
 use \ArrayAccess;
 use \Exception;
 

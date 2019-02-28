@@ -9,7 +9,7 @@ class Preferences extends CacheItem {
     /**
      * @inheritdoc
      */
-    protected function getData() {
+    protected function getData($element) {
         $data = [];
         foreach (Preference::all() as $preference) {
             $data[$preference->getAttribute('key')] = $preference->getAttribute('value');

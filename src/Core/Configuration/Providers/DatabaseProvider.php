@@ -26,6 +26,9 @@ class DatabaseProvider implements ProviderInterface {
     public function load() {
         try {
             $data = $this->cache->get('preferences');
+            if (!$data) {
+                throw new CantLoadException('Could not load from database', 0);
+            }
             return new Node($data);
         } catch (Exception $e) {
             throw new CantLoadException('Could not load from database', 0, $e);

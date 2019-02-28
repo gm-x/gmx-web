@@ -8,9 +8,9 @@ use \GameX\Core\Configuration\Config;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Validator;
-use \GameX\Core\Forms\Rules\InArray;
-use \GameX\Core\Forms\Rules\Boolean;
+use \GameX\Core\Validate\Validator;
+use \GameX\Core\Validate\Rules\InArray;
+use \GameX\Core\Validate\Rules\Boolean;
 
 class MainForm extends BaseForm
 {

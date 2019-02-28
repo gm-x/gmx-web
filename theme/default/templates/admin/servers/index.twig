@@ -6,6 +6,11 @@
 {% block title %}{{ parent() }} | {{ trans('admin_menu', 'servers') }}{% endblock %}
 
 {% block subnav %}
+	<div class="uk-float-left">
+		{{ admin.back_btn(path_for('admin_index'), 'l') }}
+	</div>
+
+	{# TODO: check permissions #}
     {{ admin.add_btn(path_for(constants.admin.servers.ROUTE_CREATE), 'l') }}
 {% endblock %}
 

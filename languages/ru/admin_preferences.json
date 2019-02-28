@@ -2,6 +2,7 @@
     "tab_main": "Основные настройки",
     "tab_email": "Настройки email",
     "tab_update": "Обновление",
+    "tab_cache": "Очистить кэш",
     "test_mail": "Отправить тестовый email",
     "enabled": "Включено",
     "from_name": "Имя отправителя",
@@ -16,5 +17,7 @@
     "title": "Заголовок",
     "language": "Язык",
     "theme": "Тема",
-    "auto_activate_users": "Авто активация новых пользователей"
+    "auto_activate_users": "Авто активация новых пользователей",
+    "cache_accept": "Очистить",
+    "current_version": "Текущая версия"
 }

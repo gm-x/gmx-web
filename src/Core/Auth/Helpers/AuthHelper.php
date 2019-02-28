@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Core\Auth\Helpers;
 
 use \Psr\Container\ContainerInterface;
@@ -10,54 +11,52 @@ use \Cartalyst\Sentinel\Reminders\EloquentReminder;
 use \GameX\Core\Exceptions\FormException;
 use \GameX\Core\Exceptions\ValidationException;
 
-class AuthHelper {
-    
+class AuthHelper
+{
+
     const MIN_PASSWORD_LENGTH = 6;
 
     /**
      * @var ContainerInterface
      */
     protected $container;
-    
-	/**
-	 * @var Sentinel
-	 */
-	protected $auth;
-    
+
     /**
      * AuthHelper constructor.
      * @param ContainerInterface $container
      */
-	public function __construct(ContainerInterface $container) {
+    public function __construct(ContainerInterface $container)
+    {
         $this->container = $container;
-        $this->auth = $container->get('auth');
-	}
+    }
 
-	/**
-	 * @param string $login
-	 * @return UserModel|null
-	 */
-	public function findUser($login) {
-		return $this->auth->getUserRepository()->findByCredentials([
-			'login' => $login
-		]);
-	}
+    /**
+     * @param string $login
+     * @return UserModel|null
+     */
+    public function findUser($login)
+    {
+        return $this->getAuth()->getUserRepository()->findByCredentials([
+            'login' => $login
+        ]);
+    }
 
-	/**
-	 * @param string $login
-	 * @param string $email
-	 * @return bool
-	 */
-	public function exists($login, $email) {
-		/** @var \Illuminate\Database\Eloquent\Builder $query */
-		$query = $this->auth->getUserRepository()->createModel()->newQuery();
-		$query
-			->where('login', $login)
-			->orWhere('email', $email);
+    /**
+     * @param string $login
+     * @param string $email
+     * @return bool
+     */
+    public function exists($login, $email)
+    {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $this->getAuth()->getUserRepository()->createModel()->newQuery();
+        $query
+            ->where('login', $login)
+            ->orWhere('email', $email);
 
-		return $query->exists();
-	}
-    
+        return $query->exists();
+    }
+
     /**
      * @param $login
      * @param $email
@@ -66,63 +65,66 @@ class AuthHelper {
      * @return bool|\Cartalyst\Sentinel\Users\UserInteface
      * @throws \Exception
      */
-	public function registerUser($login, $email, $password, $activate = false) {
-		return $this->auth->register([
-			'login'  => $login,
-			'email'  => $email,
-			'password' => $password,
+    public function registerUser($login, $email, $password, $activate = false)
+    {
+        return $this->getAuth()->register([
+            'login' => $login,
+            'email' => $email,
+            'password' => $password,
             'token' => Utils::generateToken(16),
-            'status' => $activate ? UserModel::STATUS_ACTIVE : UserModel::STATUS_PENDING
-		], $activate ? true : null);
-	}
+        ], $activate ? true : null);
+    }
 
-	/**
-	 * @param UserInterface $user
-	 * @return string
-	 */
-	public function getActivationCode(UserInterface $user) {
-		return $this->auth->getActivationRepository()->create($user)->getCode();
-	}
+    /**
+     * @param UserInterface $user
+     * @return string
+     */
+    public function getActivationCode(UserInterface $user)
+    {
+        return $this->getAuth()->getActivationRepository()->create($user)->getCode();
+    }
 
-	/**
-	 * @param UserModel $user
-	 * @param string $code
-	 * @return bool
-	 */
-	public function activateUser(UserModel $user, $code) {
-		if (!$this->auth->getActivationRepository()->complete($user, $code)) {
-		    return false;
-        }
-		
-		$user->status = UserModel::STATUS_ACTIVE;
-		return $user->save();
-	}
+    /**
+     * @param UserModel $user
+     * @param string $code
+     * @return bool
+     */
+    public function activateUser(UserModel $user)
+    {
+        return $this->getAuth()->getActivationRepository()->complete($user, $code);
+    }
+    
+    /**
+     * @param UserModel $user
+     * @return bool
+     */
+    public function activateUserWithoutCode(UserModel $user)
+    {
+        return $this->getAuth()->activate($user);
+    }
+    
+    
+    /**
+     * @param string $login
+     * @param string $password
+     * @return bool|\Cartalyst\Sentinel\Users\UserInterface
+     * @throws ValidationException
+     */
+    public function loginUser($login, $password, $remember)
+    {
+        return $this->getAuth()->authenticate([
+            'login' => $login,
+            'password' => $password
+        ], (bool)$remember);
+    }
 
-	/**
-	 * @param string $login
-	 * @param string $password
-	 * @return bool|\Cartalyst\Sentinel\Users\UserInterface
-	 * @throws ValidationException
-	 */
-	public function loginUser($login, $password, $remember) {
-		$user =  $this->auth->authenticate([
-			'login' => $login,
-			'password' => $password
-		], (bool)$remember);
-
-		if (!$user) {
-			throw new ValidationException('Bad login or password');
-		}
-
-		return $user;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function logoutUser() {
-		return $this->auth->logout();
-	}
+    /**
+     * @return bool
+     */
+    public function logoutUser()
+    {
+        return $this->getAuth()->logout();
+    }
 
     /**
      * @param UserInterface $user
@@ -130,87 +132,102 @@ class AuthHelper {
      * @throws FormException
      * @throws ValidationException
      */
-	public function resetPassword(UserInterface $user) {
-		$reminderRepository = $this->auth->getReminderRepository();
-		if ($reminderRepository->exists($user)) {
-			throw new ValidationException('You already reset password');
-		}
+    public function resetPassword(UserInterface $user)
+    {
+        $reminderRepository = $this->getAuth()->getReminderRepository();
+        if ($reminderRepository->exists($user)) {
+            throw new ValidationException('You already reset password');
+        }
 
-		/** @var EloquentReminder $reminder */
-		$reminder = $reminderRepository->create($user);
-		if (!$reminder) {
-			throw new ValidationException('Something wrong. Please Try again later.');
-		}
+        /** @var EloquentReminder $reminder */
+        $reminder = $reminderRepository->create($user);
+        if (!$reminder) {
+            throw new ValidationException('Something wrong. Please Try again later.');
+        }
 
-		return $reminder->code;
-	}
+        return $reminder->code;
+    }
 
-	/**
-	 * @param UserInterface $user
-	 * @param $password
-	 * @param $code
-	 * @throws ValidationException
-	 */
-    public function resetPasswordComplete(UserInterface $user, $password, $code) {
-        $reminderRepository = $this->auth->getReminderRepository();
+    /**
+     * @param UserInterface $user
+     * @param $password
+     * @param $code
+     * @throws ValidationException
+     */
+    public function resetPasswordComplete(UserInterface $user, $password, $code)
+    {
+        $reminderRepository = $this->getAuth()->getReminderRepository();
         if (!$reminderRepository->exists($user)) {
             throw new ValidationException('Bad code');
         }
 
         /** @var EloquentReminder $reminder */
         if (!$reminderRepository->complete($user, $code, $password)) {
-			throw new ValidationException('Something wrong. Please Try again later.');
-		}
+            throw new ValidationException('Something wrong. Please Try again later.');
+        }
     }
-    
+
     /**
      * @param UserInterface $user
      * @param string $password
      * @return bool
      */
-    public function validatePassword(UserInterface $user, $password) {
-        return $this->auth->getUserRepository()->validateCredentials($user, ['password' => $password]);
+    public function validatePassword(UserInterface $user, $password)
+    {
+        return $this->getAuth()->getUserRepository()->validateCredentials($user, ['password' => $password]);
     }
-    
+
     /**
      * @param UserInterface $user
      * @param string $password
      */
-    public function changePassword(UserInterface $user, $password) {
-        $this->auth->getUserRepository()->update($user, ['password' => $password]);
+    public function changePassword(UserInterface $user, $password)
+    {
+        $this->getAuth()->getUserRepository()->update($user, ['password' => $password]);
     }
-    
+
     /**
      * @param UserInterface $user
      * @param $code
      * @return bool|\Cartalyst\Sentinel\Activations\ActivationInterface
      */
-    public function checkActivationExists(UserInterface $user, $code) {
-        return $this->auth->getActivationRepository()->exists($user, $code);
+    public function checkActivationExists(UserInterface $user, $code)
+    {
+        return $this->getAuth()->getActivationRepository()->exists($user, $code);
     }
-    
+
     /**
      * @param UserInterface $user
      * @return bool|\Cartalyst\Sentinel\Activations\ActivationInterface
      */
-    public function checkActivationCompleted(UserInterface $user) {
-        return $this->auth->getActivationRepository()->completed($user);
+    public function checkActivationCompleted(UserInterface $user)
+    {
+        return $this->getAuth()->getActivationRepository()->completed($user);
     }
 
-	/**
-	 * @param $name
-	 * @param array $data
-	 * @return string
-	 */
-	protected function getLink($name, array $data = []) {
-		/** @var \Slim\Router $router */
-		$router = $this->container->get('router');
+    /**
+     * @return Sentinel
+     */
+    protected function getAuth()
+    {
+        return $this->container->get('auth');
+    }
 
-		/** @var \Slim\Http\Request $router */
-		$request = $this->container->get('request');
+    /**
+     * @param $name
+     * @param array $data
+     * @return string
+     */
+    protected function getLink($name, array $data = [])
+    {
+        /** @var \Slim\Router $router */
+        $router = $this->container->get('router');
 
-		return (string)$request
-			->getUri()
-			->withPath($router->pathFor($name, $data));
-	}
+        /** @var \Slim\Http\Request $router */
+        $request = $this->container->get('request');
+
+        return (string)$request
+            ->getUri()
+            ->withPath($router->pathFor($name, $data));
+    }
 }

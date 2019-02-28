@@ -5,11 +5,11 @@ namespace GameX\Forms\Admin\Preferences;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Update\Updater;
 use \GameX\Core\Update\Manifest;
-use \GameX\Core\Forms\Validator;
+use \GameX\Core\Validate\Validator;
 use \GameX\Core\Forms\Elements\File as FileInput;
-use \GameX\Core\Forms\Rules\File as FileRule;
-use \GameX\Core\Forms\Rules\FileExtension;
-use \GameX\Core\Forms\Rules\FileSize;
+use \GameX\Core\Validate\Rules\File as FileRule;
+use \GameX\Core\Validate\Rules\FileExtension;
+use \GameX\Core\Validate\Rules\FileSize;
 use \Psr\Http\Message\UploadedFileInterface;
 use \ZipArchive;
 use \GameX\Core\Exceptions\ValidationException;
@@ -71,6 +71,8 @@ class UpdateForm extends BaseForm
     protected function processForm()
     {
         try {
+            ignore_user_abort(true);
+            set_time_limit(60);
             /** @var UploadedFileInterface $value */
             $value = $this->form->getValue('updates');
             $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('GameX', true) . DIRECTORY_SEPARATOR;

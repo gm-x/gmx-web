@@ -21,7 +21,6 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \DateTime $last_login
  * @property int $avatar
  * @property string $token
- * @property string $status
  * @property \DateTime $created_at
  * @property \DateTime $update_at
  * @property RoleModel $role
@@ -29,10 +28,6 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserModel extends BaseModel implements UserInterface, PersistableInterface {
 
-    const STATUS_PENDING = 'pending';
-    const STATUS_ACTIVE = 'active';
-    const STATUS_BANNED = 'banned';
-    
     /**
      * @var string
      */

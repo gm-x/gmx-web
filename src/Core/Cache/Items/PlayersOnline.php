@@ -8,22 +8,32 @@ use \GameX\Models\PlayerSession;
 class PlayersOnline extends CacheItem {
 
     /**
-     * @inheritdoc
+     * @param Server|null $element
+     * @return array|mixed
      */
-    protected function getData() {
+    protected function getData($element) {
         $sessions = [];
-        foreach (Server::all() as $server) {
-            $sessions[$server->id] = [];
-            /** @var PlayerSession $session */
-            foreach ( $server->getActiveSessions() as $session) {
-                $player = $session->player;
-                $sessions[$server->id][] = [
-                    'id' => $player->id,
-                    'nick' => $player->nick
-                ];
-            }
+        /** @var PlayerSession $session */
+        foreach ($element->getActiveSessions() as $session) {
+            $player = $session->player;
+            $sessions[] = $player->toArray();
         }
         
         return $sessions;
+    }
+
+    /**
+     * @param $key
+     * @param Server|null $element
+     * @return mixed|string
+     */
+    public function getKey($key, $element = null)
+    {
+        return $element !== null ? $key . '_' . (string)$element->id : $key;
+    }
+    
+    protected function getTTL()
+    {
+        return 60;
     }
 }

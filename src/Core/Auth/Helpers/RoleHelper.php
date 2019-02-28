@@ -31,8 +31,10 @@ class RoleHelper {
     }
 
     /**
-     * @param string $role
-     * @param UserInterface|string|int $user
+     * @param $role
+     * @param $user
+     * @return mixed
+     * @throws ValidationException
      */
     public function assignUser($role, $user) {
         return $this->getUser($user)
