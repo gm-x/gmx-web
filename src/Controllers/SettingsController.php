@@ -58,18 +58,4 @@ class SettingsController extends BaseMainController
             'avatarForm' => $avatarForm->getForm(),
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param ResponseInterface $response
-     * @param array $args
-     * @return ResponseInterface
-     */
-    public function assignAction(Request $request, ResponseInterface $response, array $args)
-    {
-        return $this->render('settings/assign.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri()),
-            'user' => $this->getUser()
-        ]);
-    }
 }

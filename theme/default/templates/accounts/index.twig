@@ -5,24 +5,32 @@
 {% endblock %}
 
 {% block content %}
-<div class="uk-child-width-1-2@s" uk-grid>
-	{% for player in user.players %}
-		<div>
-			<div class="uk-card uk-card-default">
-				<div class="uk-card-header">
-					<div class="uk-grid-small uk-flex-middle" uk-grid>
-						<div class="uk-width-expand">
-							<h3 class="uk-card-title uk-margin-remove-bottom">
-								{#<a href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': server.id}) }}">#}
-									{{ player.nick }}
-								{#</a>#}
-							</h3>
-							<p class="uk-text-meta uk-margin-remove-top">{{ player.steamid }}</p>
+	<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+		<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+			<h2>Token</h2>
+			<div class="uk-light uk-background-secondary">
+				<b>&nbsp; gmx_assign {{ user.token }}</b>
+			</div>
+		</div>
+	</div>
+	<div class="uk-child-width-1-2@s" uk-grid>
+		{% for player in user.players %}
+			<div>
+				<div class="uk-card uk-card-default">
+					<div class="uk-card-header">
+						<div class="uk-grid-small uk-flex-middle" uk-grid>
+							<div class="uk-width-expand">
+								<h3 class="uk-card-title uk-margin-remove-bottom">
+									{#<a href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': server.id}) }}">#}
+										{{ player.nick }}
+									{#</a>#}
+								</h3>
+								<p class="uk-text-meta uk-margin-remove-top">{{ player.steamid }}</p>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	{% endfor %}
-</div>
+		{% endfor %}
+	</div>
 {% endblock %}
