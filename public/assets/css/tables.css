@@ -7,11 +7,11 @@ div[f-table] > ul, div[f-table] > ol {
     width: 100%;
 }
 div[f-divider] > ul:not([th]), div[f-divider] > ol:not([th]) {
-    border-top: 1px solid rgba(74, 74, 74, 0.5);
-    box-shadow: 0 -1px rgba(21, 20, 20, 0.5);
+    border-top: 1px dashed rgba(33, 33, 33, 0.5);
 }
 div[f-table] > ul[th], div[f-table] > ol[th] {
     font-weight: 700;
+    background: rgba(0, 0, 0, 0.2);
 }
 div[f-table] > ul > li, div[f-table] > ol > li {
     padding: 14px;
