@@ -73,6 +73,7 @@
                     <ul>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">{{ trans('admin_players', 'status') }}</li>
                         <li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">
+                            {# TODO: check session #}
                             {% if player.server_id %}
                                 Online: {{ player.server.name }}
                             {% else %}
