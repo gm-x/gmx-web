@@ -306,7 +306,7 @@ class DependencyProvider implements ServiceProviderInterface
         $view->addExtension(new LangViewExtension($container));
         $view->addExtension(new AccessFlagsViewExtension());
         $view->addExtension(new Twig_Dump());
-        $view->addExtension(new UploadFlagsViewExtension($container->get('upload')));
+        $view->addExtension(new UploadFlagsViewExtension($container));
         $view->addExtension(new ConstantsViewExtension());
         
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
