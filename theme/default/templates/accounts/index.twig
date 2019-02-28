@@ -5,5 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<h1>Accounts</h1>
+{% for player in user.players %}
+	{{ dump(player) }}
+{% endfor %}
 {% endblock %}

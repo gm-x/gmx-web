@@ -24,6 +24,9 @@ class AccountsController extends BaseMainController
      */
     public function indexAction(Request $request, ResponseInterface $response, array $args)
     {
-        return $this->render('accounts/index.twig', []);
+        $user = $this->getUser();
+        return $this->render('accounts/index.twig', [
+            'user' => $user
+        ]);
     }
 }
