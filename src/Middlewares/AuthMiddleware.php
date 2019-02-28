@@ -7,7 +7,6 @@ use \Cartalyst\Sentinel\Sentinel;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Auth\Models\UserModel;
-use \GameX\Core\Exceptions\NotAllowedException;
 
 class AuthMiddleware
 {

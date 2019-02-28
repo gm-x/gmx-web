@@ -13,3 +13,8 @@ $this
     ->get('/accounts', BaseController::action(AccountsController::class, 'index'))
     ->setName(AccountsConstants::ROUTE_LIST)
 	->add($permissions->isAuthorizedMiddleware());
+
+$this
+    ->get('/accounts/{player}', BaseController::action(AccountsController::class, 'view'))
+    ->setName(AccountsConstants::ROUTE_VIEW)
+    ->add($permissions->isAuthorizedMiddleware());

@@ -198,10 +198,10 @@ class PunishmentsController extends BaseAdminController
     
     /**
      * @param Punishment $punishment
-     * @param int $access
+     * @param $access
      * @return Server
-     * @throws NotFoundException
      * @throws NotAllowedException
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     protected function getServerForPunishment(Punishment $punishment, $access)
     {
@@ -251,9 +251,10 @@ class PunishmentsController extends BaseAdminController
     }
     
     /**
-     * @param int $serverId
-     * @param int $access
+     * @param $serverId
+     * @param $access
      * @return bool
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     protected function hasAccess($serverId, $access)
     {

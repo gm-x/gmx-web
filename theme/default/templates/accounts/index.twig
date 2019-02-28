@@ -21,9 +21,9 @@
 						<div class="uk-grid-small uk-flex-middle" uk-grid>
 							<div class="uk-width-expand">
 								<h3 class="uk-card-title uk-margin-remove-bottom">
-									{#<a href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': server.id}) }}">#}
+									<a href="{{ path_for(constants.accounts.ROUTE_VIEW, {'account': player.id}) }}">
 										{{ player.nick }}
-									{#</a>#}
+									</a>
 								</h3>
 								<p class="uk-text-meta uk-margin-remove-top">{{ player.steamid }}</p>
 							</div>

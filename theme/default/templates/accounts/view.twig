@@ -1,0 +1,9 @@
+{% extends 'base.twig' %}
+
+{% block style %}
+	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block content %}
+	{{ dump(player) }}
+{% endblock %}
