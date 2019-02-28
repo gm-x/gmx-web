@@ -89,6 +89,13 @@ class Language {
     }
 
     /**
+     * @return string
+     */
+    public function getUserLanguageName() {
+        return $this->languages[$this->userLanguage];
+    }
+
+    /**
      * @return string[]
      */
     public function getLanguages() {

@@ -303,7 +303,7 @@ class DependencyProvider implements ServiceProviderInterface
         $view->addExtension(new TwigExtension($container->get('router'), $container->get('base_url')));
         $view->addExtension(new CSRFExtension($container->get('csrf')));
         $view->addExtension(new AuthViewExtension($container));
-        $view->addExtension(new LangViewExtension($container->get('lang')));
+        $view->addExtension(new LangViewExtension($container));
         $view->addExtension(new AccessFlagsViewExtension());
         $view->addExtension(new Twig_Dump());
         $view->addExtension(new UploadFlagsViewExtension($container->get('upload')));
