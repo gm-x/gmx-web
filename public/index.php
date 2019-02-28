@@ -52,25 +52,27 @@ $container['errorHandler'] = $errorHandler;
 $container['phpErrorHandler'] = $errorHandler;
 $container['notFoundHandler'] = $notFoundHandler;
 
-set_exception_handler(function ($e) use ($container) {
-    if ($e instanceof \GameX\Core\Configuration\Exceptions\CantLoadException) {
-        redirectToInstall();
-    } else {
-        /** @var \Slim\Views\Twig $view */
-        $view = $container->get('view');
-        $container->get('log')->exception($e);
-        return $view->render($container->get('response')->withStatus(500), 'errors/500.twig');
-    }
-});
-
-$container->register(new \GameX\Core\DependencyProvider());
-
 \GameX\Core\BaseModel::setContainer($container);
 \GameX\Core\BaseForm::setContainer($container);
 \GameX\Core\Utils::setContainer($container);
 date_default_timezone_set('UTC');
 
 $app = new \Slim\App($container);
+
+set_exception_handler(function ($e) use ($app) {
+    if ($e instanceof \GameX\Core\Configuration\Exceptions\CantLoadException) {
+        redirectToInstall();
+    } else {
+        $container = $app->getContainer();
+        /** @var \Slim\Views\Twig $view */
+        $view = $container->get('view');
+        $container->get('log')->exception($e);
+        $response = $view->render($container->get('response'), 'errors/500.twig')->withStatus(500);
+        $app->respond($response);
+    }
+});
+
+$container->register(new \GameX\Core\DependencyProvider());
 
 include __DIR__ . '/../src/middlewares.php';
 include __DIR__ . '/../src/routes/index.php';
