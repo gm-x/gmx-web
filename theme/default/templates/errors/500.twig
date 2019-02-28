@@ -1,5 +1,13 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-    <h1>500 Server error</h1>
+    <div class="uk-flex uk-flex-center uk-flex-middle" uk-height-viewport="offset-top: true">
+        <div class="uk-text-center error">
+            <span>
+                <i class="fas fa-bug"></i>
+            </span>
+            <p>500</p>
+            <p>Server error</p>
+        </div>
+    </div>
 {% endblock %}

@@ -107,6 +107,24 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 
 }
 
+.error span {
+    color: #44a1d1;
+    font-size: 8em;
+}
+
+.error p {
+    font-size: 3em;
+    line-height: 0.5;
+}
+.error p:nth-child(odd) {
+    color: #44a1d1;
+    transform: skew(60deg, -30deg) scaleY(.66667);
+}
+.error p:nth-child(even) {
+    font-size: 4em;
+     transform: skew(0deg, -30deg) scaleY(1.33333);
+ }
+
 .uk-icon-button.s {
 
 }
