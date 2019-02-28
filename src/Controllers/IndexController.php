@@ -3,11 +3,11 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
-use GameX\Models\Server;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
+use \GameX\Models\Server;
 
 class IndexController extends BaseMainController
 {

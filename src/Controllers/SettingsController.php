@@ -3,7 +3,6 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
-use GameX\Core\Utils;
 use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Constants\SettingsConstants;

@@ -27,6 +27,7 @@ $app->group('', function () {
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
     include __DIR__ . DIRECTORY_SEPARATOR . 'settings.php';
+    include __DIR__ . DIRECTORY_SEPARATOR . 'accounts.php';
 })
     ->add($authMiddleware)
     ->add($csrfMiddleware);
