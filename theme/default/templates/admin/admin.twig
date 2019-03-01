@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/all.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
+    <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
     <script src="{{ base_url() }}/assets/js/all.js"></script>
     {% block style %}{% endblock %}
@@ -41,7 +42,6 @@
         {% block content %}{% endblock %}
     </main>
     {% block modals %}{% endblock %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         UIkit.util.on('form.delete-form', 'submit', function (e) {
             e.preventDefault();
