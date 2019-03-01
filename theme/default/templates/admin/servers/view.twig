@@ -57,12 +57,21 @@
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
         <div class="uk-card-media-left uk-cover-container">
-            <img src="{{ base_url() }}/assets/images/maps/de_nuke.jpg" alt="" uk-cover>
+            {% if server.map.exists() %}
+                <img
+                    src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
+                    alt="{{ server.map.name }}"
+                    onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';"
+                    class="border-10"
+                >
+            {% else %}
+                <img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" class="border-10">
+            {% endif %}
             <canvas width="600" height="400"></canvas>
             <div class="uk-overlay uk-position-top uk-overlay-primary">
-                Map: de_nuke
+                Map: {{ server.map.exists() ? server.map.name : '-' }}
                 <br>
-                Online: 1/32
+                Online: {{ players | length }}/{{ server.max_players }}
             </div>
         </div>
         <div>
