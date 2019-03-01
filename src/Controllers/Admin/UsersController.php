@@ -59,12 +59,8 @@ class UsersController extends BaseAdminController
     public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $user = $this->getUserFromRequest($request, $response, $args);
-    
-        // TODO: Refactor this
-        $csrf = $this->container->get('csrf');
         return $this->render('admin/users/view.twig', [
-            'user' => $user,
-            'csrf' => $csrf
+            'user' => $user
         ]);
     }
     

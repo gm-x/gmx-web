@@ -27,6 +27,11 @@ class Extension extends Twig_Extension {
                 'csrf_token',
                 [$this, 'renderCSRFToken'],
                 ['is_safe' => ['html']]
+            ),
+            new Twig_SimpleFunction(
+                'csrf_token_json',
+                [$this, 'renderCSRFTokenJSON'],
+                ['is_safe' => ['html']]
             )
         ];
     }
@@ -42,5 +47,15 @@ class Extension extends Twig_Extension {
             $this->token->getTokenKey(),
             $this->token->getToken()
         );
+    }
+    
+    /**
+     * @return string
+     */
+    public function renderCSRFTokenJSON() {
+        return json_encode([
+            $this->token->getNameKey() => $this->token->getName(),
+            $this->token->getTokenKey() => $this->token->getToken()
+        ]);
     }
 }
