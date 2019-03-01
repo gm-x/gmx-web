@@ -59,6 +59,20 @@ use \GameX\Core\Update\Manifest;
 class DependencyProvider implements ServiceProviderInterface
 {
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * DependencyProvider constructor.
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * @inheritdoc
      */
     public function register(Container $container)
@@ -69,9 +83,7 @@ class DependencyProvider implements ServiceProviderInterface
             return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
         };
         
-        $container['config'] = function (ContainerInterface $container) {
-            return $this->getConfig($container);
-        };
+        $container['config'] = $this->config;
         
         $container['preferences'] = function (ContainerInterface $container) {
             return $this->getPreferences($container);
@@ -134,17 +146,6 @@ class DependencyProvider implements ServiceProviderInterface
             //	$modules->addModule(new \GameX\Modules\TestModule\Module());
             return $modules;
         };
-    }
-    
-    /**
-     * @param ContainerInterface $container
-     * @return Config
-     * @throws CantLoadException
-     */
-    public function getConfig(ContainerInterface $container)
-    {
-        $provider = new JsonProvider($container->get('root') . '/config.json');
-        return new Config($provider);
     }
     
     /**
