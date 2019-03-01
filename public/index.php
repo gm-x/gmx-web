@@ -18,11 +18,16 @@ try {
     die('Can\'t load configuration file');
 }
 
+$settings = $config->getNode('debug')->get('pretty') ? [
+    'determineRouteBeforeAppMiddleware' => true,
+    'displayErrorDetails' => true,
+    'debug' => true
+] : [
+    'determineRouteBeforeAppMiddleware' => true,
+];
+
 $container = new \Slim\Container([
-	'settings' => [
-		'determineRouteBeforeAppMiddleware' => true,
-		'displayErrorDetails' => true,
-	],
+	'settings' => $settings,
 	'root' => dirname(__DIR__) . DIRECTORY_SEPARATOR,
 ]);
 
@@ -37,7 +42,6 @@ if ($config->getNode('debug')->get('exceptions')) {
     $whoopsGuard = new \Zeuxisoo\Whoops\Provider\Slim\WhoopsGuard();
     $whoopsGuard->setApp($app);
     $whoopsGuard->setRequest($container['request']);
-    $whoopsGuard->setHandlers([]);
     $whoopsGuard->install();
 } else {
     $errorHandler = function (\Slim\Container $container) {

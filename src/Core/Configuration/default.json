@@ -1,6 +1,7 @@
 {
 	"debug": {
-		"exception": false
+		"exception": false,
+		"pretty": false
 	},
 	"db": {
 		"driver": "mysql",
@@ -11,6 +12,9 @@
 		"charset": "utf8mb4",
 		"collation": "utf8mb4_unicode_ci",
 		"prefix": "gamex_"
+	},
+	"cache": {
+		"driver": "files"
 	},
 	"session": {
 		"name": "sessid",

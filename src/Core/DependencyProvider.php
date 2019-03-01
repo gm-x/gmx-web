@@ -8,15 +8,14 @@ use \Psr\Container\ContainerInterface;
 use \GameX\Constants\PreferencesConstants;
 
 use \GameX\Core\Configuration\Config;
-use \GameX\Core\Configuration\Providers\JsonProvider;
 use \GameX\Core\Configuration\Providers\DatabaseProvider;
 use \GameX\Core\Configuration\Exceptions\CantLoadException;
 use \GameX\Core\Configuration\Exceptions\NotFoundException;
 
 use \GameX\Core\Session\Session;
 
-use \Stash\Driver\FileSystem;
 use \GameX\Core\Cache\Cache;
+use \GameX\Core\Cache\CacheDriverFactory;
 use \GameX\Core\Cache\Items\Preferences;
 use \GameX\Core\Cache\Items\Permissions as PermissionsCache;
 use \GameX\Core\Cache\Items\PlayersOnline;
@@ -166,17 +165,15 @@ class DependencyProvider implements ServiceProviderInterface
     {
         return new Session();
     }
-    
+
     /**
      * @param ContainerInterface $container
      * @return Cache
+     * @throws NotFoundException
      */
     public function getCache(ContainerInterface $container)
     {
-        $driver = new FileSystem([
-            'path' => $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'cache',
-            'encoder' => 'Serializer'
-        ]);
+        $driver = CacheDriverFactory::getDriver($container, 'runtime' . DIRECTORY_SEPARATOR . 'cache');
         $cache = new Cache($driver);
         $cache->add('preferences', new Preferences());
         $cache->add('permissions', new PermissionsCache());
