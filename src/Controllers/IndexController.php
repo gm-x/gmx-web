@@ -39,7 +39,7 @@ class IndexController extends BaseMainController
             $players[$server->id] = $cache->get('players_online', $server);
         }
 
-        return $this->render('index/index.twig', [
+        return $this->getView()->render($response, 'index/index.twig', [
             'servers' => $servers,
             'players' => $players,
         ]);

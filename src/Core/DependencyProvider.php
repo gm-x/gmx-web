@@ -58,7 +58,6 @@ use \GameX\Core\Update\Manifest;
 
 class DependencyProvider implements ServiceProviderInterface
 {
-    
     /**
      * @inheritdoc
      */

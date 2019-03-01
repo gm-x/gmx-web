@@ -37,7 +37,7 @@ class GroupsController extends BaseAdminController
     {
         $server = $this->getServer($request, $response, $args);
         $pagination = new Pagination($server->groups()->get(), $request);
-        return $this->render('admin/servers/groups/index.twig', [
+        return $this->getView()->render($response, 'admin/servers/groups/index.twig', [
             'server' => $server,
             'groups' => $pagination->getCollection(),
             'pagination' => $pagination,
@@ -66,7 +66,7 @@ class GroupsController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/groups/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/groups/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => true,
@@ -95,7 +95,7 @@ class GroupsController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/groups/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/groups/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => false,

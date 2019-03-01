@@ -31,7 +31,7 @@ class RolesController extends BaseAdminController
      */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
-        return $this->render('admin/roles/index.twig', [
+        return $this->getView()->render($response, 'admin/roles/index.twig', [
             'roles' => RoleModel::get()
         ]);
     }
@@ -50,7 +50,7 @@ class RolesController extends BaseAdminController
         $pagination = new Pagination($role->users()->get(), $request);
         $users = $pagination->getCollection();
         
-        return $this->render('admin/roles/view.twig', [
+        return $this->getView()->render($response, 'admin/roles/view.twig', [
             'users' => $users,
             'pagination' => $pagination,
         ]);
@@ -76,7 +76,7 @@ class RolesController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/roles/form.twig', [
+        return $this->getView()->render($response, 'admin/roles/form.twig', [
             'form' => $form->getForm(),
             'create' => true,
         ]);
@@ -101,7 +101,7 @@ class RolesController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/roles/form.twig', [
+        return $this->getView()->render($response, 'admin/roles/form.twig', [
             'form' => $form->getForm(),
             'create' => false,
         ]);

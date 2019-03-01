@@ -36,7 +36,7 @@ class ReasonsController extends BaseAdminController
     {
         $server = $this->getServer($request, $response, $args);
         $pagination = new Pagination($server->reasons()->get(), $request);
-        return $this->render('admin/servers/reasons/index.twig', [
+        return $this->getView()->render($response, 'admin/servers/reasons/index.twig', [
             'server' => $server,
             'reasons' => $pagination->getCollection(),
             'pagination' => $pagination,
@@ -65,7 +65,7 @@ class ReasonsController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/reasons/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/reasons/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => true,
@@ -94,7 +94,7 @@ class ReasonsController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/reasons/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/reasons/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => false,

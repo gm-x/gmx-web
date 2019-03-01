@@ -58,20 +58,6 @@ abstract class BaseMainController extends BaseController
     }
     
     /**
-     * @param string $template
-     * @param array $data
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function render($template, array $data = [])
-    {
-        /** @var Twig $view */
-        $view = $this->getContainer('view');
-        return $view->render($this->getContainer('response'), $template, $data);
-    }
-    
-    /**
      * @param string $message
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -168,6 +154,14 @@ abstract class BaseMainController extends BaseController
      */
     protected function getPermissions()
     {
-        return $this->getContainer('permissions');
+        return $this->container->get('permissions');
+    }
+
+    /**
+     * @return Twig
+     */
+    protected function getView()
+    {
+        return $this->container->get('view');
     }
 }

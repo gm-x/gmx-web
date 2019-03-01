@@ -51,7 +51,7 @@ class PunishmentsController extends BaseAdminController
             throw new NotAllowedException();
         }
         
-        return $this->render('admin/players/punishments/view.twig', [
+        return $this->getView()->render($response, 'admin/players/punishments/view.twig', [
             'player' => $player,
             'punishment' => $punishment,
         ]);
@@ -86,7 +86,7 @@ class PunishmentsController extends BaseAdminController
             return $this->redirect(ReasonsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/punishments/form.twig', [
+        return $this->getView()->render($response, 'admin/players/punishments/form.twig', [
             'player' => $player,
             'punishment' => $punishment,
             'form' => $form->getForm(),
@@ -123,7 +123,7 @@ class PunishmentsController extends BaseAdminController
             return $this->redirect(ReasonsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/punishments/form.twig', [
+        return $this->getView()->render($response, 'admin/players/punishments/form.twig', [
             'player' => $player,
             'punishment' => $punishment,
             'form' => $form->getForm(),

@@ -49,7 +49,7 @@ class SettingsController extends BaseMainController
             return $this->redirect(SettingsConstants::ROUTE_MAIN, [], ['form' => 'avatar']);
         }
         
-        return $this->render('settings/main.twig', [
+        return $this->getView()->render($response, 'settings/main.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri()),
             'currentForm' => $request->getParam('form', 'email'),
             'user' => $user,
