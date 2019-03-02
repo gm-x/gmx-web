@@ -67,8 +67,8 @@
             {% else %}
                 <img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" class="border-10">
             {% endif %}
-            <canvas width="600" height="400"></canvas>
-            <div class="uk-overlay uk-position-top uk-overlay-primary">
+            <div class="uk-overlay-primary uk-position-cover"></div>
+            <div class="uk-overlay uk-position-bottom uk-light">
                 Map: {{ server.map.exists() ? server.map.name : '-' }}
                 <br>
                 Online: {{ players | length }}/{{ server.max_players }}
@@ -80,12 +80,12 @@
                 <h5><a href="steam://connect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a></h5>
                 <div f-table f-divider>
                     <ul>
-                        <li>Create At</li>
-                        <li>{{ server.created_at }}</li>
+                        <li>{{ trans('labels', 'created_at') }}</li>
+                        <li>{{ server.created_at|date("d/m/Y H:i") }}</li>
                     </ul>
                     <ul>
-                        <li>Update At</li>
-                        <li>{{ server.updated_at }}</li>
+                        <li>{{ trans('labels', 'updated_at') }}</li>
+                        <li>{{ server.updated_at|date("d/m/Y H:i") }}</li>
                     </ul>
                 </div>
             </div>
