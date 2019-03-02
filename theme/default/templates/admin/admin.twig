@@ -99,12 +99,13 @@
                     })
                     .blur(function(){
                         newVal = $(this).text();
+                        let id = $(this).data('id');
                         if(newVal !== oldVal){
                             if (!InputValidator(type, newVal)) {
                                 $(this).text(oldVal);
                                 return;
                             }
-                            console.log("Отправляем запрос:" + newVal);
+                            $.post(location.toString(), { id: id, value: newVal });
                         }
                     });
             });

@@ -93,6 +93,7 @@ div::-moz-focus-inner {
 
 span[contenteditable] {
     padding: 10px;
+    border: 1px solid transparent;
 }
 
 span[contenteditable]:focus{
