@@ -69,24 +69,44 @@
                     });
             });
 
+            const InputValidator = (type, value) => {
+                switch (type) {
+                    case 'number':
+                        return /^\d+$/i.test(value);
+                    case 'email':
+                        return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value);
+                    case 'url':
+                        return /^(https?:\/\/)?([\w.]+)\.([a-z]{2,6}\.?)(\/[\w.]*)*\/?$/.test(value);
+                    case 'ip':
+                        return /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/.test(value);
+                    default:
+                        return true;
+                }
+            };
+
             $(function(){
-                let oldVal, newVal;
+                let oldVal, newVal, type;
 
                 $('[contenteditable]')
                     .keypress(function(e){
-                    if(e.which === 13 && $(this).data('type') !== 'textarea'){
-                        return false;
-                    }
-                })
+                        if(e.which === 13 && $(this).data('type') !== 'textarea'){
+                            return false;
+                        }
+                    })
                     .focus(function(){
-                    oldVal = $(this).text();
-                })
+                        type = $(this).data('type');
+                        oldVal = $(this).text();
+                    })
                     .blur(function(){
-                    newVal = $(this).text();
-                    if(newVal !== oldVal){
-                        console.log("Отправляем запрос:" + newVal);
-                    }
-                });
+                        newVal = $(this).text();
+                        if(newVal !== oldVal){
+                            if (!InputValidator(type, newVal)) {
+                                $(this).text(oldVal);
+                                return;
+                            }
+                            console.log("Отправляем запрос:" + newVal);
+                        }
+                    });
             });
         });
     </script>
