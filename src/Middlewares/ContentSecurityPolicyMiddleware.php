@@ -21,7 +21,7 @@ class ContentSecurityPolicyMiddleware
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        if ($this->app->exists('env') && $this->app->get('env') === 'production') {
+        if ($this->app->get('env', 'production') === 'production') {
             $response = $response->withHeader('Content-Security-Policy', "default-src 'self'");
         }
         return $next($request, $response);
