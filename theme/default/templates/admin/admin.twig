@@ -69,7 +69,25 @@
                     });
             });
 
+            $(function(){
+                let oldVal, newVal;
 
+                $('[contenteditable]')
+                    .keypress(function(e){
+                    if(e.which === 13 && $(this).data('type') !== 'textarea'){
+                        return false;
+                    }
+                })
+                    .focus(function(){
+                    oldVal = $(this).text();
+                })
+                    .blur(function(){
+                    newVal = $(this).text();
+                    if(newVal !== oldVal){
+                        console.log("Отправляем запрос:" + newVal);
+                    }
+                });
+            });
         });
     </script>
     {% block javascript %}{% endblock %}

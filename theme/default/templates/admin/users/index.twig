@@ -67,7 +67,7 @@
                 {% endif %}
             </li>
             <li class="uk-width-1-4@m uk-width-1-4@s">
-               {{ user.email }}
+                <span data-id="email" contenteditable>{{ user.email }}</span>
             </li>
             {% if hasAccessToEdit %}
                 <li class="uk-width-1-6@m">
@@ -76,7 +76,6 @@
             {% endif %}
         </ul>
         {% endfor %}
-        <span data-type="text" uk-edit class="button-item">222222222</span>
     </div>
 	{{ paginator.render(pagination) }}
 </div>
