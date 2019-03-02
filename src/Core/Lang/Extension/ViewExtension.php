@@ -1,36 +1,34 @@
 <?php
 namespace GameX\Core\Lang\Extension;
 
-use \Twig_Extension;
+
+use \Psr\Container\ContainerInterface;
+use \Twig\Extension\AbstractExtension;
 use \Twig_SimpleFunction;
-use \Twig_Environment;
-use \Twig_Extension_InitRuntimeInterface;
+use \Twig\Extension\GlobalsInterface;
 use \GameX\Core\Lang\Language;
 
-class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntimeInterface {
+class ViewExtension extends AbstractExtension implements GlobalsInterface {
 
 	/**
-	 * @var Language
+	 * @var ContainerInterface
 	 */
-	protected $language;
+	protected $container;
 
 	/**
 	 * ViewExtension constructor.
-	 * @param Language $language
+	 * @param ContainerInterface $container
 	 */
-	public function __construct(Language $language) {
-		$this->language = $language;
+	public function __construct(ContainerInterface $container) {
+		$this->container = $container;
 	}
 
-    /**
-     * @param Twig_Environment $environment
-     */
-    public function initRuntime(Twig_Environment $environment) {
-        $language = $this->language->getUserLanguage();
-        $languages = $this->language->getLanguages();
-        $environment->addGlobal('userLang', $language);
-        $environment->addGlobal('userLangName', $languages[$language]);
-        $environment->addGlobal('siteLanguages', $this->language->getLanguages());
+    public function getGlobals() {
+        return [
+            'userLang' => $this->getLanguage()->getUserLanguage(),
+            'userLangName' => $this->getLanguage()->getUserLanguageName(),
+            'siteLanguages' => $this->getLanguage()->getLanguages(),
+        ];
     }
 
     /**
@@ -53,6 +51,14 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_InitRuntime
 	 * @return string
 	 */
 	public function translate($section, $key, ...$args) {
-		return $this->language->format($section, $key, $args);
+		return $this->getLanguage()->format($section, $key, $args);
 	}
+
+    /**
+     * @return Language
+     */
+	protected function getLanguage()
+    {
+	    return $this->container->get('lang');
+    }
 }

@@ -26,7 +26,7 @@ class AdminController extends BaseAdminController
         $today = Carbon::today();
 //		TODO: For active menu checks
 //		$request->getAttribute('route')->getName();
-        return $this->render('admin/index.twig', [
+        return $this->getView()->render($response, 'admin/index.twig', [
             'servers' => [
                 'total' => Server::count(),
                 'active' => Server::where('active', 1)->count(),

@@ -21,6 +21,6 @@ class TestController extends BaseMainController {
 	 * @return ResponseInterface
 	 */
 	public function indexAction(RequestInterface $request, ResponseInterface $response, array $args) {
-		return $this->render('modules/test/index/index.twig');
+		return $this->getView()->render($response, 'modules/test/index/index.twig');
 	}
 }

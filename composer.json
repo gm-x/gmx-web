@@ -32,5 +32,8 @@
 		"psr-4": {
 			"GameX\\": "src/"
 		}
+	},
+	"require-dev": {
+		"zeuxisoo/slim-whoops": "0.6.*"
 	}
 }

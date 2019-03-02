@@ -3,7 +3,6 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
-use GameX\Core\Utils;
 use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Constants\SettingsConstants;
@@ -50,27 +49,13 @@ class SettingsController extends BaseMainController
             return $this->redirect(SettingsConstants::ROUTE_MAIN, [], ['form' => 'avatar']);
         }
         
-        return $this->render('settings/main.twig', [
+        return $this->getView()->render($response, 'settings/main.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri()),
             'currentForm' => $request->getParam('form', 'email'),
             'user' => $user,
             'emailForm' => $emailForm->getForm(),
             'passwordForm' => $passwordForm->getForm(),
             'avatarForm' => $avatarForm->getForm(),
-        ]);
-    }
-    
-    /**
-     * @param Request $request
-     * @param ResponseInterface $response
-     * @param array $args
-     * @return ResponseInterface
-     */
-    public function assignAction(Request $request, ResponseInterface $response, array $args)
-    {
-        return $this->render('settings/assign.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri()),
-            'user' => $this->getUser()
         ]);
     }
 }

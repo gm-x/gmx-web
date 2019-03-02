@@ -50,7 +50,7 @@ class PreferencesController extends BaseAdminController
             return $this->redirect(PreferencesConstants::ROUTE_MAIN);
         }
         
-        return $this->render('admin/preferences/index.twig', [
+        return $this->getView()->render($response, 'admin/preferences/index.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
         ]);
@@ -76,7 +76,7 @@ class PreferencesController extends BaseAdminController
             return $this->redirect(PreferencesConstants::ROUTE_EMAIL);
         }
         
-        return $this->render('admin/preferences/email.twig', [
+        return $this->getView()->render($response, 'admin/preferences/email.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
         ]);
@@ -159,7 +159,7 @@ class PreferencesController extends BaseAdminController
             return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
         }
         
-        return $this->render('admin/preferences/update.twig', [
+        return $this->getView()->render($response, 'admin/preferences/update.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
             'version' => $updater->getManifest()->getVersion()
@@ -185,7 +185,7 @@ class PreferencesController extends BaseAdminController
             return $this->redirect(PreferencesConstants::ROUTE_CACHE);
         }
         
-        return $this->render('admin/preferences/cache.twig', [
+        return $this->getView()->render($response, 'admin/preferences/cache.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
         ]);

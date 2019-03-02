@@ -1,0 +1,47 @@
+{% extends 'base.twig' %}
+
+{% block style %}
+	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-width-1-1@m uk-margin">
+	<div class="uk-card-header">
+		<div class="uk-grid-small uk-flex-middle" uk-grid>
+			<div class="uk-width-expand">
+				<h1 class="uk-margin-remove-bottom">{{ player.nick }}</h1>
+				<p class="uk-text-meta uk-margin-remove-top">
+					<i class="fas fa-user-plus" title="STEAM_ID"></i> {{ player.steamid }}
+					<br>
+					<i class="fas fa-sync-alt" title="IP"></i> {{ player.ip }}
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="uk-card-body">
+		<div f-table f-divider>
+			<ul>
+				<li class="uk-width-1-6@m uk-width-1-6@s">Email</li>
+				<li class="uk-width-1-6@m uk-width-1-6@s"><time>{{ player.created_at }}</time></li>
+			</ul>
+			<ul>
+				<li class="uk-width-1-6@m uk-width-1-6@s">Password</li>
+				<li class="uk-width-5-6@m uk-width-5-6@s">
+					Email <a href="#" class="uk-button uk-button-link"><i class="fas fa-pen-square"></i></a>
+				</li>
+			</ul>
+			<ul>
+				<li class="uk-width-1-6@m uk-width-1-6@s">Password</li>
+				<li class="uk-width-5-6@m uk-width-6-6@s">
+					<form class="uk-form-horizontal">
+						<input class="uk-input uk-form-width-medium uk-form-small" type="text" placeholder="Small">
+						<button type="submit" class="uk-button uk-button-link" value="Save">
+							<i class="fas fa-save"></i>
+						</button>
+					</form>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+{% endblock %}

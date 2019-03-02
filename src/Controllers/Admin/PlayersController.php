@@ -38,7 +38,7 @@ class PlayersController extends BaseAdminController
         $players = $filter === null ? Player::get() : Player::filterCollection($filter)->get();
         
         $pagination = new Pagination($players, $request);
-        return $this->render('admin/players/index.twig', [
+        return $this->getView()->render($response, 'admin/players/index.twig', [
             'players' => $pagination->getCollection(),
             'pagination' => $pagination,
             'filter' => $filter
@@ -83,7 +83,7 @@ class PlayersController extends BaseAdminController
             }
         }
         
-        return $this->render('admin/players/view.twig', [
+        return $this->getView()->render($response, 'admin/players/view.twig', [
             'player' => $player,
             'privileges' => $privileges,
             'servers' => $servers,
@@ -109,7 +109,7 @@ class PlayersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/players/form.twig', [
+        return $this->getView()->render($response, 'admin/players/form.twig', [
             'form' => $form->getForm(),
             'create' => true,
         ]);
@@ -134,7 +134,7 @@ class PlayersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/players/form.twig', [
+        return $this->getView()->render($response, 'admin/players/form.twig', [
             'form' => $form->getForm(),
             'create' => false,
         ]);

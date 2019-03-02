@@ -37,7 +37,7 @@ class PunishmentsController extends BaseMainController
         }
         
         $pagination = new Pagination($punishments, $request);
-        return $this->render('punishments/index.twig', [
+        return $this->getView()->render($response, 'punishments/index.twig', [
             'punishments' => $pagination->getCollection(),
             'pagination' => $pagination,
             'filter' => $filter

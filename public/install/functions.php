@@ -145,7 +145,9 @@ function getContainer($phpmig = false) {
     if ($phpmig) {
         require BASE_DIR . 'phpmig.php';
     } else {
-        $container->register(new \GameX\Core\DependencyProvider());
+        $configProvider = new \GameX\Core\Configuration\Providers\JsonProvider(BASE_DIR . DS . 'config.json');
+        $config = new \GameX\Core\Configuration\Config($configProvider);
+        $container->register(new \GameX\Core\DependencyProvider($config));
         \GameX\Core\BaseModel::setContainer($container);
         \GameX\Core\BaseForm::setContainer($container);
         date_default_timezone_set('UTC');

@@ -37,7 +37,7 @@
 								</div>
 								<div class="uk-card-badge uk-label">
 									{% if server.success %}
-                                        {{ server.map }}
+                                        {{ server.map.exists() ? server.map.name : '-' }}
                                     {% else %}
 										OFFLINE
                                     {% endif %}

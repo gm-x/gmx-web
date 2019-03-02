@@ -61,7 +61,7 @@ class PrivilegesController extends BaseAdminController
             }
         }
         
-        return $this->render('admin/players/privileges/index.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/index.twig', [
             'player' => $player,
             'data' => $data,
         ]);
@@ -95,7 +95,7 @@ class PrivilegesController extends BaseAdminController
             return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/privileges/form.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => true,
@@ -131,7 +131,7 @@ class PrivilegesController extends BaseAdminController
             return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/privileges/form.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => false,

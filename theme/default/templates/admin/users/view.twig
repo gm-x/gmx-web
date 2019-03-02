@@ -114,11 +114,8 @@
         UIkit.util.on('#activateUser', 'click', function (e) {
             e.preventDefault();
             e.target.blur();
-            // TODO: refactor this
-            $.post($(this).attr('href'), {
-                '{{ csrf.getNameKey() }}' : '{{ csrf.getName() }}',
-                '{{ csrf.getTokenKey() }}' : '{{ csrf.getToken() }}'
-            })
+            var csrf_tocken = {{ csrf_token_json() }};
+            $.post($(this).attr('href'), csrf_tocken)
                 .done(function(data) {
                     if (data.success) {
                         location.reload();

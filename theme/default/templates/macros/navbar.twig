@@ -49,16 +49,34 @@
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             {% if is_guest() %}
                                 <li><a class="dropdown-item" href="{{ path_for('login') }}">
-                                        {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
+                                        {{ trans('menu', 'login') }}/{{ trans('menu', 'register') }}
                                     </a></li>
                             {% else %}
                                 <li class="uk-nav-header">{{ get_user_name() }}</li>
                                 {% if has_access_group('admin') %}
-                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('buttons', 'acp') }}</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path_for('admin_index') }}">
+                                            <i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('menu', 'admin') }}
+                                        </a>
+                                    </li>
+                                    <li class="uk-nav-divider"></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}"><i class="fas fa-user uk-margin-small-right"></i> {{ trans('buttons', 'ucp') }}</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for(constants.accounts.ROUTE_LIST) }}">
+                                        <i class="fas fa-user uk-margin-small-right"></i> {{ trans('menu', 'accounts') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
+                                        <i class="fas fa-user uk-margin-small-right"></i> {{ trans('menu', 'settings') }}
+                                    </a>
+                                </li>
                                 <li class="uk-nav-divider"></li>
-                                <li><a class="dropdown-item" href="{{ path_for('logout') }}"><i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('buttons', 'logout') }}</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for('logout') }}">
+                                        <i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('menu', 'logout') }}
+                                    </a>
+                                </li>
                             {% endif %}
                         </ul>
                     </div>
@@ -157,16 +175,34 @@
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             {% if is_guest() %}
                                 <li><a class="dropdown-item" href="{{ path_for('login') }}">
-                                        {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
+                                        {{ trans('menu', 'login') }}/{{ trans('menu', 'register') }}
                                     </a></li>
                             {% else %}
                                 <li class="uk-nav-header">{{ get_user_name() }}</li>
                                 {% if has_access_group('admin') %}
-                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('buttons', 'acp') }}</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path_for('admin_index') }}">
+                                            <i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('menu', 'admin') }}
+                                        </a>
+                                    </li>
+                                    <li class="uk-nav-divider"></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}"><i class="fas fa-user uk-margin-small-right"></i> {{ trans('buttons', 'ucp') }}</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for(constants.accounts.ROUTE_LIST) }}">
+                                        <i class="fas fa-user uk-margin-small-right"></i> {{ trans('menu', 'accounts') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
+                                        <i class="fas fa-user uk-margin-small-right"></i> {{ trans('menu', 'settings') }}
+                                    </a>
+                                </li>
                                 <li class="uk-nav-divider"></li>
-                                <li><a class="dropdown-item" href="{{ path_for('logout') }}"><i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('buttons', 'logout') }}</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for('logout') }}">
+                                        <i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('menu', 'logout') }}
+                                    </a>
+                                </li>
                             {% endif %}
                         </ul>
                     </div>
@@ -211,7 +247,7 @@
                         </li>
                         <li class="uk-nav-divider"></li>
                         <li><a class="dropdown-item" href="{{ path_for('logout') }}">
-                                <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('buttons', 'logout') }}
+                                <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('menu', 'logout') }}
                             </a>
                         </li>
                     {% endif %}
