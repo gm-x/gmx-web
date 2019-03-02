@@ -30,12 +30,32 @@
     <div class="uk-card uk-card-default uk-width-1-1@m uk-margin">
         <div class="uk-card-header">
             <div class="uk-grid-small uk-flex-middle" uk-grid>
-                <div class="uk-width-auto">
+                <div class="user-avatar-cell">
                     {% if user.avatar %}
                     <img class="uk-border-circle" width="100" height="100" src="{{ upload_url(user.avatar) }}">
                     {% else %}
                     <img class="uk-border-circle" width="100" height="100" src="{{ base_url() }}/assets/images/user.svg" style="filter: invert(1)">
                     {% endif %}
+                    <div class="status-icon">
+                        {% if not is_user_active(user) %}
+
+                            {% if has_access_permission(
+                                constants.admin.users.PERMISSION_GROUP,
+                                constants.admin.users.PERMISSION_KEY,
+                                permissions.ACCESS_EDIT
+                                ) %}
+                                <a
+                                        id="activateUser"
+                                        href="{{ path_for(constants.admin.users.ROUTE_ACTIVATE, {'user': user.id}) }}"
+                                        class="uk-button"
+                                >
+                                    <span class="uk-text-danger" title="{{ trans('admin_users', 'status_pending') }}"><i class="fas fa-power-off"></i></span>
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <span class="uk-text-success" title="{{ trans('admin_users', 'status_active') }}"><i class="fas fa-power-off"></i></span>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="uk-width-expand">
                     <h1 class="uk-margin-remove-bottom">{{ user.login }}</h1>
@@ -60,29 +80,6 @@
                 <ul>
                     <li class="uk-width-1-6@m uk-width-1-6@s">Role</li>
                     <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.role.name }}</li>
-                </ul>
-                <ul>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">Status</li>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">
-                        {% if not is_user_active(user) %}
-
-                            {% if has_access_permission(
-                                constants.admin.users.PERMISSION_GROUP,
-                                constants.admin.users.PERMISSION_KEY,
-                                permissions.ACCESS_EDIT
-                            ) %}
-                                <a
-                                    id="activateUser"
-                                    href="{{ path_for(constants.admin.users.ROUTE_ACTIVATE, {'user': user.id}) }}"
-                                    class="uk-button"
-                                >
-                                    <span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>
-                                </a>
-                            {% endif %}
-                        {% else %}
-                            <span class="uk-label uk-label-success">{{ trans('admin_users', 'status_active') }}</span>
-                        {% endif %}
-                    </li>
                 </ul>
             </div>
         </div>
