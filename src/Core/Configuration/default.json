@@ -1,4 +1,7 @@
 {
+	"app": {
+		"env": "production"
+	},
 	"debug": {
 		"exception": false,
 		"pretty": false

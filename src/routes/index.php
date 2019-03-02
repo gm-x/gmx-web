@@ -9,7 +9,7 @@ use \GameX\Core\Auth\Permissions;
 
 $authMiddleware = new \GameX\Middlewares\AuthMiddleware($app->getContainer());
 $csrfMiddleware = new \GameX\Core\CSRF\Middleware($app->getContainer()->get('csrf'));
-$cspMiddleware = new \GameX\Middlewares\ContentSecurityPolicyMiddleware();
+$cspMiddleware = new \GameX\Middlewares\ContentSecurityPolicyMiddleware($app->getContainer());
 
 $app->group('', function () {
     /** @var \Slim\App $this */

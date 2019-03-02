@@ -91,6 +91,10 @@ div::-moz-focus-inner {
     border: 0;
 }
 
+.user-avatar-cell {
+    width: 30px;
+}
+
 .uk-text-success {
     color: #286332 !important;
 }

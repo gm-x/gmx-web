@@ -20,11 +20,6 @@
         constants.admin.users.PERMISSION_KEY,
         premissions.ACCESS_VIEW
     ) %}
-    <style>
-        .user-avatar-cell {
-            width: 30px;
-        }
-    </style>
     {% set hasAccessToEdit = has_access_permission(
         constants.admin.users.PERMISSION_GROUP,
         constants.admin.users.PERMISSION_KEY,
@@ -71,7 +66,9 @@
                     {{ user.login }}
                 {% endif %}
             </li>
-            <li class="uk-width-1-4@m uk-width-1-4@s">{{ user.email }}</li>
+            <li class="uk-width-1-4@m uk-width-1-4@s">
+               {{ user.email }}
+            </li>
             {% if hasAccessToEdit %}
                 <li class="uk-width-1-6@m">
                     {{ admin.edit_btn(path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id})) }}
@@ -79,6 +76,7 @@
             {% endif %}
         </ul>
         {% endfor %}
+        <span data-type="text" uk-edit class="button-item">222222222</span>
     </div>
 	{{ paginator.render(pagination) }}
 </div>
