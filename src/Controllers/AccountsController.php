@@ -61,10 +61,10 @@ class AccountsController extends BaseMainController
      */
     public function editAction(Request $request, Response $response, array $args)
     {
-        $user = $this->getUser();
-        $player = $this->getPlayer($request, $response, $args, $user);
-        $player->setAttribute($request->getParsedBodyParam('key'), $request->getParsedBodyParam('value'));
-        $player->save();
+//        $user = $this->getUser();
+//        $player = $this->getPlayer($request, $response, $args, $user);
+//        $player->setAttribute($request->getParsedBodyParam('key'), $request->getParsedBodyParam('value'));
+//        $player->save();
         return $response->withJson([
             'success' => true
         ]);

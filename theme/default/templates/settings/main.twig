@@ -23,7 +23,6 @@
                 <div class="uk-accordion-content uk-padding">
                     <form action="{{ passwordForm.getAction() }}" method="post">
                         {{ csrf_token() }}
-                        <input style="display:none">
                         {{ forms.element_input(passwordForm.old_password, {"label": true}) }}
                         {{ forms.element_input(passwordForm.new_password, {"label": true}) }}
                         {{ forms.element_input(passwordForm.repeat_password, {"label": true}) }}
