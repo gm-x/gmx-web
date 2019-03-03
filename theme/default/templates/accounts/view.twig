@@ -6,6 +6,8 @@
 
 {% block content %}
 <div class="uk-card uk-card-default uk-width-1-1@m uk-margin">
+	<script src="{{ base_url() }}/assets/js/jquery-ui.min.js"></script>
+	<script src="{{ base_url() }}/assets/js/jquery-contenteditable.js"></script>
 	<div class="uk-card-header">
 		<div class="uk-grid-small uk-flex-middle" uk-grid>
 			<div class="uk-width-expand">
@@ -25,23 +27,48 @@
 				<li class="uk-width-1-6@m uk-width-1-6@s"><time>{{ player.created_at }}</time></li>
 			</ul>
 			<ul>
-				<li class="uk-width-1-6@m uk-width-1-6@s">Password</li>
+				<li class="uk-width-1-6@m uk-width-1-6@s">steamID</li>
 				<li class="uk-width-5-6@m uk-width-5-6@s">
-					Email <a href="#" class="uk-button uk-button-link"><i class="fas fa-pen-square"></i></a>
-				</li>
-			</ul>
-			<ul>
-				<li class="uk-width-1-6@m uk-width-1-6@s">Password</li>
-				<li class="uk-width-5-6@m uk-width-6-6@s">
-					<form class="uk-form-horizontal">
-						<input class="uk-input uk-form-width-medium uk-form-small" type="text" placeholder="Small">
-						<button type="submit" class="uk-button uk-button-link" value="Save">
-							<i class="fas fa-save"></i>
-						</button>
-					</form>
+					<span
+						class="jq-editable"
+						data-key="steamid"
+						data-url="{{ path_for(constants.accounts.ROUTE_EDIT, {'player': player.id}) }}"
+						data-params=""
+						data-validate="empty"
+					>
+						{{ player.steamid }}
+					</span>
+					{#<i class="fas fa-pen-square"></i>#}
 				</li>
 			</ul>
 		</div>
 	</div>
+	<script>
+		window.CSRF_TOKEN = {{ csrf_token_json() }};
+		$(".jq-editable").editable({
+			saveDelay: 600, //wait 600ms before calling "save" callback
+			autoselect: true, //select content automatically when editing starts
+			save: function(event, value) {
+				var self = $(this);
+
+				var data = $.extend(window.CSRF_TOKEN, {
+					key: self.data('key'),
+					value: value.content
+				});
+
+				$.post(self.data('url'), data)
+					.done(function(data) {
+						if (data.success) {
+							console.log('success')
+						} else {
+							console.log('error')
+						}
+					})
+					.fail(function() {
+						console.log("error");
+					});
+			}
+		});
+	</script>
 </div>
 {% endblock %}

@@ -18,3 +18,8 @@ $this
     ->get('/accounts/{player}', BaseController::action(AccountsController::class, 'view'))
     ->setName(AccountsConstants::ROUTE_VIEW)
     ->add($permissions->isAuthorizedMiddleware());
+
+$this
+    ->post('/accounts/{player}/edit', BaseController::action(AccountsController::class, 'edit'))
+    ->setName(AccountsConstants::ROUTE_EDIT)
+    ->add($permissions->isAuthorizedMiddleware());
