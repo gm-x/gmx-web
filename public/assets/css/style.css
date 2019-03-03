@@ -71,7 +71,14 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 }
 
 .uk-subnav > .uk-active > a {
-    color: #f5ebb8;
+    color: #44a1d1;
+    background: transparent;
+    border-bottom: 2px solid #44a1d1;
+}
+
+.uk-subnav-pill > * > a:hover, .uk-subnav-pill > * > a:focus {
+    background-color: transparent;
+    color: #44a1d1;
 }
 
 .uk-navbar-container:not(.uk-navbar-transparent) {
@@ -549,9 +556,15 @@ fieldset {
 }
 
 .uk-tab > .uk-active > a {
-    color: #FFFFFF;
-    border-color: #1e87f0;
+    color: #44a1d1;
+    border-color: #44a1d1;
 }
+
+.uk-tab::before {
+    border-bottom: 2px solid #2d2d2d;
+}
+
+
 
 svg.progress_circle {
     height: 100px;

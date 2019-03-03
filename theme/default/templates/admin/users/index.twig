@@ -27,7 +27,7 @@
     ) %}
     <div f-table f-divider>
         <ul th>
-            <li class="user-avatar-cell" title="{{ trans('admin_users', 'status') }}">
+            <li class="user-avatar-cell uk-flex-middle" title="{{ trans('admin_users', 'status') }}">
                 <i class="fas fa-power-off"></i>
             </li>
             <li class="user-avatar-cell">
@@ -35,22 +35,22 @@
                     <img class="uk-border-circle" width="30" height="30" src="{{ base_url() }}/assets/images/user.svg" style="filter: invert(1);">
                 </div>
             </li>
-            <li class="uk-width-1-4@m uk-width-2-4@s uk-visible@s">{{ trans('admin_users', 'login') }}</li>
-            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_users', 'email') }}</li>
+            <li class="uk-width-1-4@m uk-width-2-4@s uk-visible@s uk-flex-middle">{{ trans('admin_users', 'login') }}</li>
+            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s uk-flex-middle">{{ trans('admin_users', 'email') }}</li>
             {% if hasAccessToEdit %}
                 <li class="uk-width-1-6@m uk-visible@m"></li>
             {% endif %}
         </ul>
         {% for user in users %}
         <ul>
-            <li class="user-avatar-cell">
+            <li class="user-avatar-cell uk-flex-middle">
                 {% if not is_user_active(user) %}
                     <span class="uk-text-danger" title="{{ trans('admin_users', 'status_pending') }}"><i class="fas fa-power-off"></i></span>
                 {% else %}
                     <span class="uk-text-success" title="{{ trans('admin_users', 'status_active') }}"><i class="fas fa-power-off"></i></span>
                 {% endif %}
             </li>
-            <li class="user-avatar-cell">
+            <li class="user-avatar-cell uk-flex-middle">
                 <div>
                     {% if user.avatar %}
                         <img class="uk-border-circle" width="30" height="30" src="{{ upload_url(user.avatar) }}">
@@ -59,14 +59,14 @@
                     {% endif %}
                 </div>
             </li>
-            <li class="uk-width-1-4@m uk-width-2-4@s">
+            <li class="uk-width-1-4@m uk-width-2-4@s uk-flex-middle">
                 {% if hasPermissionsForView %}
                     <a href="{{ path_for(constants.admin.users.ROUTE_VIEW, {'user': user.id}) }}">{{ user.login }}</a>
                 {% else %}
                     {{ user.login }}
                 {% endif %}
             </li>
-            <li class="uk-width-1-4@m uk-width-1-4@s">
+            <li class="uk-width-1-4@m uk-width-1-4@s uk-flex-middle">
                 <span data-id="email" data-type="email" contenteditable>{{ user.email }}</span>
             </li>
             {% if hasAccessToEdit %}
