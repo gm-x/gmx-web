@@ -55,6 +55,8 @@ use \GameX\Core\Upload\Upload;
 use \GameX\Core\Update\Updater;
 use \GameX\Core\Update\Manifest;
 
+use \GameX\Core\Breadcrumbs\Breadcrumbs;
+
 class DependencyProvider implements ServiceProviderInterface
 {
     /**
@@ -138,6 +140,10 @@ class DependencyProvider implements ServiceProviderInterface
         
         $container['updater'] = function (ContainerInterface $container) {
             return $this->getUpdater($container);
+        };
+
+        $container['breadcrumbs'] = function (ContainerInterface $container) {
+            return $this->getBreadcrumbs($container);
         };
         
         $container['modules'] = function (ContainerInterface $container) {
@@ -356,5 +362,10 @@ class DependencyProvider implements ServiceProviderInterface
     {
         $manifest = new Manifest($container->get('root') . 'manifest.json');
         return new Updater($manifest);
+    }
+
+    public function getBreadcrumbs(ContainerInterface $container)
+    {
+        return new Breadcrumbs($container);
     }
 }

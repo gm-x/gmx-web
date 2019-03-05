@@ -2,6 +2,7 @@
 
 namespace GameX\Controllers\Admin;
 
+use Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
@@ -22,7 +23,18 @@ use \Exception;
 
 class PrivilegesController extends BaseAdminController
 {
-    
+    /**
+     * @var Player
+     */
+    protected $player;
+
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct($container);
+//        $this->player =
+//        $this->getBreadcurmbs()->add('Privileges', PlayersConstants::)
+    }
+
     /**
      * @return string
      */
