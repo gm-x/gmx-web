@@ -42,6 +42,12 @@ class UsersController extends BaseAdminController
      */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(UsersConstants::ROUTE_LIST)
+            );
+
         $pagination = new Pagination($this->userRepository->get(), $request);
         return $this->getView()->render($response, 'admin/users/index.twig', [
             'users' => $pagination->getCollection(),
@@ -59,6 +65,17 @@ class UsersController extends BaseAdminController
     public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $user = $this->getUserFromRequest($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(UsersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $user->login,
+                $this->pathFor(UsersConstants::ROUTE_VIEW, ['user' => $user->id])
+            );
+
         return $this->getView()->render($response, 'admin/users/view.twig', [
             'user' => $user
         ]);
@@ -75,6 +92,20 @@ class UsersController extends BaseAdminController
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $user = $this->getUserFromRequest($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(UsersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $user->login,
+                $this->pathFor(UsersConstants::ROUTE_VIEW, ['user' => $user->id])
+            )
+            ->add(
+                $this->getTranslate('labels', 'edit'),
+                $this->pathFor(UsersConstants::ROUTE_EDIT, ['user' => $user->id])
+            );
     
         $editForm = new EditForm($user, new RoleHelper($this->container));
         if ($this->processForm($request, $editForm, true)) {
