@@ -1,5 +1,6 @@
 <?php
 use \GameX\Core\BaseController;
+use \GameX\Constants\Admin\AdminConstants;
 use \GameX\Controllers\IndexController;
 use \GameX\Controllers\PunishmentsController;
 use \GameX\Controllers\Admin\AdminController;
@@ -42,7 +43,7 @@ $app->group('/admin', function () {
 
     $this
         ->get('', BaseController::action(AdminController::class, 'index'))
-        ->setName('admin_index')
+        ->setName(AdminConstants::ROUTE_INDEX)
         ->add($permissions->hasAccessToGroupMiddleware('admin'));
 
     $root = __DIR__ . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR;

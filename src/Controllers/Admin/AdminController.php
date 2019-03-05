@@ -5,6 +5,7 @@ namespace GameX\Controllers\Admin;
 use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Constants\Admin\AdminConstants;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Models\Server;
 use \GameX\Models\Player;
@@ -18,11 +19,12 @@ class AdminController extends BaseAdminController
      */
     protected function getActiveMenu()
     {
-        return 'admin_index';
+        return AdminConstants::ROUTE_INDEX;
     }
     
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
+
         $today = Carbon::today();
 //		TODO: For active menu checks
 //		$request->getAttribute('route')->getName();

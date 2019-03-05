@@ -46,10 +46,7 @@ class PermissionsController extends BaseAdminController
                 $role->name,
                 $this->pathFor(RolesConstants::ROUTE_VIEW, ['role' => $role->id])
             )
-            ->add(
-                $this->getTranslate('admin_menu', 'permissions'),
-                $this->pathFor(PermissionsConstants::ROUTE_LIST, ['role' => $role->id])
-            );
+            ->add($this->getTranslate('admin_menu', 'permissions'));
 
         $form = new PermissionsForm($role);
         if ($this->processForm($request, $form)) {

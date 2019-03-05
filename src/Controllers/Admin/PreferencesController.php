@@ -44,10 +44,7 @@ class PreferencesController extends BaseAdminController
     {
 
         $this->getBreadcrumbs()
-            ->add(
-                $this->getTranslate('admin_preferences', 'tab_main'),
-                $this->pathFor(PreferencesConstants::ROUTE_MAIN)
-            );
+            ->add($this->getTranslate('admin_preferences', 'tab_main'));
 
         /** @var Config $preferences */
         $preferences = $this->getContainer('preferences');
@@ -75,10 +72,7 @@ class PreferencesController extends BaseAdminController
     public function emailAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
-            ->add(
-                $this->getTranslate('admin_preferences', 'tab_email'),
-                $this->pathFor(PreferencesConstants::ROUTE_EMAIL)
-            );
+            ->add($this->getTranslate('admin_preferences', 'tab_email'));
 
         /** @var Config $config */
         $config = clone $this->getContainer('preferences');
@@ -165,10 +159,7 @@ class PreferencesController extends BaseAdminController
     public function updateAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
-            ->add(
-                $this->getTranslate('admin_preferences', 'tab_update'),
-                $this->pathFor(PreferencesConstants::ROUTE_UPDATE)
-            );
+            ->add($this->getTranslate('admin_preferences', 'tab_update'));
 
         /** @var Updater $updater */
         $updater = $this->getContainer('updater');
@@ -195,10 +186,7 @@ class PreferencesController extends BaseAdminController
     public function cacheAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
-            ->add(
-                $this->getTranslate('admin_preferences', 'tab_cache'),
-                $this->pathFor(PreferencesConstants::ROUTE_CACHE)
-            );
+            ->add($this->getTranslate('admin_preferences', 'tab_cache'));
 
         $root = $this->container->get('root') . 'runtime' . DIRECTORY_SEPARATOR;
         $form = new CacheForm([

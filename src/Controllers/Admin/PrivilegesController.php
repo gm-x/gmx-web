@@ -50,10 +50,7 @@ class PrivilegesController extends BaseAdminController
                 $player->nick,
                 $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
             )
-            ->add(
-                $this->getTranslate('admin_privileges', 'privileges'),
-                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
-            );
+            ->add($this->getTranslate('admin_privileges', 'privileges'));
 
         $data = [];
         /** @var Server $server */
@@ -107,10 +104,7 @@ class PrivilegesController extends BaseAdminController
                 $this->getTranslate('admin_privileges', 'privileges'),
                 $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
             )
-            ->add(
-                $this->getTranslate('labels', 'create'),
-                $this->pathFor(PrivilegesConstants::ROUTE_CREATE, ['player' => $player->id, 'server' => $server->id])
-            );
+            ->add($this->getTranslate('labels', 'create'));
 
         $form = new PrivilegesForm($server, $privilege);
         try {
@@ -161,10 +155,7 @@ class PrivilegesController extends BaseAdminController
                 $this->getTranslate('admin_privileges', 'privileges'),
                 $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
             )
-            ->add(
-                $this->getTranslate('labels', 'edit'),
-                $this->pathFor(PrivilegesConstants::ROUTE_EDIT, ['player' => $player->id, 'privilege' => $privilege->id])
-            );
+            ->add($this->getTranslate('labels', 'edit'));
 
         $form = new PrivilegesForm($server, $privilege);
         try {

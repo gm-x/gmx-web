@@ -7,34 +7,28 @@ use \Countable;
 
 class Breadcrumbs implements Iterator, Countable
 {
-
-    /**
-     * @var Breadcrumb[]
-     */
-    protected $breadcrumbs = [];
-
     /**
      * @var int
      */
     protected $position = 0;
 
     /**
-     * @param string $title
-     * @param string $url
-     * @return $this
+     * @var array
      */
-    public function add($title, $url)
-    {
-        $this->breadcrumbs[] = new Breadcrumb($title, $url);
-        return $this;
-    }
+    protected $breadcrumbs = [];
 
     /**
-     * @return Breadcrumb[]
+     * @param string $title
+     * @param string|null $url
+     * @return $this
      */
-    public function getBreadcrumbs()
+    public function add($title, $url = null)
     {
-        return $this->breadcrumbs;
+        $this->breadcrumbs[] = [
+            'title' => $title,
+            'url' => $url
+        ];
+        return $this;
     }
 
     public function rewind()

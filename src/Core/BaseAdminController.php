@@ -6,6 +6,7 @@ use \Psr\Container\ContainerInterface;
 use \Slim\Views\Twig;
 use \GameX\Core\Menu\Menu;
 use \GameX\Core\Menu\MenuItem;
+use \GameX\Constants\Admin\AdminConstants;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Constants\Admin\UsersConstants;
@@ -22,7 +23,10 @@ abstract class BaseAdminController extends BaseMainController
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
-        $this->getBreadcrumbs()->add($this->getTranslate('menu', 'admin'), $this->pathFor('admin_index'));
+        $this->getBreadcrumbs()->add(
+            $this->getTranslate('menu', 'admin'),
+            $this->pathFor(AdminConstants::ROUTE_INDEX)
+        );
     }
     
     protected function initMenu()

@@ -43,10 +43,7 @@ class UsersController extends BaseAdminController
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $this->getBreadcrumbs()
-            ->add(
-                $this->getTranslate('admin_menu', 'users'),
-                $this->pathFor(UsersConstants::ROUTE_LIST)
-            );
+            ->add($this->getTranslate('admin_menu', 'users'));
 
         $pagination = new Pagination($this->userRepository->get(), $request);
         return $this->getView()->render($response, 'admin/users/index.twig', [
@@ -71,10 +68,7 @@ class UsersController extends BaseAdminController
                 $this->getTranslate('admin_menu', 'users'),
                 $this->pathFor(UsersConstants::ROUTE_LIST)
             )
-            ->add(
-                $user->login,
-                $this->pathFor(UsersConstants::ROUTE_VIEW, ['user' => $user->id])
-            );
+            ->add($user->login);
 
         return $this->getView()->render($response, 'admin/users/view.twig', [
             'user' => $user
@@ -102,10 +96,7 @@ class UsersController extends BaseAdminController
                 $user->login,
                 $this->pathFor(UsersConstants::ROUTE_VIEW, ['user' => $user->id])
             )
-            ->add(
-                $this->getTranslate('labels', 'edit'),
-                $this->pathFor(UsersConstants::ROUTE_EDIT, ['user' => $user->id])
-            );
+            ->add($this->getTranslate('labels', 'edit'));
     
         $editForm = new EditForm($user, new RoleHelper($this->container));
         if ($this->processForm($request, $editForm, true)) {

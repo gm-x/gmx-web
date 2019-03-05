@@ -33,10 +33,7 @@ class ServersController extends BaseAdminController
     public function indexAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
-            ->add(
-                $this->getTranslate('admin_menu', 'servers'),
-                $this->pathFor(ServersConstants::ROUTE_LIST)
-            );
+            ->add($this->getTranslate('admin_menu', 'servers'));
 
         $pagination = new Pagination(Server::get(), $request);
         return $this->getView()->render($response, 'admin/servers/index.twig', [
@@ -62,10 +59,7 @@ class ServersController extends BaseAdminController
                 $this->getTranslate('admin_menu', 'servers'),
                 $this->pathFor(ServersConstants::ROUTE_LIST)
             )
-            ->add(
-                $server->name,
-                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
-            );
+            ->add($server->name);
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
@@ -94,10 +88,7 @@ class ServersController extends BaseAdminController
                 $this->getTranslate('admin_menu', 'servers'),
                 $this->pathFor(ServersConstants::ROUTE_LIST)
             )
-            ->add(
-                $this->getTranslate('labels', 'create'),
-                $this->pathFor(ServersConstants::ROUTE_CREATE)
-            );
+            ->add($this->getTranslate('labels', 'create'));
         
         $form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
@@ -134,10 +125,7 @@ class ServersController extends BaseAdminController
                 $server->name,
                 $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
             )
-            ->add(
-                $this->getTranslate('labels', 'edit'),
-                $this->pathFor(ServersConstants::ROUTE_EDIT, ['server' => $server->id])
-            );
+            ->add($this->getTranslate('labels', 'edit'));
         
         $form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
