@@ -41,6 +41,17 @@
                 <h5>{{ message }}</h5>
             </div>
         {% endfor %}
+
+        <ul class="uk-breadcrumb">
+            {% for breadcrumb in breadcrumbs %}
+                {% if loop.last %}
+                    <li><span>{{ breadcrumb.title }}</span></li>
+                {% else %}
+                    <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
         {% block content %}{% endblock %}
     </main>
     {% block modals %}{% endblock %}

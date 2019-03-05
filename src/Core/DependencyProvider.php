@@ -318,6 +318,8 @@ class DependencyProvider implements ServiceProviderInterface
             ->getNode(PreferencesConstants::CATEGORY_MAIN)
             ->get(PreferencesConstants::MAIN_TITLE)
         );
+
+        $view->getEnvironment()->addGlobal('breadcrumbs', $container->get('breadcrumbs'));
         
         return $view;
     }
