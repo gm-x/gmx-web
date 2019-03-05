@@ -1,11 +1,11 @@
 {
-	"name": "fant1k4552/GameX",
+	"name": "gamex/gmx-web",
 	"description": "GameX",
 	"minimum-stability": "dev",
 	"license": "proprietary",
 	"authors": [
 		{
-			"name": "fant1k4552"
+			"name": "fantom"
 		},
 		{
 			"name": "s008nyx"
@@ -26,7 +26,8 @@
 		"davedevelopment/phpmig": "^1.2@dev",
 		"tedivm/stash": "v0.14.2",
 		"swiftmailer/swiftmailer": "5.4.9",
-		"composer/composer": "^1.8@dev"
+		"composer/composer": "^1.8@dev",
+		"creitive/breadcrumbs": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
