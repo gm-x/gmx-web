@@ -22,7 +22,7 @@ abstract class BaseAdminController extends BaseMainController
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
-        $this->getBreadcrumbs()->add('Admin', $this->pathFor('admin_index'));
+        $this->getBreadcrumbs()->add($this->getTranslate('menu', 'admin'), $this->pathFor('admin_index'));
     }
     
     protected function initMenu()

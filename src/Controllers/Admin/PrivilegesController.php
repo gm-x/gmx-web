@@ -2,7 +2,6 @@
 
 namespace GameX\Controllers\Admin;
 
-use Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
@@ -43,9 +42,18 @@ class PrivilegesController extends BaseAdminController
         $player = $this->getPlayer($request, $response, $args);
 
         $this->getBreadcrumbs()
-            ->add('Players', $this->pathFor(PlayersConstants::ROUTE_LIST))
-            ->add($player->nick, $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id]))
-            ->add('Privileges', $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id]));
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_privileges', 'privileges'),
+                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+            );
 
         $data = [];
         /** @var Server $server */
@@ -87,13 +95,22 @@ class PrivilegesController extends BaseAdminController
         $privilege = $this->getPrivilege($request, $response, $args, $player);
 
         $this->getBreadcrumbs()
-            ->add('Players', $this->pathFor(PlayersConstants::ROUTE_LIST))
-            ->add($player->nick, $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id]))
-            ->add('Privileges', $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id]))
-            ->add('Create for ' . $server->name, $this->pathFor(PrivilegesConstants::ROUTE_CREATE, [
-                'player' => $player->id,
-                'server' => $server->id,
-            ]));
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_privileges', 'privileges'),
+                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('labels', 'create'),
+                $this->pathFor(PrivilegesConstants::ROUTE_CREATE, ['player' => $player->id, 'server' => $server->id])
+            );
 
         $form = new PrivilegesForm($server, $privilege);
         try {
@@ -132,12 +149,22 @@ class PrivilegesController extends BaseAdminController
         $server = $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_EDIT);
 
         $this->getBreadcrumbs()
-            ->add('Players', $this->pathFor(PlayersConstants::ROUTE_LIST))
-            ->add($player->nick, $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id]))
-            ->add('Privileges', $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id]))
-            ->add('Edit for ' . $server->name, $this->pathFor(PrivilegesConstants::ROUTE_CREATE, [
-                'player' => $player->id,
-            ]));
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_privileges', 'privileges'),
+                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('labels', 'edit'),
+                $this->pathFor(PrivilegesConstants::ROUTE_EDIT, ['player' => $player->id, 'privilege' => $privilege->id])
+            );
 
         $form = new PrivilegesForm($server, $privilege);
         try {
