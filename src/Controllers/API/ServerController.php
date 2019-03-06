@@ -21,7 +21,6 @@ class ServerController extends BaseApiController
      * @param Response $response
      * @param array $args
      * @return Response
-     * @throws ApiException
      */
     public function privilegesAction(Request $request, Response $response, array $args)
     {
@@ -47,6 +46,10 @@ class ServerController extends BaseApiController
         foreach ($list as $privilege) {
             /** @var Player $player */
             $player = $privilege->player;
+            if (!$player) {
+                continue;
+            }
+
             if (!array_key_exists($player->id, $privileges)) {
                 $privileges[$player->id] = $player->toArray();
                 $privileges[$player->id]['privileges'] = [];
