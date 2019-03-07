@@ -2,28 +2,36 @@
 
 namespace GameX\Middlewares;
 
-use GameX\Core\Configuration\Node;
-use Psr\Container\ContainerInterface;
+use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Configuration\Config;
 
 class ContentSecurityPolicyMiddleware
 {
     /**
-     * @var Node
+     * @var ContainerInterface
      */
-    private $app;
+    private $container;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->app = $container->get('config')->getNode('app');
+        $this->container = $container;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        if ($this->app->get('env', 'production') === 'production') {
-            $response = $response->withHeader('Content-Security-Policy', "default-src 'self'");
-        }
+        $config = $this->getConfig()->getNode('security')->getNode('content');
+        $header = $config->get('report') ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
+        $response = $response->withHeader($header, $config->get('policy'));
         return $next($request, $response);
+    }
+    
+    /**
+     * @return Config
+     */
+    protected function getConfig()
+    {
+        return $this->container->get('config');
     }
 }
