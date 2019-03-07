@@ -66,39 +66,20 @@ class ServerController extends BaseApiController
             'privileges' => array_values($privileges),
         ]);
     }
-    
+
     /**
      * @param Request $request
      * @param Response $response
      * @param array $args
      * @return Response
      */
-    public function infoAction(Request $request, Response $response, array $args)
+    public function reasonsAction(Request $request, Response $response, array $args)
     {
         $server = $this->getServer($request);
-        
-        $groups = [];
-        foreach ($server->groups as $group) {
-            $groups[] = $group->id;
-        }
-        
-        $privileges = Privilege::with('player')
-            ->where('active', 1)
-            ->whereIn('group_id', $groups)
-            ->where(function ($query) {
-                $query
-                    ->whereNull('expired_at')
-                    ->orWhere('expired_at','>=', Carbon::today()->toDateString());
-            })
-            ->get();
-        
         $reasons = $server->reasons()->where('active', 1)->get();
-        
+
         return $response->withStatus(200)->withJson([
             'success' => true,
-            'server_id' => $server->id,
-            'groups' => $server->groups,
-            'privileges' => $privileges,
             'reasons' => $reasons,
         ]);
     }
@@ -109,36 +90,44 @@ class ServerController extends BaseApiController
      * @param array $args
      * @return Response
      * @throws ApiException
+     * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function mapAction(Request $request, Response $response, array $args)
+    public function infoAction(Request $request, Response $response, array $args)
     {
+        $server = $this->getServer($request);
+
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('map', true)->set('max_players', true, [
+        $validator
+            ->set('map', true)
+            ->set('max_players', true, [
                 new Number(0),
             ]);
-        
+
         $result = $validator->validate($this->getBody($request));
-        
+
         if (!$result->getIsValid()) {
             throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
         }
-        
+
         $map = Map::firstOrCreate([
             'name' => $result->getValue('map'),
         ], [
             'map' => $result->getValue('map'),
         ]);
-        
-        $server = $this->getServer($request);
+
         $server->map_id = $map->id;
         $server->num_players = 0;
         $server->max_players = $result->getValue('max_players');
         $server->save();
-        
-        Player::where('server_id', $server->id)->update(['server_id' => null]);
+
+        /** @var \GameX\Core\Cache\Cache $cache */
+        $cache = $this->getContainer('cache');
+        $cache->clear('players_online', $server);
         
         return $response->withStatus(200)->withJson([
-            'success' => true
+            'success' => true,
+            'server_id' => $server->id,
+            'map' => $map
         ]);
     }
     

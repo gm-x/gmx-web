@@ -42,15 +42,17 @@
             </div>
         {% endfor %}
 
-        <ul class="uk-breadcrumb">
-            {% for breadcrumb in breadcrumbs %}
-                {% if loop.last %}
-                    <li><span>{{ breadcrumb.title }}</span></li>
-                {% else %}
-                    <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.title }}</a></li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+        {% if breadcrumbs is not empty %}
+            <ul class="uk-breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    {% if loop.last %}
+                        <li><span>{{ breadcrumb.title }}</span></li>
+                    {% else %}
+                        <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
 
         {% block content %}{% endblock %}
     </main>
