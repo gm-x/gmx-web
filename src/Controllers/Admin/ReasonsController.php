@@ -35,6 +35,18 @@ class ReasonsController extends BaseAdminController
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('admin_servers', 'reasons'));
+
         $pagination = new Pagination($server->reasons()->get(), $request);
         return $this->getView()->render($response, 'admin/servers/reasons/index.twig', [
             'server' => $server,
@@ -55,6 +67,21 @@ class ReasonsController extends BaseAdminController
     {
         $server = $this->getServer($request, $response, $args);
         $reason = $this->getReason($request, $response, $args, $server);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add(
+                $this->getTranslate('admin_servers', 'reasons'),
+                $this->pathFor(ReasonsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('labels', 'create'));
         
         $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
@@ -84,6 +111,25 @@ class ReasonsController extends BaseAdminController
     {
         $server = $this->getServer($request, $response, $args);
         $reason = $this->getReason($request, $response, $args, $server);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add(
+                $this->getTranslate('admin_servers', 'groups'),
+                $this->pathFor(ReasonsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add(
+                $reason->title,
+                $this->pathFor(ReasonsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
         
         $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
