@@ -38,6 +38,8 @@ class PlayerController extends BaseApiController
                 new SteamID()
             ])->set('nick', true)->set('ip', true, [
                 new IPv4()
+            ])->set('session_id', false, [
+                new Number(1)
             ]);
         
         
@@ -84,6 +86,8 @@ class PlayerController extends BaseApiController
 //        } else {
 //            $player->nick = $result->getValue('nick');
             $player->save();
+        } else if($result->getValue('session_id')) {
+            $session = PlayerSession::find($result->getValue('session_id'));
         } else {
             $session = $player->getActiveSession();
         }
