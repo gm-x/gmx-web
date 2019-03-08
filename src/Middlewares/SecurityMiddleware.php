@@ -7,7 +7,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Configuration\Config;
 
-class ContentSecurityPolicyMiddleware
+class SecurityMiddleware
 {
     /**
      * @var ContainerInterface
@@ -21,9 +21,13 @@ class ContentSecurityPolicyMiddleware
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        $config = $this->getConfig()->getNode('security')->getNode('content');
-        $header = $config->get('report') ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
-        $response = $response->withHeader($header, $config->get('policy'));
+        $config = $this->getConfig()->getNode('security');
+        $header = $config->getNode('content')->get('report')
+            ? 'Content-SecurityMiddleware-Policy-Report-Only'
+            : 'Content-SecurityMiddleware-Policy';
+        $response = $response->withHeader($header, $config->getNode('content')->get('policy'));
+        
+        $response = $response->withHeader('Referrer-Policy', $config->get('referer'));
         return $next($request, $response);
     }
     

@@ -30,15 +30,21 @@ class PlayerController extends BaseApiController
     public function connectAction(Request $request, Response $response, array $args)
     {
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('id', false, [
+        $validator
+            ->set('id', false, [
                 new Number(1)
-            ])->set('emulator', true, [
+            ])
+            ->set('emulator', true, [
                 new Number(0)
-            ])->set('steamid', true, [
+            ])
+            ->set('steamid', true, [
                 new SteamID()
-            ])->set('nick', true)->set('ip', true, [
+            ])
+            ->set('nick', true)
+            ->set('ip', true, [
                 new IPv4()
-            ])->set('session_id', false, [
+            ])
+            ->set('session_id', false, [
                 new Number(1)
             ]);
         

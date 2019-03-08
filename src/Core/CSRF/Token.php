@@ -90,6 +90,11 @@ class Token {
             ? hash_equals($this->tokens[$name], $token)
             : $this->tokens[$name] === $token;
     }
+    
+    public function purgeToken($name) {
+        unset($this->tokens[$name]);
+        $this->saveTokens();
+    }
 
     /**
      * @return string
@@ -97,9 +102,10 @@ class Token {
     public function getNameKey() {
         return $this->inputName;
     }
-
+    
     /**
-     * @return string
+     * @return string|null
+     * @throws \Exception
      */
     public function getName() {
         if ($this->newName === null) {
@@ -115,9 +121,10 @@ class Token {
     public function getTokenKey() {
         return $this->inputToken;
     }
-
+    
     /**
-     * @return string
+     * @return string|null
+     * @throws \Exception
      */
     public function getToken() {
         if ($this->newToken === null) {
@@ -126,9 +133,9 @@ class Token {
 
         return $this->newToken;
     }
-
+    
     /**
-     * @return string|null
+     * @throws \Exception
      */
     protected function generateToken() {
         $pieces = [];
@@ -142,6 +149,10 @@ class Token {
             $this->tokens = array_slice($this->tokens, 0, $this->maxTokens - 1);
         }
         $this->tokens[$this->newName] = $this->newToken;
+        $this->saveTokens();
+    }
+    
+    protected function saveTokens() {
         $this->session->set($this->sessionKey, $this->tokens);
     }
 }

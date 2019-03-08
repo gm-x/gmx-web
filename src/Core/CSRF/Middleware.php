@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\CSRF;
 
+use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Exceptions\NotAllowedException;
@@ -8,21 +9,23 @@ use \GameX\Core\Exceptions\NotAllowedException;
 class Middleware {
     
     const METHODS = ['POST', 'PUT', 'DELETE', 'PATCH'];
-
-    /**
-     * @var Token
-     */
-    protected $token;
     
     /**
-     * Middleware constructor.
-     * @param Token $token
+     * @var ContainerInterface
      */
-    public function __construct(Token $token) {
-        $this->token = $token;
+    protected $container;
+
+    /**
+     * Middleware constructor.
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) {
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    {
         if (!in_array($request->getMethod(), self::METHODS)) {
             return $next($request, $response);
         }
@@ -30,9 +33,11 @@ class Middleware {
         if ($this->checkSkipValidate($request)) {
             return $next($request, $response);
         }
+        
+        $csrf = $this->getCSRF();
         $body = $request->getParsedBody();
-        $inputName = $this->token->getNameKey();
-        $inputToken = $this->token->getTokenKey();
+        $inputName = $csrf->getNameKey();
+        $inputToken = $csrf->getTokenKey();
         $name = (is_array($body) && array_key_exists($inputName, $body))
             ? $body[$inputName]
             : null;
@@ -41,9 +46,11 @@ class Middleware {
             : null;
 
 
-        if (!$this->token->validateToken($name, $token)) {
+        if (!$csrf->validateToken($name, $token)) {
             throw new NotAllowedException();
         }
+        
+        $csrf->purgeToken($name);
     
         return $next($request, $response);
     }
@@ -52,7 +59,8 @@ class Middleware {
      * @param ServerRequestInterface $request
      * @return bool
      */
-    protected function checkSkipValidate(ServerRequestInterface $request) {
+    protected function checkSkipValidate(ServerRequestInterface $request)
+    {
         /** @var \Slim\Route $route */
         $route = $request->getAttribute('route');
         if ($route === null) {
@@ -64,5 +72,13 @@ class Middleware {
         }
         
         return (bool) $argument;
+    }
+    
+    /**
+     * @return Token
+     */
+    protected function getCSRF()
+    {
+        return $this->container->get('csrf');
     }
 }
