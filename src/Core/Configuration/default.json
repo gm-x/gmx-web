@@ -36,6 +36,8 @@
 			"policy": "default-src 'self' 'unsafe-inline'; font-src * data:; img-src 'self' data:",
 			"report": false
 		},
-		"referer": "same-origin"
+		"referer": "same-origin",
+		"xss": "1; mode=block",
+		"frame": "DENY"
 	}
 }

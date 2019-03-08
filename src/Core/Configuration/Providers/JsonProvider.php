@@ -34,7 +34,7 @@ class JsonProvider implements ProviderInterface {
         $default = $this->loadJSON($this->default);
         $config = $this->loadJSON($this->config);
 
-        return new Node(array_merge($default, $config));
+        return new Node(array_replace_recursive($default, $config));
     }
 
     /**

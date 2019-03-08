@@ -26,8 +26,10 @@ class SecurityMiddleware
             ? 'Content-SecurityMiddleware-Policy-Report-Only'
             : 'Content-SecurityMiddleware-Policy';
         $response = $response->withHeader($header, $config->getNode('content')->get('policy'));
-        
         $response = $response->withHeader('Referrer-Policy', $config->get('referer'));
+        $response = $response->withHeader('X-XSS-Protection', $config->get('xss'));
+        $response = $response->withHeader('X-Frame-Options', $config->get('frame'));
+        $response = $response->withHeader('X-Content-Type-Options', 'nosniff');
         return $next($request, $response);
     }
     
