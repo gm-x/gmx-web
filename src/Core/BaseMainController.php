@@ -7,6 +7,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\Models\UserModel;
 use \Slim\Views\Twig;
+use \GameX\Core\Breadcrumbs\Breadcrumbs;
 use \GameX\Core\Menu\Menu;
 use \GameX\Core\Menu\MenuItem;
 use \GameX\Core\Forms\Form;
@@ -163,5 +164,13 @@ abstract class BaseMainController extends BaseController
     protected function getView()
     {
         return $this->container->get('view');
+    }
+
+    /**
+     * @return Breadcrumbs
+     */
+    protected function getBreadcrumbs()
+    {
+        return $this->container->get('breadcrumbs');
     }
 }

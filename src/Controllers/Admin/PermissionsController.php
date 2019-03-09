@@ -36,6 +36,18 @@ class PermissionsController extends BaseAdminController
     public function indexAction(Request $request, Response $response, array $args = [])
     {
         $role = $this->getRole($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'roles'),
+                $this->pathFor(RolesConstants::ROUTE_LIST)
+            )
+            ->add(
+                $role->name,
+                $this->pathFor(RolesConstants::ROUTE_VIEW, ['role' => $role->id])
+            )
+            ->add($this->getTranslate('admin_menu', 'permissions'));
+
         $form = new PermissionsForm($role);
         if ($this->processForm($request, $form)) {
             /** @var Cache $cache */

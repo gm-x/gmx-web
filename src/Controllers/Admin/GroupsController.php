@@ -36,6 +36,18 @@ class GroupsController extends BaseAdminController
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('admin_servers', 'groups'));
+
         $pagination = new Pagination($server->groups()->get(), $request);
         return $this->getView()->render($response, 'admin/servers/groups/index.twig', [
             'server' => $server,
@@ -56,6 +68,21 @@ class GroupsController extends BaseAdminController
     {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getGroup($request, $response, $args, $server);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add(
+                $this->getTranslate('admin_servers', 'groups'),
+                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('labels', 'create'));
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
@@ -85,6 +112,25 @@ class GroupsController extends BaseAdminController
     {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getGroup($request, $response, $args, $server);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add(
+                $this->getTranslate('admin_servers', 'groups'),
+                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add(
+                $group->title,
+                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {

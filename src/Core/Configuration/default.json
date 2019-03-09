@@ -1,7 +1,4 @@
 {
-	"app": {
-		"env": "production"
-	},
 	"debug": {
 		"exception": false,
 		"pretty": false
@@ -33,5 +30,14 @@
 	},
 	"permissions": {
 		"root_user": null
+	},
+	"security": {
+		"content": {
+			"policy": "default-src 'self' 'unsafe-inline'; font-src * data:; img-src 'self' data:",
+			"report": false
+		},
+		"referer": "same-origin",
+		"xss": "1; mode=block",
+		"frame": "DENY"
 	}
 }

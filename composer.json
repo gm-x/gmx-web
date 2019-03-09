@@ -1,11 +1,11 @@
 {
-	"name": "fant1k4552/GameX",
+	"name": "gamex/gmx-web",
 	"description": "GameX",
 	"minimum-stability": "dev",
 	"license": "proprietary",
 	"authors": [
 		{
-			"name": "fant1k4552"
+			"name": "fantom"
 		},
 		{
 			"name": "s008nyx"

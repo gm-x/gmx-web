@@ -31,6 +31,9 @@ class RolesController extends BaseAdminController
      */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_menu', 'roles'));
+
         return $this->getView()->render($response, 'admin/roles/index.twig', [
             'roles' => RoleModel::get()
         ]);
@@ -46,6 +49,13 @@ class RolesController extends BaseAdminController
     public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $role = $this->getRole($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'roles'),
+                $this->pathFor(RolesConstants::ROUTE_LIST)
+            )
+            ->add($role->name);
         
         $pagination = new Pagination($role->users()->get(), $request);
         $users = $pagination->getCollection();
@@ -67,6 +77,13 @@ class RolesController extends BaseAdminController
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $role = $this->getRole($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'roles'),
+                $this->pathFor(RolesConstants::ROUTE_LIST)
+            )
+            ->add($this->getTranslate('labels', 'create'));
         
         $form = new RolesForm($role);
         if ($this->processForm($request, $form)) {
@@ -93,6 +110,18 @@ class RolesController extends BaseAdminController
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $role = $this->getRole($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'roles'),
+                $this->pathFor(RolesConstants::ROUTE_LIST)
+            )
+            ->add(
+                $role->name,
+                $this->pathFor(RolesConstants::ROUTE_VIEW, ['role' => $role->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
+
         $form = new RolesForm($role);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));

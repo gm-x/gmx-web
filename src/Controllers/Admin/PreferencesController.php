@@ -42,6 +42,10 @@ class PreferencesController extends BaseAdminController
      */
     public function indexAction(Request $request, Response $response, array $args = [])
     {
+
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_main'));
+
         /** @var Config $preferences */
         $preferences = $this->getContainer('preferences');
         $form = new MainForm($preferences);
@@ -67,6 +71,9 @@ class PreferencesController extends BaseAdminController
      */
     public function emailAction(Request $request, Response $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_email'));
+
         /** @var Config $config */
         $config = clone $this->getContainer('preferences');
         $form = new MailForm($config->getNode('mail'));
@@ -151,6 +158,9 @@ class PreferencesController extends BaseAdminController
      */
     public function updateAction(Request $request, Response $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_update'));
+
         /** @var Updater $updater */
         $updater = $this->getContainer('updater');
         $form = new UpdateForm($updater);
@@ -175,6 +185,9 @@ class PreferencesController extends BaseAdminController
      */
     public function cacheAction(Request $request, Response $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_cache'));
+
         $root = $this->container->get('root') . 'runtime' . DIRECTORY_SEPARATOR;
         $form = new CacheForm([
             $root . 'cache',

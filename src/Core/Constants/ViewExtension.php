@@ -4,6 +4,7 @@ namespace GameX\Core\Constants;
 use \Twig_Extension;
 use \Twig_Extension_GlobalsInterface;
 use \GameX\Core\Auth\Permissions;
+use \GameX\Constants\Admin\AdminConstants;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\ServersConstants;
@@ -22,6 +23,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
     
     protected $constants = [
         'admin' => [
+            'admin' => AdminConstants::class,
             'players' => PlayersConstants::class,
             'privileges' => PrivilegesConstants::class,
             'servers' => ServersConstants::class,
