@@ -81,8 +81,8 @@ class PlayersForm extends BaseForm
                 Player::AUTH_TYPE_STEAM => $this->getTranslate($this->name, 'steam_id'),
                 Player::AUTH_TYPE_STEAM_AND_PASS => $this->getTranslate($this->name, 'steam_id_pass'),
                 Player::AUTH_TYPE_NICK_AND_PASS => $this->getTranslate($this->name, 'nickname_pass'),
-                Player::AUTH_TYPE_STEAM_AND_HASH => $this->getTranslate($this->name, 'steam_id_hash'),
-                Player::AUTH_TYPE_NICK_AND_HASH => $this->getTranslate($this->name, 'nickname_hash'),
+//                Player::AUTH_TYPE_STEAM_AND_HASH => $this->getTranslate($this->name, 'steam_id_hash'),
+//                Player::AUTH_TYPE_NICK_AND_HASH => $this->getTranslate($this->name, 'nickname_hash'),
             ], [
                 'title' => $this->getTranslate($this->name, 'auth_type'),
                 'required' => true,
