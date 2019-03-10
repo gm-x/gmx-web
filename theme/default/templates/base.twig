@@ -1,11 +1,9 @@
 {% import 'macros/navbar.twig' as navbar %}
+{% import 'macros/head.twig' as head %}
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    {{ head.get_meta() }}
     <link rel="icon" href="{{ base_url() }}/assets/favicon.ico">
     <title>{% block title %}{{ title }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
@@ -15,6 +13,7 @@
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
     <script src="{{ base_url() }}/assets/js/all.js"></script>
     {% block style %}{% endblock %}
+    {{ head.get_scheme() }}
 </head>
 <body>
     <div class="uk-container-expand">
