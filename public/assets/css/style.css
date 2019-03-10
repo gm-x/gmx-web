@@ -72,6 +72,10 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
     }
 }
 
+.token {
+    word-wrap: break-word;
+}
+
 .sidenav .nav-link {
     font-size: 1.3rem;
     display: flex !important;
