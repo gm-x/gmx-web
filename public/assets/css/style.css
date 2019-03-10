@@ -45,8 +45,28 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 }
 
 .sidenav {
-    left: 10px;
-    max-width: 250px;
+    position: fixed;
+    width: 40px;
+    top: 60px;
+    z-index: 100;
+    background-color: #000;
+    overflow: hidden;
+    transition: width .3s ease;
+    cursor: pointer;
+    box-shadow: 4px 7px 10px rgba(0, 0, 0, 0.4);
+}
+.sidenav:hover {
+    width: 200px;
+}
+@media screen and (max-width: 540px) {
+    .sidenav {
+        width: 0px;
+    }
+}
+
+.nav-link {
+    display: flex !important;
+    margin: 5px 4px;
 }
 
 .admin > .uk-sticky-placeholder {

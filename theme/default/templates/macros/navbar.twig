@@ -268,11 +268,13 @@
 {% endmacro %}
 
 {% macro sidebar(menu) %}
-    <div uk-sticky="offset: 140" class="sidenav uk-visible@xl">
+    <div class="sidenav" uk-height-viewport="offset-top: true">
         <ul class="uk-nav uk-nav-primary uk-margin-auto-vertical">
             {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
                 <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                    <a class="nav-link" href="{{ path_for(item.route, item.params) }}" id="{{ item.route }}">{{ item.title }}</a>
+                    <a class="nav-link" href="{{ path_for(item.route, item.params) }}" id="{{ item.route }}">
+                        <i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ item.title }}
+                    </a>
                 </li>
             {% endfor %}
         </ul>
