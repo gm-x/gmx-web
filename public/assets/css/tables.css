@@ -30,6 +30,10 @@ div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
         color: #b5b9bb;
     }
 
+    div[f-divider] > ul:not([th]):nth-child(even), div[f-divider] > ol:not([th]):nth-child(even) {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
     div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
         font-size: 1.5em;
     }
