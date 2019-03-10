@@ -36,19 +36,25 @@ abstract class BaseAdminController extends BaseMainController
         
         $menu = new Menu();
         
-        $menu->setActiveRoute($this->getActiveMenu())->add(new MenuItem($lang->format('admin_menu', 'preferences'),
-                PreferencesConstants::ROUTE_MAIN, []))->add(new MenuItem($lang->format('admin_menu', 'users'),
+        $menu
+            ->setActiveRoute($this->getActiveMenu())
+            ->add(new MenuItem($lang->format('admin_menu', 'preferences'),
+                PreferencesConstants::ROUTE_MAIN, [], null, 'fa-cog'))
+            ->add(new MenuItem($lang->format('admin_menu', 'users'),
                 UsersConstants::ROUTE_LIST, [], [
                     ServersConstants::PERMISSION_GROUP,
                     ServersConstants::PERMISSION_KEY
-                ]))->add(new MenuItem($lang->format('admin_menu', 'roles'), RolesConstants::ROUTE_LIST, [], [
+                ], 'fa-users'))
+            ->add(new MenuItem($lang->format('admin_menu', 'roles'), RolesConstants::ROUTE_LIST, [], [
                     RolesConstants::PERMISSION_GROUP,
                     RolesConstants::PERMISSION_KEY
-                ]))->add(new MenuItem($lang->format('admin_menu', 'servers'), ServersConstants::ROUTE_LIST, [], [
+                ], 'fa-user-lock'))
+            ->add(new MenuItem($lang->format('admin_menu', 'servers'), ServersConstants::ROUTE_LIST, [], [
                     ServersConstants::PERMISSION_GROUP,
                     ServersConstants::PERMISSION_KEY
-                ]))->add(new MenuItem($lang->format('admin_menu', 'players'), PlayersConstants::ROUTE_LIST, [],
-                [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY]));
+                ], 'fa-server'))
+            ->add(new MenuItem($lang->format('admin_menu', 'players'), PlayersConstants::ROUTE_LIST, [],
+                [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY], 'fa-user-circle'));
         
         /** @var Twig $view */
         $view = $this->getContainer('view');
