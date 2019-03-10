@@ -1,9 +1,10 @@
 html {
-
     color: #cac5b6;
     font-size: 14px;
     background: rgb(18,20,22);
     background: radial-gradient(circle, rgb(26, 28, 30) 0%, rgba(10,11,11,1) 100%);
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    line-height: 1.15;
 }
 
 h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
@@ -44,12 +45,32 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 }
 
 .sidenav {
-    left: 10px;
-    max-width: 250px;
+    position: fixed;
+    width: 40px;
+    top: 60px;
+    z-index: 100;
+    background-color: #000;
+    overflow: hidden;
+    transition: width .3s ease;
+    cursor: pointer;
+    box-shadow: 4px 7px 10px rgba(0, 0, 0, 0.4);
+}
+.sidenav:hover {
+    width: 200px;
+}
+@media screen and (max-width: 1000px) {
+    .sidenav {
+        width: 0px;
+    }
+}
+
+.sidenav .nav-link {
+    display: flex !important;
+    margin: 5px 4px;
 }
 
 .admin > .uk-sticky-placeholder {
-    height: 40px !important;
+    height: 80px !important;
 }
 
 .xxl {
@@ -71,7 +92,14 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 }
 
 .uk-subnav > .uk-active > a {
-    color: #f5ebb8;
+    color: #44a1d1;
+    background: transparent;
+    border-bottom: 2px solid #44a1d1;
+}
+
+.uk-subnav-pill > * > a:hover, .uk-subnav-pill > * > a:focus {
+    background-color: transparent;
+    color: #44a1d1;
 }
 
 .uk-navbar-container:not(.uk-navbar-transparent) {
@@ -549,9 +577,15 @@ fieldset {
 }
 
 .uk-tab > .uk-active > a {
-    color: #FFFFFF;
-    border-color: #1e87f0;
+    color: #44a1d1;
+    border-color: #44a1d1;
 }
+
+.uk-tab::before {
+    border-bottom: 2px solid #2d2d2d;
+}
+
+
 
 svg.progress_circle {
     height: 100px;
