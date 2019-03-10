@@ -273,7 +273,10 @@
             {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
                 <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
                     <a class="nav-link" href="{{ path_for(item.route, item.params) }}" id="{{ item.route }}">
-                        <i class="fas fa-angle-right uk-margin-small-right"></i> {{ item.title }}
+                        {% if item.icon %}
+                            <i class="fas {{ item.icon }} uk-margin-small-right"></i>
+                        {% endif %}
+                        {{ item.title }}
                     </a>
                 </li>
             {% endfor %}
