@@ -56,7 +56,8 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
     width: 40px;
     top: 60px;
     z-index: 100;
-    background-color: #000;
+    background: -webkit-linear-gradient(360deg,#030303 10%,#1f1f1f 360%);
+    background: linear-gradient(360deg,#030303 10%,#1f1f1f 360%);
     overflow: hidden;
     transition: width .3s ease;
     cursor: pointer;
@@ -111,7 +112,7 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
 }
 
 .uk-navbar-container:not(.uk-navbar-transparent) {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgb(10, 11, 11);
 }
 
 .uk-card-default {

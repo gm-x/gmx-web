@@ -23,10 +23,11 @@ div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
 }
 
 @media (max-width: 640px) {
-    div[f-table] > ul > li::after {
+    div[f-table] > ul > li::before {
         content: attr(s-title);
-        top: 1em;
         position: relative;
+        margin-right: auto;
+        color: #b5b9bb;
     }
 
     div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
