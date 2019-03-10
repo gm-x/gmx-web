@@ -64,7 +64,7 @@ h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
     }
 }
 
-.nav-link {
+.sidenav .nav-link {
     display: flex !important;
     margin: 5px 4px;
 }
