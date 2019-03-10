@@ -30,21 +30,23 @@
 
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-	<div f-table f-divider uk-sortable="handle: .uk-sortable-handle">
+	<div f-table f-divider>
 		<ul th>
 			<li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s"></li>
 			<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_groups', 'group') }}</li>
 			<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_groups', 'flags') }}</li>
 			<li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m"></li>
 		</ul>
+	</div>
+	<div f-table f-divider uk-sortable="handle: .uk-sortable-handle">
 		{% for group in groups %}
 			<ul data-id="{{ group.id }}">
-				<li class="uk-width-1-6@m uk-width-1-6@s">
+				<li class="uk-width-1-6@m uk-width-1-6@s" s-title="Priority">
 					<span class="uk-sortable-handle"><i class="fas fa-sort"></i></span>
 				</li>
-				<li class="uk-width-1-4@m uk-width-1-4@s">{{ group.title }}</li>
-				<li class="uk-width-1-4@m uk-width-1-4@s">{{ get_flags(group.flags) }}</li>
-				<li class="uk-width-1-6@m uk-width-1-6@s">
+				<li class="uk-width-1-4@m uk-width-1-4@s" s-title="Title">{{ group.title }}</li>
+				<li class="uk-width-1-4@m uk-width-1-4@s" s-title="Flags">{{ get_flags(group.flags) }}</li>
+				<li class="uk-width-1-6@m uk-width-1-6@s" s-title="Actions">
 					{% if has_access_resource(
 						constants.admin.groups.PERMISSION_GROUP,
 						constants.admin.groups.PERMISSION_KEY,
@@ -70,6 +72,7 @@
 			</ul>
 		{% endfor %}
 	</div>
+</div>
 	<style>
 		/* TODO: Move to styles.css */
 		ul.uk-sortable-drag {
@@ -95,9 +98,26 @@
 	$(document).on('moved', '.uk-sortable', function(e) {
 		var indexes = [];
 		$('.uk-sortable').find('ul').each(function(i) {
-		  indexes.push($(this).data('id'));
+			indexes.push($(this).data('id'));
 		});
-		// TODO: XHR for saving
+		$.post('{{ path_for(constants.admin.groups.ROUTE_PRIORITY, {'server': server.id}) }}', {priority: indexes})
+			.done(function() {
+				UIkit.notification({
+					message: '{{ trans('labels', 'saved') }}',
+					status: 'success',
+					pos: 'top-center',
+					timeout: 5000
+				});
+			})
+			.fail(function() {
+				UIkit.notification({
+					message: '{{ trans('labels', 'exception') }}',
+					status: 'danger',
+					pos: 'top-center',
+					timeout: 5000
+				});
+			})
+			.always(function() {});
 	});
 	</script>
 {% endblock %}

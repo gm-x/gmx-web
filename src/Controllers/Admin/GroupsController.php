@@ -2,14 +2,14 @@
 
 namespace GameX\Controllers\Admin;
 
-use \GameX\Models\Server;
-use \GameX\Models\Group;
-use \GameX\Core\BaseAdminController;
-use \GameX\Constants\Admin\GroupsConstants;
-use \GameX\Constants\Admin\ServersConstants;
-use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Slim\Http\Response;
+use \GameX\Constants\Admin\GroupsConstants;
+use \GameX\Constants\Admin\ServersConstants;
+use \GameX\Core\BaseAdminController;
+use \GameX\Models\Server;
+use \GameX\Models\Group;
 use \GameX\Forms\Admin\GroupsForm;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Exceptions\RedirectException;
@@ -28,12 +28,12 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function indexAction(ServerRequestInterface $request, Response $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
 
@@ -56,13 +56,13 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function createAction(ServerRequestInterface $request, Response $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getGroup($request, $response, $args, $server);
@@ -100,13 +100,13 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function editAction(ServerRequestInterface $request, Response $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getGroup($request, $response, $args, $server);
@@ -148,12 +148,12 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Response $response
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function deleteAction(ServerRequestInterface $request, Response $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
         $group = $this->getGroup($request, $response, $args, $server);
@@ -171,12 +171,29 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function priorityAction(ServerRequestInterface $request, Response $response, array $args = [])
+    {
+        $server = $this->getServer($request, $response, $args);
+        $body = $request->getParsedBody();
+        return $response->withJson([
+            'success' => true,
+            'csrf' => $this->getCSRFToken()
+        ]);
+    }
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param Response $response
      * @param array $args
      * @return Server
      * @throws NotFoundException
      */
-    protected function getServer(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    protected function getServer(ServerRequestInterface $request, Response $response, array $args)
     {
         if (!array_key_exists('server', $args)) {
             return new Server();
@@ -192,7 +209,7 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param Response $response
      * @param array $args
      * @param Server $server
      * @return Group
@@ -200,7 +217,7 @@ class GroupsController extends BaseAdminController
      */
     protected function getGroup(
         ServerRequestInterface $request,
-        ResponseInterface $response,
+        Response $response,
         array $args,
         Server $server
     ) {

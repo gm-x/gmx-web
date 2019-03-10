@@ -114,6 +114,16 @@ return function () {
                 GroupsConstants::PERMISSION_KEY,
                 Permissions::ACCESS_DELETE
             ));
+    
+        $this
+            ->post('/priority', BaseController::action(GroupsController::class, 'priority'))
+            ->setName(GroupsConstants::ROUTE_PRIORITY)
+            ->add($permissions->hasAccessToResourceMiddleware(
+                'server',
+                GroupsConstants::PERMISSION_GROUP,
+                GroupsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_EDIT
+            ));
     });
     
     $this->group('/{server}/reasons', function () {

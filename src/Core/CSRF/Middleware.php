@@ -2,8 +2,8 @@
 namespace GameX\Core\CSRF;
 
 use \Psr\Container\ContainerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+use \Slim\Http\Request;
+use \Slim\Http\Response;
 use \GameX\Core\Exceptions\NotAllowedException;
 
 class Middleware {
@@ -23,8 +23,15 @@ class Middleware {
     {
         $this->container = $container;
     }
-
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param callable $next
+     * @return Response
+     * @throws NotAllowedException
+     */
+    public function __invoke(Request $request, Response $response, callable $next)
     {
         if (!in_array($request->getMethod(), self::METHODS)) {
             return $next($request, $response);
@@ -51,15 +58,15 @@ class Middleware {
         }
         
         $csrf->purgeToken($name);
-    
+
         return $next($request, $response);
     }
     
     /**
-     * @param ServerRequestInterface $request
+     * @param Request $request
      * @return bool
      */
-    protected function checkSkipValidate(ServerRequestInterface $request)
+    protected function checkSkipValidate(Request $request)
     {
         /** @var \Slim\Route $route */
         $route = $request->getAttribute('route');

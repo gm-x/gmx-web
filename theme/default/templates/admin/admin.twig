@@ -25,6 +25,9 @@
 </div>
 <div class="uk-container admin">
     <main role="main" class="container">
+        <div class="uk-position-center uk-hidden" id="spinner">
+            <div uk-spinner="ratio: 5"></div>
+        </div>
         <div class="uk-margin uk-flex uk-flex-right">
             {% block subnav %}{% endblock %}
         </div>
@@ -58,6 +61,22 @@
     </main>
     {% block modals %}{% endblock %}
     <script>
+        window.CSRF_TOKEN = {{ csrf_token_json() }};
+        $.ajaxPrefilter(function (options) {
+            $('#spinner').removeClass('uk-hidden');
+            if (options.processData && options.contentType === 'application/x-www-form-urlencoded; charset=UTF-8') {
+                options.data = (options.data ? options.data + '&' : '') + $.param(window.CSRF_TOKEN);
+            }
+        });
+        $(document).ajaxComplete(function(event, xhr) {
+            $('#spinner').addClass('uk-hidden ');
+            xhr.then(function (data) {
+                if (data.csrf) {
+                    window.CSRF_TOKEN = data.csrf;
+                }
+            })
+        });
+
         UIkit.util.on('form.delete-form', 'submit', function (e) {
             e.preventDefault();
             e.target.blur();

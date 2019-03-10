@@ -35,9 +35,10 @@ class Extension extends Twig_Extension {
             )
         ];
     }
-
+    
     /**
      * @return string
+     * @throws \Exception
      */
     public function renderCSRFToken() {
         return sprintf(
@@ -50,7 +51,8 @@ class Extension extends Twig_Extension {
     }
     
     /**
-     * @return string
+     * @return false|string
+     * @throws \Exception
      */
     public function renderCSRFTokenJSON() {
         return json_encode([
