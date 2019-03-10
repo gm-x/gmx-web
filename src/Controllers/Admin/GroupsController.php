@@ -48,11 +48,9 @@ class GroupsController extends BaseAdminController
             )
             ->add($this->getTranslate('admin_servers', 'groups'));
 
-        $pagination = new Pagination($server->groups()->get(), $request);
         return $this->getView()->render($response, 'admin/servers/groups/index.twig', [
             'server' => $server,
-            'groups' => $pagination->getCollection(),
-            'pagination' => $pagination,
+            'groups' => $server->groups,
         ]);
     }
     

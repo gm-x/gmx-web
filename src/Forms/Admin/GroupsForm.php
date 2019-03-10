@@ -6,8 +6,6 @@ use \GameX\Core\BaseForm;
 use \GameX\Models\Group;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Flags as FlagsElement;
-use \GameX\Core\Forms\Elements\Number as NumberElement;
-use \GameX\Core\Validate\Rules\Number as NumberRule;
 use \GameX\Core\Validate\Rules\Flags as FlagsRule;
 
 class GroupsForm extends BaseForm
@@ -45,15 +43,10 @@ class GroupsForm extends BaseForm
                 'title' => $this->getTranslate($this->name, 'flags'),
                 'error' => 'Required',
                 'required' => true,
-            ]))->add(new NumberElement('priority', $this->group->priority, [
-                'title' => $this->getTranslate($this->name, 'priority'),
-                'required' => false,
             ]));
 
         $this->form->getValidator()->set('title', true)->set('flags', true, [
                 new FlagsRule()
-            ])->set('priority', true, [
-                new NumberRule(0)
             ]);
     }
     
@@ -64,7 +57,6 @@ class GroupsForm extends BaseForm
     {
         $this->group->title = $this->form->get('title')->getValue();
         $this->group->flags = $this->form->get('flags')->getFlagsInt();
-        $this->group->priority = $this->form->get('priority')->getValue();
         return $this->group->save();
     }
 }
