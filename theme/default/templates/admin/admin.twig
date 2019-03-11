@@ -62,87 +62,17 @@
     {% block modals %}{% endblock %}
     <script>
         window.CSRF_TOKEN = {{ csrf_token_json() }};
-        $.ajaxPrefilter(function (options) {
-            $('#spinner').removeClass('uk-hidden');
-            if (options.processData && options.contentType === 'application/x-www-form-urlencoded; charset=UTF-8') {
-                options.data = (options.data ? options.data + '&' : '') + $.param(window.CSRF_TOKEN);
-            }
-        });
-        $(document).ajaxComplete(function(event, xhr) {
-            $('#spinner').addClass('uk-hidden ');
-            xhr.then(function (data) {
-                if (data.csrf) {
-                    window.CSRF_TOKEN = data.csrf;
-                }
-            })
-        });
-
-        UIkit.util.on('form.delete-form', 'submit', function (e) {
-            e.preventDefault();
-            e.target.blur();
-            var form = this;
-            UIkit.modal.confirm('{{ trans('labels', 'are_you_sure') }}', {
-                labels: {
-                    ok: '{{ trans('buttons', 'delete') }}',
-                    cancel: '{{ trans('buttons', 'cancel') }}'
-                }
-            }).then(function () {
-                form.submit();
-            });
-        });
-        $(document).ready(function () {
-            $('.lang-select').on('click', 'a', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var lang = $(this).data('lang');
-                $.post('{{ path_for('language')}}', {lang: lang})
-                    .always(function() {
-                        location.reload()
-                    });
-            });
-
-            const InputValidator = (type, value) => {
-                switch (type) {
-                    case 'number':
-                        return /^\d+$/i.test(value);
-                    case 'email':
-                        return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value);
-                    case 'url':
-                        return /^(https?:\/\/)?([\w.]+)\.([a-z]{2,6}\.?)(\/[\w.]*)*\/?$/.test(value);
-                    case 'ip':
-                        return /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/.test(value);
-                    default:
-                        return true;
-                }
-            };
-
-            $(function(){
-                let oldVal, newVal, type;
-
-                $('[contenteditable]')
-                    .keypress(function(e){
-                        if(e.which === 13 && $(this).data('type') !== 'textarea'){
-                            return false;
-                        }
-                    })
-                    .focus(function(){
-                        type = $(this).data('type');
-                        oldVal = $(this).text();
-                    })
-                    .blur(function(){
-                        newVal = $(this).text();
-                        let id = $(this).data('id');
-                        if(newVal !== oldVal){
-                            if (!InputValidator(type, newVal)) {
-                                $(this).text(oldVal);
-                                return;
-                            }
-                            $.post(location.toString(), { id: id, value: newVal });
-                        }
-                    });
-            });
-        });
+        window.MESSAGES = {
+            saved: '{{ trans('labels', 'saved') }}',
+            exception: '{{ trans('labels', 'exception') }}',
+            delete: '{{ trans('buttons', 'delete') }}',
+            cancel: '{{ trans('buttons', 'cancel') }}',
+            are_you_sure: '{{ trans('buttons', 'are_you_sure') }}'
+        };
     </script>
+    <script src="{{ base_url() }}/assets/scripts/xhr.js"></script>
+    <script src="{{ base_url() }}/assets/scripts/main.js"></script>
+    <script src="{{ base_url() }}/assets/scripts/admin.js"></script>
     {% block javascript %}{% endblock %}
 </div>
 </body>

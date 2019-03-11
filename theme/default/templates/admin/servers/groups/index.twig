@@ -95,29 +95,7 @@
 {% block javascript %}
     {{ parent() }}
 	<script>
-	$(document).on('moved', '.uk-sortable', function(e) {
-		var indexes = [];
-		$('.uk-sortable').find('ul').each(function(i) {
-			indexes.push($(this).data('id'));
-		});
-		$.post('{{ path_for(constants.admin.groups.ROUTE_PRIORITY, {'server': server.id}) }}', {priority: indexes})
-			.done(function() {
-				UIkit.notification({
-					message: '{{ trans('labels', 'saved') }}',
-					status: 'success',
-					pos: 'top-center',
-					timeout: 5000
-				});
-			})
-			.fail(function() {
-				UIkit.notification({
-					message: '{{ trans('labels', 'exception') }}',
-					status: 'danger',
-					pos: 'top-center',
-					timeout: 5000
-				});
-			})
-			.always(function() {});
-	});
+	window.GROUPS_PRIORITY_URL = '{{ path_for(constants.admin.groups.ROUTE_PRIORITY, {'server': server.id}) }}';
 	</script>
+	<script src="{{ base_url() }}/assets/scripts/admin_groups.js"></script>
 {% endblock %}
