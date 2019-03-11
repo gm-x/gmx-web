@@ -10,12 +10,12 @@ use \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint;
 use \Cartalyst\Sentinel\Hashing\NativeHasher;
 use \Cartalyst\Sentinel\Persistences\PersistenceRepositoryInterface;
 use \GameX\Core\Auth\Repository\PersistenceRepository;
-use \GameX\Core\Auth\Models\PersistenceModel;
 use \Cartalyst\Sentinel\Reminders\EloquentReminder;
 use \Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
 use \Cartalyst\Sentinel\Roles\IlluminateRoleRepository;
 use \Cartalyst\Sentinel\Sentinel;
-use \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository;
+use \Cartalyst\Sentinel\Throttling\ThrottleRepositoryInterface;
+use \GameX\Core\Auth\Repository\ThrottleRepository;
 use \Cartalyst\Sentinel\Users\IlluminateUserRepository;
 use \Cartalyst\Sentinel\Cookies\CookieInterface;
 use \Cartalyst\Sentinel\Sessions\SessionInterface;
@@ -181,36 +181,13 @@ class SentinelBootstrapper {
         return new ActivationRepository($this->createSession('auth_activation'),259200);
     }
 
-
-    /**
-     * Create activation and throttling checkpoints.
-     *
-     * @param  ActivationRepositoryInterface $activations
-     * @param  \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository $throttle
-     * @param  string  $ipAddress
-     * @return array
-     * @throws \InvalidArgumentException
-     */
-    protected function createCheckpoints(ActivationRepositoryInterface $activations, IlluminateThrottleRepository $throttle, $ipAddress) {
-        $result = [
-            'activation' => new ActivationCheckpoint($activations)
-        ];
-
-        if ($ipAddress !== null) {
-            $result['throttle'] = new ThrottleCheckpoint($throttle, $ipAddress);
-        }
-
-        return $result;
-    }
-
     /**
      * Create a throttling repository.
      *
-     * @return \Cartalyst\Sentinel\Throttling\IlluminateThrottleRepository
+     * @return ThrottleRepositoryInterface
      */
     protected function createThrottling() {
-        return new IlluminateThrottleRepository(
-            'Cartalyst\Sentinel\Throttling\EloquentThrottle',
+        return new ThrottleRepository(
             900, [
                 10 => 1,
                 20 => 2,
