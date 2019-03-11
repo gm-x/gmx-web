@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "96b0b710cc365c64c37f1967888c82f8",
+    "content-hash": "748b3bdb87755f21509364f0f53a1780",
     "packages": [
         {
             "name": "cartalyst/sentinel",
@@ -478,56 +478,6 @@
             "time": "2017-02-14T19:40:03+00:00"
         },
         {
-            "name": "creitive/breadcrumbs",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/creitive/breadcrumbs.git",
-                "reference": "35bb70bc7a8670b56a5def64b03851e8849ad855"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/creitive/breadcrumbs/zipball/35bb70bc7a8670b56a5def64b03851e8849ad855",
-                "reference": "35bb70bc7a8670b56a5def64b03851e8849ad855",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.4",
-                "squizlabs/php_codesniffer": "^2.5",
-                "symfony/css-selector": "~2.0",
-                "symfony/dom-crawler": "~2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Creitive\\Breadcrumbs\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Milos Levacic",
-                    "email": "milos.levacic@creitive.com"
-                },
-                {
-                    "name": "Luka Macun",
-                    "email": "luka.macun@creitive.com"
-                }
-            ],
-            "description": "Simple breadcrumbs class",
-            "homepage": "https://github.com/creitive/breadcrumbs",
-            "keywords": [
-                "breadcrumbs"
-            ],
-            "time": "2018-02-19T00:33:00+00:00"
-        },
-        {
             "name": "davedevelopment/phpmig",
             "version": "v1.5.0",
             "source": {
@@ -656,6 +606,63 @@
                 "string"
             ],
             "time": "2015-11-06T14:35:42+00:00"
+        },
+        {
+            "name": "hybridauth/hybridauth",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hybridauth/hybridauth.git",
+                "reference": "36e92a0be4506f29161aa2f2ba85ed81d03f7cd3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hybridauth/hybridauth/zipball/36e92a0be4506f29161aa2f2ba85ed81d03f7cd3",
+                "reference": "36e92a0be4506f29161aa2f2ba85ed81d03f7cd3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "phpunit/phpunit": "~4.8.35"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hybridauth\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Miled",
+                    "email": "hybridauth@gmail.com"
+                }
+            ],
+            "description": "PHP Social Authentication Library",
+            "homepage": "https://hybridauth.github.io",
+            "keywords": [
+                "Authentication",
+                "OpenId",
+                "api",
+                "authorization",
+                "facebook",
+                "google",
+                "oauth",
+                "social",
+                "twitter"
+            ],
+            "time": "2019-01-28T11:08:22+00:00"
         },
         {
             "name": "illuminate/container",
@@ -2530,7 +2537,7 @@
     "stability-flags": {
         "davedevelopment/phpmig": 20,
         "composer/composer": 20,
-        "creitive/breadcrumbs": 20
+        "hybridauth/hybridauth": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
