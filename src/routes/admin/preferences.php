@@ -11,21 +11,37 @@ return function () {
     $permissions = $this->getContainer()->get('permissions');
 
 	$this
-        ->map(['GET', 'POST'], '', BaseController::action(PreferencesController::class, 'index'))
+        ->get('', BaseController::action(PreferencesController::class, 'index'))
 		->setName(PreferencesConstants::ROUTE_MAIN)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PreferencesConstants::PERMISSION_GROUP,
             PreferencesConstants::PERMISSION_MAIN_KEY,
-            Permissions::ACCESS_VIEW | Permissions::ACCESS_EDIT
+            Permissions::ACCESS_VIEW
+        ));
+    
+    $this
+        ->post('', BaseController::action(PreferencesController::class, 'index'))
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_MAIN_KEY,
+            Permissions::ACCESS_EDIT
         ));
 
 	$this
-		->map(['GET', 'POST'], '/email', BaseController::action(PreferencesController::class, 'email'))
+		->get('/email', BaseController::action(PreferencesController::class, 'email'))
 		->setName(PreferencesConstants::ROUTE_EMAIL)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PreferencesConstants::PERMISSION_GROUP,
             PreferencesConstants::PERMISSION_EMAIL_KEY,
-            Permissions::ACCESS_VIEW | Permissions::ACCESS_EDIT
+            Permissions::ACCESS_VIEW
+        ));
+    
+    $this
+        ->post('/email', BaseController::action(PreferencesController::class, 'email'))
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_EMAIL_KEY,
+            Permissions::ACCESS_EDIT
         ));
 
 	$this
@@ -39,22 +55,53 @@ return function () {
         ));
 
 	$this
-		->map(['GET', 'POST'], '/update', BaseController::action(PreferencesController::class, 'update'))
+		->get('/update', BaseController::action(PreferencesController::class, 'update'))
 		->setName(PreferencesConstants::ROUTE_UPDATE)
-		->setArgument('csrf_skip', true)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PreferencesConstants::PERMISSION_GROUP,
             PreferencesConstants::PERMISSION_UPDATE_KEY,
-            Permissions::ACCESS_VIEW | Permissions::ACCESS_EDIT
+            Permissions::ACCESS_VIEW
         ));
     
     $this
-        ->map(['GET', 'POST'], '/cache', BaseController::action(PreferencesController::class, 'cache'))
+        ->post('/update', BaseController::action(PreferencesController::class, 'update'))
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_UPDATE_KEY,
+            Permissions::ACCESS_EDIT
+        ));
+    
+    $this
+        ->get('/cache', BaseController::action(PreferencesController::class, 'cache'))
         ->setName(PreferencesConstants::ROUTE_CACHE)
-//        ->setArgument('csrf_skip', true)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PreferencesConstants::PERMISSION_GROUP,
             PreferencesConstants::PERMISSION_CACHE_KEY,
-            Permissions::ACCESS_VIEW | Permissions::ACCESS_EDIT
+            Permissions::ACCESS_VIEW
+        ));
+    
+    $this
+        ->post('/cache', BaseController::action(PreferencesController::class, 'cache'))
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_CACHE_KEY,
+            Permissions::ACCESS_EDIT
+        ));
+    
+    $this
+        ->get('/cron', BaseController::action(PreferencesController::class, 'cron'))
+        ->setName(PreferencesConstants::ROUTE_CRON)
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_CRON_KEY,
+            Permissions::ACCESS_VIEW
+        ));
+    
+    $this
+        ->post('/cron', BaseController::action(PreferencesController::class, 'cron'))
+        ->add($permissions->hasAccessToPermissionMiddleware(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_CRON_KEY,
+            Permissions::ACCESS_EDIT
         ));
 };

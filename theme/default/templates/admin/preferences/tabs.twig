@@ -6,7 +6,7 @@
     'enabled': has_access_permission(
         constants.admin.preferences.PERMISSION_GROUP,
         constants.admin.preferences.PERMISSION_MAIN_KEY,
-        permissions.ACCESS_EDIT
+        permissions.ACCESS_VIEW
     )
 }, {
     'href': path_for(constants.admin.preferences.ROUTE_EMAIL),
@@ -14,7 +14,7 @@
     'enabled': has_access_permission(
         constants.admin.preferences.PERMISSION_GROUP,
         constants.admin.preferences.players.PERMISSION_EMAIL_KEY,
-        permissions.ACCESS_EDIT
+        permissions.ACCESS_VIEW
     )
 }, {
     'href': path_for(constants.admin.preferences.ROUTE_UPDATE),
@@ -22,7 +22,7 @@
     'enabled': has_access_permission(
         constants.admin.preferences.PERMISSION_GROUP,
         constants.admin.preferences.PERMISSION_UPDATE_KEY,
-        permissions.ACCESS_EDIT
+        permissions.ACCESS_VIEW
     )
 }, {
     'href': path_for(constants.admin.preferences.ROUTE_CACHE),
@@ -30,6 +30,14 @@
     'enabled': has_access_permission(
         constants.admin.preferences.PERMISSION_GROUP,
         constants.admin.preferences.PERMISSION_CACHE_KEY,
-        permissions.ACCESS_EDIT
+        permissions.ACCESS_VIEW
+    )
+}, {
+    'href': path_for(constants.admin.preferences.ROUTE_CRON),
+    'title': trans('admin_preferences', 'tab_cron'),
+    'enabled': has_access_permission(
+        constants.admin.preferences.PERMISSION_GROUP,
+        constants.admin.preferences.PERMISSION_CRON_KEY,
+        permissions.ACCESS_VIEW
     )
 }], href) }}

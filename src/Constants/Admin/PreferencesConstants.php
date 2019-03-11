@@ -9,6 +9,7 @@ class PreferencesConstants
     const ROUTE_EMAIL_TEST = 'admin_preferences_email_test';
     const ROUTE_UPDATE = 'admin_preferences_update';
     const ROUTE_CACHE = 'admin_preferences_cache';
+    const ROUTE_CRON = 'admin_preferences_cron';
     
     const PERMISSION_GROUP = 'admin';
     const PERMISSION_TYPE = null;
@@ -17,4 +18,5 @@ class PreferencesConstants
     const PERMISSION_EMAIL_KEY = 'preferences_email';
     const PERMISSION_UPDATE_KEY = 'preferences_update';
     const PERMISSION_CACHE_KEY = 'preferences_cache';
+    const PERMISSION_CRON_KEY = 'preferences_cron';
 }

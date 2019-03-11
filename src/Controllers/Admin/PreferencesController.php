@@ -203,4 +203,24 @@ class PreferencesController extends BaseAdminController
             'form' => $form->getForm(),
         ]);
     }
+    
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws \GameX\Core\Exceptions\RedirectException
+     */
+    public function cronAction(Request $request, Response $response, array $args = [])
+    {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_cron'));
+        
+        $root = $this->container->get('root');
+        
+        return $this->getView()->render($response, 'admin/preferences/cron.twig', [
+            'currentHref' => UriHelper::getUrl($request->getUri(), false),
+            'root' => $root,
+        ]);
+    }
 }

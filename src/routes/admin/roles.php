@@ -63,12 +63,19 @@ return function () {
         /** @var Permissions $permissions */
         $permissions = $this->getContainer()->get('permissions');
 
-        $this->map(['GET', 'POST'], '', BaseController::action(PermissionsController::class, 'index'))
+        $this->get('', BaseController::action(PermissionsController::class, 'index'))
             ->setName(PermissionsConstants::ROUTE_LIST)
             ->add($permissions->hasAccessToPermissionMiddleware(
                 PermissionsConstants::PERMISSION_GROUP,
                 PermissionsConstants::PERMISSION_KEY,
-                Permissions::ACCESS_LIST | Permissions::ACCESS_EDIT
+                Permissions::ACCESS_LIST
+            ));
+    
+        $this->post('', BaseController::action(PermissionsController::class, 'index'))
+            ->add($permissions->hasAccessToPermissionMiddleware(
+                PermissionsConstants::PERMISSION_GROUP,
+                PermissionsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_EDIT
             ));
     });
 };

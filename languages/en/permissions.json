@@ -10,6 +10,7 @@
     "admin_preferences_email": "Email preferences",
     "admin_preferences_update": "Updates",
     "admin_preferences_cache": "Clear Cache",
+    "admin_preferences_cron": "Cron",
     "admin_privilege": "Privileges",
     "admin_punish": "Punishments",
     "admin_reason": "Punishments reasons",
