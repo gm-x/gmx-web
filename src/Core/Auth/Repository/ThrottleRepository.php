@@ -392,7 +392,7 @@ class ThrottleRepository implements ThrottleRepositoryInterface
      */
     protected function getIpThrottles($ipAddress)
     {
-        if (! array_key_exists($ipAddress, $this->ipThrottles)) {
+        if (!array_key_exists($ipAddress, $this->ipThrottles)) {
             $this->ipThrottles[$ipAddress] = $this->loadIpThrottles($ipAddress);
         }
 
@@ -426,7 +426,7 @@ class ThrottleRepository implements ThrottleRepositoryInterface
     {
         $key = $user->getUserId();
 
-        if (! array_key_exists($key, $this->userThrottles)) {
+        if (!array_key_exists($key, $this->userThrottles)) {
             $this->userThrottles[$key] = $this->loadUserThrottles($user);
         }
 
@@ -454,11 +454,11 @@ class ThrottleRepository implements ThrottleRepositoryInterface
      * Returns the seconds to free based on the given throttle and
      * the presented delay in seconds, by comparing it to now.
      *
-     * @param  \Cartalyst\Sentinel\Throttling\EloquentThrottle  $throttle
+     * @param  ThrottleModel  $throttle
      * @param  int  $interval
      * @return int
      */
-    protected function secondsToFree(EloquentThrottle $throttle, $interval)
+    protected function secondsToFree(ThrottleModel $throttle, $interval)
     {
         return $throttle->created_at->addSeconds($interval)->diffInSeconds();
     }

@@ -197,7 +197,7 @@ class SentinelBootstrapper {
                 60 => 12
             ],
             900, 5,
-            900, 5
+            900, 3
         );
     }
 
