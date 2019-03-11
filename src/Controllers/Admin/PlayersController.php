@@ -36,9 +36,12 @@ class PlayersController extends BaseAdminController
     {
         $filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
         $players = $filter === null ? Player::get() : Player::filterCollection($filter)->get();
+
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_menu', 'users'));
         
         $pagination = new Pagination($players, $request);
-        return $this->render('admin/players/index.twig', [
+        return $this->getView()->render($response, 'admin/players/index.twig', [
             'players' => $pagination->getCollection(),
             'pagination' => $pagination,
             'filter' => $filter
@@ -56,6 +59,13 @@ class PlayersController extends BaseAdminController
     public function viewAction(Request $request, Response $response, array $args = [])
     {
         $player = $this->getPlayer($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add($player->nick);
         
         $privileges = [];
         $servers = [];
@@ -83,7 +93,7 @@ class PlayersController extends BaseAdminController
             }
         }
         
-        return $this->render('admin/players/view.twig', [
+        return $this->getView()->render($response, 'admin/players/view.twig', [
             'player' => $player,
             'privileges' => $privileges,
             'servers' => $servers,
@@ -101,6 +111,14 @@ class PlayersController extends BaseAdminController
     public function createAction(Request $request, Response $response, array $args = [])
     {
         $player = $this->getPlayer($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add($this->getTranslate('labels', 'create'));
+
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -109,7 +127,7 @@ class PlayersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/players/form.twig', [
+        return $this->getView()->render($response, 'admin/players/form.twig', [
             'form' => $form->getForm(),
             'create' => true,
         ]);
@@ -126,6 +144,18 @@ class PlayersController extends BaseAdminController
     public function editAction(Request $request, Response $response, array $args = [])
     {
         $player = $this->getPlayer($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
+
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -134,7 +164,7 @@ class PlayersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/players/form.twig', [
+        return $this->getView()->render($response, 'admin/players/form.twig', [
             'form' => $form->getForm(),
             'create' => false,
         ]);

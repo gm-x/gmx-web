@@ -1,4 +1,8 @@
 {
+	"debug": {
+		"exception": false,
+		"pretty": false
+	},
 	"db": {
 		"driver": "mysql",
 		"host": "127.0.0.1",
@@ -8,6 +12,9 @@
 		"charset": "utf8mb4",
 		"collation": "utf8mb4_unicode_ci",
 		"prefix": "gamex_"
+	},
+	"cache": {
+		"driver": "files"
 	},
 	"session": {
 		"name": "sessid",
@@ -23,5 +30,14 @@
 	},
 	"permissions": {
 		"root_user": null
+	},
+	"security": {
+		"content": {
+			"policy": "default-src 'self' 'unsafe-inline'; font-src * data:; img-src 'self' data:",
+			"report": false
+		},
+		"referer": "same-origin",
+		"xss": "1; mode=block",
+		"frame": "DENY"
 	}
 }

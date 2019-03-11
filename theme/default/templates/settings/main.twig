@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-        {% include 'settings//tabs.twig' with {'href': currentHref} %}
+        {#{% include 'settings//tabs.twig' with {'href': currentHref} %}#}
         <ul uk-accordion="multiple: false">
             <li {% if currentForm == 'email' %}class="uk-open"{% endif %}>
                 <a class="uk-accordion-title" href="#">{{ trans('inputs', 'email') }}</a>
@@ -23,7 +23,6 @@
                 <div class="uk-accordion-content uk-padding">
                     <form action="{{ passwordForm.getAction() }}" method="post">
                         {{ csrf_token() }}
-                        <input style="display:none">
                         {{ forms.element_input(passwordForm.old_password, {"label": true}) }}
                         {{ forms.element_input(passwordForm.new_password, {"label": true}) }}
                         {{ forms.element_input(passwordForm.repeat_password, {"label": true}) }}

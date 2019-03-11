@@ -3,11 +3,11 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
-use GameX\Models\Server;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
+use \GameX\Models\Server;
 
 class IndexController extends BaseMainController
 {
@@ -39,7 +39,7 @@ class IndexController extends BaseMainController
             $players[$server->id] = $cache->get('players_online', $server);
         }
 
-        return $this->render('index/index.twig', [
+        return $this->getView()->render($response, 'index/index.twig', [
             'servers' => $servers,
             'players' => $players,
         ]);

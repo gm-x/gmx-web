@@ -8,15 +8,14 @@ use \Psr\Container\ContainerInterface;
 use \GameX\Constants\PreferencesConstants;
 
 use \GameX\Core\Configuration\Config;
-use \GameX\Core\Configuration\Providers\JsonProvider;
 use \GameX\Core\Configuration\Providers\DatabaseProvider;
 use \GameX\Core\Configuration\Exceptions\CantLoadException;
 use \GameX\Core\Configuration\Exceptions\NotFoundException;
 
 use \GameX\Core\Session\Session;
 
-use \Stash\Driver\FileSystem;
 use \GameX\Core\Cache\Cache;
+use \GameX\Core\Cache\CacheDriverFactory;
 use \GameX\Core\Cache\Items\Preferences;
 use \GameX\Core\Cache\Items\Permissions as PermissionsCache;
 use \GameX\Core\Cache\Items\PlayersOnline;
@@ -56,9 +55,24 @@ use \GameX\Core\Upload\Upload;
 use \GameX\Core\Update\Updater;
 use \GameX\Core\Update\Manifest;
 
+use \GameX\Core\Breadcrumbs\Breadcrumbs;
+
 class DependencyProvider implements ServiceProviderInterface
 {
-    
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * DependencyProvider constructor.
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
     /**
      * @inheritdoc
      */
@@ -70,9 +84,7 @@ class DependencyProvider implements ServiceProviderInterface
             return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
         };
         
-        $container['config'] = function (ContainerInterface $container) {
-            return $this->getConfig($container);
-        };
+        $container['config'] = $this->config;
         
         $container['preferences'] = function (ContainerInterface $container) {
             return $this->getPreferences($container);
@@ -129,23 +141,16 @@ class DependencyProvider implements ServiceProviderInterface
         $container['updater'] = function (ContainerInterface $container) {
             return $this->getUpdater($container);
         };
+
+        $container['breadcrumbs'] = function (ContainerInterface $container) {
+            return $this->getBreadcrumbs($container);
+        };
         
         $container['modules'] = function (ContainerInterface $container) {
             $modules = new \GameX\Core\Module\Module();
             //	$modules->addModule(new \GameX\Modules\TestModule\Module());
             return $modules;
         };
-    }
-    
-    /**
-     * @param ContainerInterface $container
-     * @return Config
-     * @throws CantLoadException
-     */
-    public function getConfig(ContainerInterface $container)
-    {
-        $provider = new JsonProvider($container->get('root') . '/config.json');
-        return new Config($provider);
     }
     
     /**
@@ -166,17 +171,15 @@ class DependencyProvider implements ServiceProviderInterface
     {
         return new Session();
     }
-    
+
     /**
      * @param ContainerInterface $container
      * @return Cache
+     * @throws NotFoundException
      */
     public function getCache(ContainerInterface $container)
     {
-        $driver = new FileSystem([
-            'path' => $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'cache',
-            'encoder' => 'Serializer'
-        ]);
+        $driver = CacheDriverFactory::getDriver($container, 'runtime' . DIRECTORY_SEPARATOR . 'cache');
         $cache = new Cache($driver);
         $cache->add('preferences', new Preferences());
         $cache->add('permissions', new PermissionsCache());
@@ -303,10 +306,10 @@ class DependencyProvider implements ServiceProviderInterface
         $view->addExtension(new TwigExtension($container->get('router'), $container->get('base_url')));
         $view->addExtension(new CSRFExtension($container->get('csrf')));
         $view->addExtension(new AuthViewExtension($container));
-        $view->addExtension(new LangViewExtension($container->get('lang')));
+        $view->addExtension(new LangViewExtension($container));
         $view->addExtension(new AccessFlagsViewExtension());
         $view->addExtension(new Twig_Dump());
-        $view->addExtension(new UploadFlagsViewExtension($container->get('upload')));
+        $view->addExtension(new UploadFlagsViewExtension($container));
         $view->addExtension(new ConstantsViewExtension());
         
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
@@ -315,6 +318,8 @@ class DependencyProvider implements ServiceProviderInterface
             ->getNode(PreferencesConstants::CATEGORY_MAIN)
             ->get(PreferencesConstants::MAIN_TITLE)
         );
+
+        $view->getEnvironment()->addGlobal('breadcrumbs', $container->get('breadcrumbs'));
         
         return $view;
     }
@@ -359,5 +364,10 @@ class DependencyProvider implements ServiceProviderInterface
     {
         $manifest = new Manifest($container->get('root') . 'manifest.json');
         return new Updater($manifest);
+    }
+
+    public function getBreadcrumbs(ContainerInterface $container)
+    {
+        return new Breadcrumbs($container);
     }
 }

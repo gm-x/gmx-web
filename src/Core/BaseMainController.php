@@ -7,6 +7,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\Models\UserModel;
 use \Slim\Views\Twig;
+use \GameX\Core\Breadcrumbs\Breadcrumbs;
 use \GameX\Core\Menu\Menu;
 use \GameX\Core\Menu\MenuItem;
 use \GameX\Core\Forms\Form;
@@ -55,20 +56,6 @@ abstract class BaseMainController extends BaseController
     public function createForm($name)
     {
         return $this->getContainer('form')->createForm($name);
-    }
-    
-    /**
-     * @param string $template
-     * @param array $data
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function render($template, array $data = [])
-    {
-        /** @var Twig $view */
-        $view = $this->getContainer('view');
-        return $view->render($this->getContainer('response'), $template, $data);
     }
     
     /**
@@ -168,6 +155,22 @@ abstract class BaseMainController extends BaseController
      */
     protected function getPermissions()
     {
-        return $this->getContainer('permissions');
+        return $this->container->get('permissions');
+    }
+
+    /**
+     * @return Twig
+     */
+    protected function getView()
+    {
+        return $this->container->get('view');
+    }
+
+    /**
+     * @return Breadcrumbs
+     */
+    protected function getBreadcrumbs()
+    {
+        return $this->container->get('breadcrumbs');
     }
 }

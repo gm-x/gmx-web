@@ -10,6 +10,7 @@ use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Validate\Rules\Boolean;
 use \Cartalyst\Sentinel\Checkpoints\NotActivatedException;
+use \Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 
 class LoginForm extends BaseForm
 {
@@ -89,6 +90,8 @@ class LoginForm extends BaseForm
                 : $this->getTranslate('user', 'activate');
 
             throw new ValidationException($message, null, $e);
+        } catch (ThrottlingException $e) {
+            throw new ValidationException('Too many unsuccessful login attempts have been made against your account', null, $e);
         }
     }
 }

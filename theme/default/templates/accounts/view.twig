@@ -1,0 +1,135 @@
+{% extends 'base.twig' %}
+
+{% block style %}
+	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-width-1-1@m uk-margin">
+	<div class="uk-card-header">
+		<div class="uk-grid-small uk-flex-middle" uk-grid>
+			<div class="uk-width-expand">
+				<h1 class="uk-margin-remove-bottom">{{ player.nick }}</h1>
+				<p class="uk-text-meta uk-margin-remove-top">
+					<i class="fas fa-user-plus" title="STEAM_ID"></i> {{ player.steamid }}
+					<br>
+					<i class="fas fa-sync-alt" title="IP"></i> {{ player.ip }}
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="uk-card-body">
+		<div f-table f-divider>
+			<ul>
+				<li class="uk-width-1-6@m uk-width-1-6@s">Email</li>
+				<li class="uk-width-1-6@m uk-width-1-6@s"><time>{{ player.created_at }}</time></li>
+			</ul>
+			<ul>
+				<li class="uk-width-1-6@m uk-width-1-6@s">steamID</li>
+				<li class="uk-width-5-6@m uk-width-5-6@s">
+					<span
+						class="jq-editable"
+						data-key="steamid"
+						data-url="{{ path_for(constants.accounts.ROUTE_EDIT, {'player': player.id}) }}"
+						data-params=""
+						data-rule="steamid"
+					>
+						{{ player.steamid }}
+					</span>
+					{#<i class="fas fa-pen-square"></i>#}
+				</li>
+			</ul>
+		</div>
+	</div>
+	<link rel="stylesheet" href="{{ base_url() }}/assets/css/spin.css">
+	<script src="{{ base_url() }}/assets/js/spin.js"></script>
+	<script src="{{ base_url() }}/assets/js/jquery-ui.min.js"></script>
+	<script src="{{ base_url() }}/assets/js/jquery-contenteditable.js"></script>
+	<script src="{{ base_url() }}/assets/js/validator.min.js"></script>
+	<script>
+		var validators = {
+			steamid: function(value) {
+				return validator.matches(value, /^(?:STEAM|VALVE)_\d{1,2}:\d{1,2}:\d+$/);
+			}
+		};
+
+		var spinerOpts = {
+			lines: 17, // The number of lines to draw
+			length: 0, // The length of each line
+			width: 28, // The line thickness
+			radius: 65, // The radius of the inner circle
+			scale: 0.45, // Scales overall size of the spinner
+			corners: 1, // Corner roundness (0..1)
+			color: '#ffffff', // CSS color or array of colors
+			fadeColor: 'transparent', // CSS color or array of colors
+			speed: 0.5, // Rounds per second
+			rotate: 0, // The rotation offset
+			animation: 'spinner-line-fade-more', // The CSS animation name for the lines
+			direction: 1, // 1: clockwise, -1: counterclockwise
+			zIndex: 2e9, // The z-index (defaults to 2000000000)
+			className: 'spinner', // The CSS class to assign to the spinner
+			top: '50%', // Top position relative to parent
+			left: '50%', // Left position relative to parent
+			shadow: '0 0 1px transparent', // Box-shadow for the lines
+			position: 'absolute' // Element positioning
+		};
+
+		var spinner = new Spinner(spinerOpts);
+
+		window.CSRF_TOKEN = {{ csrf_token_json() }};
+		$(".jq-editable").editable({
+			saveDelay: 600, //wait 600ms before calling "save" callback
+			autoselect: false, //select content automatically when editing starts
+			save: function(event, value) {
+				var self = $(this);
+
+				var data = $.extend(window.CSRF_TOKEN, {
+					key: self.data('key'),
+					value: value.content
+				});
+
+				spinner.spin(this);
+				$.post(self.data('url'), data)
+					.done(function(data) {
+						if (data.success) {
+							UIkit.notification({
+								message: 'Saved',
+								status: 'success',
+								pos: 'top-center',
+								timeout: 5000
+							});
+						} else {
+							UIkit.notification({
+								message: 'Error',
+								status: 'danger',
+								pos: 'top-center',
+								timeout: 5000
+							});
+						}
+					})
+					.fail(function() {
+						UIkit.notification({
+							message: 'Error',
+							status: 'danger',
+							pos: 'top-center',
+							timeout: 5000
+						});
+					})
+					.always(function() {
+						spinner.stop();
+					});
+			},
+			validate: function (event, value) {
+				var rule = $(this).data('rule');
+				if (!rule) {
+					return true;
+				}
+				if (!(rule in validators)) {
+					return false;
+				}
+				return validators[rule](value.content);
+			}
+		});
+	</script>
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
 use \GameX\Core\Log\Logger;
 use \GameX\Core\Configuration\Config;
+use \GameX\Core\CSRF\Token;
 
 abstract class BaseController
 {
@@ -91,6 +92,16 @@ abstract class BaseController
         }
         
         return $this->logger;
+    }
+    
+    protected function getCSRFToken()
+    {
+        /** @var Token $csrf */
+        $csrf = $this->getContainer('csrf');
+        return [
+            $csrf->getNameKey() => $csrf->getName(),
+            $csrf->getTokenKey() => $csrf->getToken()
+        ];
     }
     
     /**

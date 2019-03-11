@@ -121,16 +121,9 @@ function runMigrations($container) {
 }
 
 function createUser($container, $login, $email, $password) {
-	/** @var \Cartalyst\Sentinel\Sentinel $auth */
-	$auth = $container['auth'];
-
-    /** @var \GameX\Core\Auth\Models\UserModel $user */
-	$user = $auth->register([
-		'login'  => $login,
-		'email'  => $email,
-		'password' => $password,
-        'token' => \GameX\Core\Utils::generateToken(16),
-	], true);
+    $authHelper = new \GameX\Core\Auth\Helpers\AuthHelper($container);
+    
+    $user = $authHelper->registerUser($login, $email, $password, true);
 	
 	/** @var \GameX\Core\Configuration\Config $config */
 	$config = $container['config'];
@@ -145,7 +138,9 @@ function getContainer($phpmig = false) {
     if ($phpmig) {
         require BASE_DIR . 'phpmig.php';
     } else {
-        $container->register(new \GameX\Core\DependencyProvider());
+        $configProvider = new \GameX\Core\Configuration\Providers\JsonProvider(BASE_DIR . DS . 'config.json');
+        $config = new \GameX\Core\Configuration\Config($configProvider);
+        $container->register(new \GameX\Core\DependencyProvider($config));
         \GameX\Core\BaseModel::setContainer($container);
         \GameX\Core\BaseForm::setContainer($container);
         date_default_timezone_set('UTC');

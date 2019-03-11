@@ -22,6 +22,11 @@ class MenuItem {
 	 * @var string|null
 	 */
 	protected $permission = null;
+    
+    /**
+     * @var string|null
+     */
+	protected $icon = null;
 
 	/**
 	 * MenuItem constructor.
@@ -29,12 +34,14 @@ class MenuItem {
 	 * @param string $route
 	 * @param array $params
 	 * @param string|null $permission
+	 * @param string|null $icon
 	 */
-	public function __construct($title, $route, array $params = [], $permission = null) {
+	public function __construct($title, $route, array $params = [], $permission = null, $icon = null) {
 		$this->title = $title;
 		$this->route = $route;
 		$this->params = $params;
 		$this->permission = $permission;
+		$this->icon = $icon;
 	}
 
 	/**
@@ -57,6 +64,10 @@ class MenuItem {
 
 			case 'permission': {
 				return $this->getPermission();
+			}
+
+			case 'icon': {
+				return $this->getIcon();
 			}
 
 			default: {
@@ -91,5 +102,12 @@ class MenuItem {
 	 */
 	public function getPermission() {
 		return $this->permission;
+	}
+
+	/**
+	 * @return null|string
+	 */
+	public function getIcon() {
+		return $this->icon;
 	}
 }

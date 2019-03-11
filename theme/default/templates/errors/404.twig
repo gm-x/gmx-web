@@ -1,40 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="/assets/favicon.ico">
-    <title>GameX™</title>
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
-    <script src="{{ base_url() }}/assets/js/uikit.js"></script>
-    <script src="{{ base_url() }}/assets/js/uikit-icons.js"></script>
-</head>
-<body>
-<div class="uk-container">
-    <main role="main">
-        <div class="uk-flex uk-text-center" uk-height-viewport>
-            <div class="uk-margin-auto uk-margin-auto-vertical uk-width-1-2@s">
-                <div class="uk-width-1-1">
-                    <div class="uk-container">
-                        <p>
-                        <h1 class="xxl">404</h1>
-                        </p>
-                        <p class="uk-margin-medium uk-text-lead">
-                        <h2>Not Found</h2>
-                        </p>
-                        <div uk-grid="" class="uk-child-width-auto uk-grid-medium uk-flex-inline uk-flex-center uk-grid">
-                            <div class="uk-first-column">
-                                <a href="{{ path_for('index') }}" class="uk-button uk-button-primary">Go Index</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{% extends 'base.twig' %}
+
+{% block content %}
+    <div class="uk-flex uk-flex-center uk-flex-middle" uk-height-viewport="offset-top: true">
+        <div class="uk-text-center error">
+            <span>
+                <i class="fas fa-sad-tear"></i>
+            </span>
+            <p>404</p>
+            <p>Not Found</p>
         </div>
-    </main>
-</div>
-</body>
-</html>
+    </div>
+{% endblock %}

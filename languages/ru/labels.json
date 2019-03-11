@@ -15,5 +15,7 @@
     "created_at": "Создан",
     "updated_at": "Изменен",
     "main_tab": "Основное",
-    "assign_tab": "Другое"
+    "assign_tab": "Другое",
+    "create": "Создать",
+    "edit": "Редактировать"
 }

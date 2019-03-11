@@ -15,5 +15,7 @@
     "created_at": "Created At",
     "updated_at": "Updated At",
     "main_tab": "Main",
-    "assign_tab": "Assign"
+    "assign_tab": "Assign",
+    "create": "Create",
+    "edit": "Edit"
 }

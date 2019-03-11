@@ -1,0 +1,61 @@
+{% macro get_meta() %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta property="og:description" content="" />
+    <meta property="twitter:description" content="" />
+    <meta name="author" content="">
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ base_url() }}" />
+    <meta property="og:site_name" content="{{ title }}" />
+    <meta property="og:title" content="{{ title }}" />
+    <meta property="twitter:title" content="{{ title }}" />
+    <meta property="og:image" content="{{ base_url() }}/assets/images/logo.svg" />
+    <meta property="twitter:image" content="{{ base_url() }}/assets/images/logo.svg" />
+    <meta property="twitter:card" content="summary" />
+{% endmacro %}
+
+{% macro get_scheme() %}
+    <script type="application/ld+json">
+	{
+		"@context":"https://schema.org/",
+		"@type":"Organization",
+		"url":"{{ base_url() }}",
+		"sameAs":[],
+		"@id":"#organization",
+		"name":"{{ title }}",
+		"logo":"{{ base_url() }}/assets/images/logo.svg"
+	}
+	</script>
+    <script type="application/ld+json">
+	{
+		"@context": "http://schema.org",
+		"@type": "WebSite",
+		"url": "{{ base_url() }}",
+		"potentialAction": {
+			"@type": "SearchAction",
+			"target": "{{ base_url() }}/search?keywords={search_term_string}",
+			"query-input": "required name=search_term_string"
+		}
+	}
+	</script>
+    <script type="application/ld+json">
+	{
+		"@context": "http://schema.org",
+		"@type": "SiteNavigationElement",
+		"name": [
+        {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
+            "{{ item.title }}",
+        {% endfor %}
+			"{{ trans('buttons', 'login') }}"
+		],
+		"url": [
+        {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
+            "{{ path_for(item.route, item.params) }}",
+        {% endfor %}
+			"{{ path_for('login') }}"
+		]
+	}
+	</script>
+{% endmacro %}

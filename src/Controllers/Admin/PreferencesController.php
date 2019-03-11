@@ -42,6 +42,10 @@ class PreferencesController extends BaseAdminController
      */
     public function indexAction(Request $request, Response $response, array $args = [])
     {
+
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_main'));
+
         /** @var Config $preferences */
         $preferences = $this->getContainer('preferences');
         $form = new MainForm($preferences);
@@ -50,7 +54,7 @@ class PreferencesController extends BaseAdminController
             return $this->redirect(PreferencesConstants::ROUTE_MAIN);
         }
         
-        return $this->render('admin/preferences/index.twig', [
+        return $this->getView()->render($response, 'admin/preferences/index.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
         ]);
@@ -67,6 +71,9 @@ class PreferencesController extends BaseAdminController
      */
     public function emailAction(Request $request, Response $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_email'));
+
         /** @var Config $config */
         $config = clone $this->getContainer('preferences');
         $form = new MailForm($config->getNode('mail'));
@@ -76,7 +83,7 @@ class PreferencesController extends BaseAdminController
             return $this->redirect(PreferencesConstants::ROUTE_EMAIL);
         }
         
-        return $this->render('admin/preferences/email.twig', [
+        return $this->getView()->render($response, 'admin/preferences/email.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
         ]);
@@ -151,6 +158,9 @@ class PreferencesController extends BaseAdminController
      */
     public function updateAction(Request $request, Response $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_update'));
+
         /** @var Updater $updater */
         $updater = $this->getContainer('updater');
         $form = new UpdateForm($updater);
@@ -159,7 +169,7 @@ class PreferencesController extends BaseAdminController
             return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
         }
         
-        return $this->render('admin/preferences/update.twig', [
+        return $this->getView()->render($response, 'admin/preferences/update.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
             'version' => $updater->getManifest()->getVersion()
@@ -175,6 +185,9 @@ class PreferencesController extends BaseAdminController
      */
     public function cacheAction(Request $request, Response $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_cache'));
+
         $root = $this->container->get('root') . 'runtime' . DIRECTORY_SEPARATOR;
         $form = new CacheForm([
             $root . 'cache',
@@ -185,7 +198,7 @@ class PreferencesController extends BaseAdminController
             return $this->redirect(PreferencesConstants::ROUTE_CACHE);
         }
         
-        return $this->render('admin/preferences/cache.twig', [
+        return $this->getView()->render($response, 'admin/preferences/cache.twig', [
             'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
         ]);

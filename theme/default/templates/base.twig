@@ -1,11 +1,9 @@
 {% import 'macros/navbar.twig' as navbar %}
+{% import 'macros/head.twig' as head %}
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    {{ head.get_meta() }}
     <link rel="icon" href="{{ base_url() }}/assets/favicon.ico">
     <title>{% block title %}{{ title }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
@@ -15,12 +13,15 @@
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
     <script src="{{ base_url() }}/assets/js/all.js"></script>
     {% block style %}{% endblock %}
+    {{ head.get_scheme() }}
 </head>
 <body>
-    <div class="uk-container">
+    <div class="uk-container-expand">
         <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
             {{ navbar.mainbar(menu) }}
         </div>
+    </div>
+    <div class="uk-container">
         <main role="main" class="container">
             <div class="uk-margin uk-flex uk-flex-right">
                 {% block subnav %}{% endblock %}
@@ -41,22 +42,22 @@
 
             {% block content %}{% endblock %}
         </main>
-        {% block modals %}{% endblock %}
-        <script>
-            $(document).ready(function () {
-                $('.lang-select').on('click', 'a', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    var lang = $(this).data('lang');
-                    $.post('{{ path_for('language')}}', {lang: lang})
-                        .always(function() {
-                            location.reload()
-                        });
-                });
-            });
-        </script>
-        {% block javascript %}{% endblock %}
     </div>
+    {% block modals %}{% endblock %}
+    <script>
+        $(document).ready(function () {
+            $('.lang-select').on('click', 'a', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var lang = $(this).data('lang');
+                $.post('{{ path_for('language')}}', {lang: lang})
+                    .always(function() {
+                        location.reload()
+                    });
+            });
+        });
+    </script>
+    {% block javascript %}{% endblock %}
 </body>
 </html>
 

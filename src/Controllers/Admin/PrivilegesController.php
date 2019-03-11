@@ -22,7 +22,6 @@ use \Exception;
 
 class PrivilegesController extends BaseAdminController
 {
-    
     /**
      * @return string
      */
@@ -41,7 +40,18 @@ class PrivilegesController extends BaseAdminController
     public function indexAction(Request $request, Response $response, array $args = [])
     {
         $player = $this->getPlayer($request, $response, $args);
-        
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add($this->getTranslate('admin_privileges', 'privileges'));
+
         $data = [];
         /** @var Server $server */
         foreach (Server::get() as $server) {
@@ -61,7 +71,7 @@ class PrivilegesController extends BaseAdminController
             }
         }
         
-        return $this->render('admin/players/privileges/index.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/index.twig', [
             'player' => $player,
             'data' => $data,
         ]);
@@ -80,7 +90,22 @@ class PrivilegesController extends BaseAdminController
         $player = $this->getPlayer($request, $response, $args);
         $server = $this->getServer($request, $response, $args);
         $privilege = $this->getPrivilege($request, $response, $args, $player);
-        
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_privileges', 'privileges'),
+                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+            )
+            ->add($this->getTranslate('labels', 'create'));
+
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
@@ -95,7 +120,7 @@ class PrivilegesController extends BaseAdminController
             return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/privileges/form.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => true,
@@ -116,7 +141,22 @@ class PrivilegesController extends BaseAdminController
         $player = $this->getPlayer($request, $response, $args);
         $privilege = $this->getPrivilege($request, $response, $args, $player);
         $server = $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_EDIT);
-        
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_privileges', 'privileges'),
+                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
+
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
@@ -131,7 +171,7 @@ class PrivilegesController extends BaseAdminController
             return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/privileges/form.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => false,

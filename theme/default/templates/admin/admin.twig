@@ -11,17 +11,23 @@
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/all.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
+    <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
     <script src="{{ base_url() }}/assets/js/all.js"></script>
     {% block style %}{% endblock %}
 </head>
 <body>
-<div class="uk-container admin">
+<div class="uk-container-expand admin">
     <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
         {{ navbar.adminbar(menu) }}
     </div>
     {{ navbar.sidebar(menu) }}
+</div>
+<div class="uk-container admin">
     <main role="main" class="container">
+        <div class="uk-position-center uk-hidden" id="spinner">
+            <div uk-spinner="ratio: 5"></div>
+        </div>
         <div class="uk-margin uk-flex uk-flex-right">
             {% block subnav %}{% endblock %}
         </div>
@@ -38,36 +44,35 @@
                 <h5>{{ message }}</h5>
             </div>
         {% endfor %}
+
+        {% if breadcrumbs is not empty %}
+            <ul class="uk-breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    {% if loop.last %}
+                        <li><span>{{ breadcrumb.title }}</span></li>
+                    {% else %}
+                        <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+
         {% block content %}{% endblock %}
     </main>
     {% block modals %}{% endblock %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        UIkit.util.on('form.delete-form', 'submit', function (e) {
-            e.preventDefault();
-            e.target.blur();
-            var form = this;
-            UIkit.modal.confirm('{{ trans('labels', 'are_you_sure') }}', {
-                labels: {
-                    ok: '{{ trans('buttons', 'delete') }}',
-                    cancel: '{{ trans('buttons', 'cancel') }}'
-                }
-            }).then(function () {
-                form.submit();
-            });
-        });
-        $(document).ready(function () {
-            $('.lang-select').on('click', 'a', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var lang = $(this).data('lang');
-                $.post('{{ path_for('language')}}', {lang: lang})
-                    .always(function() {
-                        location.reload()
-                    });
-            });
-        });
+        window.CSRF_TOKEN = {{ csrf_token_json() }};
+        window.MESSAGES = {
+            saved: '{{ trans('labels', 'saved') }}',
+            exception: '{{ trans('labels', 'exception') }}',
+            delete: '{{ trans('buttons', 'delete') }}',
+            cancel: '{{ trans('buttons', 'cancel') }}',
+            are_you_sure: '{{ trans('buttons', 'are_you_sure') }}'
+        };
     </script>
+    <script src="{{ base_url() }}/assets/scripts/xhr.js"></script>
+    <script src="{{ base_url() }}/assets/scripts/main.js"></script>
+    <script src="{{ base_url() }}/assets/scripts/admin.js"></script>
     {% block javascript %}{% endblock %}
 </div>
 </body>

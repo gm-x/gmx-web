@@ -85,7 +85,7 @@ class UserController extends BaseMainController
             }
         }
         
-        return $this->render('user/register.twig', [
+        return $this->getView()->render($response, 'user/register.twig', [
             'form' => $form->getForm(),
         ]);
     }
@@ -111,7 +111,7 @@ class UserController extends BaseMainController
             return $this->redirect('login');
         }
         
-        return $this->render('user/activation.twig', [
+        return $this->getView()->render($response, 'user/activation.twig', [
             'form' => $form->getForm(),
         ]);
     }
@@ -126,11 +126,11 @@ class UserController extends BaseMainController
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
         $form = new LoginForm(new AuthHelper($this->container), $this->mailEnabled);
-        if ($this->processForm($request, $form, true)) {
+        if ($this->processForm($request, $form)) {
             return $this->redirect('index');
         }
         
-        return $this->render('user/login.twig', [
+        return $this->getView()->render($response, 'user/login.twig', [
             'form' => $form->getForm(),
             'enabledEmail' => $this->mailEnabled
         ]);
@@ -179,7 +179,7 @@ class UserController extends BaseMainController
             return $this->redirect('index');
         }
         
-        $this->render('user/reset_password.twig', [
+        return $this->getView()->render($response, 'user/reset_password.twig', [
             'form' => $form->getForm()
         ]);
     }
@@ -207,7 +207,7 @@ class UserController extends BaseMainController
             return $this->redirect('login');
         }
         
-        return $this->render('user/reset_password_complete.twig', [
+        return $this->getView()->render($response, 'user/reset_password_complete.twig', [
             'form' => $form->getForm(),
         ]);
     }

@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	switch ($step) {
         case 'checks': {
             try {
+                json(true);
                 if (!checkPhpVersion('5.6.0')) {
                     throw new Exception('PHP must be 5.6.0 or higher');
                 }
@@ -53,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } break;
 
 		case 'composer': {
+            json(true);
 			try {
 				set_time_limit(0);
 				composerInstall();
@@ -76,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ], isset($_POST['db']) && is_array($_POST['db']) ? $_POST['db'] : []);
                 
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
-                $provider = new \GameX\Core\Configuration\Providers\JsonProvider();
+                $provider = new \GameX\Core\Configuration\Providers\JsonProvider(BASE_DIR . 'config.json');
 				$config = new \GameX\Core\Configuration\Config($provider);
 				$db = $config->getNode('db');
 				if ($databaseCfg['engine'] === 'postgresql') {
@@ -90,8 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$db->set('password', $databaseCfg['pass']);
 				$db->set('database', $databaseCfg['name']);
 				$db->set('prefix', $databaseCfg['prefix']);
-
-                $provider->setPath(BASE_DIR . 'config.json');
 				$config->save();
                 json(true);
 			} catch (Exception $e) {
@@ -101,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		} break;
 
 		case 'migrations': {
+            json(true);
 			try {
 				$container = getContainer(true);
 				runMigrations($container);
@@ -112,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		}
 
 		case 'admin': {
+            json(true);
 			try {
                 $container = getContainer(true);
                 /** @var \Illuminate\Database\Capsule\Manager $db */

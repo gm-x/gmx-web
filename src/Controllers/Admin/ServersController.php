@@ -32,8 +32,11 @@ class ServersController extends BaseAdminController
      */
     public function indexAction(Request $request, Response $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_menu', 'servers'));
+
         $pagination = new Pagination(Server::get(), $request);
-        return $this->render('admin/servers/index.twig', [
+        return $this->getView()->render($response, 'admin/servers/index.twig', [
             'servers' => $pagination->getCollection(),
             'pagination' => $pagination,
         ]);
@@ -50,12 +53,19 @@ class ServersController extends BaseAdminController
     public function viewAction(Request $request, Response $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add($server->name);
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
         $players = $cache->get('players_online', $server);
         
-        return $this->render('admin/servers/view.twig', [
+        return $this->getView()->render($response, 'admin/servers/view.twig', [
             'server' => $server,
             'players' => $players,
         ]);
@@ -72,6 +82,13 @@ class ServersController extends BaseAdminController
     public function createAction(Request $request, Response $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add($this->getTranslate('labels', 'create'));
         
         $form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
@@ -81,7 +98,7 @@ class ServersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/form.twig', [
             'form' => $form->getForm(),
             'create' => true,
         ]);
@@ -98,6 +115,17 @@ class ServersController extends BaseAdminController
     public function editAction(Request $request, Response $response, array $args = [])
     {
         $server = $this->getServer($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
         
         $form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
@@ -107,7 +135,7 @@ class ServersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/form.twig', [
             'form' => $form->getForm(),
             'create' => false,
         ]);

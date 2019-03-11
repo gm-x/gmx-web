@@ -42,8 +42,11 @@ class UsersController extends BaseAdminController
      */
     public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_menu', 'users'));
+
         $pagination = new Pagination($this->userRepository->get(), $request);
-        return $this->render('admin/users/index.twig', [
+        return $this->getView()->render($response, 'admin/users/index.twig', [
             'users' => $pagination->getCollection(),
             'pagination' => $pagination,
         ]);
@@ -59,12 +62,16 @@ class UsersController extends BaseAdminController
     public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $user = $this->getUserFromRequest($request, $response, $args);
-    
-        // TODO: Refactor this
-        $csrf = $this->container->get('csrf');
-        return $this->render('admin/users/view.twig', [
-            'user' => $user,
-            'csrf' => $csrf
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(UsersConstants::ROUTE_LIST)
+            )
+            ->add($user->login);
+
+        return $this->getView()->render($response, 'admin/users/view.twig', [
+            'user' => $user
         ]);
     }
     
@@ -79,6 +86,17 @@ class UsersController extends BaseAdminController
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
     {
         $user = $this->getUserFromRequest($request, $response, $args);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(UsersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $user->login,
+                $this->pathFor(UsersConstants::ROUTE_VIEW, ['user' => $user->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
     
         $editForm = new EditForm($user, new RoleHelper($this->container));
         if ($this->processForm($request, $editForm, true)) {
@@ -88,7 +106,7 @@ class UsersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/users/form.twig', [
+        return $this->getView()->render($response, 'admin/users/form.twig', [
             'user' => $user,
             'editForm' => $editForm->getForm(),
         ]);
