@@ -26,6 +26,9 @@ $app->group('', function () {
     $this
         ->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))
         ->setName('punishments');
+    
+    $this
+        ->get('/test', BaseController::action(IndexController::class, 'test'));
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
     include __DIR__ . DIRECTORY_SEPARATOR . 'settings.php';

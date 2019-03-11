@@ -12,9 +12,12 @@ class Users extends Migration {
 			->create($this->getTableName(), function (Blueprint $table) {
 				$table->increments('id');
 				$table->string('login')->unique();
-				$table->string('email')->unique();
+				$table->string('email')->nullable()->unique();
 				$table->string('password', 255);
+                $table->string('token', 70)->nullable();
 				$table->unsignedInteger('role_id')->default('0')->references('id')->on('roles');
+                $table->unsignedTinyInteger('avatar')->nullable();
+                $table->unsignedTinyInteger('is_social')->default('0')->nullable();
 				$table->timestamp('last_login')->nullable();
 				$table->timestamps();
 			});

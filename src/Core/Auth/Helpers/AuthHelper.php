@@ -72,6 +72,7 @@ class AuthHelper
             'email' => $email,
             'password' => $password,
             'token' => Utils::generateToken(16),
+            'is_social' => 0
         ], $activate ? true : null);
     }
 

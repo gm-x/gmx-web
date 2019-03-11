@@ -3,6 +3,15 @@ namespace GameX\Core\Auth\Models;
 
 use \GameX\Core\BaseModel;
 
+/**
+ * Class UserSocialModel
+ * @package GameX\Core\Auth\Models
+ * @property int $id
+ * @property int $user_id
+ * @property string $identifier
+ * @property string $photo_url
+ * @property UserModel $user
+ */
 class UserSocialModel extends BaseModel
 {
     /**
@@ -13,10 +22,21 @@ class UserSocialModel extends BaseModel
     /**
      * {@inheritDoc}
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'user_id',
+        'identifier',
+        'photo_url'
+    ];
 
     /**
      * @var array
      */
     protected $dates = ['created_at', 'updated_at'];
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user() {
+        return $this->belongsTo(UserModel::class);
+    }
 }

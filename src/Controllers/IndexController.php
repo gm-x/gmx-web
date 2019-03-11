@@ -59,4 +59,47 @@ class IndexController extends BaseMainController
         $lang->setUserLang($request->getParsedBodyParam('lang'));
         return $response->withJson(['success', true]);
     }
+    
+    public function testAction(Request $request, Response $response, array $args)
+    {
+        $config = [
+            //Location where to redirect users once they authenticate with Facebook
+            //For this example we choose to come back to this same script
+            'callback' => 'https://gm-x.info/demo/test',
+            'openid_identifier' => 'http://steamcommunity.com/openid'
+        ];
+    
+        try {
+            //Instantiate Facebook's adapter directly
+            $adapter = new \Hybridauth\Provider\Steam($config);
+    
+            $adapter->authenticate();
+//            $tokens = $adapter->getAccessToken();
+            $userProfile = $adapter->getUserProfile();
+    
+            /** @var \Cartalyst\Sentinel\Sentinel $auth */
+            $auth = $this->getContainer('auth');
+            $user = $auth->getUserRepository()->create([
+                'login' => $userProfile->displayName,
+                'email' => null,
+                'token' => \GameX\Core\Utils::generateToken(16),
+                'is_social' => 1
+            ]);
+            $auth->activate($user);
+            
+            $social = new \GameX\Core\Auth\Models\UserSocialModel();
+            $social->fill([
+                'user_id' => $user->id,
+                'identifier' => $userProfile->identifier,
+                'photo_url' => $userProfile->photoURL,
+            ]);
+            $social->save();
+            $adapter->disconnect();
+            return $this->redirect('index');
+        }
+        catch(\Exception $e ){
+            echo $e->getMessage();
+        }
+        die();
+    }
 }
