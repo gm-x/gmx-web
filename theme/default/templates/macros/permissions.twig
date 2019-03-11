@@ -7,7 +7,7 @@
                 {{ element.getTitle() }}
             </li>
             {% for access,val in perm_key %}
-                <li class="uk-width-xxs@s" s-title="{{ trans('permissions', perm_key[access]) }}">
+                <li class="uk-width-xxs@s uk-flex-middle" s-title="{{ trans('permissions', perm_key[access]) }}">
                     {{ _self.permission_checkbox(element, access) }}
                 </li>
             {% endfor %}

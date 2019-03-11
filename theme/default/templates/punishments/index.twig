@@ -19,7 +19,7 @@
 		</ul>
 		{% for punishment in punishments %}
 			<ul>
-				<li class="uk-width-1-6@m uk-flex-middle">
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'player') }}">
 					<div class="uk-margin-small-right">
                         {% if punishment.player.user.avatar %}
 							<img class="uk-border-circle" width="30" height="30" src="{{ upload_url(punishment.player.user.avatar) }}">
@@ -29,19 +29,19 @@
 					</div>
                     {{ punishment.player.nick }}
 				</li>
-				<li class="uk-width-1-6@m uk-flex-middle">
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'punisher') }}">
                     {{ punishments_macro.punisher(punishment) }}
 				</li>
-				<li class="uk-width-1-6@m uk-flex-middle">
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'server') }}">
                     {{ punishments_macro.server(punishment) }}
 				</li>
-				<li class="uk-width-1-6@m uk-flex-middle">
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'reason') }}">
                     {{ punishments_macro.reason(punishment) }}
 				</li>
-				<li class="uk-width-1-6@m uk-flex-middle">
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'comment') }}">
                     {{ punishments.comment(punishment) }}
 				</li>
-				<li class="uk-width-1-6@m uk-flex-middle">
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'status') }}">
                     {{ punishments_macro.status(punishment) }}
 				</li>
 			</ul>
