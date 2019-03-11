@@ -48,9 +48,10 @@ class GroupsController extends BaseAdminController
             )
             ->add($this->getTranslate('admin_servers', 'groups'));
 
+        $groups = $server->groups()->orderBy('priority', 'asc')->get();
         return $this->getView()->render($response, 'admin/servers/groups/index.twig', [
             'server' => $server,
-            'groups' => $server->groups,
+            'groups' => $groups,
         ]);
     }
     
@@ -180,6 +181,25 @@ class GroupsController extends BaseAdminController
     {
         $server = $this->getServer($request, $response, $args);
         $body = $request->getParsedBody();
+    
+        /** @var \Illuminate\Database\Connection|null $connection */
+        $connection = $this->getContainer('db')->getConnection();
+        $connection->beginTransaction();
+        try {
+            if (isset($body['priority']) && is_array($body['priority'])) {
+                foreach ($body['priority'] as $priority => $groupId) {
+                    $group = Group::find($groupId);
+                    if ($group && $group->server_id = $server->id) {
+                        $group->priority = $priority;
+                        $group->save();
+                    }
+                }
+            }
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            throw $e;
+        }
         return $response->withJson([
             'success' => true,
             'csrf' => $this->getCSRFToken()
