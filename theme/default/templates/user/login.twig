@@ -1,6 +1,7 @@
 {% extends 'base.twig' %}
 
 {% import 'macros/forms.twig' as forms %}
+{% import 'macros/social.twig' as social %}
 
 {% block content %}
     <div class="uk-flex uk-flex-middle uk-flex-center uk-child-width-1-4" uk-height-viewport="offset-top: true">
@@ -27,12 +28,17 @@
                     <div class="uk-margin">
                         {{ forms.element_checkbox(form.remember_me) }}
                     </div>
+                    <div class="uk-margin">
                         <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'login') }}">
                         {% if enabledEmail %}
                             <a href="{{ path_for('reset_password') }}" class="uk-button uk-button-warning">{{ trans('buttons', 'reset_password') }}</a>
                         {% endif %}
-                        <a href="{{ path_for('register') }}" class="uk-button uk-button-success">{{ trans('buttons', 'register') }}</a>
-
+                        <br> <br>
+                        или <a href="{{ path_for('register') }}">{{ trans('buttons', 'register') }}</a>
+                    </div>
+                    <div class="uk-margin">
+                        {{ social.get_button('facebook') }}{{ social.get_button('vk') }}{{ social.get_button('steam') }}
+                    </div>
                 </form>
             </div>
         </div>
