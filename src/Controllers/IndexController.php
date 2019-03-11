@@ -77,6 +77,8 @@ class IndexController extends BaseMainController
 //            $tokens = $adapter->getAccessToken();
             $userProfile = $adapter->getUserProfile();
     
+//            $social = \GameX\Core\Auth\Models\UserSocialModel::find();
+    
             /** @var \Cartalyst\Sentinel\Sentinel $auth */
             $auth = $this->getContainer('auth');
             $user = $auth->getUserRepository()->create([
