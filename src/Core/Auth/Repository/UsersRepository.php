@@ -3,6 +3,7 @@ namespace GameX\Core\Auth\Repository;
 
 use \Cartalyst\Sentinel\Users\IlluminateUserRepository;
 use \Cartalyst\Sentinel\Users\UserInterface;
+use GameX\Core\Auth\Models\UserModel;
 use \InvalidArgumentException;
 
 class UsersRepository extends IlluminateUserRepository {
@@ -12,16 +13,12 @@ class UsersRepository extends IlluminateUserRepository {
      */
     public function findByCredentials(array $credentials) {
         if (empty($credentials) || empty($credentials['login'])) {
-            return;
+            return null;
         }
 
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = $this->createModel()->newQuery();
-        $query
-			->where('login', $credentials['login'])
-			->orWhere('email', $credentials['login']);
-
-        return $query->first();
+        return UserModel::where('login', $credentials['login'])
+			->orWhere('email', $credentials['login'])
+            ->first();
     }
 
     /**
