@@ -283,10 +283,17 @@ class DependencyProvider implements ServiceProviderInterface
      * @throws \Hybridauth\Exception\InvalidArgumentException
      */
     public function getSocial(ContainerInterface $container) {
+        /** @var \Slim\Interfaces\RouterInterface $router */
+        $router = $container->get('router');
+        
+        /** @var \Slim\Http\Request $request */
+        $request = $container->get('request');
+        $basePath = $request->getUri()->getBaseUrl();
+        
         $providers = [
             'steam' => [
                 'enabled' => true,
-                'callback' => 'https://gm-x.info/demo/auth/steam',
+                'callback' => $basePath . $router->pathFor('auth', ['provider' => 'steam']),
                 'openid_identifier' => 'http://steamcommunity.com/openid'
             ]
         ];
