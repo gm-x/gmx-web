@@ -80,6 +80,7 @@ class IndexController extends BaseMainController
         $adapter->authenticate();
     
         $profile = $adapter->getUserProfile();
+        $adapter->disconnect();
         
         $userSocial = $helper->find($provider, $profile);
         if (!$userSocial) {
