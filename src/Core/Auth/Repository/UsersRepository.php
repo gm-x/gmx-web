@@ -71,7 +71,7 @@ class UsersRepository extends IlluminateUserRepository {
             'credentials' => $credentials
         ]);
 
-        if (array_key_exists('password', $credentials)) {
+        if (array_key_exists('password', $credentials) && $credentials['password'] !== null) {
             $credentials['password'] = $this->hasher->hash($credentials['password']);
         }
 

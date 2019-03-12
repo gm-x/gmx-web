@@ -12,6 +12,7 @@ class UserSocial extends Migration
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedTinyInteger('user_id')->references('id')->on('users');
+                $table->string('provider', 64);
                 $table->string('identifier', 255)->unique();
                 $table->string('photo_url', 255);
                 $table->timestamps();

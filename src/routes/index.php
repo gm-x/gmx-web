@@ -28,7 +28,8 @@ $app->group('', function () {
         ->setName('punishments');
     
     $this
-        ->get('/test', BaseController::action(IndexController::class, 'test'));
+        ->get('/auth/{provider}', BaseController::action(IndexController::class, 'auth'))
+        ->setName('auth');
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
     include __DIR__ . DIRECTORY_SEPARATOR . 'settings.php';

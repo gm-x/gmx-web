@@ -13,7 +13,7 @@ class Users extends Migration {
 				$table->increments('id');
 				$table->string('login')->unique();
 				$table->string('email')->nullable()->unique();
-				$table->string('password', 255);
+				$table->string('password', 255)->nullable();
                 $table->string('token', 70)->nullable();
 				$table->unsignedInteger('role_id')->default('0')->references('id')->on('roles');
                 $table->unsignedTinyInteger('avatar')->nullable();

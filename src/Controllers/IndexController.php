@@ -2,11 +2,14 @@
 
 namespace GameX\Controllers;
 
+use GameX\Core\Auth\Helpers\SocialHelper;
 use \GameX\Core\BaseMainController;
+use Slim\Exception\NotFoundException;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
+use \Hybridauth\Hybridauth;
 use \GameX\Models\Server;
 
 class IndexController extends BaseMainController
@@ -60,48 +63,34 @@ class IndexController extends BaseMainController
         return $response->withJson(['success', true]);
     }
     
-    public function testAction(Request $request, Response $response, array $args)
+    public function authAction(Request $request, Response $response, array $args)
     {
-        $config = [
-            //Location where to redirect users once they authenticate with Facebook
-            //For this example we choose to come back to this same script
-            'callback' => 'https://gm-x.info/demo/test',
-            'openid_identifier' => 'http://steamcommunity.com/openid'
-        ];
+        /** @var Hybridauth $social */
+        $social = $this->getContainer('social');
+        $providers = $social->getProviders();
+        
+        if (!in_array($args['provider'], $providers, true)) {
+            throw new NotFoundException($request, $response);
+        }
+        
+        $provider = $args['provider'];
+        $adapter = $social->getAdapter($provider);
+        $helper = new SocialHelper($this->container);
+        
+        $adapter->authenticate();
     
-        try {
-            //Instantiate Facebook's adapter directly
-            $adapter = new \Hybridauth\Provider\Steam($config);
-    
-            $adapter->authenticate();
-//            $tokens = $adapter->getAccessToken();
-            $userProfile = $adapter->getUserProfile();
-    
-//            $social = \GameX\Core\Auth\Models\UserSocialModel::find();
-    
-            /** @var \Cartalyst\Sentinel\Sentinel $auth */
-            $auth = $this->getContainer('auth');
-            $user = $auth->getUserRepository()->create([
-                'login' => $userProfile->displayName,
-                'email' => null,
-                'token' => \GameX\Core\Utils::generateToken(16),
-                'is_social' => 1
-            ]);
-            $auth->activate($user);
-            
-            $social = new \GameX\Core\Auth\Models\UserSocialModel();
-            $social->fill([
-                'user_id' => $user->id,
-                'identifier' => $userProfile->identifier,
-                'photo_url' => $userProfile->photoURL,
-            ]);
-            $social->save();
-            $adapter->disconnect();
+        $profile = $adapter->getUserProfile();
+        
+        $userSocial = $helper->find($provider, $profile);
+        if (!$userSocial) {
+            $userSocial = $helper->register($provider, $profile);
+        }
+        
+        if (!$helper->authenticate($userSocial)) {
+            $this->addErrorMessage('Some errors');
+            return $this->redirect('login');
+        } else {
             return $this->redirect('index');
         }
-        catch(\Exception $e ){
-            echo $e->getMessage();
-        }
-        die();
     }
 }

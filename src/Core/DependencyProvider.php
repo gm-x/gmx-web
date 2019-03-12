@@ -37,6 +37,10 @@ use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\SentinelBootstrapper;
 use \Cartalyst\Sentinel\Sentinel;
 
+use \Hybridauth\Hybridauth;
+use \GameX\Core\Auth\Social\SessionProvider as HybridauthSessionProvider;
+use \GameX\Core\Auth\Social\LoggerProvider as HybridauthLoggerProvider;
+
 use \Slim\Views\Twig;
 use \Slim\Views\TwigExtension;
 use \GameX\Core\CSRF\Extension as CSRFExtension;
@@ -116,6 +120,10 @@ class DependencyProvider implements ServiceProviderInterface
         
         $container['auth'] = function (ContainerInterface $container) {
             return $this->getAuth($container);
+        };
+    
+        $container['social'] = function (ContainerInterface $container) {
+            return $this->getSocial($container);
         };
         
         $container['view'] = function (ContainerInterface $container) {
@@ -267,6 +275,25 @@ class DependencyProvider implements ServiceProviderInterface
         $container->get('db');
         $bootsrap = new SentinelBootstrapper($container->get('request'), $container->get('session'));
         return $bootsrap->createSentinel();
+    }
+    
+    /**
+     * @param ContainerInterface $container
+     * @return Hybridauth
+     * @throws \Hybridauth\Exception\InvalidArgumentException
+     */
+    public function getSocial(ContainerInterface $container) {
+        $providers = [
+            'steam' => [
+                'enabled' => true,
+                'callback' => 'https://gm-x.info/demo/auth/steam',
+                'openid_identifier' => 'http://steamcommunity.com/openid'
+            ]
+        ];
+        
+        $session = new HybridauthSessionProvider($container->get('session'));
+        $logger = new HybridauthLoggerProvider($container->get('log'));
+        return new Hybridauth(['providers' => $providers], null, $session, $logger);
     }
     
     /**

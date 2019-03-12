@@ -8,6 +8,7 @@ use \GameX\Core\BaseModel;
  * @package GameX\Core\Auth\Models
  * @property int $id
  * @property int $user_id
+ * @property string $provider
  * @property string $identifier
  * @property string $photo_url
  * @property UserModel $user
@@ -24,6 +25,7 @@ class UserSocialModel extends BaseModel
      */
     protected $fillable = [
         'user_id',
+        'provider',
         'identifier',
         'photo_url'
     ];
