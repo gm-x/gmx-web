@@ -7,17 +7,14 @@
         <div uk-grid>
             <div class="uk-width-1-4@m">
                 <h1>{{ user.login }}</h1>
-                <form action="{{ avatarForm.getAction() }}" method="post" enctype="multipart/form-data">
+                <form action="{{ avatarForm.getAction() }}" id="avatar_form" method="post" enctype="multipart/form-data">
                     {{ csrf_token() }}
                     {% set holder =
                         '<div id="profile-img-tag" class="avatar__holder uk-margin"><img src="'
                         ~ upload_url(user.avatar) ~
-                        '"></div>'
+                        '" width="100%"></div>'
                     %}
                     {{ forms.element_file(avatarForm.avatar, holder) }}
-                    <div class="form-group">
-                        <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'save') }}">
-                    </div>
                 </form>
                 <ul class="uk-tab-left" uk-tab="connect: #settings; animation: uk-animation-slide-top,uk-animation-slide-bottom">
                     <li class="uk-active"><a href="#">{{ trans('inputs', 'email') }}</a></li>
@@ -69,12 +66,7 @@
     <script type="text/javascript">
         $('#{{ avatarForm.avatar.getId() }}').change(function() {
             if (this.files && this.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    $('#profile-img-tag').css('background-image', 'url(' + e.target.result + ')');
-                };
-                reader.readAsDataURL(this.files[0]);
+                $('#avatar_form').submit();
             }
         });
 	</script>
