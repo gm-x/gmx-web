@@ -286,9 +286,9 @@ class DependencyProvider implements ServiceProviderInterface
         /** @var \Slim\Interfaces\RouterInterface $router */
         $router = $container->get('router');
         
-        /** @var \Slim\Http\Request $request */
-        $request = $container->get('request');
-        $basePath = $request->getUri()->getBaseUrl();
+        /** @var \Slim\Http\Uri $request */
+        $uri = $container->get('request')->getUri();
+        $basePath = $uri->getScheme() . '://' . $uri->getAuthority();
         
         $providers = [
             'steam' => [

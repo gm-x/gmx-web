@@ -78,15 +78,14 @@ class IndexController extends BaseMainController
             throw new NotFoundException($request, $response);
         }
         
-        
         $adapter = $social->getAdapter($provider);
-        $helper = new SocialHelper($this->container);
-        
+    
         $adapter->authenticate();
     
         $profile = $adapter->getUserProfile();
         $adapter->disconnect();
-        
+    
+        $helper = new SocialHelper($this->container);
         $userSocial = $helper->find($provider, $profile);
         if (!$userSocial) {
             $userSocial = $helper->register($provider, $profile);
