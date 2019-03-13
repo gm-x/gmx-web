@@ -48,7 +48,7 @@ class SocialHelper
         /** @var UserModel $user */
         $user = $this->getAuth()->getUserRepository()->create([
             'login' => $profile->displayName,
-            'email' => null,
+            'email' => $profile->email,
             'password' => null,
             'token' => Utils::generateToken(16),
             'is_social' => true

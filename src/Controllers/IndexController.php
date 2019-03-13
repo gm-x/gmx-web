@@ -68,12 +68,17 @@ class IndexController extends BaseMainController
         /** @var Hybridauth $social */
         $social = $this->getContainer('social');
         $providers = $social->getProviders();
+    
+        $provider = $args['provider'];
+        if ($provider == 'vk') {
+            $provider = 'vkontakte';
+        }
         
-        if (!in_array($args['provider'], $providers, true)) {
+        if (!in_array($provider, $providers, true)) {
             throw new NotFoundException($request, $response);
         }
         
-        $provider = $args['provider'];
+        
         $adapter = $social->getAdapter($provider);
         $helper = new SocialHelper($this->container);
         

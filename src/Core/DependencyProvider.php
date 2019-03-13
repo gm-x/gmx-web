@@ -295,6 +295,15 @@ class DependencyProvider implements ServiceProviderInterface
                 'enabled' => true,
                 'callback' => $basePath . $router->pathFor('auth', ['provider' => 'steam']),
                 'openid_identifier' => 'http://steamcommunity.com/openid'
+            ],
+            'vkontakte' => [
+                'enabled' => true,
+                'callback' => $basePath . $router->pathFor('auth', ['provider' => 'vk']),
+                'keys' => [
+                    'id' => 6897212 ,
+                    'key'    => '',
+                    'secret' => ''
+                ]
             ]
         ];
         
