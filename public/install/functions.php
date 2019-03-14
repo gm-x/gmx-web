@@ -95,7 +95,7 @@ function checkDbConnection($config) {
         $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['name']);
     }
 
-    $dbh = new PDO($dsn, $config['user'], $config['pass']);
+    $dbh = new PDO($dsn, $config['user'], $config['pass'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     $dbh = null;
 }
 

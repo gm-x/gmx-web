@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	switch ($step) {
         case 'checks': {
             try {
-                json(true);
                 if (!checkPhpVersion('5.6.0')) {
                     throw new Exception('PHP must be 5.6.0 or higher');
                 }
