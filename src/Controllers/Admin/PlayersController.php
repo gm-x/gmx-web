@@ -38,7 +38,7 @@ class PlayersController extends BaseAdminController
         $players = $filter === null ? Player::get() : Player::filterCollection($filter)->get();
 
         $this->getBreadcrumbs()
-            ->add($this->getTranslate('admin_menu', 'users'));
+            ->add($this->getTranslate('admin_menu', 'players'));
         
         $pagination = new Pagination($players, $request);
         return $this->getView()->render($response, 'admin/players/index.twig', [
@@ -62,7 +62,7 @@ class PlayersController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add($player->nick);
@@ -114,7 +114,7 @@ class PlayersController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add($this->getTranslate('labels', 'create'));
@@ -147,7 +147,7 @@ class PlayersController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add(
