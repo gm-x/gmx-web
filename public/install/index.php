@@ -8,6 +8,13 @@ include __DIR__ . DS . 'functions.php';
 //    header("Location: ".getBaseUrl());
 //}
 
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error) {
+        logError($error);
+    }
+});
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	echo render('template', [
 		'baseUrl' => getBaseUrl()
@@ -54,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } break;
 
 		case 'composer': {
-            json(true);
 			try {
 				set_time_limit(0);
 				composerInstall();
@@ -101,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		} break;
 
 		case 'migrations': {
-            json(true);
 			try {
 				$container = getContainer(true);
 				runMigrations($container);
@@ -113,9 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		}
 
 		case 'admin': {
-            json(true);
 			try {
-                $container = getContainer(true);
+                $container = getContainer(false);
                 /** @var \Illuminate\Database\Capsule\Manager $db */
                 $db = $container['db'];
                 $isPgSQL = $db->getConnection()->getDriverName() === 'pgsql';

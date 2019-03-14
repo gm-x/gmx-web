@@ -1,5 +1,6 @@
-Options +FollowSymlinks
-RewriteEngine On
+Options All
+Options -Indexes
+Options +FollowSymLinks
 
-RewriteRule ^(upload) - [L]
+RewriteEngine On
 RewriteRule ^(.*)$ public/$1 [L]

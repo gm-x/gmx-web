@@ -121,6 +121,9 @@ function runMigrations($container) {
 }
 
 function createUser($container, $login, $email, $password) {
+    $defaultProvider = new \Slim\DefaultServicesProvider();
+    $defaultProvider->register($container);
+    
     $authHelper = new \GameX\Core\Auth\Helpers\AuthHelper($container);
     
     $user = $authHelper->registerUser($login, $email, $password, true);
@@ -151,6 +154,10 @@ function getContainer($phpmig = false) {
 
 function logMessage($message) {
 	file_put_contents(__DIR__ . DS . 'install.log', $message . PHP_EOL . PHP_EOL, FILE_APPEND);
+}
+
+function logError($e) {
+    logMessage('Error #' . $e['file'] . ':' . $e['line'] . ' - ' . $e['message']);
 }
 
 function logException(\Exception $e) {

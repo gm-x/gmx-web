@@ -1,4 +1,14 @@
-RewriteEngine On
+Options All
+Options -Indexes
+Options +FollowSymLinks
 
-RewriteRule ^(install|assets) - [L]
-RewriteRule ^ index.php [QSA,L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Allow asset folders through
+    RewriteRule ^(assets/.+) - [L]
+    # Protect files from being viewed
+    RewriteRule ^(upload.+) - [F,L]
+
+    RewriteRule ^install install/index.php [QSA,L]
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
