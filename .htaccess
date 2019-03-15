@@ -2,4 +2,10 @@ Options -Indexes
 Options +FollowSymLinks
 
 RewriteEngine On
-RewriteRule ^(.*)$ public/$1 [L]
+# Allow asset folders through
+RewriteRule ^(assets/.+) - [L]
+# Protect files from being viewed
+RewriteRule ^(upload.+) - [F,L]
+
+RewriteRule ^install install/index.php [QSA,L]
+RewriteRule ^ index.php [QSA,L]

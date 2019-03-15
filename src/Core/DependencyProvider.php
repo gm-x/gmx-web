@@ -400,7 +400,7 @@ class DependencyProvider implements ServiceProviderInterface
     
     public function getUpload(ContainerInterface $container)
     {
-        return new Upload($container->get('root') . 'public/upload', $container->get('base_url') . '/upload');
+        return new Upload($container->get('root') . 'uploads', $container->get('base_url') . '/uploads');
     }
     
     public function getUpdater(ContainerInterface $container)

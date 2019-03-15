@@ -3,16 +3,14 @@ function redirectToInstall() {
     die('Need to be installed first');
 }
 
-if (!is_file(__DIR__ . '/../vendor/autoload.php')) {
+if (!is_file(__DIR__ . '/vendor/autoload.php')) {
     redirectToInstall();
 }
 
-require __DIR__ . '/../vendor/autoload.php';
-
-$_SERVER['SCRIPT_NAME'] = str_replace('/public', '', $_SERVER['SCRIPT_NAME']);
+require __DIR__ . '/vendor/autoload.php';
 
 try {
-    $configProvider = new \GameX\Core\Configuration\Providers\JsonProvider(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config.json');
+    $configProvider = new \GameX\Core\Configuration\Providers\JsonProvider(__DIR__ . '/config.json');
     $config = new \GameX\Core\Configuration\Config($configProvider);
 } catch (\GameX\Core\Configuration\Exceptions\CantLoadException $e) {
     die('Can\'t load configuration file');
@@ -28,7 +26,7 @@ $settings = $config->getNode('debug')->get('pretty') ? [
 
 $container = new \Slim\Container([
 	'settings' => $settings,
-	'root' => dirname(__DIR__) . DIRECTORY_SEPARATOR,
+	'root' => __DIR__ . DIRECTORY_SEPARATOR,
 ]);
 
 \GameX\Core\BaseModel::setContainer($container);
@@ -92,8 +90,8 @@ if ($config->getNode('debug')->get('exceptions')) {
 }
 
 $container->register(new \GameX\Core\DependencyProvider($config));
-include __DIR__ . '/../src/middlewares.php';
-include __DIR__ . '/../src/routes/index.php';
+include __DIR__ . '/src/middlewares.php';
+include __DIR__ . '/src/routes/index.php';
 
 //set_error_handler(function ($errno, $error, $file, $line) use ($container) {
 //    $container->get('log')->error("#$errno: $error in $file:$line");

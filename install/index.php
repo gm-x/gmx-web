@@ -1,6 +1,6 @@
 <?php
 define('DS', DIRECTORY_SEPARATOR);
-define('BASE_DIR', dirname(dirname(__DIR__)) . DS);
+define('BASE_DIR', dirname(__DIR__) . DS);
 
 include __DIR__ . DS . 'functions.php';
 
