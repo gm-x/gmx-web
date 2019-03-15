@@ -39,7 +39,7 @@
 {% block javascript %}
 	{{ parent() }}
 	<script>
-	window.EMAIL_TEST_URL = '{{ path_for(constants.admin.preferences.ROUTE_EMAIL_TEST) }}}';
+	window.EMAIL_TEST_URL = '{{ path_for(constants.admin.preferences.ROUTE_EMAIL_TEST) }}';
 	</script>
 	<script src="{{ base_url() }}/assets/scripts/admin_email.js"></script>
 {% endblock %}
