@@ -13,9 +13,10 @@ class UserSocial extends Migration
                 $table->increments('id');
                 $table->unsignedTinyInteger('user_id')->references('id')->on('users');
                 $table->string('provider', 64);
-                $table->string('identifier')->unique();
+                $table->string('identifier');
                 $table->string('photo_url', 255);
                 $table->timestamps();
+                $table->unique(['provider', 'identifier']);
             });
     }
     
