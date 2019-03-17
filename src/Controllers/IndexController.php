@@ -65,20 +65,16 @@ class IndexController extends BaseMainController
     
     public function authAction(Request $request, Response $response, array $args)
     {
-        /** @var Hybridauth $social */
+        /** @var \GameX\Core\Auth\Social\SocialAuth $social */
         $social = $this->getContainer('social');
-        $providers = $social->getProviders();
     
         $provider = $args['provider'];
-        if ($provider == 'vk') {
-            $provider = 'vkontakte';
-        }
         
-        if (!in_array($provider, $providers, true)) {
+        if (!$social->hasProvider($provider)) {
             throw new NotFoundException($request, $response);
         }
         
-        $adapter = $social->getAdapter($provider);
+        $adapter = $social->getProvider($provider);
     
         $adapter->authenticate();
     

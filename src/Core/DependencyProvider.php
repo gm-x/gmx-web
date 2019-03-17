@@ -283,6 +283,13 @@ class DependencyProvider implements ServiceProviderInterface
      * @throws \Hybridauth\Exception\InvalidArgumentException
      */
     public function getSocial(ContainerInterface $container) {
+        $providers = [
+            'steam' => \Hybridauth\Provider\Steam::class,
+            'vk' => \Hybridauth\Provider\Vkontakte::class,
+            'facebook' => \Hybridauth\Provider\Facebook::class,
+            'discord' => \Hybridauth\Provider\Discord::class,
+        ];
+        
         /** @var \Slim\Interfaces\RouterInterface $router */
         $router = $container->get('router');
         
@@ -290,26 +297,31 @@ class DependencyProvider implements ServiceProviderInterface
         $uri = $container->get('request')->getUri();
         $basePath = $uri->getScheme() . '://' . $uri->getAuthority();
         
-        $providers = [
-            'steam' => [
-                'enabled' => true,
-                'callback' => $basePath . $router->pathFor('auth', ['provider' => 'steam']),
-                'openid_identifier' => 'http://steamcommunity.com/openid'
-            ],
-            'vkontakte' => [
-                'enabled' => true,
-                'callback' => $basePath . $router->pathFor('auth', ['provider' => 'vk']),
-                'keys' => [
-                    'id' => 6897212 ,
-                    'key'    => '',
-                    'secret' => ''
-                ]
-            ]
-        ];
-        
+        $config = new \GameX\Core\Auth\Social\ConfigProvider($basePath, $router, 'auth');
         $session = new HybridauthSessionProvider($container->get('session'));
         $logger = new HybridauthLoggerProvider($container->get('log'));
-        return new Hybridauth(['providers' => $providers], null, $session, $logger);
+        
+        return new \GameX\Core\Auth\Social\SocialAuth($providers, $config, null, $session, $logger);
+        
+//        $providers = [
+//            'steam' => [
+//                'enabled' => true,
+//                'callback' => $basePath . $router->pathFor('auth', ['provider' => 'steam']),
+//                'openid_identifier' => 'http://steamcommunity.com/openid'
+//            ],
+//            'vkontakte' => [
+//                'enabled' => true,
+//                'callback' => $basePath . $router->pathFor('auth', ['provider' => 'vk']),
+//                'keys' => [
+//                    'id' => 6897212 ,
+//                    'key'    => '',
+//                    'secret' => ''
+//                ]
+//            ]
+//        ];
+//
+//
+//        return new Hybridauth(['providers' => $providers], null, $session, $logger);
     }
     
     /**
