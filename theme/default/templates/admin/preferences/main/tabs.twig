@@ -1,0 +1,6 @@
+{% import 'macros/tabs.twig' as tabs %}
+
+{{ tabs.render([{
+    'href': path_for(constants.admin.preferences_main.ROUTE_INDEX),
+    'title': trans('admin_preferences_main', 'tab_index'),
+}], href) }}

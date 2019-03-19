@@ -1,31 +1,38 @@
 <?php
 use \GameX\Core\BaseController;
+use \GameX\Controllers\Admin\Preferences\MainController;
 use \GameX\Controllers\Admin\PreferencesController;
 use \GameX\Core\Auth\Permissions;
+use \GameX\Constants\Admin\PreferencesMainConstants;
 use \GameX\Constants\Admin\PreferencesConstants;
 
 return function () {
 	/** @var \Slim\App $this */
+    
+    $this->group('/main', function () {
+        /** @var Permissions $permissions */
+        $permissions = $this->getContainer()->get('permissions');
+        
+        $this
+            ->get('', BaseController::action(MainController::class, 'index'))
+            ->setName(PreferencesMainConstants::ROUTE_INDEX)
+            ->add($permissions->hasAccessToPermissionMiddleware(
+                PreferencesMainConstants::PERMISSION_GROUP,
+                PreferencesMainConstants::PERMISSION_KEY,
+                Permissions::ACCESS_VIEW
+            ));
+    
+        $this
+            ->post('', BaseController::action(MainController::class, 'index'))
+            ->add($permissions->hasAccessToPermissionMiddleware(
+                PreferencesMainConstants::PERMISSION_GROUP,
+                PreferencesMainConstants::PERMISSION_KEY,
+                Permissions::ACCESS_EDIT
+            ));
+    });
 
     /** @var Permissions $permissions */
     $permissions = $this->getContainer()->get('permissions');
-
-	$this
-        ->get('', BaseController::action(PreferencesController::class, 'index'))
-		->setName(PreferencesConstants::ROUTE_MAIN)
-        ->add($permissions->hasAccessToPermissionMiddleware(
-            PreferencesConstants::PERMISSION_GROUP,
-            PreferencesConstants::PERMISSION_MAIN_KEY,
-            Permissions::ACCESS_VIEW
-        ));
-    
-    $this
-        ->post('', BaseController::action(PreferencesController::class, 'index'))
-        ->add($permissions->hasAccessToPermissionMiddleware(
-            PreferencesConstants::PERMISSION_GROUP,
-            PreferencesConstants::PERMISSION_MAIN_KEY,
-            Permissions::ACCESS_EDIT
-        ));
 
 	$this
 		->get('/email', BaseController::action(PreferencesController::class, 'email'))

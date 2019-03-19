@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-    {% include 'admin/preferences/tabs.twig' with {'href': currentHref} %}
+    {% include 'admin/preferences/main/tabs.twig' with {'href': currentHref} %}
 	<form action="{{ form.getAction() }}" method="post">
 		{{ csrf_token() }}
 		{{ forms.element_input(form.title, {"label": true}) }}

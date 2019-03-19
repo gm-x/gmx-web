@@ -38,33 +38,6 @@ class PreferencesController extends BaseAdminController
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
-     * @throws \GameX\Core\Exceptions\RedirectException
-     */
-    public function indexAction(Request $request, Response $response, array $args = [])
-    {
-
-        $this->getBreadcrumbs()
-            ->add($this->getTranslate('admin_preferences', 'tab_main'));
-
-        /** @var Config $preferences */
-        $preferences = $this->getContainer('preferences');
-        $form = new MainForm($preferences);
-        if ($this->processForm($request, $form)) {
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(PreferencesConstants::ROUTE_MAIN);
-        }
-        
-        return $this->getView()->render($response, 'admin/preferences/index.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
-            'form' => $form->getForm(),
-        ]);
-    }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
      * @throws \GameX\Core\Configuration\Exceptions\CantSaveException
      * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException

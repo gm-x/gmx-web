@@ -4,7 +4,7 @@ use \GameX\Core\Migration;
 use \GameX\Core\Auth\Models\PermissionsModel;
 use \GameX\Constants\Admin\PreferencesConstants;
 
-class PreferenceCache extends Migration {
+class PermissionsPreferenceCache extends Migration {
     /**
      * Do the migration
      */
