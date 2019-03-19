@@ -23,8 +23,8 @@ class SecurityMiddleware
     {
         $config = $this->getConfig()->getNode('security');
         $header = $config->getNode('content')->get('report')
-            ? 'Content-SecurityMiddleware-Policy-Report-Only'
-            : 'Content-SecurityMiddleware-Policy';
+            ? 'Content-Security-Policy-Report-Only'
+            : 'Content-Security-Policy';
         $response = $response->withHeader($header, $config->getNode('content')->get('policy'));
         $response = $response->withHeader('Referrer-Policy', $config->get('referer'));
         $response = $response->withHeader('X-XSS-Protection', $config->get('xss'));
