@@ -20,7 +20,7 @@ $container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migratio
 $container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
 
 $container['config'] = function ($container) {
-    $provider = new \GameX\Core\Configuration\Providers\JsonProvider($container['root'] . '/config.json');
+    $provider = new \GameX\Core\Configuration\Providers\PHPProvider($container['root'] . '/config.php');
     return new \GameX\Core\Configuration\Config($provider);
 };
 $container['db'] = function ($container) {

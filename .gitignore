@@ -9,5 +9,6 @@
 /uploads/
 !/uploads/.gitkeep
 config.json
+config.php
 .idea/
 .vscode/

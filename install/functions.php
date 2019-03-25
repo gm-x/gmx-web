@@ -141,7 +141,7 @@ function getContainer($phpmig = false) {
     if ($phpmig) {
         require BASE_DIR . 'phpmig.php';
     } else {
-        $configProvider = new \GameX\Core\Configuration\Providers\JsonProvider(BASE_DIR . DS . 'config.json');
+        $configProvider = new \GameX\Core\Configuration\Providers\PHPProvider(BASE_DIR . DS . 'config.php');
         $config = new \GameX\Core\Configuration\Config($configProvider);
         $container->register(new \GameX\Core\DependencyProvider($config));
         \GameX\Core\BaseModel::setContainer($container);

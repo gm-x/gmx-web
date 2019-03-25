@@ -10,7 +10,7 @@ if (!is_file(__DIR__ . '/vendor/autoload.php')) {
 require __DIR__ . '/vendor/autoload.php';
 
 try {
-    $configProvider = new \GameX\Core\Configuration\Providers\JsonProvider(__DIR__ . '/config.json');
+    $configProvider = new \GameX\Core\Configuration\Providers\PHPProvider(__DIR__ . '/config.php');
     $config = new \GameX\Core\Configuration\Config($configProvider);
 } catch (\GameX\Core\Configuration\Exceptions\CantLoadException $e) {
     die('Can\'t load configuration file');

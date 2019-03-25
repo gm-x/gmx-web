@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ], isset($_POST['db']) && is_array($_POST['db']) ? $_POST['db'] : []);
                 
 				require BASE_DIR . 'vendor' . DS . 'autoload.php';
-                $provider = new \GameX\Core\Configuration\Providers\JsonProvider(BASE_DIR . 'config.json');
+                $provider = new \GameX\Core\Configuration\Providers\PHPProvider(BASE_DIR . 'config.php');
 				$config = new \GameX\Core\Configuration\Config($provider);
 				$db = $config->getNode('db');
 				if ($databaseCfg['engine'] === 'postgresql') {

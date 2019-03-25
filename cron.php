@@ -5,7 +5,7 @@ $container = new \Slim\Container([
 ]);
 
 try {
-    $configProvider = new \GameX\Core\Configuration\Providers\JsonProvider(__DIR__ . DIRECTORY_SEPARATOR . 'config.json');
+    $configProvider = new \GameX\Core\Configuration\Providers\PHPProvider(__DIR__ . DIRECTORY_SEPARATOR . 'config.php');
     $config = new \GameX\Core\Configuration\Config($configProvider);
 } catch (\GameX\Core\Configuration\Exceptions\CantLoadException $e) {
     die('Can\'t load configuration file');
