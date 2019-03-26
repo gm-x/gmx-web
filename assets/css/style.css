@@ -59,7 +59,7 @@ input {
 
 .sidenav {
     position: fixed;
-    width: 40px;
+    width: 38px;
     top: 60px;
     z-index: 100;
     background: -webkit-linear-gradient(360deg,#030303 10%,#1f1f1f 360%);
