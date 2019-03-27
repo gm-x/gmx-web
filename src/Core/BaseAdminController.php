@@ -33,6 +33,7 @@ abstract class BaseAdminController extends BaseMainController
     
     protected function initMenu()
     {
+        parent::initMenu();
         /** @var \GameX\Core\Lang\Language $lang */
         $lang = $this->getContainer('lang');
         
@@ -71,6 +72,6 @@ abstract class BaseAdminController extends BaseMainController
         
         /** @var Twig $view */
         $view = $this->getContainer('view');
-        $view->getEnvironment()->addGlobal('menu', $menu);
+        $view->getEnvironment()->addGlobal('adminmenu', $menu);
     }
 }

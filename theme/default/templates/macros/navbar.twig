@@ -6,7 +6,7 @@
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
                 {% for item in menu.getItems() if item.getType() == 'item' and menu.hasAccess(item) %}
-                    <li {% if menu.isActive(item) == item.getRoute() %}class="uk-active"{% endif %}>
+                    <li {% if menu.isActive(item) %}class="uk-active"{% endif %}>
                         <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">{{ item.getTitle() }}</a>
                     </li>
                 {% endfor %}
@@ -140,7 +140,7 @@
     </nav>
 {% endmacro %}
 
-{% macro adminbar(menu) %}
+{% macro adminbar(menu, adminmenu) %}
     <nav class="uk-navbar-container uk-visible@xl" uk-navbar>
         <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}">
             <img src="{{ base_url() }}/assets/images/logo.svg" width="100">
@@ -231,9 +231,9 @@
         <div id="offcanvas-nav" uk-offcanvas="overlay: true">
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
-                    {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
-                        <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                            <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
+                    {% for item in adminmenu.getItems() if item.getType() == 'item' and adminmenu.hasAccess(item) %}
+                        <li {% if adminmenu.isActive(item) %}class="uk-active"{% endif %}>
+                            <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">{{ item.getTitle() }}</a>
                         </li>
                     {% endfor %}
                 </ul>
