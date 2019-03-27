@@ -18,9 +18,12 @@
 		{{ forms.element_select(form.language) }}
 		{{ forms.element_select(form.theme) }}
 		{{ forms.element_checkbox(form.auto_activate_users) }}
+
+		{% if hasAccessToEdit %}
 		<div class="form-group">
 			<input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'save') }}">
 		</div>
+		{% endif %}
 	</form>
 </div>
 {% endblock %}

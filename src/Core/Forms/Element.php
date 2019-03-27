@@ -111,4 +111,15 @@ interface Element {
      * @return $this
      */
     public function setIcon($icon);
+
+    /**
+     * @return bool
+     */
+    public function getDisabled();
+
+    /**
+     * @param bool $disabled
+     * @return $this
+     */
+    public function setDisabled($disabled);
 }
