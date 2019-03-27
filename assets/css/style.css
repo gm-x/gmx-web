@@ -72,6 +72,15 @@ input {
 .sidenav:hover {
     width: 200px;
 }
+
+.sidenav .uk-nav-sub {
+    display: none;
+}
+
+.sidenav:hover .uk-nav-sub {
+    display: block;
+}
+
 @media screen and (max-width: 1000px) {
     .sidenav {
         width: 0px;

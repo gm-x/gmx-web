@@ -5,9 +5,9 @@
         </a>
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
-                {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
-                    <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                        <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
+                {% for item in menu.getItems() if item.getType() == 'item' and menu.hasAccess(item) %}
+                    <li {% if menu.isActive(item) == item.getRoute() %}class="uk-active"{% endif %}>
+                        <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">{{ item.getTitle() }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -269,16 +269,37 @@
 
 {% macro sidebar(menu) %}
     <div class="sidenav" uk-height-viewport="offset-top: true">
-        <ul class="uk-nav uk-nav-primary uk-margin-auto-vertical">
-            {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
-                <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                    <a class="nav-link" href="{{ path_for(item.route, item.params) }}" id="{{ item.route }}">
-                        {% if item.icon %}
-                            <i class="fas {{ item.icon }} uk-margin-small-right"></i>
-                        {% endif %}
-                        {{ item.title }}
-                    </a>
-                </li>
+        <ul class="uk-nav uk-nav-primary uk-nav-default uk-nav-parent-icon uk-margin-auto-vertical">
+            {% for item in menu.getItems() if menu.hasAccess(item) %}
+                {% if item.getType() == 'item' %}
+                    <li class="{{ menu.isActive(item) ? 'uk-active' : '' }}">
+                        <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">
+                            {% if item.getIcon() %}
+                                <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+                            {% endif %}
+                            {{ item.getTitle() }}
+                        </a>
+                    </li>
+                {% elseif item.getType() == 'group' %}
+                    <li class="{{ menu.isActive(item) ? 'uk-active uk-parent' : 'uk-parent' }}">
+                        <a class="nav-link">
+                            {% if item.getIcon() %}
+                                <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+                            {% endif %}
+                            {{ item.getTitle() }}
+                        </a>
+                        <ul class="uk-nav-sub">
+                            {% for subItem in item.getItems() if subItem.getType() == 'item' and menu.hasAccess(subItem) %}
+                                <a class="nav-link" href="{{ path_for(subItem.getRoute(), subItem.getParams()) }}">
+                                    {% if subItem.getIcon() %}
+                                        <i class="fas {{ subItem.getIcon() }} uk-margin-small-right"></i>
+                                    {% endif %}
+                                    {{ subItem.getTitle() }}
+                                </a>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>

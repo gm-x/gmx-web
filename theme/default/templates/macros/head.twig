@@ -45,15 +45,17 @@
 		"@context": "http://schema.org",
 		"@type": "SiteNavigationElement",
 		"name": [
-        {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
-            "{{ item.title }}",
-        {% endfor %}
+		{# TODO: It will be changed #}
+        {#{% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}#}
+            {#"{{ item.title }}",#}
+        {#{% endfor %}#}
 			"{{ trans('buttons', 'login') }}"
 		],
 		"url": [
-        {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
-            "{{ path_for(item.route, item.params) }}",
-        {% endfor %}
+		{# TODO: It will be changed #}
+        {#{% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}#}
+            {#"{{ path_for(item.route, item.params) }}",#}
+        {#{% endfor %}#}
 			"{{ path_for('login') }}"
 		]
 	}
