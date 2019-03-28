@@ -70,7 +70,7 @@ input {
     box-shadow: 4px 7px 10px rgba(0, 0, 0, 0.4);
 }
 .sidenav:hover {
-    width: 200px;
+    min-width: 200px;
 }
 
 .sidenav .uk-nav-sub {

@@ -74,9 +74,9 @@ class PermissionsList extends Migration {
                 'key' => PermissionsConstants::PERMISSION_KEY,
                 'type' => PermissionsConstants::PERMISSION_TYPE,
             ], [
-                'group' => PreferencesMainConstants::PERMISSION_GROUP,
-                'key' => PreferencesMainConstants::PERMISSION_KEY,
-                'type' => PreferencesMainConstants::PERMISSION_TYPE,
+                'group' => PreferencesConstants::PERMISSION_GROUP,
+                'key' => PreferencesConstants::PERMISSION_MAIN_KEY,
+                'type' => PreferencesConstants::PERMISSION_TYPE,
             ], [
                 'group' => PreferencesConstants::PERMISSION_GROUP,
                 'key' => PreferencesConstants::PERMISSION_EMAIL_KEY,

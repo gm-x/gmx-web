@@ -12,7 +12,6 @@ use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Constants\Admin\UsersConstants;
 use \GameX\Constants\Admin\RolesConstants;
-use \GameX\Constants\Admin\PreferencesMainConstants;
 use \GameX\Constants\Admin\PreferencesConstants;
 
 abstract class BaseAdminController extends BaseMainController
@@ -64,7 +63,7 @@ abstract class BaseAdminController extends BaseMainController
         $itemGroup = new MenuGroup('Preferences', 'fa-database');
         $itemGroup
             ->add(new MenuItem($lang->format('admin_menu', 'preferences_main'),
-                PreferencesMainConstants::ROUTE_INDEX, [], null, 'fa-database'))
+                PreferencesConstants::ROUTE_MAIN, [], null, 'fa-database'))
             ->add(new MenuItem($lang->format('admin_menu', 'preferences'),
                 PreferencesConstants::ROUTE_CACHE, [], null, 'fa-cog'));
 

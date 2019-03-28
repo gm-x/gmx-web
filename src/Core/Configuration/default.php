@@ -1,7 +1,7 @@
 <?php
 return [
     'debug' => [
-        'exception' => false,
+        'exceptions' => false,
         'pretty' => false,
     ],
     'db' => [

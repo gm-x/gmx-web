@@ -7,6 +7,7 @@ use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Update\Updater;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Constants\Admin\PreferencesConstants;
 use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
@@ -31,6 +32,32 @@ class PreferencesController extends BaseAdminController
     protected function getActiveMenu()
     {
         return PreferencesConstants::ROUTE_MAIN;
+    }
+
+    public function mainAction(Request $request, Response $response, array $args = [])
+    {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_main'));
+
+        $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_MAIN_KEY,
+            Permissions::ACCESS_EDIT
+        );
+
+        /** @var Config $preferences */
+        $preferences = $this->getContainer('preferences');
+        $form = new MainForm($preferences, $hasAccessToEdit);
+        if ($this->processForm($request, $form)) {
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect(PreferencesConstants::ROUTE_MAIN);
+        }
+
+        return $this->getView()->render($response, 'admin/preferences/main.twig', [
+            'currentHref' => UriHelper::getUrl($request->getUri(), false),
+            'form' => $form->getForm(),
+            'hasAccessToEdit' => $hasAccessToEdit
+        ]);
     }
     
     /**
