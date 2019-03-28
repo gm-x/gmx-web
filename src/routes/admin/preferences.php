@@ -7,13 +7,6 @@ use \GameX\Constants\Admin\PreferencesConstants;
 return function () {
 	/** @var \Slim\App $this */
     
-    $this->group('/main', function () {
-        /** @var Permissions $permissions */
-        $permissions = $this->getContainer()->get('permissions');
-        
-
-    });
-
     /** @var Permissions $permissions */
     $permissions = $this->getContainer()->get('permissions');
 

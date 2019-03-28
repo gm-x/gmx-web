@@ -13,7 +13,6 @@ use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
 use \GameX\Forms\Admin\Preferences\UpdateForm;
 use \GameX\Forms\Admin\Preferences\CacheForm;
-use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Mail\Email;
 use \GameX\Core\Mail\Exceptions\ConnectException;
@@ -21,6 +20,10 @@ use \GameX\Core\Mail\Exceptions\CryptoException;
 use \GameX\Core\Mail\Exceptions\CodeException;
 use \GameX\Core\Mail\Exceptions\SendException;
 use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Configuration\Exceptions\CantSaveException;
+use \GameX\Core\Configuration\Exceptions\NotFoundException;
+use \GameX\Core\Exceptions\RedirectException;
+use \GameX\Core\Exceptions\RoleNotFoundException;
 use \Exception;
 
 class PreferencesController extends BaseAdminController
@@ -39,8 +42,8 @@ class PreferencesController extends BaseAdminController
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
-     * @throws \GameX\Core\Exceptions\RedirectException
-     * @throws \GameX\Core\Exceptions\RoleNotFoundException
+     * @throws RedirectException
+     * @throws RoleNotFoundException
      */
     public function mainAction(Request $request, Response $response, array $args = [])
     {
@@ -66,17 +69,17 @@ class PreferencesController extends BaseAdminController
             'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws \GameX\Core\Configuration\Exceptions\CantSaveException
-     * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
-     * @throws \GameX\Core\Exceptions\RedirectException
-     * @throws \GameX\Core\Exceptions\RoleNotFoundException
-     */
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 * @throws CantSaveException
+	 * @throws NotFoundException
+	 * @throws RedirectException
+	 * @throws RoleNotFoundException
+	 */
     public function emailAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
@@ -168,8 +171,8 @@ class PreferencesController extends BaseAdminController
      * @param Response $response
      * @param array $args
      * @return ResponseInterface
-     * @throws \GameX\Core\Exceptions\RedirectException
-     * @throws \GameX\Core\Exceptions\RoleNotFoundException
+     * @throws RedirectException
+     * @throws RoleNotFoundException
      */
     public function updateAction(Request $request, Response $response, array $args = [])
     {
@@ -196,42 +199,48 @@ class PreferencesController extends BaseAdminController
             'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws \GameX\Core\Exceptions\RedirectException
-     */
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 * @throws RedirectException
+	 * @throws RoleNotFoundException
+	 */
     public function cacheAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_preferences', 'tab_cache'));
 
+	    $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+		    PreferencesConstants::PERMISSION_GROUP,
+		    PreferencesConstants::PERMISSION_CACHE_KEY,
+		    Permissions::ACCESS_EDIT
+	    );
+
         $root = $this->container->get('root') . 'runtime' . DIRECTORY_SEPARATOR;
         $form = new CacheForm([
             $root . 'cache',
             $root . 'twig_cache',
-        ]);
+        ], $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_CACHE);
         }
         
         return $this->getView()->render($response, 'admin/preferences/cache.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
+	        'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws \GameX\Core\Exceptions\RedirectException
-     */
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 */
     public function cronAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
@@ -240,7 +249,6 @@ class PreferencesController extends BaseAdminController
         $root = $this->container->get('root');
         
         return $this->getView()->render($response, 'admin/preferences/cron.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'root' => $root,
         ]);
     }

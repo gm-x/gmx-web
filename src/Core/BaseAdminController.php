@@ -63,7 +63,11 @@ abstract class BaseAdminController extends BaseMainController
             ->add(new MenuItem($lang->format('admin_menu', 'preferences_email'),
                 PreferencesConstants::ROUTE_EMAIL, [], null, 'fa-envelope'))
             ->add(new MenuItem($lang->format('admin_menu', 'preferences_update'),
-                PreferencesConstants::ROUTE_UPDATE, [], null, 'fa-code-branch'));
+                PreferencesConstants::ROUTE_UPDATE, [], null, 'fa-code-branch'))
+	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_cache'),
+		        PreferencesConstants::ROUTE_CACHE, [], null, 'fa-file'))
+	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_cron'),
+		        PreferencesConstants::ROUTE_CRON, [], null, 'fa-tasks'));
 
         $menu->add($itemGroup);
         

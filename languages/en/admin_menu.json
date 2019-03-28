@@ -3,6 +3,8 @@
 	"preferences_main": "Main",
 	"preferences_email": "Email",
 	"preferences_update": "Update",
+	"preferences_cache": "Кэш",
+	"preferences_cron": "Cron",
 	"users": "Users",
 	"roles": "Roles",
 	"servers": "Servers",
