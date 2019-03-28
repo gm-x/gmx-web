@@ -96,12 +96,21 @@ return function () {
             PreferencesConstants::PERMISSION_CRON_KEY,
             Permissions::ACCESS_VIEW
         ));
-    
-    $this
-        ->post('/cron', BaseController::action(PreferencesController::class, 'cron'))
-        ->add($permissions->hasAccessToPermissionMiddleware(
-            PreferencesConstants::PERMISSION_GROUP,
-            PreferencesConstants::PERMISSION_CRON_KEY,
-            Permissions::ACCESS_EDIT
-        ));
+
+	$this
+		->get('/social', BaseController::action(PreferencesController::class, 'social'))
+		->setName(PreferencesConstants::ROUTE_SOCIAL)
+		->add($permissions->hasAccessToPermissionMiddleware(
+			PreferencesConstants::PERMISSION_GROUP,
+			PreferencesConstants::PERMISSION_CACHE_KEY,
+			Permissions::ACCESS_VIEW
+		));
+
+	$this
+		->post('/social', BaseController::action(PreferencesController::class, 'social'))
+		->add($permissions->hasAccessToPermissionMiddleware(
+			PreferencesConstants::PERMISSION_GROUP,
+			PreferencesConstants::PERMISSION_SOCIAL_KEY,
+			Permissions::ACCESS_EDIT
+		));
 };

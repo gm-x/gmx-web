@@ -25,5 +25,10 @@
     "email_code_fail": "Unexpected return code - Expected: %d, Got: %d",
     "email_send_fail": "Send email failed",
     "cache_accept": "Clear",
-    "current_version": "Current version"
+    "current_version": "Current version",
+    "social_enabled": "Enable",
+    "social_icon": "Icon",
+    "social_id": "App ID",
+    "social_key": "App Key",
+    "social_secret": "App Secret"
 }

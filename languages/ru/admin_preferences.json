@@ -20,5 +20,10 @@
     "theme": "Тема",
     "auto_activate_users": "Авто активация новых пользователей",
     "cache_accept": "Очистить",
-    "current_version": "Текущая версия"
+    "current_version": "Текущая версия",
+    "social_enabled": "Enable",
+    "social_icon": "Icon",
+    "social_id": "App ID",
+    "social_key": "App Key",
+    "social_secret": "App Secret"
 }

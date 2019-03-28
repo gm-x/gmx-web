@@ -5,7 +5,8 @@ namespace GameX\Constants;
 class PreferencesConstants
 {
     const CATEGORY_MAIN = 'main';
-    
+    const CATEGORY_SOCIAL = 'social_auth';
+
     const MAIN_THEME = 'theme';
     const MAIN_TITLE = 'title';
     const MAIN_LANGUAGE = 'language';

@@ -13,6 +13,7 @@ use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
 use \GameX\Forms\Admin\Preferences\UpdateForm;
 use \GameX\Forms\Admin\Preferences\CacheForm;
+use \GameX\Forms\Admin\Preferences\SocialForm;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Mail\Email;
 use \GameX\Core\Mail\Exceptions\ConnectException;
@@ -251,5 +252,38 @@ class PreferencesController extends BaseAdminController
         return $this->getView()->render($response, 'admin/preferences/cron.twig', [
             'root' => $root,
         ]);
+    }
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 * @throws RedirectException
+	 * @throws RoleNotFoundException
+	 */
+    public function socialAction(Request $request, Response $response, array $args = [])
+    {
+	    $this->getBreadcrumbs()
+		    ->add($this->getTranslate('admin_preferences', 'tab_social'));
+
+	    $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+		    PreferencesConstants::PERMISSION_GROUP,
+		    PreferencesConstants::PERMISSION_SOCIAL_KEY,
+		    Permissions::ACCESS_EDIT
+	    );
+
+	    /** @var Config $preferences */
+	    $preferences = $this->getContainer('preferences');
+	    $form = new SocialForm($preferences, $hasAccessToEdit);
+	    if ($this->processForm($request, $form)) {
+		    $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+		    return $this->redirect(PreferencesConstants::ROUTE_SOCIAL);
+	    }
+
+	    return $this->getView()->render($response, 'admin/preferences/social.twig', [
+		    'form' => $form->getForm(),
+		    'hasAccessToEdit' => $hasAccessToEdit,
+	    ]);
     }
 }
