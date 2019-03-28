@@ -2,6 +2,7 @@
 
 namespace GameX\Core;
 
+use GameX\Core\Auth\Social\Provider;
 use \Pimple\ServiceProviderInterface;
 use \Pimple\Container;
 use \Psr\Container\ContainerInterface;
@@ -37,9 +38,14 @@ use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\SentinelBootstrapper;
 use \Cartalyst\Sentinel\Sentinel;
 
-use \Hybridauth\Hybridauth;
-use \GameX\Core\Auth\Social\SessionProvider as HybridauthSessionProvider;
-use \GameX\Core\Auth\Social\LoggerProvider as HybridauthLoggerProvider;
+use \GameX\Core\Auth\Social\SocialAuth;
+use \GameX\Core\Auth\Social\Session as HybridauthSession;
+use \GameX\Core\Auth\Social\Logger as HybridauthLogger;
+use \GameX\Core\Auth\Social\CallbackHelper as HybridauthCallback;
+use \Hybridauth\Provider\Steam as HybridauthSteamProvider;
+use \Hybridauth\Provider\Vkontakte as VkontakteProvider;
+use \Hybridauth\Provider\Facebook as FacebookProvider;
+use \Hybridauth\Provider\Discord as DiscordProvider;
 
 use \Slim\Views\Twig;
 use \Slim\Views\TwigExtension;
@@ -276,52 +282,80 @@ class DependencyProvider implements ServiceProviderInterface
         $bootsrap = new SentinelBootstrapper($container->get('request'), $container->get('session'));
         return $bootsrap->createSentinel();
     }
-    
-    /**
-     * @param ContainerInterface $container
-     * @return Hybridauth
-     * @throws \Hybridauth\Exception\InvalidArgumentException
-     */
+
     public function getSocial(ContainerInterface $container) {
-        $providers = [
-            'steam' => \Hybridauth\Provider\Steam::class,
-            'vk' => \Hybridauth\Provider\Vkontakte::class,
-            'facebook' => \Hybridauth\Provider\Facebook::class,
-            'discord' => \Hybridauth\Provider\Discord::class,
-        ];
-        
-        /** @var \Slim\Interfaces\RouterInterface $router */
-        $router = $container->get('router');
-        
-        /** @var \Slim\Http\Uri $request */
-        $uri = $container->get('request')->getUri();
-        $basePath = $uri->getScheme() . '://' . $uri->getAuthority();
-        
-        $config = new \GameX\Core\Auth\Social\ConfigProvider($basePath, $router, 'auth');
-        $session = new HybridauthSessionProvider($container->get('session'));
-        $logger = new HybridauthLoggerProvider($container->get('log'));
-        
-        return new \GameX\Core\Auth\Social\SocialAuth($providers, $config, null, $session, $logger);
-        
-//        $providers = [
-//            'steam' => [
-//                'enabled' => true,
-//                'callback' => $basePath . $router->pathFor('auth', ['provider' => 'steam']),
-//                'openid_identifier' => 'http://steamcommunity.com/openid'
-//            ],
-//            'vkontakte' => [
-//                'enabled' => true,
-//                'callback' => $basePath . $router->pathFor('auth', ['provider' => 'vk']),
-//                'keys' => [
-//                    'id' => 6897212 ,
-//                    'key'    => '',
-//                    'secret' => ''
-//                ]
-//            ]
-//        ];
-//
-//
-//        return new Hybridauth(['providers' => $providers], null, $session, $logger);
+	    /** @var \Slim\Interfaces\RouterInterface $router */
+	    $router = $container->get('router');
+
+	    /** @var \Slim\Http\Uri $request */
+	    $uri = $container->get('request')->getUri();
+	    $basePath = $uri->getScheme() . '://' . $uri->getAuthority();
+
+	    $callback =new HybridauthCallback($basePath, $router, 'auth');
+	    $session = new HybridauthSession($container->get('session'));
+        $logger = new HybridauthLogger($container->get('log'));
+
+        $social = new SocialAuth($callback, null, $session, $logger);
+
+    	/** @var Config $preferences */
+    	$preferences = $container->get('preferences');
+    	$socialConfig = $preferences->getNode(PreferencesConstants::CATEGORY_SOCIAL);
+
+    	$value = $socialConfig->getNode('steam');
+    	if ($value->get('enabled')) {
+    		$social->addProvider('steam', new Provider(
+			    HybridauthSteamProvider::class,
+			    ['openid_identifier' => 'http://steamcommunity.com/openid'],
+			    $value->get('icon')
+		    ));
+	    }
+
+	    $value = $socialConfig->getNode('vk');
+	    if ($value->get('enabled')) {
+		    $social->addProvider('vk', new Provider(
+			    VkontakteProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ],
+			    $value->get('icon')
+		    ));
+	    }
+
+	    $value = $socialConfig->getNode('facebook');
+	    if ($value->get('enabled')) {
+		    $social->addProvider('facebook', new Provider(
+			    FacebookProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ],
+			    $value->get('icon')
+		    ));
+	    }
+
+	    $value = $socialConfig->getNode('discord');
+	    if ($value->get('enabled')) {
+		    $social->addProvider('discord', new Provider(
+			    DiscordProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ],
+			    $value->get('icon')
+		    ));
+	    }
+
+	    return $social;
     }
     
     /**

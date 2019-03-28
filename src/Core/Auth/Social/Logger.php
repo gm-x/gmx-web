@@ -5,7 +5,7 @@ namespace GameX\Core\Auth\Social;
 use \Psr\Log\LoggerInterface as PsrLoggerInterface;
 use \Hybridauth\Logger\LoggerInterface;
 
-class LoggerProvider implements LoggerInterface
+class Logger implements LoggerInterface
 {
     /**
      * @var PsrLoggerInterface

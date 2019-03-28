@@ -3,12 +3,12 @@
 namespace GameX\Core\Auth\Social;
 
 use \Hybridauth\Storage\StorageInterface;
-use \GameX\Core\Session\Session;
+use \GameX\Core\Session\Session as GameXSession;
 
-class SessionProvider implements StorageInterface
+class Session implements StorageInterface
 {
     /**
-     * @var Session
+     * @var GameXSession
      */
     protected $session;
     
@@ -18,10 +18,10 @@ class SessionProvider implements StorageInterface
     protected $namespace;
     
     /**
-     * @param Session $session
+     * @param GameXSession $session
      * @param string $namespace
      */
-    public function __construct(Session $session, $namespace = 'HYBRIDAUTH::STORAGE')
+    public function __construct(GameXSession $session, $namespace = 'HYBRIDAUTH::STORAGE')
     {
         $this->session = $session;
         $this->namespace = $namespace;
