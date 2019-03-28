@@ -36,13 +36,19 @@ class UpdateForm extends BaseForm
      * @var Manifest
      */
     protected $manifest;
+
+    /**
+     * @var bool
+     */
+    protected $hasAccessToEdit;
     
     /**
      * @param Updater $updater
      */
-    public function __construct(Updater $updater)
+    public function __construct(Updater $updater, $hasAccessToEdit = true)
     {
         $this->updater = $updater;
+        $this->hasAccessToEdit = $hasAccessToEdit;
     }
     
     /**
@@ -52,7 +58,8 @@ class UpdateForm extends BaseForm
     {
         $this->form->add(new FileInput('updates', '', [
             'title' => 'Updates',
-            'required' => true
+            'required' => true,
+            'disabled' => !$this->hasAccessToEdit,
         ]));
         $this->form->getValidator()->set('updates', true, [
                 new FileRule(),

@@ -114,7 +114,7 @@ class PreferencesController extends BaseAdminController
         try {
             /** @var Config $config */
             $config = $this->getContainer('preferences');
-            $form = new MailForm($config->getNode('mail'));
+            $form = new MailForm($config->getNode('mail'), true);
             $form->create();
             
             if (!$form->process($request)) {
@@ -169,24 +169,31 @@ class PreferencesController extends BaseAdminController
      * @param array $args
      * @return ResponseInterface
      * @throws \GameX\Core\Exceptions\RedirectException
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     public function updateAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_preferences', 'tab_update'));
 
+        $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_UPDATE_KEY,
+            Permissions::ACCESS_EDIT
+        );
+
         /** @var Updater $updater */
         $updater = $this->getContainer('updater');
-        $form = new UpdateForm($updater);
+        $form = new UpdateForm($updater, $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
         }
         
         return $this->getView()->render($response, 'admin/preferences/update.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
-            'version' => $updater->getManifest()->getVersion()
+            'version' => $updater->getManifest()->getVersion(),
+            'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
     

@@ -40,10 +40,6 @@ abstract class BaseAdminController extends BaseMainController
         
         $menu
             ->setActiveRoute($this->getActiveMenu())
-//            ->add(new MenuItem($lang->format('admin_menu', 'preferences_main'),
-//                PreferencesMainConstants::ROUTE_INDEX, [], null, 'fa-database'))
-//            ->add(new MenuItem($lang->format('admin_menu', 'preferences'),
-//                PreferencesConstants::ROUTE_CACHE, [], null, 'fa-cog'))
             ->add(new MenuItem($lang->format('admin_menu', 'users'),
                 UsersConstants::ROUTE_LIST, [], [
                     ServersConstants::PERMISSION_GROUP,
@@ -63,9 +59,11 @@ abstract class BaseAdminController extends BaseMainController
         $itemGroup = new MenuGroup('Preferences', 'fa-database');
         $itemGroup
             ->add(new MenuItem($lang->format('admin_menu', 'preferences_main'),
-                PreferencesConstants::ROUTE_MAIN, [], null, 'fa-database'))
+                PreferencesConstants::ROUTE_MAIN, [], null, 'fa-globe'))
             ->add(new MenuItem($lang->format('admin_menu', 'preferences_email'),
-                PreferencesConstants::ROUTE_EMAIL, [], null, 'fa-envelope'));
+                PreferencesConstants::ROUTE_EMAIL, [], null, 'fa-envelope'))
+            ->add(new MenuItem($lang->format('admin_menu', 'preferences_update'),
+                PreferencesConstants::ROUTE_UPDATE, [], null, 'fa-code-branch'));
 
         $menu->add($itemGroup);
         

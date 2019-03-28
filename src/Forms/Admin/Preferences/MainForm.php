@@ -51,7 +51,7 @@ class MainForm extends BaseForm
         $this->form->add(new Text('title', $main->get(PreferencesConstants::MAIN_TITLE), [
                 'title' => $this->getTranslate('admin_preferences', 'title'),
                 'required' => true,
-                'attributes' => ['disabled' => !$this->hasAccessToEdit],
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Select('language', $main->get(PreferencesConstants::MAIN_LANGUAGE), $languages, [
                 'title' => $this->getTranslate('admin_preferences', 'language'),
                 'required' => true,
