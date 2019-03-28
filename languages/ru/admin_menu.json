@@ -1,6 +1,7 @@
 {
-    "preferences_main": "Основные настройки",
     "preferences": "Настройки",
+    "preferences_main": "Основные",
+    "preferences_email": "Email",
     "users": "Пользователи",
     "roles": "Роли",
     "servers": "Сервера",

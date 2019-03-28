@@ -34,6 +34,14 @@ class PreferencesController extends BaseAdminController
         return PreferencesConstants::ROUTE_MAIN;
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws \GameX\Core\Exceptions\RedirectException
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
+     */
     public function mainAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
@@ -54,9 +62,8 @@ class PreferencesController extends BaseAdminController
         }
 
         return $this->getView()->render($response, 'admin/preferences/main.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
-            'hasAccessToEdit' => $hasAccessToEdit
+            'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
     
@@ -68,15 +75,22 @@ class PreferencesController extends BaseAdminController
      * @throws \GameX\Core\Configuration\Exceptions\CantSaveException
      * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
+     * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
     public function emailAction(Request $request, Response $response, array $args = [])
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_preferences', 'tab_email'));
 
+        $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_EMAIL_KEY,
+            Permissions::ACCESS_EDIT
+        );
+
         /** @var Config $config */
         $config = clone $this->getContainer('preferences');
-        $form = new MailForm($config->getNode('mail'));
+        $form = new MailForm($config->getNode('mail'), $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
             $config->save();
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -84,8 +98,8 @@ class PreferencesController extends BaseAdminController
         }
         
         return $this->getView()->render($response, 'admin/preferences/email.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
             'form' => $form->getForm(),
+            'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
     

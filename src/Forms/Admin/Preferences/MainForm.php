@@ -34,7 +34,7 @@ class MainForm extends BaseForm
      * @param Config $preferences
      * @param bool $hasAccessToEdit
      */
-    public function __construct(Config $preferences, $hasAccessToEdit)
+    public function __construct(Config $preferences, $hasAccessToEdit = true)
     {
         $this->preferences = $preferences;
         $this->hasAccessToEdit = $hasAccessToEdit;

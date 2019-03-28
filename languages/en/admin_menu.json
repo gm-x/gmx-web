@@ -1,5 +1,7 @@
 {
 	"preferences": "Preferences",
+	"preferences_main": "Main",
+	"preferences_email": "Email",
 	"users": "Users",
 	"roles": "Roles",
 	"servers": "Servers",
