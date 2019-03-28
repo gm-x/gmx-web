@@ -32,7 +32,7 @@ abstract class BaseAdminController extends BaseMainController
     
     protected function initMenu()
     {
-        parent::initMenu();
+//        parent::initMenu();
         /** @var \GameX\Core\Lang\Language $lang */
         $lang = $this->getContainer('lang');
         
@@ -67,7 +67,9 @@ abstract class BaseAdminController extends BaseMainController
 	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_cache'),
 		        PreferencesConstants::ROUTE_CACHE, [], null, 'fa-file'))
 	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_cron'),
-		        PreferencesConstants::ROUTE_CRON, [], null, 'fa-tasks'));
+		        PreferencesConstants::ROUTE_CRON, [], null, 'fa-tasks'))
+	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_social'),
+		        PreferencesConstants::ROUTE_SOCIAL, [], null, 'fa-share-alt'));
 
         $menu->add($itemGroup);
         

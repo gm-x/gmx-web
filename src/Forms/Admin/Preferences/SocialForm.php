@@ -6,6 +6,7 @@ use \GameX\Constants\PreferencesConstants;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Forms\Elements\Text;
+use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Validate\Rules\Boolean;
@@ -79,11 +80,11 @@ class SocialForm extends BaseForm
 			    'title' => $this->getTranslate('admin_preferences', 'social_id'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]))
-		    ->add(new Text('vk_key', $value->get('key'), [
+		    ->add(new Password('vk_key', $value->get('key'), [
 			    'title' => $this->getTranslate('admin_preferences', 'social_key'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]))
-		    ->add(new Text('vk_secret', $value->get('secret'), [
+		    ->add(new Password('vk_secret', $value->get('secret'), [
 			    'title' => $this->getTranslate('admin_preferences', 'social_secret'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]));
@@ -109,11 +110,11 @@ class SocialForm extends BaseForm
 			    'title' => $this->getTranslate('admin_preferences', 'social_id'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]))
-		    ->add(new Text('facebook_key', $value->get('key'), [
+		    ->add(new Password('facebook_key', $value->get('key'), [
 			    'title' => $this->getTranslate('admin_preferences', 'social_key'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]))
-		    ->add(new Text('facebook_secret', $value->get('secret'), [
+		    ->add(new Password('facebook_secret', $value->get('secret'), [
 			    'title' => $this->getTranslate('admin_preferences', 'social_secret'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]));
@@ -139,11 +140,11 @@ class SocialForm extends BaseForm
 			    'title' => $this->getTranslate('admin_preferences', 'social_id'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]))
-		    ->add(new Text('discord_key', $value->get('key'), [
+		    ->add(new Password('discord_key', $value->get('key'), [
 			    'title' => $this->getTranslate('admin_preferences', 'social_key'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]))
-		    ->add(new Text('discord_secret', $value->get('secret'), [
+		    ->add(new Password('discord_secret', $value->get('secret'), [
 			    'title' => $this->getTranslate('admin_preferences', 'social_secret'),
 			    'disabled' => !$this->hasAccessToEdit,
 		    ]));
