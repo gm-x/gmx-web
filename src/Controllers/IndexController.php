@@ -2,16 +2,16 @@
 
 namespace GameX\Controllers;
 
-use GameX\Core\Auth\Helpers\SocialHelper;
 use \GameX\Core\BaseMainController;
-use Slim\Exception\NotFoundException;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
 use \GameX\Models\Server;
-use \Hybridauth\HttpClient\Util as HybridauthUtil;
-use \GameX\Core\Auth\Social\RedirectHelper;
+use \GameX\Constants\IndexConstants;
+use \GameX\Core\Auth\Helpers\SocialHelper;
+use \GameX\Forms\User\SocialAuthForm;
+use \Slim\Exception\NotFoundException;
 
 class IndexController extends BaseMainController
 {
@@ -63,7 +63,15 @@ class IndexController extends BaseMainController
         $lang->setUserLang($request->getParsedBodyParam('lang'));
         return $response->withJson(['success', true]);
     }
-    
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return ResponseInterface
+     * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
+     */
     public function authAction(Request $request, Response $response, array $args)
     {
         /** @var \GameX\Core\Auth\Social\SocialAuth $social */
@@ -77,12 +85,10 @@ class IndexController extends BaseMainController
         
         $adapter = $social->getProvider($provider);
 
-        $redirectUrl = null;
-	    HybridauthUtil::setRedirectHandler([RedirectHelper::class, 'redirect']);
         $adapter->authenticate();
 
-        if (RedirectHelper::isRedirected()) {
-        	return $this->redirectTo(RedirectHelper::getUrl());
+        if ($social->isRedirected()) {
+        	return $this->redirectTo($social->getRedirectUrl());
         }
     
         $profile = $adapter->getUserProfile();
@@ -90,15 +96,27 @@ class IndexController extends BaseMainController
     
         $helper = new SocialHelper($this->container);
         $userSocial = $helper->find($provider, $profile);
-        if (!$userSocial) {
-            $userSocial = $helper->register($provider, $profile);
+        if ($userSocial && $userSocial->user) {
+            $helper->authenticate($userSocial);
+            return $this->redirect(IndexConstants::ROUTE_INDEX);
         }
+
+        $form = new SocialAuthForm($helper, true);
+        if ($this->processForm($request, $form, true)) {
+            return $this->redirect(IndexConstants::ROUTE_INDEX);
+        }
+
+//        $userSocial = $helper->register($provider, $profile);
         
-        if (!$helper->authenticate($userSocial)) {
-            $this->addErrorMessage('Some errors');
-            return $this->redirect('login');
-        } else {
-            return $this->redirect('index');
-        }
+//        if (!$helper->authenticate($userSocial)) {
+//            $this->addErrorMessage('Some errors');
+//            return $this->redirect('login');
+//        } else {
+//            return $this->redirect('index');
+//        }
+
+        return $this->getView()->render($response, 'index/auth.twig', [
+            'form' => $form->getForm(),
+        ]);
     }
 }

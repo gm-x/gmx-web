@@ -72,11 +72,7 @@ class SocialHelper
      */
     public function authenticate(UserSocialModel $userSocial)
     {
-        $user = $userSocial->user;
-        if (!$user) {
-            return false;
-        }
-        return $this->getAuth()->authenticate($user);
+        return $this->getAuth()->authenticate($userSocial->user);
     }
     
     /**

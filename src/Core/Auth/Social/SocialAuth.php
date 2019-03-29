@@ -6,6 +6,7 @@ use \Hybridauth\Adapter\AdapterInterface;
 use \Hybridauth\HttpClient\HttpClientInterface;
 use \Hybridauth\Storage\StorageInterface;
 use \Hybridauth\Logger\LoggerInterface;
+use \Hybridauth\HttpClient\Util;
 
 class SocialAuth
 {
@@ -39,6 +40,11 @@ class SocialAuth
      * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var string|null
+     */
+    protected $redirectUrl = null;
     
     /**
      * @param CallbackHelper      $callback
@@ -57,6 +63,8 @@ class SocialAuth
         $this->storage = $storage;
         $this->logger = $logger;
         $this->httpClient = $httpClient;
+
+        Util::setRedirectHandler([$this, 'redirect']);
     }
 
 	/**
@@ -105,5 +113,29 @@ class SocialAuth
 			$providers[$key] = $provider->getIcon();
 		}
 		return $providers;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function redirect($url)
+    {
+        $this->redirectUrl = $url;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRedirected()
+    {
+        return $this->redirectUrl !== null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRedirectUrl()
+    {
+        return $this->redirectUrl;
     }
 }
