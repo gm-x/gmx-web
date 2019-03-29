@@ -1,6 +1,8 @@
 <?php
+
 use \GameX\Core\BaseController;
 use \GameX\Controllers\UserController;
+use \GameX\Constants\UserConstants;
 
 $this
     ->map(['GET', 'POST'], '/register', BaseController::action(UserController::class, 'register'))
@@ -25,3 +27,7 @@ $this
 $this
     ->get('/logout', BaseController::action(UserController::class, 'logout'))
     ->setName('logout');
+
+$this
+	->map(['GET', 'POST'], '/auth/{provider}', BaseController::action(UserController::class, 'social'))
+	->setName(UserConstants::ROUTE_SOCIAL);

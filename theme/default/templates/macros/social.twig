@@ -1,6 +1,6 @@
 {% macro get_button(provider, icon) %}
 	<a
-		href="{{ path_for(constants.index.ROUTE_SOCIAL_AUTH, {'provider': provider}) }}"
+		href="{{ path_for(constants.user.ROUTE_SOCIAL, {'provider': provider}) }}"
 		class="uk-icon-button uk-margin-small-right"
 	>
 		<i class="fab fa-{{ icon }} fa-sm"></i>

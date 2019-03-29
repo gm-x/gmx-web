@@ -18,6 +18,7 @@ use \GameX\Constants\Admin\PunishmentsConstants;
 use \GameX\Constants\AccountsConstants;
 use \GameX\Constants\IndexConstants;
 use \GameX\Constants\SettingsConstants;
+use \GameX\Constants\UserConstants;
 use \GameX\Models\Punishment;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
@@ -39,6 +40,7 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
         'index' => IndexConstants::class,
         'accounts' => AccountsConstants::class,
         'settings' => SettingsConstants::class,
+        'user' => UserConstants::class,
     ];
     
     protected $models = [

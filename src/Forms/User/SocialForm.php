@@ -1,5 +1,5 @@
 <?php
-namespace GameX\Forms;
+namespace GameX\Forms\User;
 
 use GameX\Core\Auth\Helpers\AuthHelper;
 use GameX\Core\Auth\Models\UserModel;
@@ -15,7 +15,7 @@ use \GameX\Core\Validate\Rules\Length;
 use \GameX\Core\Validate\Rules\PasswordRepeat;
 use \GameX\Core\Validate\Rules\Callback;
 
-class SocialAuthForm extends BaseForm {
+class SocialForm extends BaseForm {
 
 	/**
 	 * @var string
