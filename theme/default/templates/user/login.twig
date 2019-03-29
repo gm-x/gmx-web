@@ -1,7 +1,7 @@
 {% extends 'base.twig' %}
 
 {% import 'macros/forms.twig' as forms %}
-{% import 'macros/social.twig' as social %}
+{% import 'macros/social.twig' as social_buttons %}
 
 {% block content %}
     <div class="uk-flex uk-flex-middle uk-flex-center uk-child-width-1-4" uk-height-viewport="offset-top: true">
@@ -36,9 +36,13 @@
                         <br> <br>
                         или <a href="{{ path_for('register') }}">{{ trans('buttons', 'register') }}</a>
                     </div>
+                    {% if social_providers is not empty %}
                     <div class="uk-margin">
-                        {{ social.get_button('facebook') }}{{ social.get_button('vk') }}{{ social.get_button('steam') }}
+                        {% for provider,icon in social_providers %}
+                            {{ social_buttons.get_button(provider, icon) }}
+                        {% endfor %}
                     </div>
+                    {% endif %}
                 </form>
             </div>
         </div>

@@ -95,8 +95,15 @@ class SocialAuth
         return new $className($config, $this->httpClient, $this->storage, $this->logger);
     }
 
+	/**
+	 * @return array
+	 */
     public function getProviders()
     {
-
+		$providers = [];
+		foreach ($this->providers as $key => $provider) {
+			$providers[$key] = $provider->getIcon();
+		}
+		return $providers;
     }
 }

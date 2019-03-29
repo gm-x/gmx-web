@@ -5,6 +5,7 @@ namespace GameX\Controllers;
 use \GameX\Core\BaseMainController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Auth\Social\SocialAuth;
 use \GameX\Constants\PreferencesConstants;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
@@ -129,10 +130,14 @@ class UserController extends BaseMainController
         if ($this->processForm($request, $form)) {
             return $this->redirect('index');
         }
+
+        /** @var SocialAuth $social */
+        $social = $this->getContainer('social');
         
         return $this->getView()->render($response, 'user/login.twig', [
             'form' => $form->getForm(),
-            'enabledEmail' => $this->mailEnabled
+            'enabledEmail' => $this->mailEnabled,
+	        'social_providers' => $social->getProviders(),
         ]);
     }
     
