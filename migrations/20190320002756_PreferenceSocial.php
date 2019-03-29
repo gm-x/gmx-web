@@ -2,6 +2,7 @@
 
 use \GameX\Core\Migration;
 use \GameX\Models\Preference;
+use \GameX\Constants\PreferencesConstants;
 
 class PreferenceSocial extends Migration {
     /**
@@ -9,7 +10,7 @@ class PreferenceSocial extends Migration {
      */
     public function up() {
         Preference::create([
-            'key' => 'social_auth',
+            'key' => PreferencesConstants::CATEGORY_SOCIAL,
             'value' => [
                 'steam' => [
                     'enabled' => false,
@@ -44,7 +45,7 @@ class PreferenceSocial extends Migration {
      * Undo the migration
      */
     public function down() {
-        Preference::where('key', 'social_auth')->delete();
+        Preference::where('key', PreferencesConstants::CATEGORY_SOCIAL)->delete();
     }
 }
 

@@ -12,7 +12,7 @@ class SocialAuth
     /**
      * @var Provider[]
      */
-    protected $providers;
+    protected $providers = [];
     
     /**
      * @var CallbackHelper
