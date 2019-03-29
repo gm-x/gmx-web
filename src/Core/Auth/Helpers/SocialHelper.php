@@ -40,21 +40,12 @@ class SocialHelper
     /**
      * @param string $provider
      * @param Profile $profile
+     * @param UserModel $user
      * @return UserSocialModel
      * @throws \Exception
      */
-    public function register($provider, Profile $profile)
+    public function register($provider, Profile $profile, UserModel $user)
     {
-        /** @var UserModel $user */
-        $user = $this->getAuth()->getUserRepository()->create([
-            'login' => $profile->displayName,
-            'email' => $profile->email,
-            'password' => null,
-            'token' => Utils::generateToken(16),
-            'is_social' => true
-        ]);
-        $this->getAuth()->activate($user);
-    
         $social = new UserSocialModel();
         $social->fill([
             'user_id' => $user->id,

@@ -29,7 +29,7 @@ $app->group('', function () {
         ->setName('punishments');
     
     $this
-        ->get('/auth/{provider}', BaseController::action(IndexController::class, 'auth'))
+        ->map(['GET', 'POST'], '/auth/{provider}', BaseController::action(IndexController::class, 'auth'))
         ->setName(IndexConstants::ROUTE_SOCIAL_AUTH);
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';

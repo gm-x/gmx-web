@@ -9,8 +9,11 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
 use \GameX\Models\Server;
 use \GameX\Constants\IndexConstants;
+use \GameX\Constants\PreferencesConstants;
+use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Auth\Helpers\SocialHelper;
-use \GameX\Forms\User\SocialAuthForm;
+use \GameX\Forms\SocialAuthForm;
+use \GameX\Core\Jobs\JobHelper;
 use \Slim\Exception\NotFoundException;
 
 class IndexController extends BaseMainController
@@ -70,6 +73,7 @@ class IndexController extends BaseMainController
      * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
+     * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function authAction(Request $request, Response $response, array $args)
@@ -86,34 +90,52 @@ class IndexController extends BaseMainController
         $adapter = $social->getProvider($provider);
 
         $adapter->authenticate();
-
         if ($social->isRedirected()) {
         	return $this->redirectTo($social->getRedirectUrl());
         }
     
         $profile = $adapter->getUserProfile();
-        $adapter->disconnect();
     
-        $helper = new SocialHelper($this->container);
-        $userSocial = $helper->find($provider, $profile);
+        $socialHelper = new SocialHelper($this->container);
+        $userSocial = $socialHelper->find($provider, $profile);
         if ($userSocial && $userSocial->user) {
-            $helper->authenticate($userSocial);
+            $socialHelper->authenticate($userSocial);
             return $this->redirect(IndexConstants::ROUTE_INDEX);
         }
 
-        $form = new SocialAuthForm($helper, true);
+        /** @var \GameX\Core\Configuration\Config $preferences */
+        $preferences = $this->getContainer('preferences');
+        $autoActivate = (bool)$preferences
+            ->getNode(PreferencesConstants::CATEGORY_MAIN)
+            ->get(PreferencesConstants::MAIN_AUTO_ACTIVATE_USERS, false);
+        $mailEnabled = (bool)$preferences->getNode('main')->get('enabled', false);
+
+        $authHelper = new AuthHelper($this->container);
+        $form = new SocialAuthForm($provider, $profile, $socialHelper, $authHelper, $autoActivate);
         if ($this->processForm($request, $form, true)) {
+            $adapter->disconnect();
+            if ($autoActivate) {
+                $socialHelper->authenticate($form->getSocialUser());
+                $this->addSuccessMessage($this->getTranslate('user', 'registered'));
+            } elseif ($mailEnabled) {
+                $user = $form->getUser();
+                $activationCode = $authHelper->getActivationCode($user);
+                JobHelper::createTask('sendmail', [
+                    'type' => 'activation',
+                    'user' => $user->login,
+                    'email' => $user->email,
+                    'title' => 'Activation',
+                    'params' => [
+                        'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
+                    ],
+                ]);
+                $this->addSuccessMessage($this->getTranslate('user', 'registered_email'));
+            } else {
+                $this->addSuccessMessage($this->getTranslate('user', 'registered_moderate'));
+            }
+
             return $this->redirect(IndexConstants::ROUTE_INDEX);
         }
-
-//        $userSocial = $helper->register($provider, $profile);
-        
-//        if (!$helper->authenticate($userSocial)) {
-//            $this->addErrorMessage('Some errors');
-//            return $this->redirect('login');
-//        } else {
-//            return $this->redirect('index');
-//        }
 
         return $this->getView()->render($response, 'index/auth.twig', [
             'form' => $form->getForm(),

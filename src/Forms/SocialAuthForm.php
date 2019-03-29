@@ -1,9 +1,12 @@
 <?php
-namespace GameX\Forms\User;
+namespace GameX\Forms;
 
+use GameX\Core\Auth\Helpers\AuthHelper;
+use GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Auth\Helpers\SocialHelper;
-use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Core\Auth\Models\UserSocialModel;
+use \Hybridauth\User\Profile;
 use \GameX\Core\Forms\Elements\Email as EmailElement;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Password;
@@ -17,37 +20,73 @@ class SocialAuthForm extends BaseForm {
 	/**
 	 * @var string
 	 */
-	protected $name = 'register';
+	protected $name = 'social_auth';
+
+    /**
+     * @var string
+     */
+	protected $provider;
+
+    /**
+     * @var SocialHelper
+     */
+    protected $profile;
 
 	/**
 	 * @var SocialHelper
 	 */
-	protected $helper;
+	protected $socialHelper;
 
 	/**
-	 * @var boolean
+	 * @var AuthHelper
 	 */
+	protected $authHelper;
+
+    /**
+     * @var bool
+     */
 	protected $activate;
-    
+
     /**
      * @var UserModel
      */
-	protected $user;
+    protected $user;
+    
+    /**
+     * @var UserSocialModel
+     */
+	protected $socialUser;
 
 	/**
-	 * @param SocialHelper $helper
-	 * @param boolean $activate
+	 * @param string $provider
+	 * @param Profile $profile
+	 * @param SocialHelper $socialHelper
+	 * @param AuthHelper $authHelper
+	 * @param bool $activate
 	 */
-	public function __construct(SocialHelper $helper, $activate) {
-		$this->helper = $helper;
+	public function __construct($provider, Profile $profile, SocialHelper $socialHelper, AuthHelper $authHelper, $activate = true)
+    {
+		$this->provider = $provider;
+		$this->profile = $profile;
+		$this->socialHelper = $socialHelper;
+		$this->authHelper = $authHelper;
 		$this->activate = $activate;
 	}
-    
+
     /**
      * @return UserModel
      */
-	public function getUser() {
-	    return $this->user;
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    /**
+     * @return UserSocialModel
+     */
+	public function getSocialUser()
+    {
+	    return $this->socialUser;
     }
     
     /**
@@ -55,20 +94,21 @@ class SocialAuthForm extends BaseForm {
      * @param array $values
      * @return mixed|null
      */
-//    public function checkExists($value, array $values) {
-//        return !$this->helper->exists($values['login'], $values['email']) ? $value : null;
-//    }
+    public function checkExists($value, array $values) {
+        return !$this->authHelper->exists($values['login'], $values['email']) ? $value : null;
+    }
 
 	/**
 	 * @noreturn
 	 */
-	protected function createForm() {
+	protected function createForm()
+    {
 		$this->form
-			->add(new Text('login', '', [
+			->add(new Text('login', $this->profile->displayName, [
 				'title' => $this->getTranslate('inputs', 'login'),
 				'required' => true,
 			]))
-			->add(new EmailElement('email', '', [
+			->add(new EmailElement('email', $this->profile->email, [
 				'title' => $this->getTranslate('inputs', 'email'),
 				'required' => true,
 			]))
@@ -85,10 +125,10 @@ class SocialAuthForm extends BaseForm {
 			->set('login', true)
 			->set('email', true, [
                 new EmailRule(),
-//                new Callback([$this, 'checkExists'], 'User already exists')
+                new Callback([$this, 'checkExists'], 'User already exists')
             ])
             ->set('password', true, [
-//                new Length(AuthHelper::MIN_PASSWORD_LENGTH)
+                new Length(AuthHelper::MIN_PASSWORD_LENGTH)
             ])
             ->set('password_repeat', true, [
                 new PasswordRepeat('password')
@@ -99,16 +139,19 @@ class SocialAuthForm extends BaseForm {
      * @return bool
      * @throws \Exception
      */
-	protected function processForm() {
+	protected function processForm()
+    {
+        $this->user = $this->authHelper->registerUser(
+            $this->form->getValue('login'),
+            $this->form->getValue('email'),
+            $this->form->getValue('password'),
+            $this->activate
+        );
+        if (!$this->user) {
+            return false;
+        }
 
-//		$this->user = $this->authHelper->registerUser(
-//			$this->form->getValue('login'),
-//			$this->form->getValue('email'),
-//			$this->form->getValue('password'),
-//			$this->activate
-//		);
-
-//		return (bool) $this->user;
-        return true;
+        $this->socialUser = $this->socialHelper->register($this->provider, $this->profile, $this->user);
+        return (bool) $this->socialUser;
 	}
 }
