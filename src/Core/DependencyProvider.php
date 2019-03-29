@@ -2,7 +2,6 @@
 
 namespace GameX\Core;
 
-use GameX\Core\Auth\Social\Provider;
 use \Pimple\ServiceProviderInterface;
 use \Pimple\Container;
 use \Psr\Container\ContainerInterface;
@@ -38,7 +37,9 @@ use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\SentinelBootstrapper;
 use \Cartalyst\Sentinel\Sentinel;
 
+use \GameX\Constants\IndexConstants;
 use \GameX\Core\Auth\Social\SocialAuth;
+use \GameX\Core\Auth\Social\Provider;
 use \GameX\Core\Auth\Social\Session as HybridauthSession;
 use \GameX\Core\Auth\Social\Logger as HybridauthLogger;
 use \GameX\Core\Auth\Social\CallbackHelper as HybridauthCallback;
@@ -291,7 +292,7 @@ class DependencyProvider implements ServiceProviderInterface
 	    $uri = $container->get('request')->getUri();
 	    $basePath = $uri->getScheme() . '://' . $uri->getAuthority();
 
-	    $callback =new HybridauthCallback($basePath, $router, 'auth');
+	    $callback =new HybridauthCallback($basePath, $router, IndexConstants::ROUTE_SOCIAL_AUTH);
 	    $session = new HybridauthSession($container->get('session'));
         $logger = new HybridauthLogger($container->get('log'));
 

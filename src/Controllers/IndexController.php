@@ -9,8 +9,9 @@ use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
-use \Hybridauth\Hybridauth;
 use \GameX\Models\Server;
+use \Hybridauth\HttpClient\Util as HybridauthUtil;
+use \GameX\Core\Auth\Social\RedirectHelper;
 
 class IndexController extends BaseMainController
 {
@@ -75,8 +76,14 @@ class IndexController extends BaseMainController
         }
         
         $adapter = $social->getProvider($provider);
-    
+
+        $redirectUrl = null;
+	    HybridauthUtil::setRedirectHandler([RedirectHelper::class, 'redirect']);
         $adapter->authenticate();
+
+        if (RedirectHelper::isRedirected()) {
+        	return $this->redirectTo(RedirectHelper::getUrl());
+        }
     
         $profile = $adapter->getUserProfile();
         $adapter->disconnect();
