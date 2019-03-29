@@ -9,7 +9,6 @@
     "file_extension": "File type %s is not enabled",
     "file_mime_type": "File type %s is not enabled",
     "file_size": "File size must be less than %d bytes",
-    "flags": "Must be a valid value",
     "image": "File isn't a valid image",
     "image_width": "Image width must be %dpx",
     "image_width_min": "Image width must be greater than %dpx",
@@ -32,5 +31,6 @@
     "regexp": "Must be a valid value",
     "required": "Can not be blank",
     "string": "Must be a valid value",
-    "steamid": "Must be a valid STEAM_ID"
+    "steamid": "Must be a valid STEAM_ID",
+    "flags": "Must be a valid value"
 }
