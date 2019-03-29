@@ -8,8 +8,5 @@ if (is_file($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME'])) {
     return false;
 }
 
-$_SERVER['SCRIPT_NAME'] = '/index.php';
-// if needed, fix also 'PATH_INFO' and 'PHP_SELF' variables here...
-// require the entry point
-require __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php';
+require __DIR__ . DIRECTORY_SEPARATOR . 'index.php';
 

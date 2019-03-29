@@ -24,16 +24,23 @@ class MailForm extends BaseForm
     protected $name = 'admin_preferences_mail';
     
     /**
-     * @var Config
+     * @var Node
      */
     protected $config;
+
+    /**
+     * @var bool
+     */
+    protected $hasAccessToEdit;
     
     /**
      * @param Node $config
+     * @param bool $hasAccessToEdit
      */
-    public function __construct(Node $config)
+    public function __construct(Node $config, $hasAccessToEdit = true)
     {
         $this->config = $config;
+        $this->hasAccessToEdit = $hasAccessToEdit;
     }
     
     /**
@@ -45,30 +52,39 @@ class MailForm extends BaseForm
         $smtp = $this->config->existsNode('smtp') ? $this->config->getNode('smtp') : $this->getEmptySMTPNode();
         $this->form->add(new Checkbox('enabled', $this->config->get('enabled'), [
                 'title' => $this->getTranslate('admin_preferences', 'enabled'),
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Text('from_name', $sender->get('name'), [
                 'title' => $this->getTranslate('admin_preferences', 'from_name'),
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new EmailElement('from_email', $sender->get('email'), [
                 'title' => $this->getTranslate('admin_preferences', 'from_email'),
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Select('transport_type', $this->config->get('type'), [
                 'smtp' => "SMTP",
                 'mail' => 'Mail'
             ], [
                 'title' => $this->getTranslate('admin_preferences', 'transport'),
-                'id' => 'email_pref_transport'
+                'id' => 'email_pref_transport',
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Text('smtp_host', $smtp->get('host'), [
                 'title' => $this->getTranslate('admin_preferences', 'host'),
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new NumberElement('smtp_port', $smtp->get('port'), [
                 'title' => $this->getTranslate('admin_preferences', 'port'),
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Select('smtp_secure', $smtp->get('secure'), [
                 'none' => $this->getTranslate('admin_preferences', 'secure_none'),
                 'ssl' => "SSL",
                 'tls' => 'TLS'
             ], [
                 'title' => $this->getTranslate('admin_preferences', 'secure'),
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Text('smtp_user', $smtp->get('username'), [
                 'title' => $this->getTranslate('admin_preferences', 'username'),
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Password('smtp_pass', $smtp->get('password'), [
                 'title' => $this->getTranslate('admin_preferences', 'password'),
+                'disabled' => !$this->hasAccessToEdit,
             ]));
         
         $this->form->getValidator()->set('enabled', false, [

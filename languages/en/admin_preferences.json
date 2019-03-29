@@ -2,7 +2,8 @@
     "tab_main": "Main settings",
     "tab_email": "Email settings",
     "tab_update": "Update",
-    "tab_cache": "Clear Cache",
+    "tab_cache": "Cache",
+    "tab_cron": "Cron",
     "test_mail": "Send test email",
     "enabled": "Enabled",
     "from_name": "From Name",
@@ -24,5 +25,10 @@
     "email_code_fail": "Unexpected return code - Expected: %d, Got: %d",
     "email_send_fail": "Send email failed",
     "cache_accept": "Clear",
-    "current_version": "Current version"
+    "current_version": "Current version",
+    "social_enabled": "Enable",
+    "social_icon": "Icon",
+    "social_id": "App ID",
+    "social_key": "App Key",
+    "social_secret": "App Secret"
 }

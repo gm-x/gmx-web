@@ -1,6 +1,7 @@
 <?php
 use \GameX\Core\BaseController;
 use \GameX\Constants\Admin\AdminConstants;
+use \GameX\Constants\IndexConstants;
 use \GameX\Controllers\IndexController;
 use \GameX\Controllers\PunishmentsController;
 use \GameX\Controllers\Admin\AdminController;
@@ -16,7 +17,7 @@ $app->group('', function () {
     /** @var \Slim\App $this */
     $this
         ->get('/', BaseController::action(IndexController::class, 'index'))
-        ->setName('index');
+        ->setName(IndexConstants::ROUTE_INDEX);
 
     $this
         ->post('/lang', BaseController::action(IndexController::class, 'language'))
@@ -26,6 +27,10 @@ $app->group('', function () {
     $this
         ->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))
         ->setName('punishments');
+    
+    $this
+        ->get('/auth/{provider}', BaseController::action(IndexController::class, 'auth'))
+        ->setName(IndexConstants::ROUTE_SOCIAL_AUTH);
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
     include __DIR__ . DIRECTORY_SEPARATOR . 'settings.php';

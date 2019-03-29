@@ -37,6 +37,17 @@ use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\SentinelBootstrapper;
 use \Cartalyst\Sentinel\Sentinel;
 
+use \GameX\Constants\IndexConstants;
+use \GameX\Core\Auth\Social\SocialAuth;
+use \GameX\Core\Auth\Social\Provider;
+use \GameX\Core\Auth\Social\Session as HybridauthSession;
+use \GameX\Core\Auth\Social\Logger as HybridauthLogger;
+use \GameX\Core\Auth\Social\CallbackHelper as HybridauthCallback;
+use \Hybridauth\Provider\Steam as HybridauthSteamProvider;
+use \Hybridauth\Provider\Vkontakte as VkontakteProvider;
+use \Hybridauth\Provider\Facebook as FacebookProvider;
+use \Hybridauth\Provider\Discord as DiscordProvider;
+
 use \Slim\Views\Twig;
 use \Slim\Views\TwigExtension;
 use \GameX\Core\CSRF\Extension as CSRFExtension;
@@ -116,6 +127,10 @@ class DependencyProvider implements ServiceProviderInterface
         
         $container['auth'] = function (ContainerInterface $container) {
             return $this->getAuth($container);
+        };
+    
+        $container['social'] = function (ContainerInterface $container) {
+            return $this->getSocial($container);
         };
         
         $container['view'] = function (ContainerInterface $container) {
@@ -268,6 +283,81 @@ class DependencyProvider implements ServiceProviderInterface
         $bootsrap = new SentinelBootstrapper($container->get('request'), $container->get('session'));
         return $bootsrap->createSentinel();
     }
+
+    public function getSocial(ContainerInterface $container) {
+	    /** @var \Slim\Interfaces\RouterInterface $router */
+	    $router = $container->get('router');
+
+	    /** @var \Slim\Http\Uri $request */
+	    $uri = $container->get('request')->getUri();
+	    $basePath = $uri->getScheme() . '://' . $uri->getAuthority();
+
+	    $callback =new HybridauthCallback($basePath, $router, IndexConstants::ROUTE_SOCIAL_AUTH);
+	    $session = new HybridauthSession($container->get('session'));
+        $logger = new HybridauthLogger($container->get('log'));
+
+        $social = new SocialAuth($callback, null, $session, $logger);
+
+    	/** @var Config $preferences */
+    	$preferences = $container->get('preferences');
+    	$socialConfig = $preferences->getNode(PreferencesConstants::CATEGORY_SOCIAL);
+
+    	$value = $socialConfig->getNode('steam');
+    	if ($value->get('enabled')) {
+    		$social->addProvider('steam', new Provider(
+			    HybridauthSteamProvider::class,
+			    ['openid_identifier' => 'http://steamcommunity.com/openid'],
+			    $value->get('icon')
+		    ));
+	    }
+
+	    $value = $socialConfig->getNode('vk');
+	    if ($value->get('enabled')) {
+		    $social->addProvider('vk', new Provider(
+			    VkontakteProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ],
+			    $value->get('icon')
+		    ));
+	    }
+
+	    $value = $socialConfig->getNode('facebook');
+	    if ($value->get('enabled')) {
+		    $social->addProvider('facebook', new Provider(
+			    FacebookProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ],
+			    $value->get('icon')
+		    ));
+	    }
+
+	    $value = $socialConfig->getNode('discord');
+	    if ($value->get('enabled')) {
+		    $social->addProvider('discord', new Provider(
+			    DiscordProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ],
+			    $value->get('icon')
+		    ));
+	    }
+
+	    return $social;
+    }
     
     /**
      * @param ContainerInterface $container
@@ -357,7 +447,7 @@ class DependencyProvider implements ServiceProviderInterface
     
     public function getUpload(ContainerInterface $container)
     {
-        return new Upload($container->get('root') . 'public/upload', $container->get('base_url') . '/upload');
+        return new Upload($container->get('root') . 'uploads', $container->get('base_url') . '/uploads');
     }
     
     public function getUpdater(ContainerInterface $container)

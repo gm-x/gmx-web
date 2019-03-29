@@ -9,19 +9,18 @@
     <link rel="icon" href="{{ base_url() }}/assets/favicon.ico">
     <title>{% block title %}{{ title }} | {{ trans('labels', 'admin_panel') }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/all.css" />
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/fontawesome.min.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
     <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
-    <script src="{{ base_url() }}/assets/js/all.js"></script>
     {% block style %}{% endblock %}
 </head>
 <body>
 <div class="uk-container-expand admin">
     <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
-        {{ navbar.adminbar(menu) }}
+        {{ navbar.adminbar(menu, adminmenu) }}
     </div>
-    {{ navbar.sidebar(menu) }}
+    {{ navbar.sidebar(adminmenu) }}
 </div>
 <div class="uk-container admin">
     <main role="main" class="container">

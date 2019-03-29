@@ -8,22 +8,22 @@ if ($argc < 2) {
 }
 
 define('ROOT', __DIR__ . DIRECTORY_SEPARATOR);
-define('INSTALL', ROOT . 'public' . DIRECTORY_SEPARATOR . 'install'. DIRECTORY_SEPARATOR);
+define('INSTALL', ROOT . 'install'. DIRECTORY_SEPARATOR);
 
 $ignoreList = [
     '^\.idea',
     '^\.git',
-    '^\.gitignore',
+    '\.gitignore',
     '\.gitkeep$',
     '^runtime',
     '^vendor',
-    '^upload',
+    '^uploads',
     '^config\.json',
     '^router\.php',
     '^manifest\.json',
     '^manifest\.php',
     '^updates_[^.]+\.zip',
-    '^public/install',
+    '^install',
     '\.less$'
 ];
 
@@ -63,7 +63,7 @@ file_put_contents(ROOT . 'manifest.json', json_encode([
 ], JSON_PRETTY_PRINT));
 
 $zip = new ZipArchive();
-$filename = ROOT . 'updates_' . $argv[1] . '.zip';
+$filename = ROOT . 'gmx-' . $argv[1] . '.zip';
 
 if (!$zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
     die('Error while creating file ' . $filename);
@@ -88,7 +88,7 @@ $iterator = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::
  */
 foreach($iterator as $path => $it) {
     if ($it->isFile()) {
-        $zip->addFile(INSTALL . $it->getSubPathName(), 'public/install/' . $it->getSubPathName());
+        $zip->addFile(INSTALL . $it->getSubPathName(), 'install/' . $it->getSubPathName());
     }
 }
 

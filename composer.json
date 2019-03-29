@@ -26,7 +26,8 @@
 		"davedevelopment/phpmig": "^1.2@dev",
 		"tedivm/stash": "v0.14.2",
 		"swiftmailer/swiftmailer": "5.4.9",
-		"composer/composer": "^1.8@dev"
+		"composer/composer": "^1.8@dev",
+		"hybridauth/hybridauth": "^3.0@dev"
 	},
 	"autoload": {
 		"psr-4": {

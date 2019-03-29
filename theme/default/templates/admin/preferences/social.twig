@@ -1,0 +1,57 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/admin.twig' as admin %}
+{% import 'macros/forms.twig' as forms %}
+
+{% block subnav %}
+	<div class="uk-float-left">
+		{{ admin.back_btn(path_for('admin_index'), 'l') }}
+	</div>
+{% endblock %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+	<form action="{{ form.getAction() }}" method="post">
+		{{ csrf_token() }}
+
+
+		<ul uk-accordion="multiple: true">
+			<li class="uk-open">
+				<a class="uk-accordion-title" href="#">Steam</a>
+				{{ forms.element_checkbox(form.steam_enabled) }}
+				{{ forms.element_input(form.steam_icon) }}
+			</li>
+			<li class="uk-open">
+				<a class="uk-accordion-title" href="#">VK</a>
+				{{ forms.element_checkbox(form.vk_enabled) }}
+				{{ forms.element_input(form.vk_icon) }}
+				{{ forms.element_input(form.vk_id) }}
+				{{ forms.element_input(form.vk_key) }}
+				{{ forms.element_input(form.vk_secret) }}
+			</li>
+			<li class="uk-open">
+				<a class="uk-accordion-title" href="#">Facebook</a>
+				{{ forms.element_checkbox(form.facebook_enabled) }}
+				{{ forms.element_input(form.facebook_icon) }}
+				{{ forms.element_input(form.facebook_id) }}
+				{{ forms.element_input(form.facebook_key) }}
+				{{ forms.element_input(form.facebook_secret) }}
+			</li>
+			<li class="uk-open">
+				<a class="uk-accordion-title" href="#">Discord</a>
+				{{ forms.element_checkbox(form.discord_enabled) }}
+				{{ forms.element_input(form.discord_icon) }}
+				{{ forms.element_input(form.discord_id) }}
+				{{ forms.element_input(form.discord_key) }}
+				{{ forms.element_input(form.discord_secret) }}
+			</li>
+		</ul>
+
+		{% if hasAccessToEdit %}
+			<div class="form-group">
+				<input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'save') }}">
+			</div>
+		{% endif %}
+	</form>
+</div>
+{% endblock %}

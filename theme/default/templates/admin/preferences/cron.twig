@@ -1,0 +1,18 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/admin.twig' as admin %}
+{% import 'macros/forms.twig' as forms %}
+
+{% block subnav %}
+    <div class="uk-float-left">
+        {{ admin.back_btn(path_for('admin_index'), 'l') }}
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+    <div class="uk-light uk-background-secondary token">
+        <b>* * * * * php -f {{ root }}cron.php</b>
+    </div>
+</div>
+{% endblock %}
