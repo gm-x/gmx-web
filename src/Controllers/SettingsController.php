@@ -5,6 +5,7 @@ namespace GameX\Controllers;
 use \GameX\Core\BaseMainController;
 use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Auth\Social\SocialAuth;
 use \GameX\Constants\SettingsConstants;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Forms\Settings\EmailForm;
@@ -52,17 +53,22 @@ class SettingsController extends BaseMainController
 	    $passwordForm->getForm()->setAction($this->pathFor(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'password']));
 	    $avatarForm->getForm()->setAction($this->pathFor(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'avatar']));
 
+	    $socialNetworks = $this->getSocialNetworks();
+
         return $this->getView()->render($response, 'settings/index.twig', [
             'tab' => $request->getParam('tab', 'email'),
             'user' => $user,
             'emailForm' => $emailForm->getForm(),
             'passwordForm' => $passwordForm->getForm(),
             'avatarForm' => $avatarForm->getForm(),
+	        'socialNetworks' => $socialNetworks,
         ]);
     }
 
     protected function getSocialNetworks()
     {
-    	//
+    	/** @var SocialAuth $social */
+    	$social = $this->getContainer('social');
+    	return $social->getProviders();
     }
 }

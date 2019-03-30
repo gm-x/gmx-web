@@ -2,10 +2,6 @@
 
 {% import 'macros/admin.twig' as admin %}
 
-{% block style %}
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
-{% endblock %}
-
 {% block subnav %}
     {% if has_access_permission(
         constants.admin.users.PERMISSION_GROUP,
@@ -43,11 +39,11 @@
                                 constants.admin.users.PERMISSION_GROUP,
                                 constants.admin.users.PERMISSION_KEY,
                                 permissions.ACCESS_EDIT
-                                ) %}
+                            ) %}
                                 <a
-                                        id="activateUser"
-                                        href="{{ path_for(constants.admin.users.ROUTE_ACTIVATE, {'user': user.id}) }}"
-                                        class="uk-button"
+                                    id="activateUser"
+                                    href="{{ path_for(constants.admin.users.ROUTE_ACTIVATE, {'user': user.id}) }}"
+                                    class="uk-button"
                                 >
                                     <span class="uk-text-danger" title="{{ trans('admin_users', 'status_pending') }}"><i class="fas fa-power-off"></i></span>
                                 </a>
@@ -97,9 +93,9 @@
                     <li class="uk-width-1-3@m uk-width-1-3s uk-visible@s">{{ player.steamid }}</li>
                     <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">
                         <a
-                                href="{{ path_for(constants.admin.players.ROUTE_VIEW, {
-                                    'player': player.id
-                                }) }}"
+                            href="{{ path_for(constants.admin.players.ROUTE_VIEW, {
+                                'player': player.id
+                            }) }}"
                         >
                             {{ player.nick }}
                         </a>

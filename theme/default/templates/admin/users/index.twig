@@ -3,10 +3,6 @@
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/paginator.twig' as paginator %}
 
-{% block style %}
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
-{% endblock %}
-
 {% block subnav %}
     <div class="uk-float-left">
         {{ admin.back_btn(path_for('admin_index'), 'l') }}

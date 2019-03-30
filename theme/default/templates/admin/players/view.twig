@@ -5,10 +5,6 @@
 
 {% block title %}{{ parent() }} | {{ trans('admin_menu', 'players') }} | {{ player.nick }}{% endblock %}
 
-{% block style %}
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
-{% endblock %}
-
 {% block subnav %}
     {% if has_access_permission(
         constants.admin.players.PERMISSION_GROUP,

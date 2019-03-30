@@ -1,3 +1,14 @@
-<div>
+{% block style %}
+	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
 
+<div>
+	<div f-table f-divider>
+		{% for social,icon in socialNetworks %}
+		<ul>
+			<li class="uk-width-1-3@m uk-width-1-3s uk-visible@s"><i class="fab fa-{{ icon }} fa-lg"></i></li>
+			<li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s"></li>
+		</ul>
+		{% endfor %}
+	</div>
 </div>

@@ -4,10 +4,6 @@
 
 {% block title %}{{ parent() }} | {{ trans('admin_menu', 'servers') }} | {{ server.name }}{% endblock %}
 
-{% block style %}
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
-{% endblock %}
-
 {% block subnav %}
     {% if has_access_permission(
         constants.admin.servers.PERMISSION_GROUP,

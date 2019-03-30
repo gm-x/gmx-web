@@ -51,6 +51,7 @@ class SocialHelper
             'user_id' => $user->id,
             'provider' => $provider,
             'identifier' => $profile->identifier,
+            'profile_url' => $profile->profileURL,
             'photo_url' => $profile->photoURL,
         ]);
         $social->save();
