@@ -56,7 +56,7 @@ abstract class BaseAdminController extends BaseMainController
             ->add(new MenuItem($lang->format('admin_menu', 'players'), PlayersConstants::ROUTE_LIST, [],
                 [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY], 'fa-user-circle'));
 
-        $itemGroup = new MenuGroup('Preferences', 'fa-database');
+        $itemGroup = new MenuGroup('Preferences', 'fa-tools');
         $itemGroup
             ->add(new MenuItem($lang->format('admin_menu', 'preferences_main'),
                 PreferencesConstants::ROUTE_MAIN, [], null, 'fa-globe'))
@@ -65,7 +65,7 @@ abstract class BaseAdminController extends BaseMainController
             ->add(new MenuItem($lang->format('admin_menu', 'preferences_update'),
                 PreferencesConstants::ROUTE_UPDATE, [], null, 'fa-code-branch'))
 	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_cache'),
-		        PreferencesConstants::ROUTE_CACHE, [], null, 'fa-file'))
+		        PreferencesConstants::ROUTE_CACHE, [], null, 'fa-history'))
 	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_cron'),
 		        PreferencesConstants::ROUTE_CRON, [], null, 'fa-tasks'))
 	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_social'),
