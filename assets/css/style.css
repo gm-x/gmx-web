@@ -85,7 +85,7 @@ input {
     display: block;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 959px) {
     .sidenav {
         width: 0px;
     }
