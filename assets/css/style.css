@@ -17,6 +17,10 @@ input {
     appearance: none;
 }
 
+.nav-link i {
+    min-width: 20px;
+}
+
 .user-avatar-cell img {
     width: 30px;
     height: 30px;
@@ -59,7 +63,7 @@ input {
 
 .sidenav {
     position: fixed;
-    width: 38px;
+    width: 30px;
     top: 60px;
     z-index: 100;
     background: -webkit-linear-gradient(360deg,#030303 10%,#1f1f1f 360%);

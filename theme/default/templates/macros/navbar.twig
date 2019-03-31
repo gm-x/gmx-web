@@ -277,7 +277,7 @@
                             {% if item.getIcon() %}
                                 <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
                             {% endif %}
-                            {{ item.getTitle() }}
+                            {{ item.getTitle()|trim }}
                         </a>
                     </li>
                 {% elseif item.getType() == 'group' %}
@@ -286,7 +286,7 @@
                             {% if item.getIcon() %}
                                 <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
                             {% endif %}
-                            {{ item.getTitle() }}
+                            {{ item.getTitle()|trim }}
                         </a>
                         <ul class="uk-nav-sub">
                             {% for subItem in item.getItems() if subItem.getType() == 'item' and menu.hasAccess(subItem) %}
@@ -294,7 +294,7 @@
                                     {% if subItem.getIcon() %}
                                         <i class="fas {{ subItem.getIcon() }} uk-margin-small-right"></i>
                                     {% endif %}
-                                    {{ subItem.getTitle() }}
+                                    {{ subItem.getTitle()|trim }}
                                 </a>
                             {% endfor %}
                         </ul>
