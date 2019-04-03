@@ -14,6 +14,16 @@ class SocialAuth
      * @var Provider[]
      */
     protected $providers = [];
+
+	/**
+	 * @var array
+	 */
+    protected $titles = [];
+
+	/**
+	 * @var array
+	 */
+    protected $icons = [];
     
     /**
      * @var CallbackHelper
@@ -69,12 +79,16 @@ class SocialAuth
 
 	/**
 	 * @param string $key
+	 * @param string $title
+	 * @param string|null $icon
 	 * @param Provider $provider
 	 * @return $this
 	 */
-    public function addProvider($key, Provider $provider)
+    public function addProvider($key, $title, $icon, Provider $provider)
     {
     	$this->providers[$key] = $provider;
+    	$this->titles[$key] = $title;
+    	$this->icons[$key] = $icon;
     	return $this;
     }
 
@@ -104,15 +118,29 @@ class SocialAuth
     }
 
 	/**
+	 * @param string $key
+	 * @return string|null
+	 */
+    public function getTitle($key)
+    {
+    	return $this->titles[$key] ?: null;
+    }
+
+	/**
+	 * @param string $key
+	 * @return string|null
+	 */
+    public function getIcon($key)
+    {
+	    return $this->icons[$key] ?: null;
+    }
+
+	/**
 	 * @return array
 	 */
     public function getProviders()
     {
-		$providers = [];
-		foreach ($this->providers as $key => $provider) {
-			$providers[$key] = $provider->getIcon();
-		}
-		return $providers;
+		return array_keys($this->providers);
     }
 
     /**

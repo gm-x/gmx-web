@@ -15,20 +15,13 @@ class Provider
 	protected $config;
 
 	/**
-	 * @var string|null
-	 */
-	protected $icon;
-
-	/**
 	 * @param string $className
 	 * @param array $config
-	 * @param string|null $icon
 	 */
-	public function __construct($className, array $config = [], $icon = null)
+	public function __construct($className, array $config = [])
 	{
 		$this->className = $className;
 		$this->config = $config;
-		$this->icon = $icon;
 	}
 
 	/**
@@ -45,13 +38,5 @@ class Provider
 	public function getConfig()
 	{
 		return $this->config;
-	}
-
-	/**
-	 * @return string|null
-	 */
-	public function getIcon()
-	{
-		return $this->icon;
 	}
 }

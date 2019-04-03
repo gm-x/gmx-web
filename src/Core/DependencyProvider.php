@@ -304,16 +304,15 @@ class DependencyProvider implements ServiceProviderInterface
 
     	$value = $socialConfig->getNode('steam');
     	if ($value->get('enabled')) {
-    		$social->addProvider('steam', new Provider(
+    		$social->addProvider('steam', 'Steam', $value->get('icon'), new Provider(
 			    HybridauthSteamProvider::class,
-			    ['openid_identifier' => 'http://steamcommunity.com/openid'],
-			    $value->get('icon')
+			    ['openid_identifier' => 'http://steamcommunity.com/openid']
 		    ));
 	    }
 
 	    $value = $socialConfig->getNode('vk');
 	    if ($value->get('enabled')) {
-		    $social->addProvider('vk', new Provider(
+		    $social->addProvider('vk', 'Vkontakte', $value->get('icon'), new Provider(
 			    VkontakteProvider::class,
 			    [
 				    'keys' => [
@@ -328,7 +327,7 @@ class DependencyProvider implements ServiceProviderInterface
 
 	    $value = $socialConfig->getNode('facebook');
 	    if ($value->get('enabled')) {
-		    $social->addProvider('facebook', new Provider(
+		    $social->addProvider('facebook', 'Facebook', $value->get('icon'), new Provider(
 			    FacebookProvider::class,
 			    [
 				    'keys' => [
@@ -343,7 +342,7 @@ class DependencyProvider implements ServiceProviderInterface
 
 	    $value = $socialConfig->getNode('discord');
 	    if ($value->get('enabled')) {
-		    $social->addProvider('discord', new Provider(
+		    $social->addProvider('discord', 'Discord', $value->get('icon'), new Provider(
 			    DiscordProvider::class,
 			    [
 				    'keys' => [
