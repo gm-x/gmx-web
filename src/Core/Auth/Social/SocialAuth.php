@@ -11,20 +11,10 @@ use \Hybridauth\HttpClient\Util;
 class SocialAuth
 {
     /**
-     * @var Provider[]
+     * @var array[]
      */
     protected $providers = [];
 
-	/**
-	 * @var array
-	 */
-    protected $titles = [];
-
-	/**
-	 * @var array
-	 */
-    protected $icons = [];
-    
     /**
      * @var CallbackHelper
      */
@@ -81,39 +71,43 @@ class SocialAuth
 	 * @param string $key
 	 * @param string $title
 	 * @param string|null $icon
-	 * @param Provider $provider
+	 * @param string $className
+	 * @param array $config
 	 * @return $this
 	 */
-    public function addProvider($key, $title, $icon, Provider $provider)
+    public function addProvider($key, $title, $icon, $className, array $config)
     {
-    	$this->providers[$key] = $provider;
-    	$this->titles[$key] = $title;
-    	$this->icons[$key] = $icon;
+    	$this->providers[$key] = [
+    		'title' => $title,
+    		'icon' => $icon,
+    		'class' => $className,
+    		'config' => $config,
+	    ];
     	return $this;
     }
 
 	/**
-	 * @param string $provider
+	 * @param string $key
 	 * @return bool
 	 */
-    public function hasProvider($provider)
+    public function hasProvider($key)
     {
-        return array_key_exists($provider, $this->providers);
+        return array_key_exists($key, $this->providers);
     }
 
 	/**
-	 * @param string $provider
+	 * @param string $key
 	 * @return AdapterInterface
 	 */
-    public function getProvider($provider)
+    public function getProvider($key)
     {
-        if (!$this->hasProvider($provider)) {
+        if (!$this->hasProvider($key)) {
             throw new \InvalidArgumentException('Unknown Provider.');
         }
 
-        $config = $this->providers[$provider]->getConfig();
-        $config['callback'] = $this->callback->getCallback($provider);
-        $className = $this->providers[$provider]->getClassName();
+        $config = $this->providers[$key]['config'];
+        $config['callback'] = $this->callback->getCallback($key);
+        $className = $this->providers[$key]['class'];
         return new $className($config, $this->httpClient, $this->storage, $this->logger);
     }
 
@@ -123,7 +117,7 @@ class SocialAuth
 	 */
     public function getTitle($key)
     {
-    	return $this->titles[$key] ?: null;
+    	return $this->hasProvider($key) ? $this->providers[$key]['title'] : null;
     }
 
 	/**
@@ -132,7 +126,7 @@ class SocialAuth
 	 */
     public function getIcon($key)
     {
-	    return $this->icons[$key] ?: null;
+	    return $this->hasProvider($key) ? $this->providers[$key]['icon'] : null;
     }
 
 	/**
