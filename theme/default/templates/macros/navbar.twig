@@ -69,7 +69,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
+                                    <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_INDEX) }}">
                                         <i class="fas fa-cogs uk-margin-small-right"></i> {{ trans('menu', 'settings') }}
                                     </a>
                                 </li>
@@ -125,7 +125,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
+                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_INDEX) }}">
                                 <i class="fas fa-cogs uk-margin-small-right"></i> {{ trans('menu', 'settings') }}
                         </li>
                         <li class="uk-nav-divider"></li>
@@ -203,7 +203,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
+                                    <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_INDEX) }}">
                                         <i class="fas fa-user uk-margin-small-right"></i> {{ trans('menu', 'settings') }}
                                     </a>
                                 </li>
@@ -280,8 +280,9 @@
                             </li>
                         {% endif %}
                         <li>
-                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
-                                <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a>
+                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_INDEX) }}">
+                                <span class="uk-margin-small-right" uk-icon="icon: settings"></span>
+                                {{ trans('menu', 'settings') }}</a>
                         </li>
                         <li class="uk-nav-divider"></li>
                         <li><a class="dropdown-item" href="{{ path_for('logout') }}">
