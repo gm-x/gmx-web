@@ -137,15 +137,11 @@ class UserController extends BaseMainController
 
         /** @var SocialAuth $social */
         $social = $this->getContainer('social');
-        $social_providers = array_fill_keys($social->getProviders(), null);
-        foreach($social_providers as $key=>$value) {
-	        $social_providers[$key] = $social->getIcon($key);
-        }
-        
+
         return $this->getView()->render($response, 'user/login.twig', [
             'form' => $form->getForm(),
             'enabledEmail' => $this->mailEnabled,
-	        'social_providers' => $social_providers,
+	        'social' => $social->getProviders(),
         ]);
     }
     
