@@ -2,6 +2,7 @@
 
 namespace GameX\Controllers;
 
+use GameX\Core\Auth\Models\UserSocialModel;
 use \GameX\Core\BaseMainController;
 use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
@@ -53,7 +54,14 @@ class SettingsController extends BaseMainController
 	    $passwordForm->getForm()->setAction($this->pathFor(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'password']));
 	    $avatarForm->getForm()->setAction($this->pathFor(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'avatar']));
 
-	    $socialNetworks = $this->getSocialNetworks();
+	    /** @var SocialAuth $social */
+	    $social = $this->getContainer('social');
+	    $socialNetworks = $social->getProviders();
+	    $userSocials = [];
+	    /** @var UserSocialModel $userSocial */
+	    foreach (UserSocialModel::where('user_id', $this->getUser()->id)->get() as $userSocial) {
+		    $userSocials[$userSocial->provider] = $userSocial;
+	    }
 
         return $this->getView()->render($response, 'settings/index.twig', [
             'tab' => $request->getParam('tab', 'email'),
@@ -62,13 +70,7 @@ class SettingsController extends BaseMainController
             'passwordForm' => $passwordForm->getForm(),
             'avatarForm' => $avatarForm->getForm(),
 	        'socialNetworks' => $socialNetworks,
+	        'userSocials' => $userSocials,
         ]);
-    }
-
-    protected function getSocialNetworks()
-    {
-    	/** @var SocialAuth $social */
-    	$social = $this->getContainer('social');
-    	return $social->getProviders();
     }
 }

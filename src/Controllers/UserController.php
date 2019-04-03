@@ -247,9 +247,15 @@ class UserController extends BaseMainController
 
 		$profile = $adapter->getUserProfile();
 
+//		TODO: Check if user logined and redirect to settings
+//		if ($this->getUser())
+
 		$socialHelper = new SocialHelper($this->container);
 		$userSocial = $socialHelper->find($provider, $profile);
 		if ($userSocial && $userSocial->user) {
+			$userSocial->profile_url = $profile->profileURL;
+			$userSocial->photo_url = $profile->photoURL;
+			$userSocial->save();
 			$socialHelper->authenticate($userSocial);
 			return $this->redirect(IndexConstants::ROUTE_INDEX);
 		}

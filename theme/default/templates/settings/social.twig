@@ -4,10 +4,24 @@
 
 <div>
 	<div f-table f-divider>
-		{% for social,icon in socialNetworks %}
+		{% for provider in socialNetworks %}
 		<ul>
-			<li class="uk-width-1-3@m uk-width-1-3s uk-visible@s"><i class="fab fa-{{ icon }} fa-lg"></i></li>
-			<li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s"></li>
+			<li class="uk-width-1-3@m uk-width-1-3s uk-visible@s">
+				<i class="fab fa-{{ social_get_icon(provider) }} fa-lg"></i>
+				{{ social_get_title(provider) }}
+			</li>
+			<li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">
+				{% if userSocials[provider] is defined %}
+					Disconnect
+				{% else %}
+					<a
+						href="{{ path_for(constants.user.ROUTE_SOCIAL, {'provider': provider}) }}"
+						class="uk-button uk-button-primary uk-button-small"
+					>
+						Connect
+					</a>
+				{% endif %}
+			</li>
 		</ul>
 		{% endfor %}
 	</div>
