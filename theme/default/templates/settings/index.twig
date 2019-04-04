@@ -1,0 +1,54 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/forms.twig' as forms %}
+
+{% block content %}
+    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+        <div uk-grid>
+            <div class="uk-width-1-4@m">
+                <h1>{{ user.login }}</h1>
+                <form action="{{ avatarForm.getAction() }}" id="avatar_form" method="post" enctype="multipart/form-data">
+                    {{ csrf_token() }}
+                    {% set holder =
+                        '<div id="profile-img-tag" class="avatar__holder uk-margin"><img src="'
+                        ~ upload_url(user.avatar) ~
+                        '" width="100%"></div>'
+                    %}
+                    {{ forms.element_file(avatarForm.avatar, holder) }}
+                </form>
+                <ul
+                    class="uk-tab-left"
+                    uk-tab="connect: #settings; animation: uk-animation-slide-top,uk-animation-slide-bottom"
+                >
+                    <li {% if tab == 'email' %}class="uk-active"{% endif %}>
+                        <a href="#">{{ trans('inputs', 'email') }}</a>
+                    </li>
+                    <li {% if tab == 'password' %}class="uk-active"{% endif %}>
+                        <a href="#">{{ trans('inputs', 'password') }}</a>
+                    </li>
+                    <li {% if tab == 'social' %}class="uk-active"{% endif %}>
+                        <a href="#">Socials</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="uk-width-3-4@m">
+                <ul id="settings" class="uk-switcher">
+                    <li>{% include 'settings/email.twig' %}</li>
+                    <li>{% include 'settings/password.twig' %}</li>
+                    <li>{% include 'settings/social.twig' %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $('#{{ avatarForm.avatar.getId() }}').change(function() {
+            if (this.files && this.files[0]) {
+                $('#avatar_form').submit();
+            }
+        });
+	</script>
+{% endblock %}

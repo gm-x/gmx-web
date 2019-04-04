@@ -29,37 +29,42 @@ class SocialHelper
      * @param Profile $profile
      * @return UserSocialModel|null
      */
-    public function find($provider, Profile $profile)
+    public function findByProviderAndIdentifier($provider, Profile $profile)
     {
         return UserSocialModel::where([
             'provider' => $provider,
             'identifier' => $profile->identifier
         ])->first();
     }
+
+	/**
+	 * @param string $provider
+	 * @param UserModel $user
+	 * @return UserSocialModel|null
+	 */
+    public function findByProviderAndUser($provider, UserModel $user)
+    {
+	    return UserSocialModel::where([
+		    'provider' => $provider,
+		    'user_id' => $user->id
+	    ])->first();
+    }
     
     /**
      * @param string $provider
      * @param Profile $profile
+     * @param UserModel $user
      * @return UserSocialModel
      * @throws \Exception
      */
-    public function register($provider, Profile $profile)
+    public function register($provider, Profile $profile, UserModel $user)
     {
-        /** @var UserModel $user */
-        $user = $this->getAuth()->getUserRepository()->create([
-            'login' => $profile->displayName,
-            'email' => $profile->email,
-            'password' => null,
-            'token' => Utils::generateToken(16),
-            'is_social' => true
-        ]);
-        $this->getAuth()->activate($user);
-    
         $social = new UserSocialModel();
         $social->fill([
             'user_id' => $user->id,
             'provider' => $provider,
             'identifier' => $profile->identifier,
+            'profile_url' => $profile->profileURL,
             'photo_url' => $profile->photoURL,
         ]);
         $social->save();
@@ -72,11 +77,7 @@ class SocialHelper
      */
     public function authenticate(UserSocialModel $userSocial)
     {
-        $user = $userSocial->user;
-        if (!$user) {
-            return false;
-        }
-        return $this->getAuth()->authenticate($user);
+        return $this->getAuth()->authenticate($userSocial->user);
     }
     
     /**

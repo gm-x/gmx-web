@@ -5,6 +5,7 @@ namespace GameX\Core;
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Auth\Permissions;
+use \Cartalyst\Sentinel\Sentinel;
 use \GameX\Core\Auth\Models\UserModel;
 use \Slim\Views\Twig;
 use \GameX\Core\Breadcrumbs\Breadcrumbs;
@@ -17,12 +18,7 @@ use \GameX\Core\Exceptions\RedirectException;
 
 abstract class BaseMainController extends BaseController
 {
-    
-    /**
-     * @var UserModel
-     */
-    protected $user = null;
-    
+
     /**
      * @return string
      */
@@ -37,16 +33,22 @@ abstract class BaseMainController extends BaseController
         parent::__construct($container);
         $this->initMenu();
     }
+
+	/**
+	 * @return Sentinel
+	 */
+	public function getAuth()
+	{
+		return $this->getContainer('auth');
+	}
     
     /**
+     * @param bool $check
      * @return UserModel
      */
-    public function getUser()
+    public function getUser($check = false)
     {
-        if ($this->user === null) {
-            $this->user = $this->getContainer('auth')->getUser();
-        }
-        return $this->user;
+        return $this->getContainer('auth')->getUser($check);
     }
     
     /**

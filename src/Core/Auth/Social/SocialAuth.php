@@ -6,14 +6,15 @@ use \Hybridauth\Adapter\AdapterInterface;
 use \Hybridauth\HttpClient\HttpClientInterface;
 use \Hybridauth\Storage\StorageInterface;
 use \Hybridauth\Logger\LoggerInterface;
+use \Hybridauth\HttpClient\Util;
 
 class SocialAuth
 {
     /**
-     * @var Provider[]
+     * @var array[]
      */
     protected $providers = [];
-    
+
     /**
      * @var CallbackHelper
      */
@@ -39,6 +40,11 @@ class SocialAuth
      * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var string|null
+     */
+    protected $redirectUrl = null;
     
     /**
      * @param CallbackHelper      $callback
@@ -57,42 +63,70 @@ class SocialAuth
         $this->storage = $storage;
         $this->logger = $logger;
         $this->httpClient = $httpClient;
+
+        Util::setRedirectHandler([$this, 'redirect']);
     }
 
 	/**
 	 * @param string $key
-	 * @param Provider $provider
+	 * @param string $title
+	 * @param string|null $icon
+	 * @param string $className
+	 * @param array $config
 	 * @return $this
 	 */
-    public function addProvider($key, Provider $provider)
+    public function addProvider($key, $title, $icon, $className, array $config)
     {
-    	$this->providers[$key] = $provider;
+    	$this->providers[$key] = [
+    		'title' => $title,
+    		'icon' => $icon,
+    		'class' => $className,
+    		'config' => $config,
+	    ];
     	return $this;
     }
 
 	/**
-	 * @param string $provider
+	 * @param string $key
 	 * @return bool
 	 */
-    public function hasProvider($provider)
+    public function hasProvider($key)
     {
-        return array_key_exists($provider, $this->providers);
+        return array_key_exists($key, $this->providers);
     }
 
 	/**
-	 * @param string $provider
+	 * @param string $key
 	 * @return AdapterInterface
 	 */
-    public function getProvider($provider)
+    public function getProvider($key)
     {
-        if (!$this->hasProvider($provider)) {
+        if (!$this->hasProvider($key)) {
             throw new \InvalidArgumentException('Unknown Provider.');
         }
 
-        $config = $this->providers[$provider]->getConfig();
-        $config['callback'] = $this->callback->getCallback($provider);
-        $className = $this->providers[$provider]->getClassName();
+        $config = $this->providers[$key]['config'];
+        $config['callback'] = $this->callback->getCallback($key);
+        $className = $this->providers[$key]['class'];
         return new $className($config, $this->httpClient, $this->storage, $this->logger);
+    }
+
+	/**
+	 * @param string $key
+	 * @return string|null
+	 */
+    public function getTitle($key)
+    {
+    	return $this->hasProvider($key) ? $this->providers[$key]['title'] : null;
+    }
+
+	/**
+	 * @param string $key
+	 * @return string|null
+	 */
+    public function getIcon($key)
+    {
+	    return $this->hasProvider($key) ? $this->providers[$key]['icon'] : null;
     }
 
 	/**
@@ -100,10 +134,30 @@ class SocialAuth
 	 */
     public function getProviders()
     {
-		$providers = [];
-		foreach ($this->providers as $key => $provider) {
-			$providers[$key] = $provider->getIcon();
-		}
-		return $providers;
+		return array_keys($this->providers);
+    }
+
+    /**
+     * @param string $url
+     */
+    public function redirect($url)
+    {
+        $this->redirectUrl = $url;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRedirected()
+    {
+        return $this->redirectUrl !== null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRedirectUrl()
+    {
+        return $this->redirectUrl;
     }
 }

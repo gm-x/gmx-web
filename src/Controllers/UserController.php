@@ -6,16 +6,21 @@ use \GameX\Core\BaseMainController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Auth\Social\SocialAuth;
+use \GameX\Constants\IndexConstants;
+use \GameX\Constants\SettingsConstants;
 use \GameX\Constants\PreferencesConstants;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
+use \GameX\Core\Auth\Helpers\SocialHelper;
 use \GameX\Forms\User\LoginForm;
 use \GameX\Forms\User\RegisterForm;
 use \GameX\Forms\User\ActivationForm;
 use \GameX\Forms\User\ResetPasswordForm;
 use \GameX\Forms\User\ResetPasswordCompleteForm;
+use \GameX\Forms\User\SocialForm;
 use \GameX\Core\Exceptions\NotAllowedException;
 use \GameX\Core\Exceptions\RedirectException;
+use \Slim\Exception\NotFoundException;
 
 class UserController extends BaseMainController
 {
@@ -35,7 +40,7 @@ class UserController extends BaseMainController
      */
     protected function getActiveMenu()
     {
-        return 'index';
+        return IndexConstants::ROUTE_INDEX;
     }
     
     /**
@@ -133,11 +138,11 @@ class UserController extends BaseMainController
 
         /** @var SocialAuth $social */
         $social = $this->getContainer('social');
-        
+
         return $this->getView()->render($response, 'user/login.twig', [
             'form' => $form->getForm(),
             'enabledEmail' => $this->mailEnabled,
-	        'social_providers' => $social->getProviders(),
+	        'social' => $social->getProviders(),
         ]);
     }
     
@@ -197,11 +202,8 @@ class UserController extends BaseMainController
      * @throws NotAllowedException
      * @throws RedirectException
      */
-    public function resetPasswordCompleteAction(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        array $args
-    ) {
+    public function resetPasswordCompleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    {
         if (!$this->mailEnabled) {
             throw new NotAllowedException();
         }
@@ -216,4 +218,94 @@ class UserController extends BaseMainController
             'form' => $form->getForm(),
         ]);
     }
+
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param array $args
+	 * @return ResponseInterface
+	 * @throws NotFoundException
+	 * @throws RedirectException
+	 * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
+	 */
+	public function socialAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+	{
+		/** @var \GameX\Core\Auth\Social\SocialAuth $social */
+		$social = $this->getContainer('social');
+
+		$provider = $args['provider'];
+
+		if (!$social->hasProvider($provider)) {
+			throw new NotFoundException($request, $response);
+		}
+
+		$socialHelper = new SocialHelper($this->container);
+
+		$user = $this->getUser();
+		if ($user && $socialHelper->findByProviderAndUser($provider, $user)) {
+			return $this->redirect(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'social']);
+		}
+
+		$adapter = $social->getProvider($provider);
+
+		$adapter->authenticate();
+		if ($social->isRedirected()) {
+			return $this->redirectTo($social->getRedirectUrl());
+		}
+
+		$profile = $adapter->getUserProfile();
+
+		if ($user) {
+			$socialHelper->register($provider, $profile, $user);
+			$this->addSuccessMessage($this->getTranslate('settings', 'social_connected', $social->getTitle($provider)));
+			return $this->redirect(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'social']);
+		}
+
+		$userSocial = $socialHelper->findByProviderAndIdentifier($provider, $profile);
+		if ($userSocial && $userSocial->user) {
+			$userSocial->profile_url = $profile->profileURL;
+			$userSocial->photo_url = $profile->photoURL;
+			$userSocial->save();
+			$socialHelper->authenticate($userSocial);
+			return $this->redirect(IndexConstants::ROUTE_INDEX);
+		}
+
+		/** @var \GameX\Core\Configuration\Config $preferences */
+		$preferences = $this->getContainer('preferences');
+		$autoActivate = (bool)$preferences
+			->getNode(PreferencesConstants::CATEGORY_MAIN)
+			->get(PreferencesConstants::MAIN_AUTO_ACTIVATE_USERS, false);
+		$mailEnabled = (bool)$preferences->getNode('main')->get('enabled', false);
+
+		$authHelper = new AuthHelper($this->container);
+		$form = new SocialForm($provider, $profile, $socialHelper, $authHelper, $autoActivate);
+		if ($this->processForm($request, $form, true)) {
+			$adapter->disconnect();
+			if ($autoActivate) {
+				$socialHelper->authenticate($form->getSocialUser());
+				$this->addSuccessMessage($this->getTranslate('user', 'registered'));
+			} elseif ($mailEnabled) {
+				$user = $form->getUser();
+				$activationCode = $authHelper->getActivationCode($user);
+				JobHelper::createTask('sendmail', [
+					'type' => 'activation',
+					'user' => $user->login,
+					'email' => $user->email,
+					'title' => 'Activation',
+					'params' => [
+						'link' => $this->pathFor('activation', ['code' => $activationCode], [], true)
+					],
+				]);
+				$this->addSuccessMessage($this->getTranslate('user', 'registered_email'));
+			} else {
+				$this->addSuccessMessage($this->getTranslate('user', 'registered_moderate'));
+			}
+
+			return $this->redirect(IndexConstants::ROUTE_INDEX);
+		}
+
+		return $this->getView()->render($response, 'user/social.twig', [
+			'form' => $form->getForm(),
+		]);
+	}
 }

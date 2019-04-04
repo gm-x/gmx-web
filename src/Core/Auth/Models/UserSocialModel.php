@@ -10,6 +10,7 @@ use \GameX\Core\BaseModel;
  * @property int $user_id
  * @property string $provider
  * @property string $identifier
+ * @property string $profile_url
  * @property string $photo_url
  * @property UserModel $user
  */
@@ -27,6 +28,7 @@ class UserSocialModel extends BaseModel
         'user_id',
         'provider',
         'identifier',
+	    'profile_url',
         'photo_url'
     ];
 

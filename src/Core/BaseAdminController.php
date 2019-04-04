@@ -56,7 +56,7 @@ abstract class BaseAdminController extends BaseMainController
             ->add(new MenuItem($lang->format('admin_menu', 'players'), PlayersConstants::ROUTE_LIST, [],
                 [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY], 'fa-user-circle'));
 
-        $itemGroup = new MenuGroup('Preferences', 'fa-database');
+        $itemGroup = new MenuGroup($lang->format('admin_menu', 'preferences'), 'fa-database');
         $itemGroup
             ->add(new MenuItem($lang->format('admin_menu', 'preferences_main'),
                 PreferencesConstants::ROUTE_MAIN, [], null, 'fa-globe'))

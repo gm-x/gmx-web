@@ -37,7 +37,7 @@ use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\SentinelBootstrapper;
 use \Cartalyst\Sentinel\Sentinel;
 
-use \GameX\Constants\IndexConstants;
+use \GameX\Constants\UserConstants;
 use \GameX\Core\Auth\Social\SocialAuth;
 use \GameX\Core\Auth\Social\Provider;
 use \GameX\Core\Auth\Social\Session as HybridauthSession;
@@ -292,7 +292,7 @@ class DependencyProvider implements ServiceProviderInterface
 	    $uri = $container->get('request')->getUri();
 	    $basePath = $uri->getScheme() . '://' . $uri->getAuthority();
 
-	    $callback =new HybridauthCallback($basePath, $router, IndexConstants::ROUTE_SOCIAL_AUTH);
+	    $callback =new HybridauthCallback($basePath, $router, UserConstants::ROUTE_SOCIAL);
 	    $session = new HybridauthSession($container->get('session'));
         $logger = new HybridauthLogger($container->get('log'));
 
@@ -304,16 +304,21 @@ class DependencyProvider implements ServiceProviderInterface
 
     	$value = $socialConfig->getNode('steam');
     	if ($value->get('enabled')) {
-    		$social->addProvider('steam', new Provider(
+    		$social->addProvider(
+    			'steam',
+			    'Steam',
+			    $value->get('icon'),
 			    HybridauthSteamProvider::class,
-			    ['openid_identifier' => 'http://steamcommunity.com/openid'],
-			    $value->get('icon')
-		    ));
+			    ['openid_identifier' => 'http://steamcommunity.com/openid']
+		    );
 	    }
 
 	    $value = $socialConfig->getNode('vk');
 	    if ($value->get('enabled')) {
-		    $social->addProvider('vk', new Provider(
+		    $social->addProvider(
+		    	'vk',
+			    'Vkontakte',
+			    $value->get('icon'),
 			    VkontakteProvider::class,
 			    [
 				    'keys' => [
@@ -321,14 +326,16 @@ class DependencyProvider implements ServiceProviderInterface
 					    'key' => $value->get('key'),
 					    'secret' => $value->get('secret')
 				    ]
-			    ],
-			    $value->get('icon')
-		    ));
+			    ]
+		    );
 	    }
 
 	    $value = $socialConfig->getNode('facebook');
 	    if ($value->get('enabled')) {
-		    $social->addProvider('facebook', new Provider(
+		    $social->addProvider(
+		    	'facebook',
+			    'Facebook',
+			    $value->get('icon'),
 			    FacebookProvider::class,
 			    [
 				    'keys' => [
@@ -336,14 +343,16 @@ class DependencyProvider implements ServiceProviderInterface
 					    'key' => $value->get('key'),
 					    'secret' => $value->get('secret')
 				    ]
-			    ],
-			    $value->get('icon')
-		    ));
+			    ]
+		    );
 	    }
 
 	    $value = $socialConfig->getNode('discord');
 	    if ($value->get('enabled')) {
-		    $social->addProvider('discord', new Provider(
+		    $social->addProvider(
+		    	'discord',
+			    'Discord',
+			    $value->get('icon'),
 			    DiscordProvider::class,
 			    [
 				    'keys' => [
@@ -351,9 +360,8 @@ class DependencyProvider implements ServiceProviderInterface
 					    'key' => $value->get('key'),
 					    'secret' => $value->get('secret')
 				    ]
-			    ],
-			    $value->get('icon')
-		    ));
+			    ]
+		    );
 	    }
 
 	    return $social;

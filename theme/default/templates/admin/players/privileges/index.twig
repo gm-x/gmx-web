@@ -2,10 +2,6 @@
 
 {% import 'macros/admin.twig' as admin %}
 
-{% block style %}
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
-{% endblock %}
-
 {% block subnav %}
     <div class="uk-float-left">
         {{ admin.back_btn(path_for(constants.admin.players.ROUTE_LIST), 'l') }}

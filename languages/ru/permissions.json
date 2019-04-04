@@ -18,6 +18,7 @@
     "admin_preferences_update": "Обновления",
     "admin_preferences_cache": "Кэш",
     "admin_preferences_cron": "Крон",
+    "admin_preferences_social": "Настройка соц. сетей",
     "admin_role_permission": "Права роли",
     "admin_user_role": "Роли пользователей",
     "admin_preferences": "Настройки",

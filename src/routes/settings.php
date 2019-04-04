@@ -11,5 +11,5 @@ $permissions = $this->getContainer()->get('permissions');
 
 $this
     ->map(['GET', 'POST'], '/settings', BaseController::action(SettingsController::class, 'index'))
-    ->setName(SettingsConstants::ROUTE_MAIN)
+    ->setName(SettingsConstants::ROUTE_INDEX)
 	->add($permissions->isAuthorizedMiddleware());

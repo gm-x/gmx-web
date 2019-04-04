@@ -6,6 +6,7 @@ use \Psr\Container\ContainerInterface;
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 use \Cartalyst\Sentinel\Sentinel;
+use \GameX\Core\Auth\Social\SocialAuth;
 use \GameX\Core\Auth\Models\UserModel;
 
 class ViewExtension extends Twig_Extension
@@ -66,6 +67,14 @@ class ViewExtension extends Twig_Extension
                 'has_access_resource',
                 [$this, 'hasAccessToResource']
             ),
+	        new Twig_SimpleFunction(
+		        'social_get_title',
+		        [$this, 'socialGetTitle']
+	        ),
+	        new Twig_SimpleFunction(
+		        'social_get_icon',
+		        [$this, 'socialGetIcon']
+	        ),
         ];
     }
 
@@ -141,6 +150,24 @@ class ViewExtension extends Twig_Extension
         return $this->getPermissions()->hasUserAccessToResource($group, $permission, $resource, $this->getAccess($access));
     }
 
+	/**
+	 * @param string $key
+	 * @return string|null
+	 */
+    public function socialGetTitle($key)
+    {
+    	return $this->getSocial()->getTitle($key);
+    }
+
+	/**
+	 * @param string $key
+	 * @return string|null
+	 */
+    public function socialGetIcon($key)
+    {
+    	return $this->getSocial()->getIcon($key);
+    }
+
     /**
      * @param int|string|int[]|string[]|null $access
      * @return int|null
@@ -189,5 +216,13 @@ class ViewExtension extends Twig_Extension
     protected function getUser()
     {
         return $this->getAuth()->getUser();
+    }
+
+	/**
+	 * @return SocialAuth
+	 */
+    protected function getSocial()
+    {
+    	return $this->container->get('social');
     }
 }

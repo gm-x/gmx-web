@@ -46,7 +46,7 @@ class PasswordForm extends BaseForm {
             ]))
             ->add(new Password('new_password', '', [
                 'title' => $this->getTranslate('inputs', 'new_password'),
-                'required' => true,
+                'required' => false,
             ]))
             ->add(new Password('repeat_password', '', [
                 'title' => $this->getTranslate('inputs', 'password_repeat'),

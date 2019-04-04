@@ -36,10 +36,10 @@
                         <br> <br>
                         или <a href="{{ path_for('register') }}">{{ trans('buttons', 'register') }}</a>
                     </div>
-                    {% if social_providers is not empty %}
+                    {% if social is not empty %}
                     <div class="uk-margin">
-                        {% for provider,icon in social_providers %}
-                            {{ social_buttons.get_button(provider, icon) }}
+                        {% for provider in social %}
+                            {{ social_buttons.get_button(provider) }}
                         {% endfor %}
                     </div>
                     {% endif %}
