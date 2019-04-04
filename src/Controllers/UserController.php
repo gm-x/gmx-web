@@ -257,7 +257,7 @@ class UserController extends BaseMainController
 
 		if ($user) {
 			$socialHelper->register($provider, $profile, $user);
-			$this->addSuccessMessage('Connected');
+			$this->addSuccessMessage($this->getTranslate('settings', 'social_connected', $social->getTitle($provider)));
 			return $this->redirect(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'social']);
 		}
 

@@ -15,14 +15,18 @@
 					<form method="post">
 						{{ csrf_token() }}
 						<input type="hidden" name="social" value="{{ userSocials[provider].id }}">
-						<input type="submit" class="uk-button uk-button-secondary uk-button-small" value="Disconnect">
+						<input
+							type="submit"
+							class="uk-button uk-button-secondary uk-button-small"
+							value="{{ trans('settings', 'social_disconnect') }}"
+						>
 					</form>
 				{% else %}
 					<a
 						href="{{ path_for(constants.user.ROUTE_SOCIAL, {'provider': provider}) }}"
 						class="uk-button uk-button-primary uk-button-small"
 					>
-						Connect
+						{{ trans('settings', 'social_connect') }}
 					</a>
 				{% endif %}
 			</li>

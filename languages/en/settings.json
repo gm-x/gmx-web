@@ -1,0 +1,6 @@
+{
+	"social_connect":"Connect",
+	"social_disconnect":"Disconnect",
+	"social_connected": "%s successfully connected",
+	"social_disconnected": "%s successfully disconnected"
+}

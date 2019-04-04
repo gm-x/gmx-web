@@ -58,8 +58,9 @@ class SettingsController extends BaseMainController
 	    $social = $this->getContainer('social');
 	    $socialNetworks = $social->getProviders();
 
-		if ($this->processDisconnectSocial($request)) {
-			$this->addSuccessMessage('Disconnected');
+	    $userSocial = $this->processDisconnectSocial($request);
+		if ($userSocial) {
+			$this->addSuccessMessage($this->getTranslate('settings', 'social_disconnected', $social->getTitle($userSocial->provider)));
 			return $this->redirect(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'social']);
 		}
 
@@ -82,7 +83,7 @@ class SettingsController extends BaseMainController
 
 	/**
 	 * @param Request $request
-	 * @return bool
+	 * @return bool|UserSocialModel
 	 * @throws \Exception
 	 */
 	protected function processDisconnectSocial(Request $request)
@@ -100,6 +101,7 @@ class SettingsController extends BaseMainController
 		if ($userSocial->user_id != $this->getUser()->id) {
 			return false;
 		}
-		return (bool) $userSocial->delete();
+		$userSocial->delete();
+		return $userSocial;
 	}
 }
