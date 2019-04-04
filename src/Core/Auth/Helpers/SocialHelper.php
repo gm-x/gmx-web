@@ -29,12 +29,25 @@ class SocialHelper
      * @param Profile $profile
      * @return UserSocialModel|null
      */
-    public function find($provider, Profile $profile)
+    public function findByProviderAndIdentifier($provider, Profile $profile)
     {
         return UserSocialModel::where([
             'provider' => $provider,
             'identifier' => $profile->identifier
         ])->first();
+    }
+
+	/**
+	 * @param string $provider
+	 * @param UserModel $user
+	 * @return UserSocialModel|null
+	 */
+    public function findByProviderAndUser($provider, UserModel $user)
+    {
+	    return UserSocialModel::where([
+		    'provider' => $provider,
+		    'user_id' => $user->id
+	    ])->first();
     }
     
     /**

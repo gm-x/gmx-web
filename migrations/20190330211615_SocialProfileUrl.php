@@ -11,7 +11,7 @@ class SocialProfileUrl extends Migration {
 	public function up() {
 		$this->getSchema()
 			->table('users_social', function (Blueprint $table) {
-				$table->unsignedTinyInteger('profile_url')
+				$table->string('profile_url')
 					->nullable()
 					->after('identifier');
 			});

@@ -57,6 +57,12 @@ class SettingsController extends BaseMainController
 	    /** @var SocialAuth $social */
 	    $social = $this->getContainer('social');
 	    $socialNetworks = $social->getProviders();
+
+		if ($this->processDisconnectSocial($request)) {
+			$this->addSuccessMessage('Disconnected');
+			return $this->redirect(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'social']);
+		}
+
 	    $userSocials = [];
 	    /** @var UserSocialModel $userSocial */
 	    foreach (UserSocialModel::where('user_id', $this->getUser()->id)->get() as $userSocial) {
@@ -73,4 +79,27 @@ class SettingsController extends BaseMainController
 	        'userSocials' => $userSocials,
         ]);
     }
+
+	/**
+	 * @param Request $request
+	 * @return bool
+	 * @throws \Exception
+	 */
+	protected function processDisconnectSocial(Request $request)
+	{
+		if (!$request->isPost()) {
+			return false;
+		}
+
+		$id = $request->getParam('social');
+		if (!$id) {
+			return false;
+		}
+
+		$userSocial = UserSocialModel::find($id);
+		if ($userSocial->user_id != $this->getUser()->id) {
+			return false;
+		}
+		return (bool) $userSocial->delete();
+	}
 }

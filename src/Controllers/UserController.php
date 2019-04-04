@@ -7,6 +7,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Auth\Social\SocialAuth;
 use \GameX\Constants\IndexConstants;
+use \GameX\Constants\SettingsConstants;
 use \GameX\Constants\PreferencesConstants;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
@@ -238,6 +239,13 @@ class UserController extends BaseMainController
 			throw new NotFoundException($request, $response);
 		}
 
+		$socialHelper = new SocialHelper($this->container);
+
+		$user = $this->getUser();
+		if ($user && $socialHelper->findByProviderAndUser($provider, $user)) {
+			return $this->redirect(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'social']);
+		}
+
 		$adapter = $social->getProvider($provider);
 
 		$adapter->authenticate();
@@ -247,11 +255,13 @@ class UserController extends BaseMainController
 
 		$profile = $adapter->getUserProfile();
 
-//		TODO: Check if user logined and redirect to settings
-//		if ($this->getUser())
+		if ($user) {
+			$socialHelper->register($provider, $profile, $user);
+			$this->addSuccessMessage('Connected');
+			return $this->redirect(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'social']);
+		}
 
-		$socialHelper = new SocialHelper($this->container);
-		$userSocial = $socialHelper->find($provider, $profile);
+		$userSocial = $socialHelper->findByProviderAndIdentifier($provider, $profile);
 		if ($userSocial && $userSocial->user) {
 			$userSocial->profile_url = $profile->profileURL;
 			$userSocial->photo_url = $profile->photoURL;
