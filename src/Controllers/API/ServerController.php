@@ -118,6 +118,7 @@ class ServerController extends BaseApiController
         $server->map_id = $map->id;
         $server->num_players = 0;
         $server->max_players = $result->getValue('max_players');
+	    $server->ping_at = Carbon::now()->toDateTimeString();
         $server->save();
 
         /** @var \GameX\Core\Cache\Cache $cache */
