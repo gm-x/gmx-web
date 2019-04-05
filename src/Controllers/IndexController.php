@@ -36,7 +36,7 @@ class IndexController extends BaseMainController
         $cache = $this->getContainer('cache');
 
         $players = [];
-        foreach (Server::all() as $server) {
+        foreach ($servers as $server) {
             $players[$server->id] = $cache->get('players_online', $server);
         }
 

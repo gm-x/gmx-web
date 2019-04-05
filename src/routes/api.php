@@ -7,6 +7,7 @@ use \GameX\Controllers\API\PunishController;
 $this->post('/server/privileges', BaseController::action(ServerController::class, 'privileges'));
 $this->post('/server/reasons', BaseController::action(ServerController::class, 'reasons'));
 $this->post('/server/info', BaseController::action(ServerController::class, 'info'));
+$this->post('/server/ping', BaseController::action(ServerController::class, 'ping'));
 $this->post('/player/connect', BaseController::action(PlayerController::class, 'connect'));
 $this->post('/player/disconnect', BaseController::action(PlayerController::class, 'disconnect'));
 $this->post('/player/assign', BaseController::action(PlayerController::class, 'assign'));

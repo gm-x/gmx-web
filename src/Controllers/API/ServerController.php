@@ -130,6 +130,24 @@ class ServerController extends BaseApiController
             'map' => $map
         ]);
     }
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param array $args
+	 * @return Response
+	 * @throws ApiException
+	 */
+	public function pingAction(Request $request, Response $response, array $args)
+	{
+		$server = $this->getServer($request);
+		$server->ping_at = Carbon::now()->toDateTimeString();
+		$server->save();
+
+		return $response->withStatus(200)->withJson([
+			'success' => true
+		]);
+	}
     
     /**
      * @param Request $request
