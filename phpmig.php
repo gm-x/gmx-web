@@ -6,9 +6,6 @@ use \Pimple\Container;
 
 $container = new Container();
 
-// replace this with a better Phpmig\Adapter\AdapterInterface
-$container['phpmig.adapter'] = new Adapter\File\Flat(__DIR__ . DIRECTORY_SEPARATOR . 'migrations/.migrations.log');
-
 $container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 
 // You can also provide an array of migration files
