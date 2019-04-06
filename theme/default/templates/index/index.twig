@@ -5,16 +5,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="uk-child-width-1-2@m uk-grid-small uk-grid-match" uk-grid="masonry: true">
+<div class="uk-child-width-1-1@m uk-grid-small" uk-grid>
 	<div>
 		<div uk-slider="center: true">
 			<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
 				<ul class="uk-slider-items uk-child-width-1-1@s uk-grid">
                     {% for server in servers %}
 						<li>
-							<div class="uk-card uk-card-default">
-								<div class="uk-inline">
-									{% if server.online and server.map.exists() %}
+							<div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+								<div class="uk-inline uk-card-media-left">
+									{% if server.map.exists() %}
 										<img
 											src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
 											alt="{{ server.map.name }}"
@@ -34,26 +34,53 @@
 											{{ players[server.id] | length }}/{{ server.max_players }}
 										</p>
 									</div>
+									<div class="uk-card-badge uk-label">
+                                        {% if server.success %}
+                                            {{ server.map.exists() ? server.map.name : '-' }}
+                                        {% else %}
+											OFFLINE
+                                        {% endif %}
+									</div>
 								</div>
-								<div class="uk-card-badge uk-label">
-									{% if server.online %}
-                                        {{ server.map.exists() ? server.map.name : '-' }}
-                                    {% else %}
-										OFFLINE
-                                    {% endif %}
-								</div>
+									<div class="uk-card-body">
+										<h3 class="uk-card-title">Список игроков</h3>
+										<table class="uk-table uk-table-divider">
+											<tr>
+												<th>Никнейм</th>
+												<th>Убийств</th>
+												<th>Смертей</th>
+											</tr>
+											<tr>
+												<td>Gamer 1</td>
+												<td>1</td>
+												<td>2</td>
+											</tr>
+											<tr>
+												<td>Gamer 2</td>
+												<td>1</td>
+												<td>2</td>
+											</tr>
+											<tr>
+												<td>Gamer 3</td>
+												<td>1</td>
+												<td>2</td>
+											</tr>
+										</table>
+									</div>
 							</div>
 						</li>
                     {% endfor %}
 				</ul>
-				<a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-				<a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+				<a class="uk-position-center-left uk-position-small" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+				<a class="uk-position-center-right uk-position-small" href="#" uk-slidenav-next uk-slider-item="next"></a>
 			</div>
 			<ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
 		</div>
 	</div>
+</div>
+<div class="uk-grid-small uk-child-width-expand@s" uk-grid>
 	<div>
-		<div class="uk-card uk-card-default uk-margin-large-top">
+		<div class="uk-card uk-card-default">
 			<div class="uk-card-body">
 				<h3 class="uk-card-title">Последние наказания</h3>
 				<div f-table f-divider>
@@ -84,9 +111,32 @@
 	<div>
 		<div class="uk-card uk-card-default">
 			<div class="uk-card-body">
-				<h1>Somebody else :)</h1>
+				<h3 class="uk-card-title">Последние наказания</h3>
+				<div f-table f-divider>
+					<ul th>
+						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Nick</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Reason</li>
+					</ul>
+					<ul>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
+					</ul>
+					<ul>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
+					</ul>
+					<ul>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
+					</ul>
+					<ul>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
 {% endblock %}
