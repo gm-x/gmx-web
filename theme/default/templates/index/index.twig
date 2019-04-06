@@ -14,7 +14,7 @@
 						<li>
 							<div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
 								<div class="uk-inline uk-card-media-left">
-									{% if server.map.exists() %}
+									{% if server.online and server.map.exists() %}
 										<img
 											src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
 											alt="{{ server.map.name }}"
@@ -35,7 +35,7 @@
 										</p>
 									</div>
 									<div class="uk-card-badge uk-label">
-                                        {% if server.success %}
+                                        {% if server.online %}
                                             {{ server.map.exists() ? server.map.name : '-' }}
                                         {% else %}
 											OFFLINE
