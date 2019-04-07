@@ -6,11 +6,11 @@
 	<div f-table f-divider>
 		{% for provider in socialNetworks %}
 		<ul>
-			<li class="uk-width-1-2@m uk-width-1-2s uk-visible@s">
-				<i class="fab fa-{{ social_get_icon(provider) }} fa-lg"></i>
+			<li class="uk-width-1-2@m">
+				<i class="fab fa-{{ social_get_icon(provider) }} fa-lg uk-margin-medium-right"></i>
 				{{ social_get_title(provider) }}
 			</li>
-			<li class="uk-width-1-2@m uk-width-1-2@s uk-visible@s">
+			<li class="uk-width-1-2@m">
 				{% if userSocials[provider] is defined %}
 					<form method="post">
 						{{ csrf_token() }}
