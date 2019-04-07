@@ -19,6 +19,6 @@ class Twig_Dump extends Twig_Extension
     
     public function dump($var)
     {
-        return dump($var);
+        dump($var);
     }
 }
