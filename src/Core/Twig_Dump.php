@@ -13,16 +13,12 @@ class Twig_Dump extends Twig_Extension
     public function getFunctions()
     {
         return [
-            new Twig_SimpleFunction('dump', [$this, 'dump'], ['is_safe' => ['html']]),
+            new Twig_SimpleFunction('dump', [$this, 'dump']),
         ];
     }
     
     public function dump($var)
     {
-        ob_start();
-        echo '<pre>';
-        var_dump($var);
-        echo '</pre>';
-        return ob_get_clean();
+        return dump($var);
     }
 }

@@ -61,6 +61,11 @@ input {
     font-size: 50px;
 }
 
+:not(pre) > code, :not(pre) > kbd, :not(pre) > samp {
+    white-space: pre-wrap !important;
+    background: transparent !important;
+}
+
 .sidenav {
     position: fixed;
     width: 30px;
