@@ -4,6 +4,7 @@ namespace GameX\Controllers;
 
 use GameX\Core\Auth\Models\UserSocialModel;
 use \GameX\Core\BaseMainController;
+use Illuminate\Database\Eloquent\Collection;
 use \Slim\Http\Request;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Auth\Social\SocialAuth;
@@ -64,11 +65,11 @@ class SettingsController extends BaseMainController
 			return $this->redirect(SettingsConstants::ROUTE_INDEX, [], ['tab' => 'social']);
 		}
 
-	    $userSocials = [];
-	    /** @var UserSocialModel $userSocial */
-	    foreach (UserSocialModel::where('user_id', $this->getUser()->id)->get() as $userSocial) {
-		    $userSocials[$userSocial->provider] = $userSocial;
-	    }
+	    $userSocials = $user->socials
+            ->keyBy(function (UserSocialModel $item) {
+                return $item->provider;
+            })
+            ->all();
 
         return $this->getView()->render($response, 'settings/index.twig', [
             'tab' => $request->getParam('tab', 'email'),
