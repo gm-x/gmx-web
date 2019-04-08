@@ -35,7 +35,7 @@ class AccountsController extends BaseMainController
     /**
      * @param Request $request
      * @param Response $response
-     * @param string $id
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws NotAllowedException
@@ -71,7 +71,7 @@ class AccountsController extends BaseMainController
     /**
      * @param Request $request
      * @param Response $response
-     * @param string $id
+     * @param int $id
      * @param UserModel $user
      * @return Player
      * @throws NotFoundException

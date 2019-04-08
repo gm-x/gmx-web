@@ -14,11 +14,11 @@ $this
 	->add($permissions->isAuthorizedMiddleware());
 
 $this
-    ->get('/accounts/{player}', [AccountsController::class, 'view'])
+    ->get('/accounts/{player:\d+}', [AccountsController::class, 'view'])
     ->setName(AccountsConstants::ROUTE_VIEW)
     ->add($permissions->isAuthorizedMiddleware());
 
 $this
-    ->post('/accounts/{player}/edit', [AccountsController::class, 'edit'])
+    ->post('/accounts/{player:\d+}/edit', [AccountsController::class, 'edit'])
     ->setName(AccountsConstants::ROUTE_EDIT)
     ->add($permissions->isAuthorizedMiddleware());
