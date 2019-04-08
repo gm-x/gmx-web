@@ -44,7 +44,7 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param string|null $id
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Cache\NotFoundException
@@ -105,12 +105,12 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param string|null $id
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function editAction(Request $request, Response $response, $id = null)
+    public function editAction(Request $request, Response $response, $id)
     {
         $server = $this->getServer($request, $response, $id);
 
@@ -142,11 +142,11 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param string|null $id
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(Request $request, Response $response, $id = null)
+    public function deleteAction(Request $request, Response $response, $id)
     {
         $server = $this->getServer($request, $response, $id);
         
@@ -164,13 +164,13 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      */
-    public function tokenAction(Request $request, Response $response, array $args = [])
+    public function tokenAction(Request $request, Response $response, $id)
     {
         try {
-            $server = $this->getServer($request, $response, $args);
+            $server = $this->getServer($request, $response, $id);
             $server->token = $server->generateNewToken();
             $server->save();
             return $response->withJson([

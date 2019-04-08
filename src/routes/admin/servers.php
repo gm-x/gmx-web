@@ -23,7 +23,7 @@ return function () {
         ));
     
     $this
-        ->get('/{server}/token', [ServersController::class, 'token'])
+        ->get('/{server:\d+}/token', [ServersController::class, 'token'])
         ->setName(ServersConstants::ROUTE_TOKEN)
         ->add($permissions->hasAccessToResourceMiddleware(
             'server',
@@ -33,7 +33,7 @@ return function () {
         ));
 
     $this
-        ->get('/{server}/view', [ServersController::class, 'view'])
+        ->get('/{server:\d+}/view', [ServersController::class, 'view'])
         ->setName(ServersConstants::ROUTE_VIEW)
         ->add($permissions->hasAccessToPermissionMiddleware(
             ServersConstants::PERMISSION_GROUP,
@@ -51,7 +51,7 @@ return function () {
         ));
 
     $this
-        ->map(['GET', 'POST'], '/{server}/edit', [ServersController::class, 'edit'])
+        ->map(['GET', 'POST'], '/{server:\d+}/edit', [ServersController::class, 'edit'])
         ->setName(ServersConstants::ROUTE_EDIT)
         ->add($permissions->hasAccessToPermissionMiddleware(
             ServersConstants::PERMISSION_GROUP,
@@ -60,7 +60,7 @@ return function () {
         ));
 
     $this
-        ->post('/{server}/delete', [ServersController::class, 'delete'])
+        ->post('/{server:\d+}/delete', [ServersController::class, 'delete'])
         ->setName(ServersConstants::ROUTE_DELETE)
         ->add($permissions->hasAccessToPermissionMiddleware(
             ServersConstants::PERMISSION_GROUP,
@@ -68,7 +68,7 @@ return function () {
             Permissions::ACCESS_DELETE
         ));
 
-    $this->group('/{server}/groups', function () {
+    $this->group('/{server:\d+}/groups', function () {
         /** @var \Slim\App $this */
 
         /** @var Permissions $permissions */
@@ -95,7 +95,7 @@ return function () {
             ));
 
         $this
-            ->map(['GET', 'POST'], '/{group}/edit', [GroupsController::class, 'edit'])
+            ->map(['GET', 'POST'], '/{group:\d+}/edit', [GroupsController::class, 'edit'])
             ->setName(GroupsConstants::ROUTE_EDIT)
             ->add($permissions->hasAccessToResourceMiddleware(
                 'server',
@@ -105,7 +105,7 @@ return function () {
             ));
 
         $this
-            ->post('/{group}/delete', [GroupsController::class, 'delete'])
+            ->post('/{group:\d+}/delete', [GroupsController::class, 'delete'])
             ->setName(GroupsConstants::ROUTE_DELETE)
             ->add($permissions->hasAccessToResourceMiddleware(
                 'server',
@@ -125,7 +125,7 @@ return function () {
             ));
     });
     
-    $this->group('/{server}/reasons', function () {
+    $this->group('/{server:\d+}/reasons', function () {
         /** @var \Slim\App $this */
 
         /** @var Permissions $permissions */
@@ -152,7 +152,7 @@ return function () {
             ));
         
         $this
-            ->map(['GET', 'POST'], '/{reason}/edit', [ReasonsController::class, 'edit'])
+            ->map(['GET', 'POST'], '/{reason:\d+}/edit', [ReasonsController::class, 'edit'])
             ->setName(ReasonsConstants::ROUTE_EDIT)
             ->add($permissions->hasAccessToResourceMiddleware(
                 'server',
@@ -162,7 +162,7 @@ return function () {
             ));
         
         $this
-            ->post('/{reason}/delete', [ReasonsController::class, 'delete'])
+            ->post('/{reason:\d+}/delete', [ReasonsController::class, 'delete'])
             ->setName(ReasonsConstants::ROUTE_DELETE)
             ->add($permissions->hasAccessToResourceMiddleware(
                 'server',
