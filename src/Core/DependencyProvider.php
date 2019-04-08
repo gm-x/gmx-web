@@ -3,7 +3,7 @@
 namespace GameX\Core;
 
 use \Pimple\ServiceProviderInterface;
-use \Pimple\Container;
+use \Pimple\Container as PimpleContainer;
 use \Psr\Container\ContainerInterface;
 use \GameX\Constants\PreferencesConstants;
 
@@ -39,7 +39,6 @@ use \Cartalyst\Sentinel\Sentinel;
 
 use \GameX\Constants\UserConstants;
 use \GameX\Core\Auth\Social\SocialAuth;
-use \GameX\Core\Auth\Social\Provider;
 use \GameX\Core\Auth\Social\Session as HybridauthSession;
 use \GameX\Core\Auth\Social\Logger as HybridauthLogger;
 use \GameX\Core\Auth\Social\CallbackHelper as HybridauthCallback;
@@ -87,7 +86,7 @@ class DependencyProvider implements ServiceProviderInterface
     /**
      * @inheritdoc
      */
-    public function register(Container $container)
+    public function register(PimpleContainer $container)
     {
         $container['base_url'] = function (ContainerInterface $container) {
             /** @var \Slim\Http\Uri $uri */

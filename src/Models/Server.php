@@ -21,6 +21,7 @@ use \GameX\Core\Utils;
  * @property int $num_players
  * @property int $max_players
  * @property int $map_id
+ * @property Carbon $ping_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Group[] $groups
@@ -28,6 +29,7 @@ use \GameX\Core\Utils;
  * @property Map $map
  * @property Player[] $players
  * @property PlayerSession[] $sessions
+ * @property bool $online
  */
 class Server extends BaseModel
 {
@@ -53,12 +55,26 @@ class Server extends BaseModel
     /**
      * @var array
      */
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['ping_at', 'created_at', 'updated_at', 'deleted_at'];
     
     /**
      * @var array
      */
     protected $hidden = ['rcon', 'token', 'created_at', 'updated_at', 'deleted_at'];
+
+	/**
+	 * @var array
+	 */
+	protected $appends = ['online'];
+
+	/**
+	 * @return bool
+	 */
+	public function getOnlineAttribute()
+	{
+		return $this->ping_at !== null
+			&& $this->ping_at->diffInMinutes(Carbon::now(), false) < 2;
+	}
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

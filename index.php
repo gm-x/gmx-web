@@ -16,13 +16,19 @@ try {
     die('Can\'t load configuration file');
 }
 
-$settings = $config->getNode('debug')->get('pretty') ? [
-    'determineRouteBeforeAppMiddleware' => true,
-    'displayErrorDetails' => true,
-    'debug' => true
-] : [
+$settings = [
     'determineRouteBeforeAppMiddleware' => true,
 ];
+
+if ($config->getNode('debug')->get('pretty')) {
+    $settings['displayErrorDetails'] = true;
+    $settings['debug'] = true;
+}
+
+if (!$config->getNode('debug')->get('routes')) {
+    $settings['routerCacheFile'] = __DIR__ . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'routes.php';
+    $settings['debug'] = true;
+}
 
 $container = new \Slim\Container([
 	'settings' => $settings,
@@ -33,6 +39,16 @@ $container = new \Slim\Container([
 \GameX\Core\BaseForm::setContainer($container);
 \GameX\Core\Utils::setContainer($container);
 date_default_timezone_set('UTC');
+
+$container['foundHandler'] = function() {
+    return new \Slim\Handlers\Strategies\RequestResponseArgs();
+};
+
+$container['callableResolver'] = function (\Psr\Container\ContainerInterface $container) {
+    return new \GameX\Core\CallableResolver($container);
+};
+
+$container->register(new \GameX\Middlewares\DependencyProvider());
 
 $app = new \Slim\App($container);
 
@@ -90,8 +106,27 @@ if ($config->getNode('debug')->get('exceptions')) {
 }
 
 $container->register(new \GameX\Core\DependencyProvider($config));
-include __DIR__ . '/src/middlewares.php';
-include __DIR__ . '/src/routes/index.php';
+
+$app
+	->add($container->get('ip_address_middleware'))
+	->add($container->get('queries_log_middleware'))
+	->add($container->get('redirect_middleware'))
+	->add($container->get('trail_slash_middleware'));
+
+$app->group('', \GameX\Routes\MainRoutes::class)
+	->add($container->get('auth_middleware'))
+	->add($container->get('csrf_middleware'))
+	->add($container->get('security_middleware'));
+
+$app->group('/admin', \GameX\Routes\AdminRoutes::class)
+	->add($container->get('auth_middleware'))
+	->add($container->get('csrf_middleware'))
+	->add($container->get('security_middleware'));
+
+$app->group('/api', \GameX\Routes\ApiRoutes::class)
+	->add($container->get('api_token_middleware'))
+	->add($container->get('api_request_middleware'));
+
 
 //set_error_handler(function ($errno, $error, $file, $line) use ($container) {
 //    $container->get('log')->error("#$errno: $error in $file:$line");

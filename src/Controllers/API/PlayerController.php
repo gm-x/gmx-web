@@ -148,7 +148,7 @@ class PlayerController extends BaseApiController
     public function disconnectAction(Request $request, Response $response, array $args)
     {
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('id', true, [
+        $validator->set('session_id', true, [
                 new Number(1)
             ]);
         
@@ -157,11 +157,8 @@ class PlayerController extends BaseApiController
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
-        
-        $player = Player::where('id', $result->getValue('id'))->first();
-        $player->save();
-        
-        $session = $player->getActiveSession();
+
+        $session = PlayerSession::find($result->getValue('session_id'));
         if ($session) {
             $session->status = PlayerSession::STATUS_OFFLINE;
             $session->disconnected_at = Carbon::now();

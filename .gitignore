@@ -6,9 +6,11 @@
 !/runtime/cache/.gitkeep
 /runtime/logs/
 !runtime/logs/.gitkeep
+runtime/routes.php
 /uploads/
 !/uploads/.gitkeep
 config.json
 config.php
+manifest.json
 .idea/
 .vscode/

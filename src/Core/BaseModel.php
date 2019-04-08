@@ -13,11 +13,6 @@ abstract class BaseModel extends Model
     use Rememberable;
     
     /**
-     * @var bool
-     */
-    protected $rememberCache = true;
-    
-    /**
      * @var ContainerInterface
      */
     protected static $container;

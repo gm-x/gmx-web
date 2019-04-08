@@ -3,6 +3,7 @@ return [
     'debug' => [
         'exceptions' => false,
         'pretty' => false,
+        'routes' => false,
     ],
     'db' => [
         'driver' => 'mysql',

@@ -21,8 +21,13 @@ class AdminController extends BaseAdminController
     {
         return AdminConstants::ROUTE_INDEX;
     }
-    
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return ResponseInterface
+     */
+    public function indexAction(ServerRequestInterface $request, ResponseInterface $response)
     {
 
         $today = Carbon::today();

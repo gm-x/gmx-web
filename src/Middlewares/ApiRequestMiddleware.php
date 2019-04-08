@@ -2,6 +2,7 @@
 
 namespace GameX\Middlewares;
 
+use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Log\Logger;
@@ -12,16 +13,16 @@ class ApiRequestMiddleware
 {
     
     /**
-     * @var Logger
+     * @var ContainerInterface
      */
-    protected $logger;
+    protected $container;
     
     /**
-     * @param Logger $logger
+     * @param ContainerInterface $container
      */
-    public function __construct(Logger $logger)
+    public function __construct(ContainerInterface $container)
     {
-        $this->logger = $logger;
+        $this->container = $container;
     }
     
     /**
@@ -44,7 +45,7 @@ class ApiRequestMiddleware
                     ],
                 ]);
         } catch (Exception $e) {
-            $this->logger->exception($e);
+            $this->getLogger()->exception($e);
             return $response->withStatus(500)->withJson([
                     'success' => false,
                     'error' => [
@@ -53,5 +54,13 @@ class ApiRequestMiddleware
                     ],
                 ]);
         }
+    }
+
+    /**
+     * @return Logger
+     */
+    protected function getLogger()
+    {
+        return $this->container->get('log');
     }
 }
