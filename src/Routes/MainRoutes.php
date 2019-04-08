@@ -1,6 +1,6 @@
 <?php
 
-namespace GameX\routes;
+namespace GameX\Routes;
 
 use \Slim\App;
 use \GameX\Core\BaseRoute;

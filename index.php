@@ -48,6 +48,8 @@ $container['callableResolver'] = function (\Psr\Container\ContainerInterface $co
     return new \GameX\Core\CallableResolver($container);
 };
 
+$container->register(new \GameX\Middlewares\DependencyProvider());
+
 $app = new \Slim\App($container);
 
 if ($config->getNode('debug')->get('exceptions')) {
@@ -104,8 +106,27 @@ if ($config->getNode('debug')->get('exceptions')) {
 }
 
 $container->register(new \GameX\Core\DependencyProvider($config));
-include __DIR__ . '/src/middlewares.php';
-include __DIR__ . '/src/routes/index.php';
+
+$app
+	->add($container->get('ip_address_middleware'))
+	->add($container->get('queries_log_middleware'))
+	->add($container->get('redirect_middleware'))
+	->add($container->get('trail_slash_middleware'));
+
+$app->group('', \GameX\Routes\MainRoutes::class)
+	->add($container->get('auth_middleware'))
+	->add($container->get('csrf_middleware'))
+	->add($container->get('security_middleware'));
+
+$app->group('/admin', \GameX\Routes\AdminRoutes::class)
+	->add($container->get('auth_middleware'))
+	->add($container->get('csrf_middleware'))
+	->add($container->get('security_middleware'));
+
+$app->group('/api', \GameX\Routes\ApiRoutes::class)
+	->add($container->get('api_token_middleware'))
+	->add($container->get('api_request_middleware'));
+
 
 //set_error_handler(function ($errno, $error, $file, $line) use ($container) {
 //    $container->get('log')->error("#$errno: $error in $file:$line");
