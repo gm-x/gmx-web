@@ -24,11 +24,10 @@ class SettingsController extends BaseMainController
     /**
      * @param Request $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      * @throws RedirectException
      */
-    public function indexAction(Request $request, ResponseInterface $response, array $args)
+    public function indexAction(Request $request, ResponseInterface $response)
     {
         $user = $this->getUser();
         

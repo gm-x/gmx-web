@@ -59,11 +59,10 @@ class UserController extends BaseMainController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      * @throws RedirectException
      */
-    public function registerAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    public function registerAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         $authHelper = new AuthHelper($this->container);
         $form = new RegisterForm($authHelper, $this->autoActivateUsers);
@@ -99,19 +98,20 @@ class UserController extends BaseMainController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param string $code
      * @return ResponseInterface
      * @throws NotAllowedException
      * @throws RedirectException
      */
-    public function activateAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    public function activateAction(ServerRequestInterface $request, ResponseInterface $response, $code)
     {
         if (!$this->mailEnabled) {
             throw new NotAllowedException();
         }
         
         $authHelper = new AuthHelper($this->container);
-        $form = new ActivationForm($authHelper, $args['code']);
+        // TODO: check vulnerabilities
+        $form = new ActivationForm($authHelper, $code);
         if ($this->processForm($request, $form, true)) {
             $this->addSuccessMessage($this->getTranslate('user', 'activated'));
             return $this->redirect('login');
@@ -125,11 +125,10 @@ class UserController extends BaseMainController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      * @throws RedirectException
      */
-    public function loginAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    public function loginAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         $form = new LoginForm(new AuthHelper($this->container), $this->mailEnabled);
         if ($this->processForm($request, $form)) {
@@ -149,10 +148,9 @@ class UserController extends BaseMainController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function logoutAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    public function logoutAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         $authHelper = new AuthHelper($this->container);
         $authHelper->logoutUser();
@@ -162,12 +160,11 @@ class UserController extends BaseMainController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      * @throws NotAllowedException
      * @throws RedirectException
      */
-    public function resetPasswordAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    public function resetPasswordAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         if (!$this->mailEnabled) {
             throw new NotAllowedException();
@@ -197,18 +194,18 @@ class UserController extends BaseMainController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param string $code
      * @return ResponseInterface
      * @throws NotAllowedException
      * @throws RedirectException
      */
-    public function resetPasswordCompleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    public function resetPasswordCompleteAction(ServerRequestInterface $request, ResponseInterface $response, $code)
     {
         if (!$this->mailEnabled) {
             throw new NotAllowedException();
         }
         
-        $form = new ResetPasswordCompleteForm(new AuthHelper($this->container), $args['code']);
+        $form = new ResetPasswordCompleteForm(new AuthHelper($this->container), $code);
         if ($this->processForm($request, $form, true)) {
             $this->addSuccessMessage($this->getTranslate('user', 'reset_password_done'));
             return $this->redirect('login');
@@ -222,18 +219,16 @@ class UserController extends BaseMainController
 	/**
 	 * @param ServerRequestInterface $request
 	 * @param ResponseInterface $response
-	 * @param array $args
+	 * @param string $provider
 	 * @return ResponseInterface
 	 * @throws NotFoundException
 	 * @throws RedirectException
 	 * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
 	 */
-	public function socialAction(ServerRequestInterface $request, ResponseInterface $response, array $args)
+	public function socialAction(ServerRequestInterface $request, ResponseInterface $response, $provider)
 	{
 		/** @var \GameX\Core\Auth\Social\SocialAuth $social */
 		$social = $this->getContainer('social');
-
-		$provider = $args['provider'];
 
 		if (!$social->hasProvider($provider)) {
 			throw new NotFoundException($request, $response);

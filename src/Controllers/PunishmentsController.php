@@ -22,10 +22,9 @@ class PunishmentsController extends BaseMainController
     /**
      * @param Request $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(Request $request, ResponseInterface $response, array $args)
+    public function indexAction(Request $request, ResponseInterface $response)
     {
         $filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
         

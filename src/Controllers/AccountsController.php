@@ -22,10 +22,9 @@ class AccountsController extends BaseMainController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(Request $request, Response $response, array $args)
+    public function indexAction(Request $request, Response $response)
     {
         $user = $this->getUser();
         return $this->getView()->render($response, 'accounts/index.twig', [
@@ -36,15 +35,15 @@ class AccountsController extends BaseMainController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param string $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws NotAllowedException
      */
-    public function viewAction(Request $request, Response $response, array $args)
+    public function viewAction(Request $request, Response $response, $id)
     {
         $user = $this->getUser();
-        $player = $this->getPlayer($request, $response, $args, $user);
+        $player = $this->getPlayer($request, $response, $id, $user);
         return $this->getView()->render($response, 'accounts/view.twig', [
             'user' => $user,
             'player' => $player
@@ -54,12 +53,11 @@ class AccountsController extends BaseMainController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws NotAllowedException
      */
-    public function editAction(Request $request, Response $response, array $args)
+    public function editAction(Request $request, Response $response)
     {
 //        $user = $this->getUser();
 //        $player = $this->getPlayer($request, $response, $args, $user);
@@ -73,19 +71,15 @@ class AccountsController extends BaseMainController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param string $id
      * @param UserModel $user
      * @return Player
      * @throws NotFoundException
      * @throws NotAllowedException
      */
-    protected function getPlayer(Request $request, Response $response, array $args, UserModel $user)
+    protected function getPlayer(Request $request, Response $response, $id, UserModel $user)
     {
-        if (!array_key_exists('player', $args)) {
-            throw new NotFoundException($request, $response);
-        }
-        
-        $player = Player::find($args['player']);
+        $player = Player::find($id);
         if (!$player) {
             throw new NotFoundException($request, $response);
         }
