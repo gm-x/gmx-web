@@ -45,7 +45,7 @@ $container['foundHandler'] = function() {
 };
 
 $container['callableResolver'] = function (\Psr\Container\ContainerInterface $container) {
-    return new \GameX\Core\RouteCallableResolver($container);
+    return new \GameX\Core\CallableResolver($container);
 };
 
 $app = new \Slim\App($container);
