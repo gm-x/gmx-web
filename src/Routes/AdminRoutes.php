@@ -6,6 +6,11 @@ use \Slim\App;
 use \GameX\Core\BaseRoute;
 use \GameX\Constants\Admin\AdminConstants;
 use \GameX\Controllers\Admin\AdminController;
+use \GameX\Routes\Admin\PreferencesRoutes;
+use \GameX\Routes\Admin\UsersRoutes;
+use \GameX\Routes\Admin\RolesRoutes;
+use \GameX\Routes\Admin\PlayersRoutes;
+use \GameX\Routes\Admin\ServersRoutes;
 
 class AdminRoutes extends BaseRoute
 {
@@ -16,11 +21,10 @@ class AdminRoutes extends BaseRoute
             ->setName(AdminConstants::ROUTE_INDEX)
             ->add($this->getPermissions()->hasAccessToGroupMiddleware('admin'));
 
-        $root = __DIR__ . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR;
-        $app->group('/preferences', include  $root . 'preferences.php');
-        $app->group('/users', include  $root . 'users.php');
-        $app->group('/roles', include $root . 'roles.php');
-        $app->group('/servers', include $root . 'servers.php');
-        $app->group('/players', include $root . 'players.php');
+	    $app->group('/preferences', PreferencesRoutes::class);
+	    $app->group('/users', UsersRoutes::class);
+	    $app->group('/roles', RolesRoutes::class);
+	    $app->group('/players', PlayersRoutes::class);
+	    $app->group('/servers', ServersRoutes::class);
     }
 }
