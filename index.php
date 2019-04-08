@@ -16,13 +16,19 @@ try {
     die('Can\'t load configuration file');
 }
 
-$settings = $config->getNode('debug')->get('pretty') ? [
-    'determineRouteBeforeAppMiddleware' => true,
-    'displayErrorDetails' => true,
-    'debug' => true
-] : [
+$settings = [
     'determineRouteBeforeAppMiddleware' => true,
 ];
+
+if ($config->getNode('debug')->get('pretty')) {
+    $settings['displayErrorDetails'] = true;
+    $settings['debug'] = true;
+}
+
+if (!$config->getNode('debug')->get('routes')) {
+    $settings['routerCacheFile'] = __DIR__ . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'routes.php';
+    $settings['debug'] = true;
+}
 
 $container = new \Slim\Container([
 	'settings' => $settings,
@@ -33,6 +39,10 @@ $container = new \Slim\Container([
 \GameX\Core\BaseForm::setContainer($container);
 \GameX\Core\Utils::setContainer($container);
 date_default_timezone_set('UTC');
+
+$container['foundHandler'] = function() {
+    return new \Slim\Handlers\Strategies\RequestResponseArgs();
+};
 
 $app = new \Slim\App($container);
 

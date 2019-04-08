@@ -27,10 +27,9 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(Request $request, Response $response, array $args = [])
+    public function indexAction(Request $request, Response $response)
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_menu', 'servers'));
@@ -45,14 +44,14 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param string|null $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function viewAction(Request $request, Response $response, array $args = [])
+    public function viewAction(Request $request, Response $response, $id = null)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -74,14 +73,13 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function createAction(Request $request, Response $response, array $args = [])
+    public function createAction(Request $request, Response $response)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response);
 
         $this->getBreadcrumbs()
             ->add(
@@ -107,14 +105,14 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param string|null $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function editAction(Request $request, Response $response, array $args = [])
+    public function editAction(Request $request, Response $response, $id = null)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -144,13 +142,13 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param string|null $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(Request $request, Response $response, array $args = [])
+    public function deleteAction(Request $request, Response $response, $id = null)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response, $id);
         
         try {
             $server->delete();
@@ -191,23 +189,21 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param string|null $id
      * @return Server
      * @throws NotFoundException
      */
-    protected function getServer(Request $request, Response $response, array $args)
+    protected function getServer(Request $request, Response $response, $id = null)
     {
-        if (array_key_exists('server', $args)) {
-            $serverId = $args['server'];
-        } else {
-            $serverId = $request->getParam('server');
+        if ($id === null) {
+            $id = $request->getParam('server');
         }
         
-        if (!$serverId) {
+        if ($id === null) {
             return new Server();
         }
         
-        $server = Server::find($serverId);
+        $server = Server::find($id);
         if (!$server) {
             throw new NotFoundException($request, $response);
         }
