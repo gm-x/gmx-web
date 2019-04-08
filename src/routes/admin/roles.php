@@ -21,7 +21,7 @@ return function () {
         ));
     
     $this
-        ->get('/{role}/view', [RolesController::class, 'view'])
+        ->get('/{role:\d+}/view', [RolesController::class, 'view'])
         ->setName(RolesConstants::ROUTE_VIEW)
         ->add($permissions->hasAccessToPermissionMiddleware(
             RolesConstants::PERMISSION_GROUP,
@@ -39,7 +39,7 @@ return function () {
         ));
 
     $this
-        ->map(['GET', 'POST'], '/{role}/edit', [RolesController::class, 'edit'])
+        ->map(['GET', 'POST'], '/{role:\d+}/edit', [RolesController::class, 'edit'])
         ->setName(RolesConstants::ROUTE_EDIT)
         ->add($permissions->hasAccessToPermissionMiddleware(
             RolesConstants::PERMISSION_GROUP,
@@ -48,7 +48,7 @@ return function () {
         ));
 
     $this
-        ->post('/{role}/delete', [RolesController::class, 'delete'])
+        ->post('/{role:\d+}/delete', [RolesController::class, 'delete'])
         ->setName(RolesConstants::ROUTE_DELETE)
         ->add($permissions->hasAccessToPermissionMiddleware(
             RolesConstants::PERMISSION_GROUP,
@@ -56,7 +56,7 @@ return function () {
             Permissions::ACCESS_DELETE
         ));
 
-    $this->group('/{role}/permissions', function () {
+    $this->group('/{role:\d+}/permissions', function () {
         /** @var \Slim\App $this */
 
         /** @var Permissions $permissions */
