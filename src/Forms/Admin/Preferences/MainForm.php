@@ -24,13 +24,20 @@ class MainForm extends BaseForm
      * @var Config
      */
     protected $preferences;
+
+    /**
+     * @var bool
+     */
+    protected $hasAccessToEdit;
     
     /**
      * @param Config $preferences
+     * @param bool $hasAccessToEdit
      */
-    public function __construct(Config $preferences)
+    public function __construct(Config $preferences, $hasAccessToEdit = true)
     {
         $this->preferences = $preferences;
+        $this->hasAccessToEdit = $hasAccessToEdit;
     }
     
     /**
@@ -44,15 +51,19 @@ class MainForm extends BaseForm
         $this->form->add(new Text('title', $main->get(PreferencesConstants::MAIN_TITLE), [
                 'title' => $this->getTranslate('admin_preferences', 'title'),
                 'required' => true,
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Select('language', $main->get(PreferencesConstants::MAIN_LANGUAGE), $languages, [
                 'title' => $this->getTranslate('admin_preferences', 'language'),
                 'required' => true,
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Select('theme', $main->get(PreferencesConstants::MAIN_THEME), $themes, [
                 'title' => $this->getTranslate('admin_preferences', 'theme'),
                 'required' => true,
+                'disabled' => !$this->hasAccessToEdit,
             ]))->add(new Checkbox('auto_activate_users', $main->get(PreferencesConstants::MAIN_AUTO_ACTIVATE_USERS), [
                 'title' => $this->getTranslate('admin_preferences', 'auto_activate_users'),
                 'required' => false,
+                'disabled' => !$this->hasAccessToEdit,
             ]));
         
         $this->form->getValidator()->set('title', true)->set('language', true, [

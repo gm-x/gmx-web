@@ -7,6 +7,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
 use \GameX\Core\Log\Logger;
 use \GameX\Core\Configuration\Config;
+use \GameX\Core\CSRF\Token;
 
 abstract class BaseController
 {
@@ -93,6 +94,16 @@ abstract class BaseController
         return $this->logger;
     }
     
+    protected function getCSRFToken()
+    {
+        /** @var Token $csrf */
+        $csrf = $this->getContainer('csrf');
+        return [
+            $csrf->getNameKey() => $csrf->getName(),
+            $csrf->getTokenKey() => $csrf->getToken()
+        ];
+    }
+    
     /**
      * @param string $path
      * @param array $data
@@ -130,15 +141,5 @@ abstract class BaseController
     protected function redirectTo($path, $status = null)
     {
         return $this->getContainer('response')->withRedirect($path, $status);
-    }
-    
-    /**
-     * @param string $controller
-     * @param string $action
-     * @return string
-     */
-    public static function action($controller, $action)
-    {
-        return $controller . ':' . $action . 'Action';
     }
 }

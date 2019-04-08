@@ -22,7 +22,6 @@ use \Exception;
 
 class PrivilegesController extends BaseAdminController
 {
-    
     /**
      * @return string
      */
@@ -34,14 +33,25 @@ class PrivilegesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $playerId
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function indexAction(Request $request, Response $response, array $args = [])
+    public function indexAction(Request $request, Response $response, $playerId)
     {
-        $player = $this->getPlayer($request, $response, $args);
-        
+        $player = $this->getPlayer($request, $response, $playerId);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add($this->getTranslate('admin_privileges', 'privileges'));
+
         $data = [];
         /** @var Server $server */
         foreach (Server::get() as $server) {
@@ -61,7 +71,7 @@ class PrivilegesController extends BaseAdminController
             }
         }
         
-        return $this->render('admin/players/privileges/index.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/index.twig', [
             'player' => $player,
             'data' => $data,
         ]);
@@ -70,17 +80,33 @@ class PrivilegesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $playerId
+     * @param int $serverId
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function createAction(Request $request, Response $response, array $args = [])
+    public function createAction(Request $request, Response $response, $playerId, $serverId)
     {
-        $player = $this->getPlayer($request, $response, $args);
-        $server = $this->getServer($request, $response, $args);
-        $privilege = $this->getPrivilege($request, $response, $args, $player);
-        
+        $player = $this->getPlayer($request, $response, $playerId);
+        $server = $this->getServer($request, $response, $serverId);
+        $privilege = $this->getPrivilege($request, $response, null, $player);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_privileges', 'privileges'),
+                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+            )
+            ->add($this->getTranslate('labels', 'create'));
+
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
@@ -95,7 +121,7 @@ class PrivilegesController extends BaseAdminController
             return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/privileges/form.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => true,
@@ -105,18 +131,34 @@ class PrivilegesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $playerId
+     * @param int $id
      * @return ResponseInterface
      * @throws NotAllowedException
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function editAction(Request $request, Response $response, array $args = [])
+    public function editAction(Request $request, Response $response, $playerId, $id)
     {
-        $player = $this->getPlayer($request, $response, $args);
-        $privilege = $this->getPrivilege($request, $response, $args, $player);
+        $player = $this->getPlayer($request, $response, $playerId);
+        $privilege = $this->getPrivilege($request, $response, $id);
         $server = $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_EDIT);
-        
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'users'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_privileges', 'privileges'),
+                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
+
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
@@ -131,7 +173,7 @@ class PrivilegesController extends BaseAdminController
             return $this->redirect(GroupsConstants::ROUTE_CREATE, ['server' => $server->id]);
         }
         
-        return $this->render('admin/players/privileges/form.twig', [
+        return $this->getView()->render($response, 'admin/players/privileges/form.twig', [
             'player' => $player,
             'form' => $form->getForm(),
             'create' => false,
@@ -141,15 +183,16 @@ class PrivilegesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $playerId
+     * @param int $id
      * @return ResponseInterface
      * @throws NotAllowedException
      * @throws NotFoundException
      */
-    public function deleteAction(Request $request, Response $response, array $args = [])
+    public function deleteAction(Request $request, Response $response, $playerId, $id)
     {
-        $player = $this->getPlayer($request, $response, $args);
-        $privilege = $this->getPrivilege($request, $response, $args, $player);
+        $player = $this->getPlayer($request, $response, $playerId);
+        $privilege = $this->getPrivilege($request, $response, $id);
         $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_DELETE);
         
         try {
@@ -166,17 +209,13 @@ class PrivilegesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return Player
      * @throws NotFoundException
      */
-    protected function getPlayer(Request $request, Response $response, array $args)
+    protected function getPlayer(Request $request, Response $response, $id)
     {
-        if (!array_key_exists('player', $args)) {
-            return new Player();
-        }
-        
-        $player = Player::find($args['player']);
+        $player = Player::find($id);
         if (!$player) {
             throw new NotFoundException($request, $response);
         }
@@ -187,13 +226,13 @@ class PrivilegesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $serverId
      * @return Server
      * @throws NotFoundException
      */
-    protected function getServer(Request $request, Response $response, array $args)
+    protected function getServer(Request $request, Response $response, $serverId)
     {
-        $server = Server::find($args['server']);
+        $server = Server::find($serverId);
         if (!$server) {
             throw new NotFoundException($request, $response);
         }
@@ -228,20 +267,20 @@ class PrivilegesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @param Player $player
      * @return Privilege
      * @throws NotFoundException
      */
-    protected function getPrivilege(Request $request, Response $response, array $args, Player $player)
+    protected function getPrivilege(Request $request, Response $response, $id = null, Player $player = null)
     {
-        if (!array_key_exists('privilege', $args)) {
+        if ($id === null) {
             return new Privilege([
                 'player_id' => $player->id
             ]);
         }
         
-        $privilege = Privilege::with('group')->find($args['privilege']);
+        $privilege = Privilege::with('group')->find($id);
         if (!$privilege) {
             throw new NotFoundException($request, $response);
         }

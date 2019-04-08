@@ -30,14 +30,22 @@ class PlayerController extends BaseApiController
     public function connectAction(Request $request, Response $response, array $args)
     {
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('id', false, [
+        $validator
+            ->set('id', false, [
                 new Number(1)
-            ])->set('emulator', true, [
+            ])
+            ->set('emulator', true, [
                 new Number(0)
-            ])->set('steamid', true, [
+            ])
+            ->set('steamid', true, [
                 new SteamID()
-            ])->set('nick', true)->set('ip', true, [
+            ])
+            ->set('nick', true)
+            ->set('ip', true, [
                 new IPv4()
+            ])
+            ->set('session_id', false, [
+                new Number(1)
             ]);
         
         
@@ -84,6 +92,8 @@ class PlayerController extends BaseApiController
 //        } else {
 //            $player->nick = $result->getValue('nick');
             $player->save();
+        } else if($result->getValue('session_id')) {
+            $session = PlayerSession::find($result->getValue('session_id'));
         } else {
             $session = $player->getActiveSession();
         }
@@ -112,7 +122,7 @@ class PlayerController extends BaseApiController
         
         $session->save();
         
-        $punishments = $player->getActivePunishments($server);
+//        $punishments = $player->getActivePunishments($server);
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
@@ -122,8 +132,8 @@ class PlayerController extends BaseApiController
             'success' => true,
             'player_id' => $player->id,
             'session_id' => $session->id,
-            'user' => $player->user,
-            'punishments' => $punishments,
+            'user_id' => $player->user ? $player->user->id : null,
+//            'punishments' => $punishments,
         ]);
     }
     
@@ -138,7 +148,7 @@ class PlayerController extends BaseApiController
     public function disconnectAction(Request $request, Response $response, array $args)
     {
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('id', true, [
+        $validator->set('session_id', true, [
                 new Number(1)
             ]);
         
@@ -147,11 +157,8 @@ class PlayerController extends BaseApiController
         if (!$result->getIsValid()) {
             throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
         }
-        
-        $player = Player::where('id', $result->getValue('id'))->first();
-        $player->save();
-        
-        $session = $player->getActiveSession();
+
+        $session = PlayerSession::find($result->getValue('session_id'));
         if ($session) {
             $session->status = PlayerSession::STATUS_OFFLINE;
             $session->disconnected_at = Carbon::now();
@@ -207,6 +214,7 @@ class PlayerController extends BaseApiController
         
         return $this->response($response, 200, [
             'success' => true,
+            'user_id' => $user->id
         ]);
     }
 }

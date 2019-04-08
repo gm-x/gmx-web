@@ -27,13 +27,15 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(Request $request, Response $response, array $args = [])
+    public function indexAction(Request $request, Response $response)
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_menu', 'servers'));
+
         $pagination = new Pagination(Server::get(), $request);
-        return $this->render('admin/servers/index.twig', [
+        return $this->getView()->render($response, 'admin/servers/index.twig', [
             'servers' => $pagination->getCollection(),
             'pagination' => $pagination,
         ]);
@@ -42,20 +44,27 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function viewAction(Request $request, Response $response, array $args = [])
+    public function viewAction(Request $request, Response $response, $id = null)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response, $id);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add($server->name);
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
         $players = $cache->get('players_online', $server);
         
-        return $this->render('admin/servers/view.twig', [
+        return $this->getView()->render($response, 'admin/servers/view.twig', [
             'server' => $server,
             'players' => $players,
         ]);
@@ -64,14 +73,20 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function createAction(Request $request, Response $response, array $args = [])
+    public function createAction(Request $request, Response $response)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add($this->getTranslate('labels', 'create'));
         
         $form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
@@ -81,7 +96,7 @@ class ServersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/form.twig', [
             'form' => $form->getForm(),
             'create' => true,
         ]);
@@ -90,14 +105,25 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function editAction(Request $request, Response $response, array $args = [])
+    public function editAction(Request $request, Response $response, $id)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response, $id);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
         
         $form = new ServersForm($server);
         if ($this->processForm($request, $form)) {
@@ -107,7 +133,7 @@ class ServersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/form.twig', [
             'form' => $form->getForm(),
             'create' => false,
         ]);
@@ -116,13 +142,13 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(Request $request, Response $response, array $args = [])
+    public function deleteAction(Request $request, Response $response, $id)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response, $id);
         
         try {
             $server->delete();
@@ -138,13 +164,13 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      */
-    public function tokenAction(Request $request, Response $response, array $args = [])
+    public function tokenAction(Request $request, Response $response, $id)
     {
         try {
-            $server = $this->getServer($request, $response, $args);
+            $server = $this->getServer($request, $response, $id);
             $server->token = $server->generateNewToken();
             $server->save();
             return $response->withJson([
@@ -163,23 +189,21 @@ class ServersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param string|null $id
      * @return Server
      * @throws NotFoundException
      */
-    protected function getServer(Request $request, Response $response, array $args)
+    protected function getServer(Request $request, Response $response, $id = null)
     {
-        if (array_key_exists('server', $args)) {
-            $serverId = $args['server'];
-        } else {
-            $serverId = $request->getParam('server');
+        if ($id === null) {
+            $id = $request->getParam('server');
         }
         
-        if (!$serverId) {
+        if ($id === null) {
             return new Server();
         }
         
-        $server = Server::find($serverId);
+        $server = Server::find($id);
         if (!$server) {
             throw new NotFoundException($request, $response);
         }

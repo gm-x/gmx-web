@@ -24,7 +24,8 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \DateTime $created_at
  * @property \DateTime $update_at
  * @property RoleModel $role
- * @property Player[] players
+ * @property Player[] $players
+ * @property UserSocialModel $social
  */
 class UserModel extends BaseModel implements UserInterface, PersistableInterface {
 
@@ -165,5 +166,13 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
      */
 	public function punishments() {
         return $this->hasMany(Punishment::class, 'punisher_user_id', 'id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function social()
+    {
+        return $this->hasOne(UserSocialModel::class, 'user_id', 'id');
     }
 }

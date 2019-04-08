@@ -4,6 +4,5 @@ namespace GameX\Constants;
 
 class SettingsConstants
 {
-    const ROUTE_MAIN = 'user_settings_main';
-    const ROUTE_ASSIGN = 'user_settings_assign';
+    const ROUTE_INDEX = 'user_settings';
 }

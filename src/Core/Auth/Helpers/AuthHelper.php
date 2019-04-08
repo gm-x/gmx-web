@@ -86,7 +86,6 @@ class AuthHelper
 
     /**
      * @param UserModel $user
-     * @param string $code
      * @return bool
      */
     public function activateUser(UserModel $user)

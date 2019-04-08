@@ -5,9 +5,9 @@
         </a>
         <div class="uk-navbar-left nav-overlay">
             <ul class="uk-navbar-nav">
-                {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
-                    <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                        <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
+                {% for item in menu.getItems() if item.getType() == 'item' and menu.hasAccess(item) %}
+                    <li {% if menu.isActive(item) %}class="uk-active"{% endif %}>
+                        <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">{{ item.getTitle() }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -28,8 +28,8 @@
             <ul class="uk-navbar-nav">
                 <li>
                     <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
-                    <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
-                        <ul class="uk-nav uk-navbar-dropdown-nav lang-select">
+                    <div class="uk-navbar-dropdown" uk-dropdown="pos: bottom-right; animation:uk-animation-shake; delay-hide: 0">
+                        <ul class="uk-nav uk-navbar-dropdown-nav lang-select" data-href="{{ path_for('language')}}">
                             {% for key,value in siteLanguages %}
                                 <li><a data-lang="{{ key }}">{{ value }}</a></li>
                             {% endfor %}
@@ -45,20 +45,40 @@
                             <i class="fas fa-user-circle"></i>
                         {% endif %}
                     </a>
-                    <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
+                    <div class="uk-navbar-dropdown" uk-dropdown="pos: bottom-right; animation:uk-animation-shake; delay-hide: 0">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             {% if is_guest() %}
-                                <li><a class="dropdown-item" href="{{ path_for('login') }}">
-                                        {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
-                                    </a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for('login') }}">
+                                        {{ trans('menu', 'login') }}/{{ trans('menu', 'register') }}
+                                    </a>
+                                </li>
                             {% else %}
                                 <li class="uk-nav-header">{{ get_user_name() }}</li>
                                 {% if has_access_group('admin') %}
-                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('buttons', 'acp') }}</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path_for('admin_index') }}">
+                                            <i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('menu', 'admin') }}
+                                        </a>
+                                    </li>
+                                    <li class="uk-nav-divider"></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}"><i class="fas fa-user uk-margin-small-right"></i> {{ trans('buttons', 'ucp') }}</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for(constants.accounts.ROUTE_LIST) }}">
+                                        <i class="fas fa-gamepad uk-margin-small-right"></i> {{ trans('menu', 'accounts') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_INDEX) }}">
+                                        <i class="fas fa-cogs uk-margin-small-right"></i> {{ trans('menu', 'settings') }}
+                                    </a>
+                                </li>
                                 <li class="uk-nav-divider"></li>
-                                <li><a class="dropdown-item" href="{{ path_for('logout') }}"><i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('buttons', 'logout') }}</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for('logout') }}">
+                                        <i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('menu', 'logout') }}
+                                    </a>
+                                </li>
                             {% endif %}
                         </ul>
                     </div>
@@ -76,44 +96,52 @@
         <div id="offcanvas-nav" uk-offcanvas="overlay: true">
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
-                    {% if is_guest() %}
-                        <li><a class="dropdown-item" href="{{ path_for('login') }}">
-                                {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
-                            </a></li>
-                    {% else %}
-                        <li class="uk-nav-header">{{ get_user_name() }}</li>
-                        {% if has_access_group('admin') %}
-                            <li>
-                                <a class="dropdown-item" href="{{ path_for('admin_index') }}">
-                                    <span class="uk-margin-small-right" uk-icon="icon: warning"></span> Admin
-                                </a>
-                            </li>
-                        {% endif %}
-                        <li>
-                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
-                                <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a>
-                        </li>
-                        <li class="uk-nav-divider"></li>
-                        <li><a class="dropdown-item" href="{{ path_for('logout') }}">
-                                <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('buttons', 'logout') }}
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-                <ul class="uk-nav uk-nav-default">
                     {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
                         <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
                             <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>
+                <ul class="uk-nav uk-nav-default">
+                    {% if is_guest() %}
+                        <li>
+                            <a class="dropdown-item" href="{{ path_for('login') }}">
+                                {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="uk-nav-header">{{ get_user_name() }}</li>
+                        {% if has_access_group('admin') %}
+                            <li>
+                                <a class="dropdown-item" href="{{ path_for('admin_index') }}">
+                                    <i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('menu', 'admin') }}
+                                </a>
+                            </li>
+                            <li class="uk-nav-divider"></li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item" href="{{ path_for(constants.accounts.ROUTE_LIST) }}">
+                                <i class="fas fa-gamepad uk-margin-small-right"></i> {{ trans('menu', 'accounts') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_INDEX) }}">
+                                <i class="fas fa-cogs uk-margin-small-right"></i> {{ trans('menu', 'settings') }}
+                        </li>
+                        <li class="uk-nav-divider"></li>
+                        <li><a class="dropdown-item" href="{{ path_for('logout') }}">
+                                <i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('menu', 'logout') }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
 {% endmacro %}
 
-{% macro adminbar(menu) %}
-    <nav class="uk-navbar-container uk-visible@xl" uk-navbar>
+{% macro adminbar(menu, adminmenu) %}
+    <nav class="uk-navbar-container uk-visible@m" uk-navbar>
         <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}">
             <img src="{{ base_url() }}/assets/images/logo.svg" width="100">
         </a>
@@ -157,16 +185,34 @@
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             {% if is_guest() %}
                                 <li><a class="dropdown-item" href="{{ path_for('login') }}">
-                                        {{ trans('buttons', 'login') }}/{{ trans('buttons', 'register') }}
+                                        {{ trans('menu', 'login') }}/{{ trans('menu', 'register') }}
                                     </a></li>
                             {% else %}
                                 <li class="uk-nav-header">{{ get_user_name() }}</li>
                                 {% if has_access_group('admin') %}
-                                    <li><a class="dropdown-item" href="{{ path_for('admin_index') }}"><i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('buttons', 'acp') }}</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path_for('admin_index') }}">
+                                            <i class="fas fa-wrench uk-margin-small-right"></i> {{ trans('menu', 'admin') }}
+                                        </a>
+                                    </li>
+                                    <li class="uk-nav-divider"></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}"><i class="fas fa-user uk-margin-small-right"></i> {{ trans('buttons', 'ucp') }}</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for(constants.accounts.ROUTE_LIST) }}">
+                                        <i class="fas fa-user uk-margin-small-right"></i> {{ trans('menu', 'accounts') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_INDEX) }}">
+                                        <i class="fas fa-user uk-margin-small-right"></i> {{ trans('menu', 'settings') }}
+                                    </a>
+                                </li>
                                 <li class="uk-nav-divider"></li>
-                                <li><a class="dropdown-item" href="{{ path_for('logout') }}"><i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('buttons', 'logout') }}</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path_for('logout') }}">
+                                        <i class="fas fa-sign-out-alt uk-margin-small-right"></i> {{ trans('menu', 'logout') }}
+                                    </a>
+                                </li>
                             {% endif %}
                         </ul>
                     </div>
@@ -175,7 +221,7 @@
         </div>
     </nav>
 
-    <nav class="uk-navbar-container uk-hidden@xl" uk-navbar>
+    <nav class="uk-navbar-container uk-hidden@m" uk-navbar>
         <a class="uk-navbar-item uk-logo" href="{{ path_for('index') }}">
             <img src="{{ base_url() }}/assets/images/logo.svg" width="80">
         </a>
@@ -185,10 +231,38 @@
         <div id="offcanvas-nav" uk-offcanvas="overlay: true">
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-default">
-                    {% for item in menu if item.permission or has_access_permission(item.permission[0], item.permission[1]) %}
-                        <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                            <a class="nav-link" href="{{ path_for(item.route, item.params) }}">{{ item.title }}</a>
-                        </li>
+                    {% for item in adminmenu.getItems() if adminmenu.hasAccess(item) %}
+                        {% if item.getType() == 'item' %}
+                            <li class="{{ adminmenu.isActive(item) ? 'uk-active' : '' }}">
+                                <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">
+                                    {% if item.getIcon() %}
+                                        <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+                                    {% endif %}
+                                    {{ item.getTitle()|trim }}
+                                </a>
+                            </li>
+                        {% elseif item.getType() == 'group' %}
+                            <li class="{{ adminmenu.isActive(item) ? 'uk-active uk-parent' : 'uk-parent' }}">
+                                <a class="nav-link">
+                                    {% if item.getIcon() %}
+                                        <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+                                    {% endif %}
+                                    {{ item.getTitle()|trim }}
+                                </a>
+                                <ul class="uk-nav-sub">
+                                    {% for subItem in item.getItems() if subItem.getType() == 'item' and adminmenu.hasAccess(subItem) %}
+                                        <li>
+                                            <a class="nav-link" href="{{ path_for(subItem.getRoute(), subItem.getParams()) }}">
+                                            {% if subItem.getIcon() %}
+                                                <i class="fas {{ subItem.getIcon() }} uk-margin-small-right"></i>
+                                            {% endif %}
+                                            {{ subItem.getTitle()|trim }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
                 <ul class="uk-nav uk-nav-default">
@@ -206,12 +280,13 @@
                             </li>
                         {% endif %}
                         <li>
-                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_MAIN) }}">
-                                <span class="uk-margin-small-right" uk-icon="icon: settings"></span> Settings</a>
+                            <a class="dropdown-item" href="{{ path_for(constants.settings.ROUTE_INDEX) }}">
+                                <span class="uk-margin-small-right" uk-icon="icon: settings"></span>
+                                {{ trans('menu', 'settings') }}</a>
                         </li>
                         <li class="uk-nav-divider"></li>
                         <li><a class="dropdown-item" href="{{ path_for('logout') }}">
-                                <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('buttons', 'logout') }}
+                                <span class="uk-margin-small-right" uk-icon="icon: sign-out"></span> {{ trans('menu', 'logout') }}
                             </a>
                         </li>
                     {% endif %}
@@ -222,12 +297,40 @@
 {% endmacro %}
 
 {% macro sidebar(menu) %}
-    <div uk-sticky="offset: 140" class="sidenav uk-visible@xl">
-        <ul class="uk-nav uk-nav-primary uk-margin-auto-vertical">
-            {% for item in menu if item.permission is null or has_access_permission(item.permission[0], item.permission[1]) %}
-                <li {% if menu.getActiveRoute() == item.route %}class="uk-active"{% endif %}>
-                    <a class="nav-link" href="{{ path_for(item.route, item.params) }}" id="{{ item.route }}">{{ item.title }}</a>
-                </li>
+    <div class="sidenav" uk-height-viewport="offset-top: true">
+        <ul class="uk-nav uk-nav-primary uk-nav-default uk-margin-auto-vertical">
+            {% for item in menu.getItems() if menu.hasAccess(item) %}
+                {% if item.getType() == 'item' %}
+                    <li class="{{ menu.isActive(item) ? 'uk-active' : '' }}">
+                        <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">
+                            {% if item.getIcon() %}
+                                <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+                            {% endif %}
+                            {{ item.getTitle()|trim }}
+                        </a>
+                    </li>
+                {% elseif item.getType() == 'group' %}
+                    <li class="{{ menu.isActive(item) ? 'uk-active uk-parent' : 'uk-parent' }}">
+                        <a class="nav-link">
+                            {% if item.getIcon() %}
+                                <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+                            {% endif %}
+                            {{ item.getTitle()|trim }}
+                        </a>
+                        <ul class="uk-nav-sub">
+                            {% for subItem in item.getItems() if subItem.getType() == 'item' and menu.hasAccess(subItem) %}
+                                <li>
+                                    <a class="nav-link" href="{{ path_for(subItem.getRoute(), subItem.getParams()) }}">
+                                        {% if subItem.getIcon() %}
+                                            <i class="fas {{ subItem.getIcon() }} uk-margin-small-right"></i>
+                                        {% endif %}
+                                        {{ subItem.getTitle()|trim }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>

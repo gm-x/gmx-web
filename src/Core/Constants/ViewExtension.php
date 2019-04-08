@@ -4,6 +4,7 @@ namespace GameX\Core\Constants;
 use \Twig_Extension;
 use \Twig_Extension_GlobalsInterface;
 use \GameX\Core\Auth\Permissions;
+use \GameX\Constants\Admin\AdminConstants;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\ServersConstants;
@@ -14,13 +15,17 @@ use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Constants\Admin\PermissionsConstants;
 use \GameX\Constants\Admin\PreferencesConstants;
 use \GameX\Constants\Admin\PunishmentsConstants;
+use \GameX\Constants\AccountsConstants;
+use \GameX\Constants\IndexConstants;
 use \GameX\Constants\SettingsConstants;
+use \GameX\Constants\UserConstants;
 use \GameX\Models\Punishment;
 
 class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface {
     
     protected $constants = [
         'admin' => [
+            'admin' => AdminConstants::class,
             'players' => PlayersConstants::class,
             'privileges' => PrivilegesConstants::class,
             'servers' => ServersConstants::class,
@@ -32,7 +37,10 @@ class ViewExtension extends Twig_Extension implements Twig_Extension_GlobalsInte
             'preferences' => PreferencesConstants::class,
             'punishments' => PunishmentsConstants::class,
         ],
+        'index' => IndexConstants::class,
+        'accounts' => AccountsConstants::class,
         'settings' => SettingsConstants::class,
+        'user' => UserConstants::class,
     ];
     
     protected $models = [

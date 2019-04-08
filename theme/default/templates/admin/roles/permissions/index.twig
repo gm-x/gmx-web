@@ -2,10 +2,6 @@
 
 {% import 'macros/permissions.twig' as permissions %}
 
-{% block style %}
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
-{% endblock %}
-
 {% block content %}
     {# TODO: Remove this #}
     <style>
@@ -17,7 +13,7 @@
         <form action="{{ form.getAction() }}" method="post">
             {{ csrf_token() }}
             <div f-table f-divider>
-                <ul th uk-sticky="offset: 60" style="background: #333333;" class="uk-visible@s">
+                <ul th uk-sticky="offset: 60" class="uk-visible@s">
                     <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
                     <li class="uk-width-xxs"><i class="fas fa-list" uk-tooltip="Список"></i></li>
                     <li class="uk-width-xxs"><i class="fas fa-eye" uk-tooltip="Просмотр"></i></li>
@@ -35,7 +31,7 @@
                     <a class="uk-accordion-title" href="#">{{ serverName }}</a>
                     <div class="uk-accordion-content">
                         <div f-table f-divider>
-                            <ul th uk-sticky="offset:60" style="background: #292929;" class="uk-visible@s">
+                            <ul th uk-sticky="offset:60" class="uk-visible@s">
                                 <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
                                 <li class="uk-width-xxs"><i class="fas fa-list" uk-tooltip="Список"></i></li>
                                 <li class="uk-width-xxs"><i class="fas fa-eye" uk-tooltip="Просмотр"></i></li>

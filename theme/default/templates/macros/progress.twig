@@ -1,4 +1,5 @@
-{% macro render(text, percent, size=null) %}
+{% macro render(text, progress, total, size=null) %}
+	{% set percent = total > 0 ? 100 * progress / total : 0 %}
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 34 34" class="progress_circle
 	{% if size is not null %}
 	r-{{ size }}

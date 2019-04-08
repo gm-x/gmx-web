@@ -1,5 +1,11 @@
 {
 	"preferences": "Preferences",
+	"preferences_main": "Main",
+	"preferences_email": "Email",
+	"preferences_update": "Update",
+	"preferences_cache": "Кэш",
+	"preferences_cron": "Cron",
+	"preferences_social": "Social networks",
 	"users": "Users",
 	"roles": "Roles",
 	"servers": "Servers",

@@ -10,7 +10,7 @@ class Helper {
         $result = 0;
         for ($i = 0, $l = strlen($flags); $i < $l; $i++) {
             $f = ord($flags[$i]);
-            if ($f >= 97 && $f <= 122) {
+            if ($f >= 97 && $f <= 126) {
                 $result |= (1 << ($f - 97));
             }
         }

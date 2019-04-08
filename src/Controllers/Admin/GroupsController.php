@@ -2,14 +2,14 @@
 
 namespace GameX\Controllers\Admin;
 
-use \GameX\Models\Server;
-use \GameX\Models\Group;
-use \GameX\Core\BaseAdminController;
-use \GameX\Constants\Admin\GroupsConstants;
-use \GameX\Constants\Admin\ServersConstants;
-use \GameX\Core\Pagination\Pagination;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Slim\Http\Response;
+use \GameX\Constants\Admin\GroupsConstants;
+use \GameX\Constants\Admin\ServersConstants;
+use \GameX\Core\BaseAdminController;
+use \GameX\Models\Server;
+use \GameX\Models\Group;
 use \GameX\Forms\Admin\GroupsForm;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Exceptions\RedirectException;
@@ -28,34 +28,60 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
+     * @param Response $response
+     * @param int $serverId
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function indexAction(ServerRequestInterface $request, Response $response, $serverId)
     {
-        $server = $this->getServer($request, $response, $args);
-        $pagination = new Pagination($server->groups()->get(), $request);
-        return $this->render('admin/servers/groups/index.twig', [
+        $server = $this->getServer($request, $response, $serverId);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('admin_servers', 'groups'));
+
+        $groups = $server->groups()->orderBy('priority', 'asc')->get();
+        return $this->getView()->render($response, 'admin/servers/groups/index.twig', [
             'server' => $server,
-            'groups' => $pagination->getCollection(),
-            'pagination' => $pagination,
+            'groups' => $groups,
         ]);
     }
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
+     * @param Response $response
+     * @param int $serverId
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function createAction(ServerRequestInterface $request, Response $response, $serverId)
     {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args, $server);
+        $server = $this->getServer($request, $response, $serverId);
+        $group = $this->getGroup($request, $response, null, $server);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add(
+                $this->getTranslate('admin_servers', 'groups'),
+                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('labels', 'create'));
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
@@ -66,7 +92,7 @@ class GroupsController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/groups/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/groups/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => true,
@@ -75,16 +101,36 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
+     * @param Response $response
+     * @param int $serverId
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function editAction(ServerRequestInterface $request, Response $response, $serverId, $id)
     {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args, $server);
+        $server = $this->getServer($request, $response, $serverId);
+        $group = $this->getGroup($request, $response, $id);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'servers'),
+                $this->pathFor(ServersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $server->name,
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
+            )
+            ->add(
+                $this->getTranslate('admin_servers', 'groups'),
+                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add(
+                $group->title,
+                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
@@ -95,7 +141,7 @@ class GroupsController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/servers/groups/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/groups/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => false,
@@ -104,15 +150,16 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
+     * @param Response $response
+     * @param int $serverId
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function deleteAction(ServerRequestInterface $request, Response $response, $serverId, $id)
     {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args, $server);
+        $server = $this->getServer($request, $response, $serverId);
+        $group = $this->getGroup($request, $response, $id);
         
         try {
             $group->delete();
@@ -127,18 +174,50 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
+     * @param Response $response
+     * @param int $serverId
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function priorityAction(ServerRequestInterface $request, Response $response, $serverId)
+    {
+        $server = $this->getServer($request, $response, $serverId);
+        $body = $request->getParsedBody();
+    
+        /** @var \Illuminate\Database\Connection|null $connection */
+        $connection = $this->getContainer('db')->getConnection();
+        $connection->beginTransaction();
+        try {
+            if (isset($body['priority']) && is_array($body['priority'])) {
+                foreach ($body['priority'] as $priority => $groupId) {
+                    $group = Group::find($groupId);
+                    if ($group && $group->server_id = $server->id) {
+                        $group->priority = $priority;
+                        $group->save();
+                    }
+                }
+            }
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            throw $e;
+        }
+        return $response->withJson([
+            'success' => true,
+            'csrf' => $this->getCSRFToken()
+        ]);
+    }
+    
+    /**
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @param int $id
      * @return Server
      * @throws NotFoundException
      */
-    protected function getServer(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    protected function getServer(ServerRequestInterface $request, Response $response, $id)
     {
-        if (!array_key_exists('server', $args)) {
-            return new Server();
-        }
-        
-        $server = Server::find($args['server']);
+        $server = Server::find($id);
         if (!$server) {
             throw new NotFoundException($request, $response);
         }
@@ -148,25 +227,20 @@ class GroupsController extends BaseAdminController
     
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
+     * @param Response $response
+     * @param int $id
      * @param Server $server
      * @return Group
      * @throws NotFoundException
      */
-    protected function getGroup(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        array $args,
-        Server $server
-    ) {
-        if (!array_key_exists('group', $args)) {
-            $group = new Group();
-            $group->server_id = $server->id;
-        } else {
-            $group = Group::find($args['group']);
+    protected function getGroup(ServerRequestInterface $request, Response $response, $id = null, Server $server = null) {
+        if ($id === null) {
+            return new Group([
+                'server_id' => $server->id
+            ]);
         }
-        
+
+        $group = Group::find($id);
         if (!$group) {
             throw new NotFoundException($request, $response);
         }

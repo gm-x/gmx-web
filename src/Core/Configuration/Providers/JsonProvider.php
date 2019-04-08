@@ -11,47 +11,37 @@ class JsonProvider implements ProviderInterface {
     /**
      * @var string
      */
-    protected $path;
+    protected $config;
+    
+    /**
+     * @var string
+     */
+    protected $default;
 
     /**
-     * @param string|null $path
+     * @param string|null $config
+     * @param string|null $default
      */
-    public function __construct($path = null) {
-        $this->path = $path !== null
-            ? (string) $path
-            : dirname(__DIR__) . DIRECTORY_SEPARATOR . 'default.json';
+    public function __construct($config = null, $default = null) {
+        $this->config = $config;
+        $this->default = $default ?: dirname(__DIR__) . DIRECTORY_SEPARATOR . 'default.json';
     }
 
     /**
      * @inheritdoc
      */
     public function load() {
-        if (!is_readable($this->path)) {
-            throw new CantLoadException('Could not open file ' . $this->path);
-        }
+        $default = $this->loadJSON($this->default);
+        $config = $this->loadJSON($this->config);
 
-        $content = file_get_contents($this->path);
-        if (!$content) {
-            throw new CantLoadException('Could not read from file ' . $this->path);
-        }
-
-        $data = json_decode($content, true);
-        if (json_last_error() != JSON_ERROR_NONE) {
-            throw new CantLoadException(json_last_error_msg());
-        }
-
-        if (!is_array($data)) {
-            throw new CantLoadException('Bad format of file ' . $this->path);
-        }
-
-        return new Node($data);
+        return new Node(array_replace_recursive($default, $config));
     }
 
     /**
      * @inheritdoc
      */
     public function save(Node $data) {
-        if (!$data->getIsModified()) {
+        if (!$data->getIsModified() || $this->config === null) {
             return;
         }
 
@@ -59,17 +49,35 @@ class JsonProvider implements ProviderInterface {
             $data->toArray(),
             JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
         );
-        if (file_put_contents($this->path, $data) === false) {
-            throw new CantSaveException('Could not write to file ' . $this->path);
+        if (file_put_contents($this->config, $data) === false) {
+            throw new CantSaveException('Could not write to file ' . $this->config);
         }
     }
-
+    
     /**
-     * @param string $path
-     * @return self
+     * @param $path
+     * @return array|mixed
+     * @throws CantLoadException
      */
-    public function setPath($path) {
-        $this->path = (string) $path;
-        return $this;
+    protected function loadJSON($path) {
+        if (empty($path) || !is_readable($path)) {
+            return [];
+        }
+    
+        $content = file_get_contents($path);
+        if (empty($content)) {
+            throw new CantLoadException('Could not read from file ' . $path);
+        }
+    
+        $data = json_decode($content, true);
+        if (json_last_error() != JSON_ERROR_NONE) {
+            throw new CantLoadException(json_last_error_msg());
+        }
+    
+        if (!is_array($data)) {
+            throw new CantLoadException('Bad format of file ' . $path);
+        }
+        
+        return $data;
     }
 }

@@ -3,20 +3,19 @@
 namespace GameX\Core;
 
 use \Pimple\ServiceProviderInterface;
-use \Pimple\Container;
+use \Pimple\Container as PimpleContainer;
 use \Psr\Container\ContainerInterface;
 use \GameX\Constants\PreferencesConstants;
 
 use \GameX\Core\Configuration\Config;
-use \GameX\Core\Configuration\Providers\JsonProvider;
 use \GameX\Core\Configuration\Providers\DatabaseProvider;
 use \GameX\Core\Configuration\Exceptions\CantLoadException;
 use \GameX\Core\Configuration\Exceptions\NotFoundException;
 
 use \GameX\Core\Session\Session;
 
-use \Stash\Driver\FileSystem;
 use \GameX\Core\Cache\Cache;
+use \GameX\Core\Cache\CacheDriverFactory;
 use \GameX\Core\Cache\Items\Preferences;
 use \GameX\Core\Cache\Items\Permissions as PermissionsCache;
 use \GameX\Core\Cache\Items\PlayersOnline;
@@ -38,6 +37,16 @@ use \GameX\Core\Auth\Permissions;
 use \GameX\Core\Auth\SentinelBootstrapper;
 use \Cartalyst\Sentinel\Sentinel;
 
+use \GameX\Constants\UserConstants;
+use \GameX\Core\Auth\Social\SocialAuth;
+use \GameX\Core\Auth\Social\Session as HybridauthSession;
+use \GameX\Core\Auth\Social\Logger as HybridauthLogger;
+use \GameX\Core\Auth\Social\CallbackHelper as HybridauthCallback;
+use \Hybridauth\Provider\Steam as HybridauthSteamProvider;
+use \Hybridauth\Provider\Vkontakte as VkontakteProvider;
+use \Hybridauth\Provider\Facebook as FacebookProvider;
+use \Hybridauth\Provider\Discord as DiscordProvider;
+
 use \Slim\Views\Twig;
 use \Slim\Views\TwigExtension;
 use \GameX\Core\CSRF\Extension as CSRFExtension;
@@ -56,13 +65,28 @@ use \GameX\Core\Upload\Upload;
 use \GameX\Core\Update\Updater;
 use \GameX\Core\Update\Manifest;
 
+use \GameX\Core\Breadcrumbs\Breadcrumbs;
+
 class DependencyProvider implements ServiceProviderInterface
 {
-    
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * DependencyProvider constructor.
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
     /**
      * @inheritdoc
      */
-    public function register(Container $container)
+    public function register(PimpleContainer $container)
     {
         $container['base_url'] = function (ContainerInterface $container) {
             /** @var \Slim\Http\Uri $uri */
@@ -70,9 +94,7 @@ class DependencyProvider implements ServiceProviderInterface
             return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
         };
         
-        $container['config'] = function (ContainerInterface $container) {
-            return $this->getConfig($container);
-        };
+        $container['config'] = $this->config;
         
         $container['preferences'] = function (ContainerInterface $container) {
             return $this->getPreferences($container);
@@ -105,6 +127,10 @@ class DependencyProvider implements ServiceProviderInterface
         $container['auth'] = function (ContainerInterface $container) {
             return $this->getAuth($container);
         };
+    
+        $container['social'] = function (ContainerInterface $container) {
+            return $this->getSocial($container);
+        };
         
         $container['view'] = function (ContainerInterface $container) {
             return $this->getView($container);
@@ -129,23 +155,16 @@ class DependencyProvider implements ServiceProviderInterface
         $container['updater'] = function (ContainerInterface $container) {
             return $this->getUpdater($container);
         };
+
+        $container['breadcrumbs'] = function (ContainerInterface $container) {
+            return $this->getBreadcrumbs($container);
+        };
         
         $container['modules'] = function (ContainerInterface $container) {
             $modules = new \GameX\Core\Module\Module();
             //	$modules->addModule(new \GameX\Modules\TestModule\Module());
             return $modules;
         };
-    }
-    
-    /**
-     * @param ContainerInterface $container
-     * @return Config
-     * @throws CantLoadException
-     */
-    public function getConfig(ContainerInterface $container)
-    {
-        $provider = new JsonProvider($container->get('root') . '/config.json');
-        return new Config($provider);
     }
     
     /**
@@ -166,17 +185,15 @@ class DependencyProvider implements ServiceProviderInterface
     {
         return new Session();
     }
-    
+
     /**
      * @param ContainerInterface $container
      * @return Cache
+     * @throws NotFoundException
      */
     public function getCache(ContainerInterface $container)
     {
-        $driver = new FileSystem([
-            'path' => $container->get('root') . 'runtime' . DIRECTORY_SEPARATOR . 'cache',
-            'encoder' => 'Serializer'
-        ]);
+        $driver = CacheDriverFactory::getDriver($container, 'runtime' . DIRECTORY_SEPARATOR . 'cache');
         $cache = new Cache($driver);
         $cache->add('preferences', new Preferences());
         $cache->add('permissions', new PermissionsCache());
@@ -265,6 +282,89 @@ class DependencyProvider implements ServiceProviderInterface
         $bootsrap = new SentinelBootstrapper($container->get('request'), $container->get('session'));
         return $bootsrap->createSentinel();
     }
+
+    public function getSocial(ContainerInterface $container) {
+	    /** @var \Slim\Interfaces\RouterInterface $router */
+	    $router = $container->get('router');
+
+	    /** @var \Slim\Http\Uri $request */
+	    $uri = $container->get('request')->getUri();
+	    $basePath = $uri->getScheme() . '://' . $uri->getAuthority();
+
+	    $callback =new HybridauthCallback($basePath, $router, UserConstants::ROUTE_SOCIAL);
+	    $session = new HybridauthSession($container->get('session'));
+        $logger = new HybridauthLogger($container->get('log'));
+
+        $social = new SocialAuth($callback, null, $session, $logger);
+
+    	/** @var Config $preferences */
+    	$preferences = $container->get('preferences');
+    	$socialConfig = $preferences->getNode(PreferencesConstants::CATEGORY_SOCIAL);
+
+    	$value = $socialConfig->getNode('steam');
+    	if ($value->get('enabled')) {
+    		$social->addProvider(
+    			'steam',
+			    'Steam',
+			    $value->get('icon'),
+			    HybridauthSteamProvider::class,
+			    ['openid_identifier' => 'http://steamcommunity.com/openid']
+		    );
+	    }
+
+	    $value = $socialConfig->getNode('vk');
+	    if ($value->get('enabled')) {
+		    $social->addProvider(
+		    	'vk',
+			    'Vkontakte',
+			    $value->get('icon'),
+			    VkontakteProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ]
+		    );
+	    }
+
+	    $value = $socialConfig->getNode('facebook');
+	    if ($value->get('enabled')) {
+		    $social->addProvider(
+		    	'facebook',
+			    'Facebook',
+			    $value->get('icon'),
+			    FacebookProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ]
+		    );
+	    }
+
+	    $value = $socialConfig->getNode('discord');
+	    if ($value->get('enabled')) {
+		    $social->addProvider(
+		    	'discord',
+			    'Discord',
+			    $value->get('icon'),
+			    DiscordProvider::class,
+			    [
+				    'keys' => [
+					    'id' => $value->get('id'),
+					    'key' => $value->get('key'),
+					    'secret' => $value->get('secret')
+				    ]
+			    ]
+		    );
+	    }
+
+	    return $social;
+    }
     
     /**
      * @param ContainerInterface $container
@@ -303,10 +403,10 @@ class DependencyProvider implements ServiceProviderInterface
         $view->addExtension(new TwigExtension($container->get('router'), $container->get('base_url')));
         $view->addExtension(new CSRFExtension($container->get('csrf')));
         $view->addExtension(new AuthViewExtension($container));
-        $view->addExtension(new LangViewExtension($container->get('lang')));
+        $view->addExtension(new LangViewExtension($container));
         $view->addExtension(new AccessFlagsViewExtension());
         $view->addExtension(new Twig_Dump());
-        $view->addExtension(new UploadFlagsViewExtension($container->get('upload')));
+        $view->addExtension(new UploadFlagsViewExtension($container));
         $view->addExtension(new ConstantsViewExtension());
         
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
@@ -315,6 +415,8 @@ class DependencyProvider implements ServiceProviderInterface
             ->getNode(PreferencesConstants::CATEGORY_MAIN)
             ->get(PreferencesConstants::MAIN_TITLE)
         );
+
+        $view->getEnvironment()->addGlobal('breadcrumbs', $container->get('breadcrumbs'));
         
         return $view;
     }
@@ -352,12 +454,17 @@ class DependencyProvider implements ServiceProviderInterface
     
     public function getUpload(ContainerInterface $container)
     {
-        return new Upload($container->get('root') . 'public/upload', $container->get('base_url') . '/upload');
+        return new Upload($container->get('root') . 'uploads', $container->get('base_url') . '/uploads');
     }
     
     public function getUpdater(ContainerInterface $container)
     {
         $manifest = new Manifest($container->get('root') . 'manifest.json');
         return new Updater($manifest);
+    }
+
+    public function getBreadcrumbs(ContainerInterface $container)
+    {
+        return new Breadcrumbs($container);
     }
 }

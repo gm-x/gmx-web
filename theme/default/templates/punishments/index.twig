@@ -2,42 +2,54 @@
 
 {% import 'macros/punishments.twig' as punishments_macro %}
 
+{% block style %}
+	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-	<div class="uk-overflow-auto">
-		<table class="uk-table uk-table-divider">
-			<thead>
-				<tr>
-					<th>{{ trans('punishments', 'player') }}</th>
-					<th>{{ trans('punishments', 'punisher') }}</th>
-					<th>{{ trans('punishments', 'server') }}</th>
-					<th>{{ trans('punishments', 'reason') }}</th>
-					<th>{{ trans('punishments', 'comment') }}</th>
-					<th>{{ trans('punishments', 'status') }}</th>
-				</tr>
-			</thead>
-			<tbody>
-			{% for punishment in punishments %}
-				<tr>
-					<td class="text-nowrap">
-						{% if punishment.player.user_id %}
-							<img src="{{ upload_url(punishment.player.user.avatar) }}" width="100">
-						{% endif %}
-						{{ punishment.player.nick }}
-					</td>
-					<td class="text-nowrap">{{ punishments_macro.punisher(punishment) }}</td>
-					<td>{{ punishments_macro.server(punishment) }}</td>
-					<td class="text-nowrap">{{ punishments_macro.reason(punishment) }}</td>
-					<td class="text-nowrap">{{ punishments.comment(punishment) }}</td>
-					<td>{{ punishments_macro.status(punishment) }}</td>
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="7">{{ trans('punishments', 'nothing_to_show') }}</td>
-				</tr>
-			{% endfor %}
-			</tbody>
-		</table>
+	<div f-table f-divider>
+		<ul th>
+			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'player') }}</li>
+			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'punisher') }}</li>
+			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'server') }}</li>
+			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'reason') }}</li>
+			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'comment') }}</li>
+			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'status') }}</li>
+		</ul>
+		{% for punishment in punishments %}
+			<ul>
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'player') }}">
+					<div class="uk-margin-small-right">
+                        {% if punishment.player.user.avatar %}
+							<img class="uk-border-circle" width="30" height="30" src="{{ upload_url(punishment.player.user.avatar) }}">
+                        {% else %}
+							<img class="uk-border-circle" width="30" height="30" src="{{ base_url() }}/assets/images/user.svg" style="filter: invert(1);">
+                        {% endif %}
+					</div>
+                    {{ punishment.player.nick }}
+				</li>
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'punisher') }}">
+                    {{ punishments_macro.punisher(punishment) }}
+				</li>
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'server') }}">
+                    {{ punishments_macro.server(punishment) }}
+				</li>
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'reason') }}">
+                    {{ punishments_macro.reason(punishment) }}
+				</li>
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'comment') }}">
+                    {{ punishments.comment(punishment) }}
+				</li>
+				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'status') }}">
+                    {{ punishments_macro.status(punishment) }}
+				</li>
+			</ul>
+		{% else %}
+			<ul>
+				<li>{{ trans('punishments', 'nothing_to_show') }}</li>
+			</ul>
+		{% endfor %}
 	</div>
 </div>
 {% endblock %}

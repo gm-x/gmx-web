@@ -4,7 +4,14 @@ $container = new \Slim\Container([
     'root' => __DIR__ . DIRECTORY_SEPARATOR
 ]);
 
-$container->register(new \GameX\Core\DependencyProvider());
+try {
+    $configProvider = new \GameX\Core\Configuration\Providers\PHPProvider(__DIR__ . DIRECTORY_SEPARATOR . 'config.php');
+    $config = new \GameX\Core\Configuration\Config($configProvider);
+} catch (\GameX\Core\Configuration\Exceptions\CantLoadException $e) {
+    die('Can\'t load configuration file');
+}
+
+$container->register(new \GameX\Core\DependencyProvider($config));
 
 \GameX\Core\BaseModel::setContainer($container);
 \GameX\Core\BaseForm::setContainer($container);

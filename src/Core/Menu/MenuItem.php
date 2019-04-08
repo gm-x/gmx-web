@@ -1,95 +1,142 @@
 <?php
+
 namespace GameX\Core\Menu;
 
-class MenuItem {
+class MenuItem implements MenuItemInterface
+{
 
-	/**
-	 * @var string
-	 */
-	protected $title;
+    /**
+     * @var string
+     */
+    protected $title;
 
-	/**
-	 * @var string
-	 */
-	protected $route;
+    /**
+     * @var string
+     */
+    protected $route;
 
-	/**
-	 * @var array
-	 */
-	protected $params = [];
+    /**
+     * @var array
+     */
+    protected $params = [];
 
-	/**
-	 * @var string|null
-	 */
-	protected $permission = null;
+    /**
+     * @var string|null
+     */
+    protected $permission = null;
 
-	/**
-	 * MenuItem constructor.
-	 * @param string $title
-	 * @param string $route
-	 * @param array $params
-	 * @param string|null $permission
-	 */
-	public function __construct($title, $route, array $params = [], $permission = null) {
-		$this->title = $title;
-		$this->route = $route;
-		$this->params = $params;
-		$this->permission = $permission;
-	}
+    /**
+     * @var string|null
+     */
+    protected $icon = null;
 
-	/**
-	 * @param string $key
-	 * @return array|null|string
-	 */
-	public function __get($key) {
-		switch ($key) {
-			case 'title': {
-				return $this->getTitle();
-			}
+    /**
+     * @param string $title
+     * @param string $route
+     * @param array $params
+     * @param string|null $permission
+     * @param string|null $icon
+     */
+    public function __construct($title, $route, array $params = [], $permission = null, $icon = null)
+    {
+        $this->title = $title;
+        $this->route = $route;
+        $this->params = $params;
+        $this->permission = $permission;
+        $this->icon = $icon;
+    }
 
-			case 'route': {
-				return $this->getRoute();
-			}
+    /**
+     * @inheritdoc
+     */
+    public function getType()
+    {
+        return 'item';
+    }
 
-			case 'params': {
-				return $this->getParams();
-			}
+    /**
+     * @inheritdoc
+     */
+    public function __get($key)
+    {
+        switch ($key) {
+            case 'title':
+                {
+                    return $this->getTitle();
+                }
 
-			case 'permission': {
-				return $this->getPermission();
-			}
+            case 'route':
+                {
+                    return $this->getRoute();
+                }
 
-			default: {
-				return null;
-			}
-		}
-	}
+            case 'params':
+                {
+                    return $this->getParams();
+                }
 
-	/**
-	 * @return string
-	 */
-	public function getTitle() {
-		return $this->title;
-	}
+            case 'permission':
+                {
+                    return $this->getPermission();
+                }
 
-	/**
-	 * @return string
-	 */
-	public function getRoute() {
-		return $this->route;
-	}
+            case 'icon':
+                {
+                    return $this->getIcon();
+                }
 
-	/**
-	 * @return array
-	 */
-	public function getParams() {
-		return $this->params;
-	}
+            default:
+                {
+                    return null;
+                }
+        }
+    }
 
-	/**
-	 * @return null|string
-	 */
-	public function getPermission() {
-		return $this->permission;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPermission()
+    {
+        return $this->permission;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getItems()
+    {
+        return [];
+    }
 }

@@ -22,10 +22,9 @@ class PunishmentsController extends BaseMainController
     /**
      * @param Request $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(Request $request, ResponseInterface $response, array $args)
+    public function indexAction(Request $request, ResponseInterface $response)
     {
         $filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
         
@@ -37,7 +36,7 @@ class PunishmentsController extends BaseMainController
         }
         
         $pagination = new Pagination($punishments, $request);
-        return $this->render('punishments/index.twig', [
+        return $this->getView()->render($response, 'punishments/index.twig', [
             'punishments' => $pagination->getCollection(),
             'pagination' => $pagination,
             'filter' => $filter

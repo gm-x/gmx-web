@@ -29,16 +29,18 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(Request $request, Response $response, array $args = [])
+    public function indexAction(Request $request, Response $response)
     {
         $filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
         $players = $filter === null ? Player::get() : Player::filterCollection($filter)->get();
+
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_menu', 'players'));
         
         $pagination = new Pagination($players, $request);
-        return $this->render('admin/players/index.twig', [
+        return $this->getView()->render($response, 'admin/players/index.twig', [
             'players' => $pagination->getCollection(),
             'pagination' => $pagination,
             'filter' => $filter
@@ -48,14 +50,21 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
-    public function viewAction(Request $request, Response $response, array $args = [])
+    public function viewAction(Request $request, Response $response, $id)
     {
-        $player = $this->getPlayer($request, $response, $args);
+        $player = $this->getPlayer($request, $response, $id);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'players'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add($player->nick);
         
         $privileges = [];
         $servers = [];
@@ -83,7 +92,7 @@ class PlayersController extends BaseAdminController
             }
         }
         
-        return $this->render('admin/players/view.twig', [
+        return $this->getView()->render($response, 'admin/players/view.twig', [
             'player' => $player,
             'privileges' => $privileges,
             'servers' => $servers,
@@ -93,14 +102,21 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function createAction(Request $request, Response $response, array $args = [])
+    public function createAction(Request $request, Response $response)
     {
-        $player = $this->getPlayer($request, $response, $args);
+        $player = $this->getPlayer($request, $response);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'players'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add($this->getTranslate('labels', 'create'));
+
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -109,7 +125,7 @@ class PlayersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/players/form.twig', [
+        return $this->getView()->render($response, 'admin/players/form.twig', [
             'form' => $form->getForm(),
             'create' => true,
         ]);
@@ -118,14 +134,26 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function editAction(Request $request, Response $response, array $args = [])
+    public function editAction(Request $request, Response $response, $id)
     {
-        $player = $this->getPlayer($request, $response, $args);
+        $player = $this->getPlayer($request, $response, $id);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'players'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
+
         $form = new PlayersForm($player);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
@@ -134,7 +162,7 @@ class PlayersController extends BaseAdminController
             ]);
         }
         
-        return $this->render('admin/players/form.twig', [
+        return $this->getView()->render($response, 'admin/players/form.twig', [
             'form' => $form->getForm(),
             'create' => false,
         ]);
@@ -143,13 +171,13 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(Request $request, Response $response, array $args = [])
+    public function deleteAction(Request $request, Response $response, $id)
     {
-        $player = $this->getPlayer($request, $response, $args);
+        $player = $this->getPlayer($request, $response, $id);
         
         try {
             $player->delete();
@@ -165,17 +193,17 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return Player
      * @throws NotFoundException
      */
-    protected function getPlayer(Request $request, Response $response, array $args)
+    protected function getPlayer(Request $request, Response $response, $id = null)
     {
-        if (!array_key_exists('player', $args)) {
+        if ($id === null) {
             return new Player();
         }
         
-        $player = Player::find($args['player']);
+        $player = Player::find($id);
         if (!$player) {
             throw new NotFoundException($request, $response);
         }

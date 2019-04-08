@@ -7,12 +7,13 @@ use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Update\Updater;
+use \GameX\Core\Auth\Permissions;
 use \GameX\Constants\Admin\PreferencesConstants;
 use \GameX\Forms\Admin\Preferences\MainForm;
 use \GameX\Forms\Admin\Preferences\MailForm;
 use \GameX\Forms\Admin\Preferences\UpdateForm;
 use \GameX\Forms\Admin\Preferences\CacheForm;
-use \GameX\Core\Helpers\UriHelper;
+use \GameX\Forms\Admin\Preferences\SocialForm;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Mail\Email;
 use \GameX\Core\Mail\Exceptions\ConnectException;
@@ -20,6 +21,10 @@ use \GameX\Core\Mail\Exceptions\CryptoException;
 use \GameX\Core\Mail\Exceptions\CodeException;
 use \GameX\Core\Mail\Exceptions\SendException;
 use \GameX\Core\Exceptions\ValidationException;
+use \GameX\Core\Configuration\Exceptions\CantSaveException;
+use \GameX\Core\Configuration\Exceptions\NotFoundException;
+use \GameX\Core\Exceptions\RedirectException;
+use \GameX\Core\Exceptions\RoleNotFoundException;
 use \Exception;
 
 class PreferencesController extends BaseAdminController
@@ -32,68 +37,85 @@ class PreferencesController extends BaseAdminController
     {
         return PreferencesConstants::ROUTE_MAIN;
     }
-    
+
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
-     * @throws \GameX\Core\Exceptions\RedirectException
+     * @throws RedirectException
+     * @throws RoleNotFoundException
      */
-    public function indexAction(Request $request, Response $response, array $args = [])
+    public function mainAction(Request $request, Response $response)
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_main'));
+
+        $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_MAIN_KEY,
+            Permissions::ACCESS_EDIT
+        );
+
         /** @var Config $preferences */
         $preferences = $this->getContainer('preferences');
-        $form = new MainForm($preferences);
+        $form = new MainForm($preferences, $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_MAIN);
         }
-        
-        return $this->render('admin/preferences/index.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
+
+        return $this->getView()->render($response, 'admin/preferences/main.twig', [
             'form' => $form->getForm(),
+            'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws \GameX\Core\Configuration\Exceptions\CantSaveException
-     * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
-     * @throws \GameX\Core\Exceptions\RedirectException
-     */
-    public function emailAction(Request $request, Response $response, array $args = [])
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return ResponseInterface
+	 * @throws CantSaveException
+	 * @throws NotFoundException
+	 * @throws RedirectException
+	 * @throws RoleNotFoundException
+	 */
+    public function emailAction(Request $request, Response $response)
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_email'));
+
+        $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_EMAIL_KEY,
+            Permissions::ACCESS_EDIT
+        );
+
         /** @var Config $config */
         $config = clone $this->getContainer('preferences');
-        $form = new MailForm($config->getNode('mail'));
+        $form = new MailForm($config->getNode('mail'), $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
             $config->save();
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_EMAIL);
         }
         
-        return $this->render('admin/preferences/email.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
+        return $this->getView()->render($response, 'admin/preferences/email.twig', [
             'form' => $form->getForm(),
+            'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
     
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function testAction(Request $request, Response $response, array $args = [])
+    public function testAction(Request $request, Response $response)
     {
         try {
             /** @var Config $config */
             $config = $this->getContainer('preferences');
-            $form = new MailForm($config->getNode('mail'));
+            $form = new MailForm($config->getNode('mail'), true);
             $form->create();
             
             if (!$form->process($request)) {
@@ -145,49 +167,116 @@ class PreferencesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
-     * @throws \GameX\Core\Exceptions\RedirectException
+     * @throws RedirectException
+     * @throws RoleNotFoundException
      */
-    public function updateAction(Request $request, Response $response, array $args = [])
+    public function updateAction(Request $request, Response $response)
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_update'));
+
+        $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+            PreferencesConstants::PERMISSION_GROUP,
+            PreferencesConstants::PERMISSION_UPDATE_KEY,
+            Permissions::ACCESS_EDIT
+        );
+
         /** @var Updater $updater */
         $updater = $this->getContainer('updater');
-        $form = new UpdateForm($updater);
+        $form = new UpdateForm($updater, $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_UPDATE);
         }
         
-        return $this->render('admin/preferences/update.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
+        return $this->getView()->render($response, 'admin/preferences/update.twig', [
             'form' => $form->getForm(),
-            'version' => $updater->getManifest()->getVersion()
+            'version' => $updater->getManifest()->getVersion(),
+            'hasAccessToEdit' => $hasAccessToEdit,
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws \GameX\Core\Exceptions\RedirectException
-     */
-    public function cacheAction(Request $request, Response $response, array $args = [])
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return ResponseInterface
+	 * @throws RedirectException
+	 * @throws RoleNotFoundException
+	 */
+    public function cacheAction(Request $request, Response $response)
     {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_cache'));
+
+	    $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+		    PreferencesConstants::PERMISSION_GROUP,
+		    PreferencesConstants::PERMISSION_CACHE_KEY,
+		    Permissions::ACCESS_EDIT
+	    );
+
         $root = $this->container->get('root') . 'runtime' . DIRECTORY_SEPARATOR;
         $form = new CacheForm([
             $root . 'cache',
             $root . 'twig_cache',
-        ]);
+        ], $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_CACHE);
         }
         
-        return $this->render('admin/preferences/cache.twig', [
-            'currentHref' => UriHelper::getUrl($request->getUri(), false),
+        return $this->getView()->render($response, 'admin/preferences/cache.twig', [
             'form' => $form->getForm(),
+	        'hasAccessToEdit' => $hasAccessToEdit,
         ]);
+    }
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return ResponseInterface
+	 */
+    public function cronAction(Request $request, Response $response)
+    {
+        $this->getBreadcrumbs()
+            ->add($this->getTranslate('admin_preferences', 'tab_cron'));
+        
+        $root = $this->container->get('root');
+        
+        return $this->getView()->render($response, 'admin/preferences/cron.twig', [
+            'root' => $root,
+        ]);
+    }
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return ResponseInterface
+	 * @throws RedirectException
+	 * @throws RoleNotFoundException
+	 */
+    public function socialAction(Request $request, Response $response)
+    {
+	    $this->getBreadcrumbs()
+		    ->add($this->getTranslate('admin_preferences', 'tab_social'));
+
+	    $hasAccessToEdit = $this->getPermissions()->hasUserAccessToPermission(
+		    PreferencesConstants::PERMISSION_GROUP,
+		    PreferencesConstants::PERMISSION_SOCIAL_KEY,
+		    Permissions::ACCESS_EDIT
+	    );
+
+	    /** @var Config $preferences */
+	    $preferences = $this->getContainer('preferences');
+	    $form = new SocialForm($preferences, $hasAccessToEdit);
+	    if ($this->processForm($request, $form)) {
+		    $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+		    return $this->redirect(PreferencesConstants::ROUTE_SOCIAL);
+	    }
+
+	    return $this->getView()->render($response, 'admin/preferences/social.twig', [
+		    'form' => $form->getForm(),
+		    'hasAccessToEdit' => $hasAccessToEdit,
+	    ]);
     }
 }

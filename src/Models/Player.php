@@ -65,6 +65,16 @@ class Player extends BaseModel
      */
     protected $hidden = ['updated_at'];
     
+    public static function boot() {
+        parent::boot();
+        
+        static::deleting(function(Player $player) {
+            $player->privileges()->delete();
+            $player->punishments()->delete();
+            $player->sessions()->delete();
+        });
+    }
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

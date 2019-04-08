@@ -1,0 +1,40 @@
+div[f-table] > ul, div[f-table] > ol {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+}
+div[f-divider] > ul:not([th]), div[f-divider] > ol:not([th]) {
+    border-top: 1px dashed rgba(33, 33, 33, 0.5);
+}
+div[f-table] > ul[th], div[f-table] > ol[th] {
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.2);
+}
+div[f-table] > ul > li, div[f-table] > ol > li {
+    padding: 14px;
+    display: inline-flex;
+}
+
+div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
+    font-weight: 700;
+}
+
+@media (max-width: 640px) {
+    div[f-table] > ul > li::before {
+        content: attr(s-title);
+        position: relative;
+        margin-right: auto;
+        color: #b5b9bb;
+    }
+
+    div[f-divider] > ul:not([th]):nth-child(even), div[f-divider] > ol:not([th]):nth-child(even) {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    div[f-table] > ul > li[th], div[f-table] > ol > li[th] {
+        font-size: 1.5em;
+    }
+}

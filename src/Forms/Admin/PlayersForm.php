@@ -81,8 +81,8 @@ class PlayersForm extends BaseForm
                 Player::AUTH_TYPE_STEAM => $this->getTranslate($this->name, 'steam_id'),
                 Player::AUTH_TYPE_STEAM_AND_PASS => $this->getTranslate($this->name, 'steam_id_pass'),
                 Player::AUTH_TYPE_NICK_AND_PASS => $this->getTranslate($this->name, 'nickname_pass'),
-                Player::AUTH_TYPE_STEAM_AND_HASH => $this->getTranslate($this->name, 'steam_id_hash'),
-                Player::AUTH_TYPE_NICK_AND_HASH => $this->getTranslate($this->name, 'nickname_hash'),
+//                Player::AUTH_TYPE_STEAM_AND_HASH => $this->getTranslate($this->name, 'steam_id_hash'),
+//                Player::AUTH_TYPE_NICK_AND_HASH => $this->getTranslate($this->name, 'nickname_hash'),
             ], [
                 'title' => $this->getTranslate($this->name, 'auth_type'),
                 'required' => true,
@@ -121,7 +121,8 @@ class PlayersForm extends BaseForm
     }
     
     /**
-     * @return boolean
+     * @return bool
+     * @throws \Exception
      */
     protected function processForm()
     {
@@ -131,7 +132,7 @@ class PlayersForm extends BaseForm
         $authType = $this->form->getValue('auth_type');
         $this->player->auth_type = $authType;
         if ($authType == Player::AUTH_TYPE_STEAM_AND_PASS || $authType == Player::AUTH_TYPE_NICK_AND_PASS) {
-            $this->player->password = md5($this->form->getValue('password'));
+            $this->player->password = $this->form->getValue('password');
         }
         $access = 0;
         if ($this->form->getValue('access_reserve_nick')) {

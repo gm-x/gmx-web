@@ -2,10 +2,6 @@
 
 {% import 'macros/admin.twig' as admin %}
 
-{% block style %}
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
-{% endblock %}
-
 {% block subnav %}
     {% if has_access_permission(
         constants.admin.users.PERMISSION_GROUP,
@@ -30,40 +26,13 @@
     <div class="uk-card uk-card-default uk-width-1-1@m uk-margin">
         <div class="uk-card-header">
             <div class="uk-grid-small uk-flex-middle" uk-grid>
-                <div class="uk-width-auto">
+                <div class="uk-width-1-6@m uk-width-auto@s">
                     {% if user.avatar %}
                     <img class="uk-border-circle" width="100" height="100" src="{{ upload_url(user.avatar) }}">
                     {% else %}
                     <img class="uk-border-circle" width="100" height="100" src="{{ base_url() }}/assets/images/user.svg" style="filter: invert(1)">
                     {% endif %}
-                </div>
-                <div class="uk-width-expand">
-                    <h1 class="uk-margin-remove-bottom">{{ user.login }}</h1>
-                    <p class="uk-text-meta uk-margin-remove-top">
-                        <i class="fas fa-user-plus" title="Sign up date"></i> <time>{{ user.created_at }}</time>
-                        <br>
-                        <i class="fas fa-sync-alt" title="Update"></i> <time>{{ user.updated_at }}</time>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="uk-card-body">
-            <div f-table f-divider>
-                <ul>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">Email</li>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.email }}</li>
-                </ul>
-                <ul>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">Update At</li>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.updated_at }}</li>
-                </ul>
-                <ul>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">Role</li>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.role.name }}</li>
-                </ul>
-                <ul>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">Status</li>
-                    <li class="uk-width-1-6@m uk-width-1-6@s">
+                    <div class="status-icon">
                         {% if not is_user_active(user) %}
 
                             {% if has_access_permission(
@@ -76,31 +45,66 @@
                                     href="{{ path_for(constants.admin.users.ROUTE_ACTIVATE, {'user': user.id}) }}"
                                     class="uk-button"
                                 >
-                                    <span class="uk-label uk-label-warning">{{ trans('admin_users', 'status_pending') }}</span>
+                                    <span class="uk-text-danger" title="{{ trans('admin_users', 'status_pending') }}"><i class="fas fa-power-off"></i></span>
                                 </a>
                             {% endif %}
                         {% else %}
-                            <span class="uk-label uk-label-success">{{ trans('admin_users', 'status_active') }}</span>
+                            <span class="uk-text-success" title="{{ trans('admin_users', 'status_active') }}"><i class="fas fa-power-off"></i></span>
                         {% endif %}
-                    </li>
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <h1 class="uk-margin-remove-bottom">{{ user.login }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-body">
+            <div f-table f-divider>
+                <ul>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">Email</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.email }}</li>
+                </ul>
+                <ul>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ trans('labels', 'created_at') }}</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s"><time>{{ user.created_at|date("d/m/Y H:i") }}</time></li>
+                </ul>
+                <ul>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ trans('labels', 'updated_at') }}</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s"><time>{{ user.updated_at|date("d/m/Y H:i") }}</time></li>
+                </ul>
+                <ul>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ trans('admin_menu', 'role') }}</li>
+                    <li class="uk-width-1-6@m uk-width-1-6@s">{{ user.role.name }}</li>
                 </ul>
             </div>
         </div>
     </div>
 
     <div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
-        <h3 class="uk-card-title">Players</h3>
+        <h3 class="uk-card-title">{{ trans('admin_menu', 'players') }}</h3>
         <div f-table f-divider>
             <ul th>
-                <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">STEAM ID</li>
-                <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">NICKNAME</li>
-                <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">SERVER</li>
+                <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">{{ trans('admin_players', 'steam_id') }}</li>
+                <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">{{ trans('admin_players', 'nickname') }}</li>
+                <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">{{ trans('admin_servers', 'name') }}</li>
             </ul>
             {% for player in user.players %}
                 <ul>
                     <li class="uk-width-1-3@m uk-width-1-3s uk-visible@s">{{ player.steamid }}</li>
-                    <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">{{ player.nick }}</li>
-                    <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">{{ player.server.name }}</li>
+                    <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">
+                        <a
+                            href="{{ path_for(constants.admin.players.ROUTE_VIEW, {
+                                'player': player.id
+                            }) }}"
+                        >
+                            {{ player.nick }}
+                        </a>
+                    </li>
+                    <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">
+                        <a href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': player.server.id}) }}">
+                            {{ player.server.name }}
+                        </a>
+                    </li>
                 </ul>
             {% endfor %}
         </div>
@@ -114,11 +118,8 @@
         UIkit.util.on('#activateUser', 'click', function (e) {
             e.preventDefault();
             e.target.blur();
-            // TODO: refactor this
-            $.post($(this).attr('href'), {
-                '{{ csrf.getNameKey() }}' : '{{ csrf.getName() }}',
-                '{{ csrf.getTokenKey() }}' : '{{ csrf.getToken() }}'
-            })
+            var csrf_tocken = {{ csrf_token_json() }};
+            $.post($(this).attr('href'), csrf_tocken)
                 .done(function(data) {
                     if (data.success) {
                         location.reload();

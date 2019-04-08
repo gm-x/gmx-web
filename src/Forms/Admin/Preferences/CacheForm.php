@@ -19,13 +19,20 @@ class CacheForm extends BaseForm
      * @var string[]
      */
     protected $dirs;
+
+	/**
+	 * @var bool
+	 */
+	protected $hasAccessToEdit;
     
     /**
      * @param string[] $dirs
+     * @param bool $hasAccessToEdit
      */
-    public function __construct(array $dirs)
+    public function __construct(array $dirs, $hasAccessToEdit = true)
     {
         $this->dirs = $dirs;
+        $this->hasAccessToEdit = $hasAccessToEdit;
     }
     
     /**
@@ -36,6 +43,7 @@ class CacheForm extends BaseForm
         $this->form->add(new Checkbox('accept', false, [
             'title' => $this->getTranslate('admin_preferences', 'cache_accept'),
             'required' => false,
+	        'disabled' => !$this->hasAccessToEdit,
         ]));
         
         $this->form->getValidator()->set('accept', false, [

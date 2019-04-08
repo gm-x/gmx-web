@@ -4,10 +4,6 @@
 
 {% block title %}{{ parent() }} | {{ trans('admin_menu', 'servers') }} | {{ server.name }}{% endblock %}
 
-{% block style %}
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
-{% endblock %}
-
 {% block subnav %}
     {% if has_access_permission(
         constants.admin.servers.PERMISSION_GROUP,
@@ -57,12 +53,21 @@
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
         <div class="uk-card-media-left uk-cover-container">
-            <img src="{{ base_url() }}/assets/images/maps/de_nuke.jpg" alt="" uk-cover>
-            <canvas width="600" height="400"></canvas>
-            <div class="uk-overlay uk-position-top uk-overlay-primary">
-                Map: de_nuke
+            {% if server.map.exists() %}
+                <img
+                    src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
+                    alt="{{ server.map.name }}"
+                    onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';"
+                    class="border-10"
+                >
+            {% else %}
+                <img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" class="border-10">
+            {% endif %}
+            <div class="uk-overlay-primary uk-position-cover"></div>
+            <div class="uk-overlay uk-position-bottom uk-light">
+                Map: {{ server.map.exists() ? server.map.name : '-' }}
                 <br>
-                Online: 1/32
+                Online: {{ players | length }}/{{ server.max_players }}
             </div>
         </div>
         <div>
@@ -71,12 +76,12 @@
                 <h5><a href="steam://connect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a></h5>
                 <div f-table f-divider>
                     <ul>
-                        <li>Create At</li>
-                        <li>{{ server.created_at }}</li>
+                        <li>{{ trans('labels', 'created_at') }}</li>
+                        <li>{{ server.created_at|date("d/m/Y H:i") }}</li>
                     </ul>
                     <ul>
-                        <li>Update At</li>
-                        <li>{{ server.updated_at }}</li>
+                        <li>{{ trans('labels', 'updated_at') }}</li>
+                        <li>{{ server.updated_at|date("d/m/Y H:i") }}</li>
                     </ul>
                 </div>
             </div>
@@ -170,7 +175,7 @@
                             var html = [
                                 '<div class="uk-modal-header uk-light uk-background-secondary">' +
 								'<h2 class="uk-modal-title">{{ trans("admin_servers", "token") }}</h2>' +
-								'</div><p class="uk-modal-body">' + data.token + '</p>'
+								'</div><p class="uk-modal-body token">' + data.token + '</p>'
 							];
                              UIkit.modal.dialog(html.join(''));
                         }
