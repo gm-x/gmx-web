@@ -44,6 +44,10 @@ $container['foundHandler'] = function() {
     return new \Slim\Handlers\Strategies\RequestResponseArgs();
 };
 
+$container['callableResolver'] = function (\Psr\Container\ContainerInterface $container) {
+    return new \GameX\Core\RouteCallableResolver($container);
+};
+
 $app = new \Slim\App($container);
 
 if ($config->getNode('debug')->get('exceptions')) {

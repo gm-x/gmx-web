@@ -24,11 +24,10 @@ class IndexController extends BaseMainController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function indexAction(Request $request, Response $response, array $args)
+    public function indexAction(Request $request, Response $response)
     {
         $servers = Server::with('map')->where('active', true)->get();
 
@@ -49,11 +48,10 @@ class IndexController extends BaseMainController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws \GameX\Core\Lang\Exceptions\BadLanguageException
      */
-    public function languageAction(Request $request, Response $response, array $args)
+    public function languageAction(Request $request, Response $response)
     {
         /** @var Language $lang */
         $lang = $this->getContainer('lang');

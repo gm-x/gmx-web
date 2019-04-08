@@ -1,5 +1,4 @@
 <?php
-use \GameX\Core\BaseController;
 use \GameX\Constants\Admin\AdminConstants;
 use \GameX\Constants\IndexConstants;
 use \GameX\Controllers\IndexController;
@@ -16,16 +15,16 @@ $securityMiddleware = new \GameX\Middlewares\SecurityMiddleware($app->getContain
 $app->group('', function () {
     /** @var \Slim\App $this */
     $this
-        ->get('/', BaseController::action(IndexController::class, 'index'))
+        ->get('/', [IndexController::class, 'index'])
         ->setName(IndexConstants::ROUTE_INDEX);
 
     $this
-        ->post('/lang', BaseController::action(IndexController::class, 'language'))
+        ->post('/lang', [IndexController::class, 'language'])
         ->setName('language')
         ->setArgument('csrf_skip', true);
 
     $this
-        ->get('/punishments', BaseController::action(PunishmentsController::class, 'index'))
+        ->get('/punishments', [PunishmentsController::class, 'index'])
         ->setName('punishments');
 
     include __DIR__ . DIRECTORY_SEPARATOR . 'user.php';
@@ -43,7 +42,7 @@ $app->group('/admin', function () {
     $permissions = $this->getContainer()->get('permissions');
 
     $this
-        ->get('', BaseController::action(AdminController::class, 'index'))
+        ->get('', [AdminController::class, 'index'])
         ->setName(AdminConstants::ROUTE_INDEX)
         ->add($permissions->hasAccessToGroupMiddleware('admin'));
 

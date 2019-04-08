@@ -1,5 +1,4 @@
 <?php
-use \GameX\Core\BaseController;
 use \GameX\Controllers\Admin\RolesController;
 use \GameX\Controllers\Admin\PermissionsController;
 use \GameX\Core\Auth\Permissions;
@@ -13,7 +12,7 @@ return function () {
     $permissions = $this->getContainer()->get('permissions');
 
     $this
-        ->get('', BaseController::action(RolesController::class, 'index'))
+        ->get('', [RolesController::class, 'index'])
         ->setName(RolesConstants::ROUTE_LIST)
         ->add($permissions->hasAccessToPermissionMiddleware(
             RolesConstants::PERMISSION_GROUP,
@@ -22,7 +21,7 @@ return function () {
         ));
     
     $this
-        ->get('/{role}/view', BaseController::action(RolesController::class, 'view'))
+        ->get('/{role}/view', [RolesController::class, 'view'])
         ->setName(RolesConstants::ROUTE_VIEW)
         ->add($permissions->hasAccessToPermissionMiddleware(
             RolesConstants::PERMISSION_GROUP,
@@ -31,7 +30,7 @@ return function () {
         ));
 
     $this
-        ->map(['GET', 'POST'], '/create', BaseController::action(RolesController::class, 'create'))
+        ->map(['GET', 'POST'], '/create', [RolesController::class, 'create'])
         ->setName(RolesConstants::ROUTE_CREATE)
         ->add($permissions->hasAccessToPermissionMiddleware(
             RolesConstants::PERMISSION_GROUP,
@@ -40,7 +39,7 @@ return function () {
         ));
 
     $this
-        ->map(['GET', 'POST'], '/{role}/edit', BaseController::action(RolesController::class, 'edit'))
+        ->map(['GET', 'POST'], '/{role}/edit', [RolesController::class, 'edit'])
         ->setName(RolesConstants::ROUTE_EDIT)
         ->add($permissions->hasAccessToPermissionMiddleware(
             RolesConstants::PERMISSION_GROUP,
@@ -49,7 +48,7 @@ return function () {
         ));
 
     $this
-        ->post('/{role}/delete', BaseController::action(RolesController::class, 'delete'))
+        ->post('/{role}/delete', [RolesController::class, 'delete'])
         ->setName(RolesConstants::ROUTE_DELETE)
         ->add($permissions->hasAccessToPermissionMiddleware(
             RolesConstants::PERMISSION_GROUP,
@@ -63,7 +62,7 @@ return function () {
         /** @var Permissions $permissions */
         $permissions = $this->getContainer()->get('permissions');
 
-        $this->get('', BaseController::action(PermissionsController::class, 'index'))
+        $this->get('', [PermissionsController::class, 'index'])
             ->setName(PermissionsConstants::ROUTE_LIST)
             ->add($permissions->hasAccessToPermissionMiddleware(
                 PermissionsConstants::PERMISSION_GROUP,
@@ -71,7 +70,7 @@ return function () {
                 Permissions::ACCESS_LIST
             ));
     
-        $this->post('', BaseController::action(PermissionsController::class, 'index'))
+        $this->post('', [PermissionsController::class, 'index'])
             ->add($permissions->hasAccessToPermissionMiddleware(
                 PermissionsConstants::PERMISSION_GROUP,
                 PermissionsConstants::PERMISSION_KEY,

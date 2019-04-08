@@ -1,5 +1,4 @@
 <?php
-use \GameX\Core\BaseController;
 use \GameX\Controllers\SettingsController;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Constants\SettingsConstants;
@@ -10,6 +9,6 @@ use \GameX\Constants\SettingsConstants;
 $permissions = $this->getContainer()->get('permissions');
 
 $this
-    ->map(['GET', 'POST'], '/settings', BaseController::action(SettingsController::class, 'index'))
+    ->map(['GET', 'POST'], '/settings', [SettingsController::class, 'index'])
     ->setName(SettingsConstants::ROUTE_INDEX)
 	->add($permissions->isAuthorizedMiddleware());

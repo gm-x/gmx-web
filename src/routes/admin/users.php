@@ -1,5 +1,4 @@
 <?php
-use \GameX\Core\BaseController;
 use \GameX\Controllers\Admin\UsersController;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Constants\Admin\UsersConstants;
@@ -11,7 +10,7 @@ return function () {
     $permissions = $this->getContainer()->get('permissions');
 
     $this
-        ->get('', BaseController::action(UsersController::class, 'index'))
+        ->get('', [UsersController::class, 'index'])
         ->setName(UsersConstants::ROUTE_LIST)
         ->add($permissions->hasAccessToPermissionMiddleware(
             UsersConstants::PERMISSION_GROUP,
@@ -20,7 +19,7 @@ return function () {
         ));
 
     $this
-        ->get('/{user}/view', BaseController::action(UsersController::class, 'view'))
+        ->get('/{user}/view', [UsersController::class, 'view'])
         ->setName(UsersConstants::ROUTE_VIEW)
         ->add($permissions->hasAccessToPermissionMiddleware(
             UsersConstants::PERMISSION_GROUP,
@@ -29,7 +28,7 @@ return function () {
         ));
 
     $this
-        ->map(['GET', 'POST'], '/{user}/edit', BaseController::action(UsersController::class, 'edit'))
+        ->map(['GET', 'POST'], '/{user}/edit', [UsersController::class, 'edit'])
         ->setName(UsersConstants::ROUTE_EDIT)
         ->add($permissions->hasAccessToPermissionMiddleware(
             UsersConstants::PERMISSION_GROUP,
@@ -38,7 +37,7 @@ return function () {
         ));
 
     $this
-        ->post('/{user}/activate', BaseController::action(UsersController::class, 'activate'))
+        ->post('/{user}/activate', [UsersController::class, 'activate'])
         ->setName(UsersConstants::ROUTE_ACTIVATE)
         ->add($permissions->hasAccessToPermissionMiddleware(
             UsersConstants::PERMISSION_GROUP,

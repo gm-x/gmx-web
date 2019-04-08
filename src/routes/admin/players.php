@@ -1,5 +1,4 @@
 <?php
-use \GameX\Core\BaseController;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\PunishmentsConstants;
@@ -15,7 +14,7 @@ return function () {
     $permissions = $this->getContainer()->get('permissions');
 
     $this
-        ->get('', BaseController::action(PlayersController::class, 'index'))
+        ->get('', [PlayersController::class, 'index'])
         ->setName(PlayersConstants::ROUTE_LIST)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PlayersConstants::PERMISSION_GROUP,
@@ -24,7 +23,7 @@ return function () {
         ));
     
     $this
-        ->get('/{player}/view', BaseController::action(PlayersController::class, 'view'))
+        ->get('/{player}/view', [PlayersController::class, 'view'])
         ->setName(PlayersConstants::ROUTE_VIEW)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PlayersConstants::PERMISSION_GROUP,
@@ -33,7 +32,7 @@ return function () {
         ));
 
 	$this
-		->map(['GET', 'POST'], '/create', BaseController::action(PlayersController::class, 'create'))
+		->map(['GET', 'POST'], '/create', [PlayersController::class, 'create'])
 		->setName(PlayersConstants::ROUTE_CREATE)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PlayersConstants::PERMISSION_GROUP,
@@ -42,7 +41,7 @@ return function () {
         ));
 
     $this
-        ->map(['GET', 'POST'], '/{player}/edit', BaseController::action(PlayersController::class, 'edit'))
+        ->map(['GET', 'POST'], '/{player}/edit', [PlayersController::class, 'edit'])
         ->setName(PlayersConstants::ROUTE_EDIT)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PlayersConstants::PERMISSION_GROUP,
@@ -51,7 +50,7 @@ return function () {
         ));
 
 	$this
-		->post('/{player}/delete', BaseController::action(PlayersController::class, 'delete'))
+		->post('/{player}/delete', [PlayersController::class, 'delete'])
 		->setName(PlayersConstants::ROUTE_DELETE)
         ->add($permissions->hasAccessToPermissionMiddleware(
             PlayersConstants::PERMISSION_GROUP,
@@ -66,11 +65,11 @@ return function () {
         $permissions = $this->getContainer()->get('permissions');
 
         $this
-            ->get('', BaseController::action(PrivilegesController::class, 'index'))
+            ->get('', [PrivilegesController::class, 'index'])
             ->setName(PrivilegesConstants::ROUTE_LIST);
 
         $this
-            ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PrivilegesController::class, 'create'))
+            ->map(['GET', 'POST'], '/create/{server}', [PrivilegesController::class, 'create'])
             ->setName(PrivilegesConstants::ROUTE_CREATE)
             ->add($permissions->hasAccessToResourceMiddleware(
                 'server',
@@ -80,11 +79,11 @@ return function () {
             ));
 
         $this
-            ->map(['GET', 'POST'], '/{privilege}/edit', BaseController::action(PrivilegesController::class, 'edit'))
+            ->map(['GET', 'POST'], '/{privilege}/edit', [PrivilegesController::class, 'edit'])
             ->setName(PrivilegesConstants::ROUTE_EDIT);
 
         $this
-            ->post('/{privilege}/delete', BaseController::action(PrivilegesController::class, 'delete'))
+            ->post('/{privilege}/delete', [PrivilegesController::class, 'delete'])
             ->setName(PrivilegesConstants::ROUTE_DELETE);
     });
     
@@ -95,7 +94,7 @@ return function () {
         $permissions = $this->getContainer()->get('permissions');
     
         $this
-            ->get('/{punishment}', BaseController::action(PunishmentsController::class, 'view'))
+            ->get('/{punishment}', [PunishmentsController::class, 'view'])
             ->setName(PunishmentsConstants::ROUTE_VIEW)
             ->add($permissions->hasAccessToResourceMiddleware(
                 'server',
@@ -105,7 +104,7 @@ return function () {
             ));
     
         $this
-            ->map(['GET', 'POST'], '/create/{server}', BaseController::action(PunishmentsController::class, 'create'))
+            ->map(['GET', 'POST'], '/create/{server}', [PunishmentsController::class, 'create'])
             ->setName(PunishmentsConstants::ROUTE_CREATE)
             ->add($permissions->hasAccessToResourceMiddleware(
                 'server',
@@ -115,11 +114,11 @@ return function () {
             ));
     
         $this
-            ->map(['GET', 'POST'], '/{punishment}/edit', BaseController::action(PunishmentsController::class, 'edit'))
+            ->map(['GET', 'POST'], '/{punishment}/edit', [PunishmentsController::class, 'edit'])
             ->setName(PunishmentsConstants::ROUTE_EDIT);
     
         $this
-            ->post('/{punishment}/delete', BaseController::action(PunishmentsController::class, 'delete'))
+            ->post('/{punishment}/delete', [PunishmentsController::class, 'delete'])
             ->setName(PunishmentsConstants::ROUTE_DELETE);
     });
 };
