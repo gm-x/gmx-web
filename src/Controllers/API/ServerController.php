@@ -22,7 +22,7 @@ class ServerController extends BaseApiController
      * @param array $args
      * @return Response
      */
-    public function privilegesAction(Request $request, Response $response, array $args)
+    public function privilegesAction(Request $request, Response $response)
     {
         $server = $this->getServer($request);
     
@@ -73,7 +73,7 @@ class ServerController extends BaseApiController
      * @param array $args
      * @return Response
      */
-    public function reasonsAction(Request $request, Response $response, array $args)
+    public function reasonsAction(Request $request, Response $response)
     {
         $server = $this->getServer($request);
         $reasons = $server->reasons()->where('active', 1)->get();
@@ -92,7 +92,7 @@ class ServerController extends BaseApiController
      * @throws ApiException
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function infoAction(Request $request, Response $response, array $args)
+    public function infoAction(Request $request, Response $response)
     {
         $server = $this->getServer($request);
 
@@ -139,7 +139,7 @@ class ServerController extends BaseApiController
 	 * @return Response
 	 * @throws ApiException
 	 */
-	public function pingAction(Request $request, Response $response, array $args)
+	public function pingAction(Request $request, Response $response)
 	{
 		$server = $this->getServer($request);
 		$server->ping_at = Carbon::now()->toDateTimeString();
@@ -157,7 +157,7 @@ class ServerController extends BaseApiController
      * @return Response
      * @throws ApiException
      */
-    public function updateAction(Request $request, Response $response, array $args)
+    public function updateAction(Request $request, Response $response)
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator->set('num_players', true, [

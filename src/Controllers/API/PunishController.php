@@ -24,7 +24,7 @@ class PunishController extends BaseApiController
      * @return Response
      * @throws ApiException
      */
-    public function indexAction(Request $request, Response $response, array $args)
+    public function indexAction(Request $request, Response $response)
     {
         $serverId = $this->getServer($request)->id;
         
@@ -84,7 +84,7 @@ class PunishController extends BaseApiController
      * @return Response
      * @throws ApiException
      */
-    public function immediatelyAction(Request $request, Response $response, array $args)
+    public function immediatelyAction(Request $request, Response $response)
     {
         $serverId = $this->getServer($request)->id;
         

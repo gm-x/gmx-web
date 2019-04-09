@@ -27,7 +27,7 @@ class PlayerController extends BaseApiController
      * @throws ApiException
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function connectAction(Request $request, Response $response, array $args)
+    public function connectAction(Request $request, Response $response)
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator
@@ -145,7 +145,7 @@ class PlayerController extends BaseApiController
      * @throws ApiException
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function disconnectAction(Request $request, Response $response, array $args)
+    public function disconnectAction(Request $request, Response $response)
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator->set('session_id', true, [
@@ -183,7 +183,7 @@ class PlayerController extends BaseApiController
      * @return Response
      * @throws ApiException
      */
-    public function assignAction(Request $request, Response $response, array $args)
+    public function assignAction(Request $request, Response $response)
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator->set('id', true, [
