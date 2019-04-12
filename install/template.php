@@ -189,7 +189,7 @@
 	function finish() {
         $('#formSubmitButton').prop('disabled', false);
         alert("Successfully installed");
-        location.href = '/';
+        location.href = '<?= $baseUrl; ?>/';
 	}
 
     UIkit.util.on('#installForm', 'submit', function (e) {
