@@ -14,6 +14,7 @@ use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Core\Auth\Models\PermissionsModel;
 use \GameX\Core\Exceptions\NotAllowedException;
 use \GameX\Core\Exceptions\RoleNotFoundException;
+use \GameX\Core\Cache\NotFoundException;
 
 class Permissions {
 
@@ -30,11 +31,6 @@ class Permissions {
      * @var ContainerInterface
      */
     protected $container;
-    
-    /**
-     * @var UserModel
-     */
-    protected $user;
 
     /**
      * @var \Closure
@@ -44,7 +40,7 @@ class Permissions {
     /**
      * @var int
      */
-    protected $rootUserId;
+    protected $rootUserId = null;
     
     /**
      * @var PermissionsModel[]|null
@@ -64,29 +60,13 @@ class Permissions {
     /**
      * @var array
      */
-    protected $cachedPermissions = [];
-    
-    /**
-     * @var array
-     */
     protected $cachedResources = [];
-    
-    /**
-     * @param ContainerInterface $container
-     * @throws \GameX\Core\Cache\NotFoundException
-     */
+
+	/**
+	 * @param ContainerInterface $container
+	 */
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
-
-        /** @var Node $config */
-        $config = $container->get('config')->getNode('permissions');
-        $this->rootUserId = $config->get('root_user');
-        
-        /** @var Cache $cache */
-        $cache = $container->get('cache');
-        $this->cachedPermissions = $cache->get('permissions');
-
-        $this->user = $container->get('auth')->check();
     }
 
     /**
@@ -94,28 +74,35 @@ class Permissions {
      * @return bool
      */
     public function isRootUser(UserModel $user) {
+    	if ($this->rootUserId === null) {
+		    /** @var Node $config */
+		    $config = $this->container->get('config')->getNode('permissions');
+		    $this->rootUserId = $config->get('root_user');
+	    }
         return ($user->id === $this->rootUserId);
     }
-    
-    /**
-     * @param RoleModel $role
-     * @param $group
-     * @return bool
-     * @throws RoleNotFoundException
-     */
+
+	/**
+	 * @param RoleModel $role
+	 * @param $group
+	 * @return bool
+	 * @throws NotFoundException
+	 * @throws RoleNotFoundException
+	 */
     public function hasAccessToGroup(RoleModel $role, $group) {
         $permissions = $this->cacheRole($role);
         return array_key_exists($group, $permissions['groups']) && $permissions['groups'][$group];
     }
-    
-    /**
-     * @param RoleModel $role
-     * @param $group
-     * @param $permission
-     * @param null $access
-     * @return bool
-     * @throws RoleNotFoundException
-     */
+
+	/**
+	 * @param RoleModel $role
+	 * @param $group
+	 * @param $permission
+	 * @param null $access
+	 * @return bool
+	 * @throws NotFoundException
+	 * @throws RoleNotFoundException
+	 */
     public function hasAccessToPermission(RoleModel $role, $group, $permission, $access = null) {
         $permissions = $this->cacheRole($role);
         
@@ -133,16 +120,17 @@ class Permissions {
     
         return ($permissions['permissions'][$group][$permission] & $access) === $access;
     }
-    
-    /**
-     * @param RoleModel $role
-     * @param $group
-     * @param $permission
-     * @param $resource
-     * @param null $access
-     * @return bool
-     * @throws RoleNotFoundException
-     */
+
+	/**
+	 * @param RoleModel $role
+	 * @param $group
+	 * @param $permission
+	 * @param $resource
+	 * @param null $access
+	 * @return bool
+	 * @throws NotFoundException
+	 * @throws RoleNotFoundException
+	 */
     public function hasAccessToResource(RoleModel $role, $group, $permission, $resource, $access = null) {
         $permissions = $this->cacheRole($role);
     
@@ -228,19 +216,10 @@ class Permissions {
      * @throws RoleNotFoundException
      */
     public function hasUserAccessToGroup($group) {
-        if (!$this->user) {
-            return false;
-        }
-        
-        if ($this->isRootUser($this->user)) {
-            return true;
-        }
-        
-        if (!$this->user->role_id) {
-            return false;
-        }
-
-        return $this->hasAccessToGroup($this->user->role, $group);
+    	$role = $this->getUserRole();
+    	return ($role instanceof RoleModel)
+		    ? $this->hasAccessToGroup($role, $group)
+		    : $role;
     }
     
     /**
@@ -251,19 +230,10 @@ class Permissions {
      * @throws RoleNotFoundException
      */
     public function hasUserAccessToPermission($group, $permission, $access = null) {
-        if (!$this->user) {
-            return false;
-        }
-        
-        if ($this->isRootUser($this->user)) {
-            return true;
-        }
-        
-        if (!$this->user->role_id) {
-            return false;
-        }
-        
-        return $this->hasAccessToPermission($this->user->role, $group, $permission, $access);
+	    $role = $this->getUserRole();
+	    return ($role instanceof RoleModel)
+		    ? $this->hasAccessToPermission($role, $group, $permission, $access)
+		    : $role;
     }
     
     /**
@@ -275,28 +245,30 @@ class Permissions {
      * @throws RoleNotFoundException
      */
     public function hasUserAccessToResource($group, $permission, $resource, $access = null) {
-        if (!$this->user) {
-            return false;
-        }
-    
-        if ($this->isRootUser($this->user)) {
-            return true;
-        }
-    
-        if (!$this->user->role_id) {
-            return false;
-        }
-    
-        return $this->hasAccessToResource($this->user->role, $group, $permission, $resource, $access);
+	    $role = $this->getUserRole();
+	    return ($role instanceof RoleModel)
+		    ? $this->hasAccessToResource($role, $group, $permission, $resource, $access)
+		    : $role;
     }
-    
+
+	/**
+	 * @param RoleModel $role
+	 * @return mixed
+	 * @throws NotFoundException
+	 * @throws RoleNotFoundException
+	 */
     protected function cacheRole(RoleModel $role) {
         $key = $role->getKey();
-        if (!array_key_exists($key, $this->cachedPermissions)) {
+
+	    /** @var Cache $cache */
+	    $cache = $this->container->get('cache');
+	    $cachedPermissions = $cache->get('permissions');
+
+        if (!array_key_exists($key, $cachedPermissions)) {
             throw new RoleNotFoundException('Role ' . $role->id . ' was not found');
         }
         
-        return $this->cachedPermissions[$key];
+        return $cachedPermissions[$key];
     }
 
     /**
@@ -342,5 +314,26 @@ class Permissions {
         /** @var Router $router */
         $router = $this->container->get('router');
         return $response->withRedirect($router->pathFor('login'));
+    }
+
+	/**
+	 * @return bool|RoleModel
+	 */
+    protected function getUserRole() {
+    	/** @var UserModel|bool $user */
+	    $user = $this->container->get('auth')->check();
+	    if (!$user) {
+		    return false;
+	    }
+
+	    if ($this->isRootUser($user)) {
+		    return true;
+	    }
+
+	    if (!$user->role_id) {
+		    return false;
+	    }
+
+	    return $user->role;
     }
 }

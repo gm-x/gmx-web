@@ -19,14 +19,15 @@ class ApiTokenMiddleware
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         try {
-            if (!preg_match('/Token\s+(?P<token>.+?)$/i', $request->getHeaderLine('Authorization'), $matches)) {
-                throw new ApiException('Token required');
+            $token = $request->getHeaderLine('X-Token');
+            if (empty($token)) {
+	            throw new ApiException('Token required');
             }
-            
+
             /** @var \GameX\Models\Server $server */
-            $server = Server::where('token', $matches['token'])->first();
+            $server = Server::where('token', $token)->first();
             if (!$server || !$server->active) {
-                throw new ApiException('Invalid token');
+                throw new ApiException('Invalid token ' . $token);
             }
             return $next($request->withAttribute('server', $server), $response);
         } catch (ApiException $e) {
