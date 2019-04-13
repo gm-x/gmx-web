@@ -29,7 +29,7 @@
                 <li>
                     <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
                     <div class="uk-navbar-dropdown" uk-dropdown="pos: bottom-right; animation:uk-animation-shake; delay-hide: 0">
-                        <ul class="uk-nav uk-navbar-dropdown-nav lang-select" data-href="{{ path_for('language')}}">
+                        <ul class="uk-nav uk-navbar-dropdown-nav lang-select" data-href="{{ path_for('language') }}">
                             {% for key,value in siteLanguages %}
                                 <li><a data-lang="{{ key }}">{{ value }}</a></li>
                             {% endfor %}
@@ -165,7 +165,7 @@
                 <li>
                     <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
                     <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
-                        <ul class="uk-nav uk-navbar-dropdown-nav lang-select">
+                        <ul class="uk-nav uk-navbar-dropdown-nav lang-select" data-href="{{ path_for('language') }}">
                             {% for key,value in siteLanguages %}
                                 <li><a data-lang="{{ key }}">{{ value }}</a></li>
                             {% endfor %}
