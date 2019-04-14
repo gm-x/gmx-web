@@ -11,8 +11,8 @@ class PlayersSessions extends Migration {
         $this->getSchema()
             ->create($this->getTableName(), function (Blueprint $table) {
                 $table->increments('id');
-                $table->unsignedTinyInteger('player_id')->references('id')->on('players');
-                $table->unsignedTinyInteger('server_id')->references('id')->on('servers');
+                $table->unsignedInteger('player_id')->references('id')->on('players');
+                $table->unsignedInteger('server_id')->references('id')->on('servers');
                 $table->enum('status', [
                     'online',
                     'offline',

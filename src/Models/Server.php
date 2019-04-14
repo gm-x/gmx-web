@@ -125,6 +125,8 @@ class Server extends BaseModel
             ->sessions()
             ->with('player')
             ->where('status', '=', PlayerSession::STATUS_ONLINE)
+//	        ->whereTime('updated_at', '>', Carbon::today())
+	        ->groupBy('player_id')
             ->orderBy('created_at', 'DESC')
             ->get();
     }

@@ -110,6 +110,8 @@ class PlayerController extends BaseApiController
             $session->status = PlayerSession::STATUS_OFFLINE;
             $session->disconnected_at = Carbon::now();
             $session->save();
+
+	        $session = new PlayerSession();
             $session->fill([
                 'player_id' => $player->id,
                 'server_id' => $server->id,
