@@ -6,7 +6,6 @@ use \Illuminate\Events\Dispatcher;
 use \Cartalyst\Sentinel\Checkpoints\ActivationCheckpoint;
 use \Cartalyst\Sentinel\Activations\ActivationRepositoryInterface;
 use \GameX\Core\Auth\Repository\ActivationRepository;
-use \Cartalyst\Sentinel\Checkpoints\ThrottleCheckpoint;
 use \Cartalyst\Sentinel\Hashing\NativeHasher;
 use \Cartalyst\Sentinel\Persistences\PersistenceRepositoryInterface;
 use \GameX\Core\Auth\Repository\PersistenceRepository;

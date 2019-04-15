@@ -81,7 +81,7 @@ class PersistenceRepository implements PersistenceRepositoryInterface
     public function findUserByPersistenceCode($code)
     {
         $sessionUser = $this->sessionUser->get();
-        if ($sessionUser !== null && $sessionUser['expired'] < time()) {
+        if ($sessionUser !== null && $sessionUser['expired'] > time()) {
             return UserModel::find($sessionUser['user']);
         }
 

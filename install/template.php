@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="<?= $baseUrl; ?>/assets/css/uikit.css" />
     <script src="<?= $baseUrl; ?>/assets/js/uikit.js"></script>
+	<script src="<?= $baseUrl; ?>/assets/js/jquery-3.3.1.min.js"></script>
 </head>
 <body>
 <div class="uk-container uk-container-small uk-margin-medium">
@@ -88,7 +89,6 @@
     </form>
 
 </div>
-<script src="<?= $baseUrl; ?>/assets/js/jquery-3.3.1.min.js"></script>
 <script>
     var statusList;
 	function result(message, nextCall) {
