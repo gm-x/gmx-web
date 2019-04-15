@@ -27,7 +27,8 @@
 		"tedivm/stash": "v0.14.2",
 		"swiftmailer/swiftmailer": "5.4.9",
 		"composer/composer": "^1.8@dev",
-		"hybridauth/hybridauth": "^3.0@dev"
+		"hybridauth/hybridauth": "^3.0@dev",
+		"paragonie/csp-builder": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
