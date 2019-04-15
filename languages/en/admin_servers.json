@@ -1,4 +1,5 @@
 {
+    "type": "Server type",
     "name": "Server name",
     "ip": "IP",
     "port": "Port",
@@ -6,5 +7,6 @@
     "token": "Server token",
     "groups": "Privileges groups",
     "reasons": "Bans reasons",
-    "already_exists": "Server already exists"
+    "already_exists": "Server already exists",
+    "choose_type": "Choose type"
 }

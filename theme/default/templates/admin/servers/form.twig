@@ -6,6 +6,7 @@
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
+		{{ forms.element_select(form.type) }}
 		{{ forms.element_input(form.name, {"label": true}) }}
 		{{ forms.element_input(form.ip, {"label": true}) }}
 		{{ forms.element_input(form.port, {"label": true}) }}

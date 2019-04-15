@@ -7,7 +7,9 @@ use \GameX\Models\Server;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Validate\Rules\Number as NumberRule;
+use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Validate\Rules\IPv4;
+use \GameX\Core\Validate\Rules\InArray;
 use \GameX\Core\Validate\Rules\Callback;
 
 class ServersForm extends BaseForm
@@ -49,7 +51,15 @@ class ServersForm extends BaseForm
      */
     protected function createForm()
     {
-        $this->form->add(new Text('name', $this->server->name, [
+        $this->form
+            ->add(new Select('type', $this->server->type, [
+                'cstrike' => 'Counter-Strike 1.6'
+            ], [
+                'title' => $this->getTranslate($this->name, 'type'),
+                'required' => true,
+                'empty_option' => $this->getTranslate($this->name, 'choose_type')
+            ]))
+            ->add(new Text('name', $this->server->name, [
                 'title' => $this->getTranslate($this->name, 'name'),
                 'required' => true,
             ]))->add(new Text('ip', $this->server->ip, [
@@ -63,9 +73,18 @@ class ServersForm extends BaseForm
                 'required' => true,
             ]));
         
-        $this->form->getValidator()->set('name', true)->set('ip', true, [
+        $this->form->getValidator()
+            ->set('type', true, [
+                new InArray(['cstrike'])
+            ])
+            ->set('ip', true, [
                 new IPv4()
-            ])->set('port', true, [
+            ])
+            ->set('name', true)
+            ->set('ip', true, [
+                new IPv4()
+            ])
+            ->set('port', true, [
                 new NumberRule(1024, 65535)
             ]);
         

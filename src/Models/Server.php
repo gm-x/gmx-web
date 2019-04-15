@@ -12,6 +12,7 @@ use \GameX\Core\Utils;
  * @package GameX\Models
  *
  * @property integer $id
+ * @property string $type
  * @property string $name
  * @property string $ip
  * @property integer $port
@@ -50,7 +51,7 @@ class Server extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['name', 'ip', 'port', 'token', 'rcon', 'active', 'num_players', 'max_players', 'map_id'];
+    protected $fillable = ['type', 'name', 'ip', 'port', 'token', 'rcon', 'active', 'num_players', 'max_players', 'map_id'];
     
     /**
      * @var array
@@ -126,7 +127,7 @@ class Server extends BaseModel
             ->with('player')
             ->where('status', '=', PlayerSession::STATUS_ONLINE)
 //	        ->whereTime('updated_at', '>', Carbon::today())
-	        ->groupBy('player_id')
+	        ->groupBy('id', 'player_id')
             ->orderBy('created_at', 'DESC')
             ->get();
     }
