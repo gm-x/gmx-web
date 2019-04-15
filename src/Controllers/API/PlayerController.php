@@ -22,7 +22,6 @@ class PlayerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
      * @throws ApiException
      * @throws \GameX\Core\Cache\NotFoundException
@@ -142,7 +141,6 @@ class PlayerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
      * @throws ApiException
      * @throws \GameX\Core\Cache\NotFoundException
@@ -181,7 +179,6 @@ class PlayerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
      * @throws ApiException
      */

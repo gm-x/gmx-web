@@ -20,7 +20,6 @@ class PunishController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
      * @throws ApiException
      */
@@ -80,7 +79,6 @@ class PunishController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
      * @throws ApiException
      */
