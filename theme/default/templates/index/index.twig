@@ -31,7 +31,7 @@
 											<b>{{ trans('labels', 'server_address') }}</b>: {{ server.ip }}:{{ server.port }}
 											<br>
 											<b>{{ trans('labels', 'server_players') }}</b>:
-											{{ players[server.id] | length }}/{{ server.max_players }}
+											{{ server.num_players }}/{{ server.max_players }}
 										</p>
 									</div>
 									<div class="uk-card-badge uk-label">

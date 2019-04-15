@@ -31,17 +31,17 @@ class IndexController extends BaseMainController
     {
         $servers = Server::with('map')->where('active', true)->get();
 
-        /** @var \GameX\Core\Cache\Cache $cache */
-        $cache = $this->getContainer('cache');
-
-        $players = [];
-        foreach ($servers as $server) {
-            $players[$server->id] = $cache->get('players_online', $server);
-        }
+//        /** @var \GameX\Core\Cache\Cache $cache */
+//        $cache = $this->getContainer('cache');
+//
+//        $players = [];
+//        foreach ($servers as $server) {
+//            $players[$server->id] = $cache->get('players_online', $server);
+//        }
 
         return $this->getView()->render($response, 'index/index.twig', [
             'servers' => $servers,
-            'players' => $players,
+//            'players' => $players,
         ]);
     }
     
