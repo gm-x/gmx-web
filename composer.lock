@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "748b3bdb87755f21509364f0f53a1780",
+    "content-hash": "941cbbbf178987c932d75c3ea92fe37b",
     "packages": [
         {
             "name": "cartalyst/sentinel",
@@ -201,16 +201,16 @@
         },
         {
             "name": "composer/composer",
-            "version": "1.8.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "0f36a42d614deb4638f5e00cd3a86309df78db72"
+                "reference": "af677553cce0967bf7c364d64a9a169152c33fcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/0f36a42d614deb4638f5e00cd3a86309df78db72",
-                "reference": "0f36a42d614deb4638f5e00cd3a86309df78db72",
+                "url": "https://api.github.com/repos/composer/composer/zipball/af677553cce0967bf7c364d64a9a169152c33fcd",
+                "reference": "af677553cce0967bf7c364d64a9a169152c33fcd",
                 "shasum": ""
             },
             "require": {
@@ -277,7 +277,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2019-02-21T13:05:56+00:00"
+            "time": "2018-09-13T07:28:04+00:00"
         },
         {
             "name": "composer/semver",
@@ -978,6 +978,52 @@
             "time": "2018-02-14T22:26:30+00:00"
         },
         {
+            "name": "koraktor/steam-condenser",
+            "version": "1.3.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/koraktor/steam-condenser-php.git",
+                "reference": "a75269e9ff9444d3bf1dfd49a0dfe072316373e6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/koraktor/steam-condenser-php/zipball/a75269e9ff9444d3bf1dfd49a0dfe072316373e6",
+                "reference": "a75269e9ff9444d3bf1dfd49a0dfe072316373e6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "lib/"
+            ],
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Staudt",
+                    "email": "koraktor@gmail.com"
+                }
+            ],
+            "description": "The Steam Condenser is a library for querying the Steam Community, Source and GoldSrc game servers",
+            "homepage": "http://koraktor.de/steam-condenser",
+            "keywords": [
+                "community",
+                "goldsrc",
+                "query",
+                "source",
+                "steam",
+                "webapi"
+            ],
+            "time": "2015-03-19T09:43:24+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.23.0",
             "source": {
@@ -1155,6 +1201,124 @@
                 "routing"
             ],
             "time": "2018-08-19T11:46:04+00:00"
+        },
+        {
+            "name": "paragonie/constant_time_encoding",
+            "version": "v2.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/constant_time_encoding.git",
+                "reference": "55af0dc01992b4d0da7f6372e2eac097bbbaffdb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/55af0dc01992b4d0da7f6372e2eac097bbbaffdb",
+                "reference": "55af0dc01992b4d0da7f6372e2eac097bbbaffdb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6|^7",
+                "vimeo/psalm": "^1|^2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ParagonIE\\ConstantTime\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Steve 'Sc00bz' Thomas",
+                    "email": "steve@tobtu.com",
+                    "homepage": "https://www.tobtu.com",
+                    "role": "Original Developer"
+                }
+            ],
+            "description": "Constant-time Implementations of RFC 4648 Encoding (Base-64, Base-32, Base-16)",
+            "keywords": [
+                "base16",
+                "base32",
+                "base32_decode",
+                "base32_encode",
+                "base64",
+                "base64_decode",
+                "base64_encode",
+                "bin2hex",
+                "encoding",
+                "hex",
+                "hex2bin",
+                "rfc4648"
+            ],
+            "time": "2019-01-03T20:26:31+00:00"
+        },
+        {
+            "name": "paragonie/csp-builder",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/csp-builder.git",
+                "reference": "3b05cbbe6307de7ce4d7ca1c96fad96e7619b92e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/csp-builder/zipball/3b05cbbe6307de7ce4d7ca1c96fad96e7619b92e",
+                "reference": "3b05cbbe6307de7ce4d7ca1c96fad96e7619b92e",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/constant_time_encoding": "^2",
+                "php": "^7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*",
+                "psr/http-message": "^1",
+                "squizlabs/php_codesniffer": "^3",
+                "vimeo/psalm": "^0.3"
+            },
+            "suggest": {
+                "psr/http-message": "For CSPBuilder::injectCSPHeader()"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ParagonIE\\CSPBuilder\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com",
+                    "role": "Owner"
+                }
+            ],
+            "description": "Easily add and update Content-Security-Policy headers for your project",
+            "keywords": [
+                "content-security-policy",
+                "csp",
+                "headers",
+                "http",
+                "security",
+                "xss"
+            ],
+            "time": "2019-03-13T18:01:56+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -2537,7 +2701,8 @@
     "stability-flags": {
         "davedevelopment/phpmig": 20,
         "composer/composer": 20,
-        "hybridauth/hybridauth": 20
+        "hybridauth/hybridauth": 20,
+        "paragonie/csp-builder": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

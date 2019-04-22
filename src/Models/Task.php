@@ -23,12 +23,7 @@ class Task extends BaseModel
     const STATUS_IN_PROGRESS = 1;
     const STATUS_FAILED = 2;
     const STATUS_DONE = 3;
-    
-    /**
-     * @var null|mixed
-     */
-    private $dataDecoded = null;
-    
+
     /**
      * The table associated with the model.
      *
@@ -52,10 +47,14 @@ class Task extends BaseModel
      */
     public function getDataAttribute($value)
     {
-        if ($this->dataDecoded === null && $value) {
-            $this->dataDecoded = json_decode($value, true);
-        }
-        
-        return $this->dataDecoded;
+	    return $value ? json_decode($value, true) : [];
     }
+
+	/**
+	 * @param array $value
+	 */
+	public function setDataAttribute(array $value)
+	{
+		$this->attributes['data'] = $value ? json_encode($value) : '';
+	}
 }

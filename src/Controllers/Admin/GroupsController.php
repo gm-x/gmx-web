@@ -11,6 +11,8 @@ use \GameX\Core\BaseAdminController;
 use \GameX\Models\Server;
 use \GameX\Models\Group;
 use \GameX\Forms\Admin\GroupsForm;
+use \GameX\Core\Jobs\JobHelper;
+use \GameX\Models\Task;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Exceptions\RedirectException;
 use \Exception;
@@ -85,6 +87,7 @@ class GroupsController extends BaseAdminController
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
+        	$this->reloadAdmins($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(GroupsConstants::ROUTE_EDIT, [
                 'server' => $server->id,
@@ -134,6 +137,7 @@ class GroupsController extends BaseAdminController
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
+	        $this->reloadAdmins($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(GroupsConstants::ROUTE_EDIT, [
                 'server' => $server->id,
@@ -163,6 +167,7 @@ class GroupsController extends BaseAdminController
         
         try {
             $group->delete();
+	        $this->reloadAdmins($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
@@ -233,7 +238,8 @@ class GroupsController extends BaseAdminController
      * @return Group
      * @throws NotFoundException
      */
-    protected function getGroup(ServerRequestInterface $request, Response $response, $id = null, Server $server = null) {
+    protected function getGroup(ServerRequestInterface $request, Response $response, $id = null, Server $server = null)
+    {
         if ($id === null) {
             return new Group([
                 'server_id' => $server->id
@@ -247,5 +253,18 @@ class GroupsController extends BaseAdminController
         
         
         return $group;
+    }
+
+	/**
+	 * @param Server $server
+	 */
+    protected function reloadAdmins(Server $server)
+    {
+	    JobHelper::createTaskIfNotExists('rcon_exec', [
+		    'server_id' => $server->id,
+		    'command' => 'amx_reloadadmins'
+	    ], null, function (Task $task) use ($server) {
+		    return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
+	    });
     }
 }
