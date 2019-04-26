@@ -209,41 +209,44 @@ class Permissions {
                 : false;
         });
     }
-    
-    /**
-     * @param string $group
-     * @return bool
-     * @throws RoleNotFoundException
-     */
+
+	/**
+	 * @param $group
+	 * @return bool|RoleModel
+	 * @throws NotFoundException
+	 * @throws RoleNotFoundException
+	 */
     public function hasUserAccessToGroup($group) {
     	$role = $this->getUserRole();
     	return ($role instanceof RoleModel)
 		    ? $this->hasAccessToGroup($role, $group)
 		    : $role;
     }
-    
-    /**
-     * @param string $group
-     * @param string $permission
-     * @param int|null $access
-     * @return bool
-     * @throws RoleNotFoundException
-     */
+
+	/**
+	 * @param $group
+	 * @param $permission
+	 * @param null $access
+	 * @return bool|RoleModel
+	 * @throws NotFoundException
+	 * @throws RoleNotFoundException
+	 */
     public function hasUserAccessToPermission($group, $permission, $access = null) {
 	    $role = $this->getUserRole();
 	    return ($role instanceof RoleModel)
 		    ? $this->hasAccessToPermission($role, $group, $permission, $access)
 		    : $role;
     }
-    
-    /**
-     * @param string $group
-     * @param string $permission
-     * @param string $resource
-     * @param int|null $access
-     * @return bool
-     * @throws RoleNotFoundException
-     */
+
+	/**
+	 * @param $group
+	 * @param $permission
+	 * @param $resource
+	 * @param null $access
+	 * @return bool|RoleModel
+	 * @throws NotFoundException
+	 * @throws RoleNotFoundException
+	 */
     public function hasUserAccessToResource($group, $permission, $resource, $access = null) {
 	    $role = $this->getUserRole();
 	    return ($role instanceof RoleModel)

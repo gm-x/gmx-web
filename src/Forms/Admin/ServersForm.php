@@ -5,6 +5,7 @@ namespace GameX\Forms\Admin;
 use \GameX\Core\BaseForm;
 use \GameX\Models\Server;
 use \GameX\Core\Forms\Elements\Text;
+use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Validate\Rules\Number as NumberRule;
 use \GameX\Core\Forms\Elements\Select;
@@ -25,12 +26,19 @@ class ServersForm extends BaseForm
      */
     protected $server;
 
+	/**
+	 * @var bool
+	 */
+    protected $rconEnabled;
+
     /**
      * @param Server $server
+     * @param bool $rconEnabled
      */
-    public function __construct(Server $server)
+    public function __construct(Server $server, $rconEnabled = false)
     {
         $this->server = $server;
+        $this->rconEnabled = $rconEnabled;
     }
     
     /**
@@ -89,9 +97,21 @@ class ServersForm extends BaseForm
             ]);
         
         if (!$this->server->exists) {
-            $this->form->getValidator()->add('port',
-                    new Callback([$this, 'checkExists'], $this->getTranslate($this->name, 'already_exists')));
+            $this->form
+	            ->getValidator()->add('port', new Callback(
+	            	[$this, 'checkExists'],
+		            $this->getTranslate($this->name, 'already_exists')
+	            ));
         }
+
+	    if ($this->rconEnabled) {
+	    	$required = !$this->server->exists;
+		    $this->form->add(new Password('rcon', '', [
+			    'title' => $this->getTranslate($this->name, 'rcon'),
+			    'required' => $required,
+		    ]));
+		    $this->form->getValidator()->set('rcon', $required);
+	    }
     }
     
     /**

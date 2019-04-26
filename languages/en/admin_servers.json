@@ -3,6 +3,7 @@
     "name": "Server name",
     "ip": "IP",
     "port": "Port",
+    "rcon": "RCON",
     "address": "Server address",
     "token": "Server token",
     "groups": "Privileges groups",

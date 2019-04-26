@@ -30,6 +30,7 @@ set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
 
 BaseCronController::registerKey('sendmail', \GameX\Controllers\Cron\SendMailController::class);
 BaseCronController::registerKey('punishments', \GameX\Controllers\Cron\PunishmentsController::class);
+BaseCronController::registerKey('ClearDataController', \GameX\Controllers\Cron\ClearDataController::class);
 BaseCronController::registerKey('rcon_exec', \GameX\Controllers\Cron\RconController::class);
 
 $task = null;
