@@ -1,6 +1,4 @@
 <?php
-$start = microtime(true);
-
 function redirectToInstall() {
     die('Need to be installed first');
 }
