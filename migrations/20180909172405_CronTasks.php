@@ -29,7 +29,7 @@ class CronTasks extends Migration {
         return [
             [
                 'key' => 'punishments',
-                'data' => json_encode([]),
+                'data' => [],
                 'execute_at' => 0,
                 'status' => Task::STATUS_WAITING,
                 'retries' => 0,
