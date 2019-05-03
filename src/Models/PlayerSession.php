@@ -69,7 +69,9 @@ class PlayerSession extends BaseModel
 	public function getOnlineAttribute()
 	{
 		// TODO: remove from this part of code
-		Carbon::setLocale('ru');
+		/** @var \GameX\Core\Lang\Language $lang */
+		$lang = self::$container->get('lang');
+		Carbon::setLocale($lang->getUserLanguage());
 		return $this->disconnected_at !== null
 			? $this->disconnected_at->diffForHumans($this->created_at, true, true, 3)
 			: null;
