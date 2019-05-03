@@ -24,6 +24,7 @@ use \Carbon\Carbon;
  * @property UserModel $user
  * @property Privilege[] $privileges
  * @property Punishment[] $punishments
+ * @property PlayerSession[] $sessions
  * @property Server $server
  */
 class Player extends BaseModel

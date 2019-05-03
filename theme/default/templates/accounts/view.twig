@@ -131,5 +131,21 @@
 			}
 		});
 	</script>
+	<div class="uk-card-body">
+		<div f-table f-divider>
+			<ul th>
+				<li class="uk-width-1-6@m uk-width-1-6@s">Server</li>
+				<li class="uk-width-1-6@m uk-width-1-6@s">Date</li>
+				<li class="uk-width-1-6@m uk-width-1-6@s">Time</li>
+			</ul>
+			{% for session in player.sessions %}
+				<ul>
+					<li class="uk-width-1-6@m uk-width-1-6@s">{{ session.server.name }}</li>
+					<li class="uk-width-1-6@m uk-width-1-6@s">{{ session.created_at }}</li>
+					<li class="uk-width-1-6@m uk-width-1-6@s">{{ session.online }}</li>
+				</ul>
+			{% endfor %}
+		</div>
+	</div>
 </div>
 {% endblock %}
