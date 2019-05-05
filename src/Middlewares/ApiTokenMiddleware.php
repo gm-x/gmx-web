@@ -2,15 +2,29 @@
 
 namespace GameX\Middlewares;
 
+use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \GameX\Core\Exceptions\ApiException;
 use \GameX\Models\Server;
+use \GameX\Core\Exceptions\ApiException;
+use \GameX\Core\Exceptions\InvalidTokenException;
 
 class ApiTokenMiddleware
 {
-    
-    /**
+	/**
+	 * @var ContainerInterface
+	 */
+	protected $container;
+
+	/**
+	 * @param ContainerInterface $container
+	 */
+	public function __construct(ContainerInterface $container)
+	{
+		$this->container = $container;
+	}
+
+	/**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable $next
@@ -21,16 +35,19 @@ class ApiTokenMiddleware
         try {
             $token = $request->getHeaderLine('X-Token');
             if (empty($token)) {
-	            throw new ApiException('Token required');
+	            throw new InvalidTokenException('Token required');
             }
 
             /** @var \GameX\Models\Server $server */
             $server = Server::where('token', $token)->first();
             if (!$server || !$server->active) {
-                throw new ApiException('Invalid token ' . $token);
+                throw new InvalidTokenException('Invalid token ' . $token);
             }
             return $next($request->withAttribute('server', $server), $response);
-        } catch (ApiException $e) {
+        } catch (InvalidTokenException $e) {
+        	/** @var \GameX\Core\Log\Logger $log */
+        	$log = $this->container->get('log');
+        	$log->exception($e);
             return $response->withStatus(403)->withJson([
                     'success' => false,
                     'error' => [
