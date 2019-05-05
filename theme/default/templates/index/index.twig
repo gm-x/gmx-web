@@ -12,7 +12,12 @@
 				<ul class="uk-slider-items uk-child-width-1-1@s uk-grid">
                     {% for server in servers %}
 						<li>
-							<div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+							<div class="uk-card uk-card-default uk-margin-top">
+								<div class="uk-card-header">
+									<h3 class="uk-card-title uk-text-uppercase"><i class="fas fa-circle-notch"></i> Список серверов</h3>
+									<p class="uk-text-meta uk-margin-remove-top uk-text-uppercase">Последнее обновление было 1 мин назад</p>
+								</div>
+								<div class="uk-grid-collapse uk-child-width-1-2@s" uk-grid>
 								<div class="uk-inline uk-card-media-left">
 									{% if server.online and server.map.exists() %}
 										<img
@@ -28,7 +33,7 @@
 									<div class="uk-overlay uk-position-bottom uk-light">
 										<h3 class="uk-card-title">{{ server.name }}</h3>
 										<p>
-											<b>{{ trans('labels', 'server_address') }}</b>: {{ server.ip }}:{{ server.port }}
+											<b>{{ trans('labels', 'server_address') }}</b>: <a href="steam://connect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a>
 											<br>
 											<b>{{ trans('labels', 'server_players') }}</b>:
 											{{ players[server.id] | length }}/{{ server.max_players }}
@@ -67,6 +72,7 @@
 											</tr>
 										</table>
 									</div>
+								</div>
 							</div>
 						</li>
                     {% endfor %}
@@ -78,7 +84,7 @@
 		</div>
 	</div>
 </div>
-<div class="uk-grid-small uk-child-width-expand@s" uk-grid>
+<div class="uk-grid-small uk-child-width-expand@s uk-margin" uk-grid>
 	<div>
 		<div class="uk-card uk-card-default">
 			<div class="uk-card-body">

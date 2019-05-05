@@ -1,36 +1,35 @@
 {% block style %}
 	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
-
-<div>
-	<div f-table f-divider>
+	<div class="uk-child-width-1-2@m" uk-grid>
 		{% for provider in socialNetworks %}
-		<ul>
-			<li class="uk-width-1-2@m">
-				<i class="fab fa-{{ social_get_icon(provider) }} fa-lg uk-margin-medium-right"></i>
-				{{ social_get_title(provider) }}
-			</li>
-			<li class="uk-width-1-2@m">
-				{% if userSocials[provider] is defined %}
-					<form method="post">
-						{{ csrf_token() }}
-						<input type="hidden" name="social" value="{{ userSocials[provider].id }}">
-						<input
-							type="submit"
-							class="uk-button uk-button-secondary uk-button-small"
-							value="{{ trans('settings', 'social_disconnect') }}"
-						>
-					</form>
-				{% else %}
-					<a
-						href="{{ path_for(constants.user.ROUTE_SOCIAL, {'provider': provider}) }}"
-						class="uk-button uk-button-primary uk-button-small"
-					>
-						{{ trans('settings', 'social_connect') }}
-					</a>
-				{% endif %}
-			</li>
-		</ul>
+			<div>
+				<div class="uk-card uk-card-secondary">
+					<div class="uk-card-media-top uk-cover-container">
+						<i class="fab fa-{{ social_get_icon(provider) }} fa-10x uk-margin-medium-left"></i>
+					</div>
+					<div class="uk-card-body">
+						<h3 class="uk-card-title">{{ social_get_title(provider) }}</h3>
+                        {% if userSocials[provider] is defined %}
+							<form method="post">
+                                {{ csrf_token() }}
+								<input type="hidden" name="social" value="{{ userSocials[provider].id }}">
+								<input
+										type="submit"
+										class="uk-button uk-button-secondary uk-button-small"
+										value="{{ trans('settings', 'social_disconnect') }}"
+								>
+							</form>
+                        {% else %}
+							<a
+									href="{{ path_for(constants.user.ROUTE_SOCIAL, {'provider': provider}) }}"
+									class="uk-button uk-button-primary uk-button-small"
+							>
+                                {{ trans('settings', 'social_connect') }}
+							</a>
+                        {% endif %}
+					</div>
+				</div>
+			</div>
 		{% endfor %}
 	</div>
-</div>

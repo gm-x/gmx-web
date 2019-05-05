@@ -20,7 +20,7 @@
             {{ navbar.mainbar(menu) }}
         </div>
     </div>
-    <div class="uk-container">
+    <div class="uk-container" uk-height-viewport="offset-top: true; offset-bottom: true">
         <main role="main" class="container">
             <div class="uk-margin uk-flex uk-flex-right">
                 {% block subnav %}{% endblock %}
@@ -42,6 +42,13 @@
             {% block content %}{% endblock %}
         </main>
     </div>
+    <footer class="uk-footer">
+        <div class="uk-container">
+            <a class="uk-logo" href="{{ path_for('index') }}">
+                <img src="{{ base_url() }}/assets/images/logo.svg" width="100">
+            </a>
+        </div>
+    </footer>
     {% block modals %}{% endblock %}
     <script>
         $(document).ready(function () {
