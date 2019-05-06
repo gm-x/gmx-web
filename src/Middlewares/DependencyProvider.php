@@ -28,8 +28,8 @@ class DependencyProvider implements ServiceProviderInterface
 			return new SecurityMiddleware($container);
 		};
 
-		$container['api_token_middleware'] = function (ContainerInterface $container) {
-			return new ApiTokenMiddleware($container);
+		$container['api_token_middleware'] = function () {
+			return new ApiTokenMiddleware();
 		};
 
 		$container['api_request_middleware'] = function (ContainerInterface $container) {

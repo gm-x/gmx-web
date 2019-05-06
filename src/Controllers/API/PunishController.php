@@ -13,7 +13,7 @@ use \GameX\Core\Validate\Rules\Number;
 use \GameX\Core\Validate\Rules\IPv4;
 use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Callback;
-use \GameX\Core\Exceptions\ApiException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class PunishController extends BaseApiController
 {
@@ -21,7 +21,7 @@ class PunishController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      */
     public function indexAction(Request $request, Response $response)
     {
@@ -51,7 +51,7 @@ class PunishController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         
         $reason = $this->getReason($serverId, $result->getValue('reason'));
@@ -80,7 +80,7 @@ class PunishController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      */
     public function immediatelyAction(Request $request, Response $response)
     {
@@ -103,7 +103,7 @@ class PunishController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         
         $player = $this->getPlayer($result->getValue('steamid'), $result->getValue('emulator'),

@@ -14,7 +14,7 @@ use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Number;
 use \GameX\Core\Validate\Rules\IPv4;
 use \GameX\Core\Validate\Rules\Length;
-use \GameX\Core\Exceptions\ApiException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class PlayerController extends BaseApiController
 {
@@ -23,7 +23,7 @@ class PlayerController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      * @throws \GameX\Core\Cache\NotFoundException
      */
     public function connectAction(Request $request, Response $response)
@@ -51,7 +51,7 @@ class PlayerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         
         $server = $this->getServer($request);
@@ -142,7 +142,7 @@ class PlayerController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      * @throws \GameX\Core\Cache\NotFoundException
      */
     public function disconnectAction(Request $request, Response $response)
@@ -155,7 +155,7 @@ class PlayerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
 
         $session = PlayerSession::find($result->getValue('session_id'));
@@ -180,7 +180,7 @@ class PlayerController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      */
     public function assignAction(Request $request, Response $response)
     {
@@ -194,18 +194,18 @@ class PlayerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         $player = Player::find($result->getValue('id'), ['id', 'user_id']);
         if (!$player) {
-            throw new ApiException('Player not found', ApiException::ERROR_VALIDATION);
+            throw new ValidationException('Player not found');
         }
         if ($player->user_id !== null) {
-            throw new ApiException('User already assigned', ApiException::ERROR_VALIDATION);
+            throw new ValidationException('User already assigned');
         }
         $user = UserModel::where('token', $result->getValue('token'))->first(['id']);
         if (!$user) {
-            throw new ApiException('Invalid user token', ApiException::ERROR_VALIDATION);
+            throw new ValidationException('Invalid user token');
         }
         
         $player->user_id = $user->id;

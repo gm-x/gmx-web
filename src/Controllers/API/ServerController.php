@@ -11,7 +11,7 @@ use \GameX\Models\Map;
 use \GameX\Models\Player;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\Number;
-use \GameX\Core\Exceptions\ApiException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class ServerController extends BaseApiController
 {
@@ -86,7 +86,7 @@ class ServerController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      * @throws \GameX\Core\Cache\NotFoundException
      */
     public function infoAction(Request $request, Response $response)
@@ -103,7 +103,7 @@ class ServerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
 
         if (!$result->getIsValid()) {
-            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
 
         $map = Map::firstOrCreate([
@@ -133,7 +133,7 @@ class ServerController extends BaseApiController
 	 * @param Request $request
 	 * @param Response $response
 	 * @return Response
-	 * @throws ApiException
+	 * @throws ValidationException
 	 */
 	public function pingAction(Request $request, Response $response)
 	{
@@ -146,7 +146,7 @@ class ServerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
 
         if (!$result->getIsValid()) {
-            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
 
         $server = $this->getServer($request);
@@ -163,7 +163,7 @@ class ServerController extends BaseApiController
      * @param Request $request
      * @param Response $response
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      */
     public function updateAction(Request $request, Response $response)
     {
@@ -177,7 +177,7 @@ class ServerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         
         $server = $this->getServer($request);
