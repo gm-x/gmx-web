@@ -3,6 +3,9 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
+use GameX\Models\Player;
+use GameX\Models\Privilege;
+use Illuminate\Database\Eloquent\Collection;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
@@ -60,14 +63,22 @@ class ServersController extends BaseAdminController
                 $this->pathFor(ServersConstants::ROUTE_LIST)
             )
             ->add($server->name);
-    
-        /** @var \GameX\Core\Cache\Cache $cache */
-        $cache = $this->getContainer('cache');
-        $players = $cache->get('players_online', $server);
-        
+
+	    $sessions = $server->getActiveSessions();
+
+	    $privileges = $server->groups()
+		    ->get()
+		    ->reduce(function ($privileges, $item) {
+		    	if ($privileges === null) {
+				    $privileges = new Collection();
+			    }
+			    return $privileges->merge($item->players);
+		    });
+
         return $this->getView()->render($response, 'admin/servers/view.twig', [
             'server' => $server,
-            'players' => $players,
+            'sessions' => $sessions,
+	        'privileges' => $privileges
         ]);
     }
     

@@ -89,75 +89,119 @@
     </div>
 </div>
 
-<div class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m">
-    {% set hasPermissionsForView = has_access_permission(
-        constants.admin.players.PERMISSION_GROUP,
-        constants.admin.players.PERMISSION_KEY,
-        premissions.ACCESS_VIEW
-    ) %}
-    <div f-table f-divider>
-        <ul th>
-            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Nick</li>
-            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">STEAM_ID</li>
-            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">IP</li>
-            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m"></li>
-        </ul>
-        {% for player in players %}
-            <ul>
-                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="Nick">
-                    {% if hasPermissionsForView %}
-                        <a href="{{ path_for(constants.admin.players.ROUTE_LIST) }}">{{ player.nick }}</a>
-                    {% else %}
-                        {{ player.nick }}
-                    {% endif %}
-                </li>
-                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="STEAM ID">{{ player.steamid }}</li>
-                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="IP">{{ player.ip }}</li>
-                <li class="uk-width-1-6@m uk-width-1-6@s">
-                    {% embed "admin/actions.twig" with {'actionId': server.id} %}
-                        {% block actions %}
-                            {% if has_access_resource(
-                                constants.admin.privileges.PERMISSION_GROUP,
-                                constants.admin.privileges.PERMISSION_KEY,
-                                serverId,
-                                permissions.ACCESS_CREATE
-                            ) %}
-                                <li>
-                                    <a
-                                        href="{{ path_for(constants.admin.privileges.ROUTE_CREATE, {
-                                            'player': player.id,
-                                            'server': server.id
-                                        }) }}"
-                                        class="dropdown-item"
-                                    >Create Privilege</a>
+{% set hasPermissionsForView = has_access_permission(
+    constants.admin.players.PERMISSION_GROUP,
+    constants.admin.players.PERMISSION_KEY,
+    premissions.ACCESS_VIEW
+) %}
+<div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-1@s uk-margin" uk-grid>
+    <div>
+        <div class="uk-card-body uk-padding-small">
+            <div class="uk-overflow-auto">
+                <ul class="uk-flex-left uk-flex-nowrap" uk-tab="connect: #server-info;animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium">
+                    <li><a href="#">Online players</a></li>
+                    <li><a href="#">Privileges</a></li>
+                </ul>
+            </div>
+            <ul id="server-info" class="uk-switcher uk-margin">
+                <li>
+                    <div f-table f-divider>
+                        <ul th>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Nick</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">STEAM_ID</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">IP</li>
+                            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m"></li>
+                        </ul>
+                        {% for session in sessions %}
+                            <ul>
+                                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="Nick">
+                                    {% if hasPermissionsForView %}
+                                        <a href="{{ path_for(constants.admin.players.ROUTE_VIEW, {'player': session.player.id}) }}">
+                                            {{ session.player.nick }}
+                                        </a>
+                                    {% else %}
+                                        {{ session.player.nick }}
+                                    {% endif %}
                                 </li>
-                            {% endif %}
+                                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="STEAM ID">{{ session.player.steamid }}</li>
+                                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="IP">{{ session.player.ip }}</li>
+                                <li class="uk-width-1-6@m uk-width-1-6@s">
+                                    {% embed "admin/actions.twig" with {'actionId': server.id} %}
+                                        {% block actions %}
+                                            {% if has_access_resource(
+                                                constants.admin.privileges.PERMISSION_GROUP,
+                                                constants.admin.privileges.PERMISSION_KEY,
+                                                serverId,
+                                                permissions.ACCESS_CREATE
+                                            ) %}
+                                                <li>
+                                                    <a
+                                                        href="{{ path_for(constants.admin.privileges.ROUTE_CREATE, {
+                                                            'player': session.player.id,
+                                                            'server': server.id
+                                                        }) }}"
+                                                        class="dropdown-item"
+                                                    >Create Privilege</a>
+                                                </li>
+                                            {% endif %}
 
-                            {% if has_access_resource(
-                                constants.admin.punishments.PERMISSION_GROUP,
-                                constants.admin.punishments.PERMISSION_KEY,
-                                serverId,
-                                permissions.ACCESS_CREATE
-                            ) %}
-                                <li>
-                                    <a
-                                        href="{{ path_for(constants.admin.punishments.ROUTE_CREATE, {
-                                            'player': player.id,
-                                            'server': server.id
-                                        }) }}"
-                                        class="dropdown-item"
-                                    >Punish</a>
+                                            {% if has_access_resource(
+                                                constants.admin.punishments.PERMISSION_GROUP,
+                                                constants.admin.punishments.PERMISSION_KEY,
+                                                serverId,
+                                                permissions.ACCESS_CREATE
+                                            ) %}
+                                                <li>
+                                                    <a
+                                                        href="{{ path_for(constants.admin.punishments.ROUTE_CREATE, {
+                                                            'player': session.player.id,
+                                                            'server': server.id
+                                                        }) }}"
+                                                        class="dropdown-item"
+                                                    >Punish</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endblock %}
+                                    {% endembed %}
                                 </li>
-                            {% endif %}
-                        {% endblock %}
-                    {% endembed %}
+                            </ul>
+                        {% else %}
+                            <ul>
+                                <li>There are no online players on server</li>
+                            </ul>
+                        {% endfor %}
+                    </div>
+                </li>
+                <li>
+                    <div f-table f-divider>
+                        <ul th>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Nick</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">STEAM_ID</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">IP</li>
+                        </ul>
+                        {% for privilege in privileges %}
+                            <ul>
+                                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="Nick">
+                                    {% if hasPermissionsForView %}
+                                        <a href="{{ path_for(constants.admin.players.ROUTE_VIEW, {'player': privilege.player.id}) }}">
+                                            {{ privilege.player.nick }}
+                                        </a>
+                                    {% else %}
+                                        {{ privilege.player.nick }}
+                                    {% endif %}
+                                </li>
+                                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="STEAM ID">{{ privilege.player.steamid }}</li>
+                                <li class="uk-width-1-4@m uk-width-1-4@s" data-title="IP">{{ privilege.player.ip }}</li>
+                            </ul>
+                        {% else %}
+                            <ul>
+                                <li>There are no privileges on server</li>
+                            </ul>
+                        {% endfor %}
+                    </div>
                 </li>
             </ul>
-        {% else %}
-            <ul>
-                <li>There are no online players on server</li>
-            </ul>
-        {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

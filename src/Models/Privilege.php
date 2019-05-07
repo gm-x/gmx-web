@@ -46,6 +46,15 @@ class Privilege extends BaseModel
      * @var array
      */
     protected $hidden = ['server_id', 'player_id', 'created_at', 'updated_at'];
+
+	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'player_id' => 'int',
+		'group_id' => 'int',
+		'active' => 'int',
+	];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

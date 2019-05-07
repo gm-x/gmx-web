@@ -69,6 +69,16 @@ class Server extends BaseModel
 	protected $appends = ['online'];
 
 	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'port' => 'int',
+		'num_players' => 'int',
+		'max_players' => 'int',
+		'map_id' => 'int',
+	];
+
+	/**
 	 * @return bool
 	 */
 	public function getOnlineAttribute()

@@ -60,6 +60,14 @@ class Player extends BaseModel
      * @var array
      */
     protected $dates = ['created_at', 'updated_at'];
+
+	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'user_id' => 'int',
+		'emulator' => 'int',
+	];
     
     /**
      * @var array
