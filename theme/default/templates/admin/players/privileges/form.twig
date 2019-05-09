@@ -8,8 +8,23 @@
         {{ csrf_token() }}
 		{{ forms.element_select(form.group) }}
 		{{ forms.element_input(form.prefix) }}
-        {{ forms.element_checkbox(form.forever) }}
-		{{ forms.element_datetime(form.expired, 'Y-m-d') }}
+
+        <div uk-switcher="animation: uk-animation-fade; toggle: > *">
+            <label class="switcher">
+                <input class="uk-radio" type="radio" />
+                <div class="switcher__indicator"></div>
+            </label>
+            <input class="uk-radio" type="radio" />
+            <input class="uk-radio" type="radio" />
+        </div>
+
+        <ul class="uk-switcher uk-margin">
+            <li>{{ forms.element_checkbox(form.forever) }}</li>
+            <li>TIME</li>
+            <li>{{ forms.element_datetime(form.expired, 'Y-m-d') }}</li>
+        </ul>
+
+
 		{{ forms.element_checkbox(form.active) }}
         <div class="form-group">
 			{% if create %}
@@ -25,9 +40,9 @@
         </div>
     </form>
 </div>
-    {{ assets_require('pickadate') }}
-{#    <link rel="stylesheet" href="/assets/css/pickadate.css">#}
-{#    <script src="/assets/js/pickadate.min.js"></script>#}
+{#    {{ assets_require('pickadate') }}#}
+    <link rel="stylesheet" href="/assets/css/pickadate.css">
+    <script src="/assets/js/pickadate.min.js"></script>
     <script>
         $( '.datepicker' ).pickadate({
             lang: 'ru',
