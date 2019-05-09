@@ -168,7 +168,7 @@ class DependencyProvider implements ServiceProviderInterface
 	    $container['assets'] = function (ContainerInterface $container) {
 		    return $this->getAssets($container);
 	    };
-        
+
         $container['modules'] = function (ContainerInterface $container) {
             $modules = new \GameX\Core\Module\Module();
             //	$modules->addModule(new \GameX\Modules\TestModule\Module());
@@ -417,16 +417,15 @@ class DependencyProvider implements ServiceProviderInterface
         $view->addExtension(new Twig_Dump());
         $view->addExtension(new UploadFlagsViewExtension($container));
         $view->addExtension(new ConstantsViewExtension());
-        $view->addExtension(new AssetsExtension($container));
-
-        $environment = $view->getEnvironment();
-        $environment->addGlobal('flash_messages', $container->get('flash'));
-        $environment->addGlobal('currentUri', (string)$uri->getPath());
-        $environment->addGlobal('title', $preferences
+        
+        $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
+        $view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
+        $view->getEnvironment()->addGlobal('title', $preferences
             ->getNode(PreferencesConstants::CATEGORY_MAIN)
             ->get(PreferencesConstants::MAIN_TITLE)
         );
-        $environment->addGlobal('breadcrumbs', $container->get('breadcrumbs'));
+
+        $view->getEnvironment()->addGlobal('breadcrumbs', $container->get('breadcrumbs'));
         
         return $view;
     }
