@@ -78,6 +78,7 @@ class PrivilegesForm extends BaseForm
             ]))->add(new DateElement('expired', $this->privilege->expired_at, [
                 'title' => $this->getTranslate($this->name, 'expired'),
                 'required' => true,
+	            'classes' => ['datepicker']
             ]))->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
                 'title' => $this->getTranslate($this->name, 'active'),
             ]));

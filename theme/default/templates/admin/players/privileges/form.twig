@@ -25,4 +25,16 @@
         </div>
     </form>
 </div>
+    {{ assets_require('pickadate') }}
+{#    <link rel="stylesheet" href="/assets/css/pickadate.css">#}
+{#    <script src="/assets/js/pickadate.min.js"></script>#}
+    <script>
+        $( '.datepicker' ).pickadate({
+            lang: 'ru',
+            format: 'dd.mm.yyyy',
+            formatSubmit: 'yyyy-mm-dd',
+            //min: new Date(),
+            closeOnSelect: true,
+        });
+    </script>
 {% endblock %}

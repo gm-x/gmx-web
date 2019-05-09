@@ -68,6 +68,9 @@ use \GameX\Core\Update\Manifest;
 
 use \GameX\Core\Breadcrumbs\Breadcrumbs;
 
+use \GameX\Core\Assets\Manager as AssetsManager;
+use \GameX\Core\Assets\Extension as AssetsExtension;
+
 class DependencyProvider implements ServiceProviderInterface
 {
     /**
@@ -157,9 +160,13 @@ class DependencyProvider implements ServiceProviderInterface
             return $this->getUpdater($container);
         };
 
-        $container['breadcrumbs'] = function (ContainerInterface $container) {
-            return $this->getBreadcrumbs($container);
+        $container['breadcrumbs'] = function () {
+            return $this->getBreadcrumbs();
         };
+
+	    $container['assets'] = function (ContainerInterface $container) {
+		    return $this->getAssets($container);
+	    };
         
         $container['modules'] = function (ContainerInterface $container) {
             $modules = new \GameX\Core\Module\Module();
@@ -409,7 +416,8 @@ class DependencyProvider implements ServiceProviderInterface
         $view->addExtension(new Twig_Dump());
         $view->addExtension(new UploadFlagsViewExtension($container));
         $view->addExtension(new ConstantsViewExtension());
-        
+        $view->addExtension(new AssetsExtension($container));
+
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
         $view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
         $view->getEnvironment()->addGlobal('title', $preferences
@@ -452,20 +460,40 @@ class DependencyProvider implements ServiceProviderInterface
     {
         return new FlashMessages($container->get('session'), 'flash_messages');
     }
-    
+
+	/**
+	 * @param ContainerInterface $container
+	 * @return Upload
+	 */
     public function getUpload(ContainerInterface $container)
     {
         return new Upload($container->get('root') . 'uploads', $container->get('base_url') . '/uploads');
     }
-    
+
+	/**
+	 * @param ContainerInterface $container
+	 * @return Updater
+	 */
     public function getUpdater(ContainerInterface $container)
     {
         $manifest = new Manifest($container->get('root') . 'manifest.json');
         return new Updater($manifest);
     }
 
-    public function getBreadcrumbs(ContainerInterface $container)
+	/**
+	 * @return Breadcrumbs
+	 */
+    public function getBreadcrumbs()
     {
-        return new Breadcrumbs($container);
+        return new Breadcrumbs();
+    }
+
+	/**
+	 * @param ContainerInterface $container
+	 * @return AssetsManager
+	 */
+    public function getAssets(ContainerInterface $container)
+    {
+        return new AssetsManager();
     }
 }

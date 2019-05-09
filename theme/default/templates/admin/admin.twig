@@ -73,6 +73,12 @@
     <script src="{{ base_url() }}/assets/scripts/xhr.js"></script>
     <script src="{{ base_url() }}/assets/scripts/main.js"></script>
     <script src="{{ base_url() }}/assets/scripts/admin.js"></script>
+    {% for style in assets_styles() %}
+        <link rel="stylesheet" href="{{ base_url() }}{{ style }}">
+    {% endfor %}
+    {% for script in assets_scripts() %}
+        <script src="{{ base_url() }}{{ script }}"></script>
+    {% endfor %}
     {% block javascript %}{% endblock %}
 </div>
 </body>
