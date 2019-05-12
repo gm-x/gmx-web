@@ -418,14 +418,14 @@ class DependencyProvider implements ServiceProviderInterface
         $view->addExtension(new ConstantsViewExtension());
         $view->addExtension(new AssetsExtension($container));
 
-        $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
-        $view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
-        $view->getEnvironment()->addGlobal('title', $preferences
+        $environment = $view->getEnvironment();
+        $environment->addGlobal('flash_messages', $container->get('flash'));
+        $environment->addGlobal('currentUri', (string)$uri->getPath());
+        $environment->addGlobal('title', $preferences
             ->getNode(PreferencesConstants::CATEGORY_MAIN)
             ->get(PreferencesConstants::MAIN_TITLE)
         );
-
-        $view->getEnvironment()->addGlobal('breadcrumbs', $container->get('breadcrumbs'));
+        $environment->addGlobal('breadcrumbs', $container->get('breadcrumbs'));
         
         return $view;
     }

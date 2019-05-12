@@ -13,7 +13,7 @@ class Manager
 				'/assets/css/pickadate.css'
 			],
 			'require' => [
-				'jquery'
+//				'jquery'
 			]
 		],
 		'jquery' => [
