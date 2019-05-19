@@ -73,7 +73,7 @@
     </main>
     {% block modals %}{% endblock %}
 </div>
-<script src="{{ base_url() }}/assets/scripts/scripts.js"></script>
+{% do require_asset("scripts") %}
 {% for style in assets_styles() %}
     <link rel="stylesheet" href="{{ base_url() }}{{ style }}">
 {% endfor %}

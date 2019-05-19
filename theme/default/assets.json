@@ -6,9 +6,7 @@
 		"styles": [
 			"/assets/css/pickadate.css"
 		],
-		"require": [
-			"jquery"
-		]
+		"require": []
 	},
 	"jquery": {
 		"scripts": [
@@ -16,5 +14,21 @@
 		],
 		"styles": [],
 		"require": []
+	},
+	"scripts": {
+		"scripts": [
+			"/assets/scripts/scripts.js"
+		],
+		"styles": [],
+		"require": []
+	},
+	"admin_users": {
+		"scripts": [
+			"/assets/scripts/admin/users.js"
+		],
+		"styles": [],
+		"require": [
+			"scripts"
+		]
 	}
 }

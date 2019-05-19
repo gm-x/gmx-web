@@ -109,27 +109,5 @@
             {% endfor %}
         </div>
     </div>
-{% endblock %}
-
-{% block javascript %}
-{{ parent() }}
-<script>
-    $(document).ready(function () {
-        UIkit.util.on('#activateUser', 'click', function (e) {
-            e.preventDefault();
-            e.target.blur();
-            $.post($(this).attr('href'))
-                .done(function(data) {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        console.log('error')
-                    }
-                })
-                .fail(function() {
-                    console.log("error");
-                });
-        });
-    });
-</script>
+    {% do require_asset("admin_users") %}
 {% endblock %}
