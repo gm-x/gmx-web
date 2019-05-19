@@ -68,6 +68,7 @@ use \GameX\Core\Update\Manifest;
 
 use \GameX\Core\Breadcrumbs\Breadcrumbs;
 
+use \GameX\Core\Assets\Loader as AssetsLoader;
 use \GameX\Core\Assets\Manager as AssetsManager;
 use \GameX\Core\Assets\Extension as AssetsExtension;
 
@@ -491,9 +492,19 @@ class DependencyProvider implements ServiceProviderInterface
 	/**
 	 * @param ContainerInterface $container
 	 * @return AssetsManager
+	 * @throws NotFoundException
 	 */
     public function getAssets(ContainerInterface $container)
     {
-        return new AssetsManager();
+	    /** @var Config $preferences */
+	    $preferences = $container->get('preferences');
+	    $theme = $preferences
+		    ->getNode(PreferencesConstants::CATEGORY_MAIN)
+		    ->get(PreferencesConstants::MAIN_THEME, 'default');
+
+	    $assets = $container->get('root') . 'theme' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'assets.json';
+
+    	$loader = new AssetsLoader($assets);
+        return new AssetsManager($loader);
     }
 }

@@ -43,19 +43,7 @@
         </main>
     </div>
     {% block modals %}{% endblock %}
-    <script>
-        $(document).ready(function () {
-            $('.lang-select').on('click', 'a', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var lang = $(this).data('lang');
-                $.post('{{ path_for('language')}}', {lang: lang})
-                    .always(function() {
-                        location.reload()
-                    });
-            });
-        });
-    </script>
+    <script src="{{ base_url() }}/assets/scripts/scripts.js"></script>
     {% block javascript %}{% endblock %}
 </body>
 </html>

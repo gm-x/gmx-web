@@ -1,0 +1,20 @@
+{
+	"pickadate": {
+		"scripts": [
+			"/assets/js/pickadate.min.js"
+		],
+		"styles": [
+			"/assets/css/pickadate.css"
+		],
+		"require": [
+			"jquery"
+		]
+	},
+	"jquery": {
+		"scripts": [
+			"/assets/js/jquery-3.3.1.min.js"
+		],
+		"styles": [],
+		"require": []
+	}
+}

@@ -4,33 +4,58 @@ namespace GameX\Core\Assets;
 
 class Manager
 {
-	protected $assets = [
-		'pickadate' => [
-			'scripts' => [
-				'/assets/js/pickadate.min.js'
-			],
-			'styles' => [
-				'/assets/css/pickadate.css'
-			],
-			'require' => [
-//				'jquery'
-			]
-		],
-		'jquery' => [
-			'scripts' => [
-				'/assets/js/jquery-3.3.1.min.js'
-			],
-			'styles' => [],
-			'require' => []
-		]
-	];
+	/**
+	 * @var array
+	 */
+	protected $assets;
+
+	/**
+	 * @var array
+	 */
 	protected $included = [];
 
+	/**
+	 * @var array
+	 */
+	protected $data = [];
+
+	/**
+	 * Manager constructor.
+	 * @param Loader $loader
+	 */
+	public function __construct(Loader $loader)
+	{
+		$this->assets = $loader->load();
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $value
+	 */
+	public function setData($key, $value)
+	{
+		$this->data[$key] = $value;
+	}
+
+	/**
+	 * @param string $asset
+	 */
 	public function includeAsset($asset)
 	{
 		$this->checkDependencies($asset);
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getData()
+	{
+		return $this->data;
+	}
+
+	/**
+	 * @return array
+	 */
 	public function getIncludedAssetsStyles()
 	{
 		$styles = [];
@@ -40,6 +65,9 @@ class Manager
 		return $styles;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getIncludedAssetsScripts()
 	{
 		$scripts = [];
@@ -49,6 +77,10 @@ class Manager
 		return $scripts;
 	}
 
+	/**
+	 * @param string $key
+	 * @return array
+	 */
 	protected function checkDependencies($key)
 	{
 		if (!array_key_exists($key, $this->assets)) {

@@ -20,8 +20,16 @@ class Extension extends Twig_Extension
     public function getFunctions()
     {
         return [
+	        new Twig_SimpleFunction(
+		        'assets_set_data',
+		        [$this, 'assetssetData']
+	        ),
+	        new Twig_SimpleFunction(
+		        'assets_get_data',
+		        [$this, 'assetsGetData']
+	        ),
             new Twig_SimpleFunction(
-                'assets_require',
+                'require_asset',
                 [$this, 'assetsRequire']
             ),
 	        new Twig_SimpleFunction(
@@ -34,7 +42,24 @@ class Extension extends Twig_Extension
 	        ),
         ];
     }
-    
+
+	/**
+	 * @param $key
+	 * @param $value
+	 */
+	public function assetsSetData($key, $value)
+	{
+		$this->getManager()->setData($key, $value);
+	}
+
+	/**
+	 * @return array
+	 */
+    public function assetsGetData()
+    {
+        return $this->getManager()->getData();
+    }
+
     /**
      * @param string $asset
      */

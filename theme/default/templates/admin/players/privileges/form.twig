@@ -44,11 +44,7 @@
             }
         </style>
 
-	    {% do assets_require('pickadate') %}
-{#        <link rel="stylesheet" href="/assets/css/pickadate.css">#}
-{#        <script src="/assets/js/pickadate.min.js"></script>#}
-
-
+	    {% do require_asset('pickadate') %}
 
 		{{ forms.element_checkbox(form.active) }}
         <div class="form-group">

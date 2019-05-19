@@ -76,7 +76,7 @@
 
 		var spinner = new Spinner(spinerOpts);
 
-		window.CSRF_TOKEN = {{ csrf_token_json() }};
+		window.CSRF_TOKEN = {{ csrf_token_json() | json_encode | raw }};
 		$(".jq-editable").editable({
 			saveDelay: 600, //wait 600ms before calling "save" callback
 			autoselect: false, //select content automatically when editing starts
