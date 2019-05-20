@@ -37,7 +37,7 @@ $(document).ready(function () {
 		e.preventDefault();
 		e.target.blur();
 		var form = this;
-		UIkit.modal.confirm(window.MESSAGES.are_you_sure, {
+		UIkit.modal.confirm(window.__GMX_DATA__.MESSAGES.are_you_sure, {
 			labels: {
 				ok: window.__GMX_DATA__.MESSAGES.delete,
 				cancel: window.__GMX_DATA__.MESSAGES.cancel
