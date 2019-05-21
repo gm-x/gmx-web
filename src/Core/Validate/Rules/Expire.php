@@ -2,8 +2,19 @@
 namespace GameX\Core\Validate\Rules;
 
 use \GameX\Core\Validate\Rules\DateTime as DateTimeRule;
+use \Carbon\Carbon;
 
 class Expire extends DateTimeRule {
+
+	const FOR_TIME = [
+		'years',
+		'months',
+		'days',
+		'weeks',
+		'hours',
+		'minutes',
+		'seconds'
+	];
     
     /**
      * @var string
@@ -14,18 +25,25 @@ class Expire extends DateTimeRule {
 	 * @inheritdoc
 	 */
 	public function validate($value, array $values) {
-		if (!is_array($value)) {
+		if (!is_array($value) || !isset($value['type'])) {
 			return null;
 		}
 
-		if (isset($value['forever']) && filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
-			return 0; // TODO return special value
-		} elseif(isset($value['for_time'])) {
-			return 0;
-		} elseif (isset($value['to_date'])) {
-			return \DateTime::createFromFormat($this->format, $value);
+		switch ($value['type']) {
+			case 'for_time': {
+				return $$this->isValidForTime($value)
+					? Carbon::now()->add($value['for_time_value'], $value['for_time_type'])
+					: null;
+			}
+
+			case 'to_date': {
+				return Carbon::createFromFormat($this->format, $value['to_date_value']);
+			}
+
+			default: {
+				return null;
+			}
 		}
-		return null;
 	}
 
     /**
@@ -33,5 +51,15 @@ class Expire extends DateTimeRule {
      */
 	protected function getMessage() {
         return ['expire'];
+    }
+
+	/**
+	 * @param array $value
+	 * @return bool
+	 */
+    protected function isValidForTime(array $value) {
+		return isset($value['for_time_type'])
+			&& isset($value['for_time_value'])
+			&& in_array($value['for_time_type'], self::FOR_TIME, true);
     }
 }

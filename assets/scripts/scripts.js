@@ -57,4 +57,12 @@ $(document).ready(function () {
 				location.reload()
 			});
 	});
+
+	$( '.datepicker' ).pickadate({
+		lang: 'ru',
+		format: 'dd.mm.yyyy',
+		formatSubmit: 'yyyy-mm-dd',
+		//min: new Date(),
+		closeOnSelect: true,
+	});
 });

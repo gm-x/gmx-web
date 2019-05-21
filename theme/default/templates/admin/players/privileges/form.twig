@@ -9,32 +9,7 @@
 		{{ forms.element_select(form.group) }}
 		{{ forms.element_input(form.prefix) }}
 
-        <ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade; toggle: > li; connect: #expired-switch-id">
-            <li><a href="#">Forever</a></li>
-            <li><a href="#">Time</a></li>
-            <li><a href="#">Date</a></li>
-        </ul>
-
-        <input type="hidden" name="gender" id="expired-switch-input"/>
-
-        <ul class="uk-switcher uk-margin" id="expired-switch-id">
-            <li data-value="forever" data-input="#expired-switch-input">{{ forms.element_checkbox(form.forever) }}</li>
-            <li data-value="for_time" data-input="#expired-switch-input">
-                <div  class="uk-grid-small" uk-grid>
-                    <div class="uk-width-1-6">
-                        <select class="uk-select">
-                            <option value="minutes">Minutes</option>
-                            <option value="hours">Hours</option>
-                            <option value="days">Days</option>
-                        </select>
-                    </div>
-                    <div class="uk-width-1-6">
-                        <input type="number" class="uk-input" >
-                    </div>
-                </div>
-            </li>
-            <li data-value="to_date" data-input="#expired-switch-input">{{ forms.element_datetime(form.expired, 'Y-m-d') }}</li>
-        </ul>
+        {{ forms.element_expire(form.expired) }}
 
         <style>
             .expire-switch label.uk-active {
@@ -43,8 +18,6 @@
                 border-bottom: 2px solid #44a1d1;
             }
         </style>
-
-	    {% do require_asset('pickadate') %}
 
 		{{ forms.element_checkbox(form.active) }}
         <div class="form-group">
@@ -69,13 +42,6 @@
         UIkit.util.on('#expired-switch-id > li', 'show', function() {
             var self = $(this);
             $(self.data('input')).val(self.data('value'));
-        });
-        $( '.datepicker' ).pickadate({
-            lang: 'ru',
-            format: 'dd.mm.yyyy',
-            formatSubmit: 'yyyy-mm-dd',
-            //min: new Date(),
-            closeOnSelect: true,
         });
     </script>
 {% endblock %}

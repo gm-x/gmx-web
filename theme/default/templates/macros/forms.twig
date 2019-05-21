@@ -219,3 +219,57 @@
 		</div>
 	{% endfor %}
 {% endmacro %}
+
+{% macro element_expire(element) %}
+{#	{% set classes = element.getHasError() ? ['is-invalid'] ? [] %}#}
+{#	{% set classes = classes|merge(element.getClasses()) %}#}
+{#	{% set attributes = element.getAttributes() %}#}
+{#	{% if element.getIsRequired() %}#}
+{#		{% set attributes = attributes|merge({'required': 'required'}) %}#}
+{#	{% endif %}#}
+	<div class="uk-margin uk-inline uk-width-1-1">
+		<label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+		<div class="uk-form-controls">
+			<ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade; toggle: > li; connect: #expired-switch-id">
+				<li><a href="#">Forever</a></li>
+				<li><a href="#">Time</a></li>
+				<li><a href="#">Date</a></li>
+			</ul>
+			<input type="hidden" name="gender" id="expired-switch-input"/>
+			<ul class="uk-switcher uk-margin" id="expired-switch-id">
+				<li data-value="forever" data-input="#expired-switch-input"></li>
+				<li data-value="for_time" data-input="#expired-switch-input">
+					<div  class="uk-grid-small" uk-grid>
+						<div class="uk-width-1-6">
+							<select class="uk-select">
+								<option value="seconds">Seconds</option>
+								<option value="minutes">Minutes</option>
+								<option value="hours">Hours</option>
+								<option value="weeks">Weeks</option>
+								<option value="days">Days</option>
+								<option value="months">Months</option>
+								<option value="years">Years</option>
+							</select>
+						</div>
+						<div class="uk-width-1-6">
+							<input type="number" class="uk-input" >
+						</div>
+					</div>
+				</li>
+				<li data-value="to_date" data-input="#expired-switch-input">
+					<input
+						type="{{ element.getType() }}"
+						id="{{ element.getId() }}"
+						name="{{ element.getFormName() }}[{{ element.getName() }}]"
+						value="{{ element.format(format) }}"
+						class="uk-input"
+					/>
+				</li>
+			</ul>
+			{% if element.getHasError() %}
+				<span class="invalid-feedback">{{ element.getError() }}</span>
+			{% endif %}
+		</div>
+	</div>
+	{% do require_asset('pickadate') %}
+{% endmacro %}
