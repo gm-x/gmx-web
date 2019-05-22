@@ -8,7 +8,15 @@ html {
 }
 
 h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
-    color: #cac5b6;
+    color: #44a1d1;
+}
+
+.uk-section-dark {
+    background: #0a0c0b;
+}
+
+hr, .uk-hr {
+    border-top: 1px solid #44a1d1;
 }
 
 input {
@@ -187,13 +195,18 @@ span[contenteditable]:focus{
     left: 32px;
 }
 
-.uk-overlay-primary {
-    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=0 ); /* IE6-9 */
-    //background: rgba(0, 0, 0, 0.64);
-    border-radius: 10px;
+.uk-overlay-primary.uk-position-bottom {
+    background: rgba(2, 11, 28, 0.8);
+    border-radius: 0 0 10px 10px;
+}
+
+.uk-heading-line > ::before, .uk-heading-line > ::after {
+    border-bottom: 1px solid #44a1d1;
+}
+
+.uk-overlay-primary.uk-position-top {
+    background: rgba(2, 11, 28, 0.8);
+    border-radius: 10px 10px 0 0;
 }
 
 .border-10 {
@@ -281,7 +294,7 @@ span[contenteditable]:focus{
 }
 
 a, .uk-link {
-    color: #b3b3b3;
+    color: #44a1d1;
 }
 
 a:hover, .uk-link:hover {
@@ -389,6 +402,10 @@ a:hover, .uk-link:hover {
     border-radius: 10px;
 }
 
+.uk-padding-xsmall {
+    padding: 4px;
+}
+
 .uk-button-default:hover, .uk-button-default:focus {
     background-color: transparent;
     color: #404040;
@@ -397,7 +414,7 @@ a:hover, .uk-link:hover {
 
 .uk-footer {
     background: #182132;
-    padding: 20px 0;
+    padding: 20px 0 0 0;
 }
 
 .uk-light .uk-text-meta, .uk-section-primary:not(.uk-preserve-color) .uk-text-meta, .uk-section-secondary:not(.uk-preserve-color) .uk-text-meta, .uk-tile-primary:not(.uk-preserve-color) .uk-text-meta, .uk-tile-secondary:not(.uk-preserve-color) .uk-text-meta, .uk-card-primary.uk-card-body .uk-text-meta, .uk-card-primary > :not([class*='uk-card-media']) .uk-text-meta, .uk-card-secondary.uk-card-body .uk-text-meta, .uk-card-secondary > :not([class*='uk-card-media']) .uk-text-meta, .uk-overlay-primary .uk-text-meta, .uk-offcanvas-bar .uk-text-meta {
