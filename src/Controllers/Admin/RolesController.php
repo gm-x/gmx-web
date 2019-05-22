@@ -26,10 +26,9 @@ class RolesController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function indexAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_menu', 'roles'));
@@ -42,13 +41,13 @@ class RolesController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function viewAction(ServerRequestInterface $request, ResponseInterface $response, $id)
     {
-        $role = $this->getRole($request, $response, $args);
+        $role = $this->getRole($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -69,14 +68,13 @@ class RolesController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function createAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function createAction(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $role = $this->getRole($request, $response, $args);
+        $role = $this->getRole($request, $response);
 
         $this->getBreadcrumbs()
             ->add(
@@ -102,14 +100,14 @@ class RolesController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function editAction(ServerRequestInterface $request, ResponseInterface $response, $id)
     {
-        $role = $this->getRole($request, $response, $args);
+        $role = $this->getRole($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -139,13 +137,13 @@ class RolesController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, $id)
     {
-        $role = $this->getRole($request, $response, $args);
+        $role = $this->getRole($request, $response, $id);
         
         if ($role->users()->count() > 0) {
             $this->addErrorMessage($this->getTranslate('admin_roles', 'empty_users_exists'));
@@ -167,17 +165,17 @@ class RolesController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param int $id
      * @return RoleModel
      * @throws NotFoundException
      */
-    protected function getRole(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    protected function getRole(ServerRequestInterface $request, ResponseInterface $response, $id = null)
     {
-        if (!array_key_exists('role', $args)) {
+        if ($id === null) {
             return new RoleModel();
         }
         
-        $role = RoleModel::find($args['role']);
+        $role = RoleModel::find($id);
         if (!$role) {
             throw new NotFoundException($request, $response);
         }

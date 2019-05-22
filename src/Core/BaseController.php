@@ -142,14 +142,4 @@ abstract class BaseController
     {
         return $this->getContainer('response')->withRedirect($path, $status);
     }
-    
-    /**
-     * @param string $controller
-     * @param string $action
-     * @return string
-     */
-    public static function action($controller, $action)
-    {
-        return $controller . ':' . $action . 'Action';
-    }
 }

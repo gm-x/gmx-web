@@ -27,15 +27,15 @@ class PermissionsController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $roleId
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Cache\NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function indexAction(Request $request, Response $response, array $args = [])
+    public function indexAction(Request $request, Response $response, $roleId)
     {
-        $role = $this->getRole($request, $response, $args);
+        $role = $this->getRole($request, $response, $roleId);
 
         $this->getBreadcrumbs()
             ->add(
@@ -69,17 +69,13 @@ class PermissionsController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return RoleModel
      * @throws NotFoundException
      */
-    protected function getRole(Request $request, Response $response, array $args)
+    protected function getRole(Request $request, Response $response, $id)
     {
-        if (!array_key_exists('role', $args)) {
-            throw new NotFoundException($request, $response);
-        }
-        
-        $role = RoleModel::find($args['role']);
+        $role = RoleModel::find($id);
         if (!$role) {
             throw new NotFoundException($request, $response);
         }

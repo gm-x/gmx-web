@@ -29,13 +29,13 @@ class GroupsController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param Response $response
-     * @param array $args
+     * @param int $serverId
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function indexAction(ServerRequestInterface $request, Response $response, array $args = [])
+    public function indexAction(ServerRequestInterface $request, Response $response, $serverId)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response, $serverId);
 
         $this->getBreadcrumbs()
             ->add(
@@ -58,15 +58,15 @@ class GroupsController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param Response $response
-     * @param array $args
+     * @param int $serverId
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function createAction(ServerRequestInterface $request, Response $response, array $args = [])
+    public function createAction(ServerRequestInterface $request, Response $response, $serverId)
     {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args, $server);
+        $server = $this->getServer($request, $response, $serverId);
+        $group = $this->getGroup($request, $response, null, $server);
 
         $this->getBreadcrumbs()
             ->add(
@@ -102,15 +102,16 @@ class GroupsController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param Response $response
-     * @param array $args
+     * @param int $serverId
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function editAction(ServerRequestInterface $request, Response $response, array $args = [])
+    public function editAction(ServerRequestInterface $request, Response $response, $serverId, $id)
     {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args, $server);
+        $server = $this->getServer($request, $response, $serverId);
+        $group = $this->getGroup($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -150,14 +151,15 @@ class GroupsController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param Response $response
-     * @param array $args
+     * @param int $serverId
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(ServerRequestInterface $request, Response $response, array $args = [])
+    public function deleteAction(ServerRequestInterface $request, Response $response, $serverId, $id)
     {
-        $server = $this->getServer($request, $response, $args);
-        $group = $this->getGroup($request, $response, $args, $server);
+        $server = $this->getServer($request, $response, $serverId);
+        $group = $this->getGroup($request, $response, $id);
         
         try {
             $group->delete();
@@ -173,13 +175,13 @@ class GroupsController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param Response $response
-     * @param array $args
+     * @param int $serverId
      * @return Response
      * @throws NotFoundException
      */
-    public function priorityAction(ServerRequestInterface $request, Response $response, array $args = [])
+    public function priorityAction(ServerRequestInterface $request, Response $response, $serverId)
     {
-        $server = $this->getServer($request, $response, $args);
+        $server = $this->getServer($request, $response, $serverId);
         $body = $request->getParsedBody();
     
         /** @var \Illuminate\Database\Connection|null $connection */
@@ -209,17 +211,13 @@ class GroupsController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return Server
      * @throws NotFoundException
      */
-    protected function getServer(ServerRequestInterface $request, Response $response, array $args)
+    protected function getServer(ServerRequestInterface $request, Response $response, $id)
     {
-        if (!array_key_exists('server', $args)) {
-            return new Server();
-        }
-        
-        $server = Server::find($args['server']);
+        $server = Server::find($id);
         if (!$server) {
             throw new NotFoundException($request, $response);
         }
@@ -230,24 +228,19 @@ class GroupsController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @param Server $server
      * @return Group
      * @throws NotFoundException
      */
-    protected function getGroup(
-        ServerRequestInterface $request,
-        Response $response,
-        array $args,
-        Server $server
-    ) {
-        if (!array_key_exists('group', $args)) {
-            $group = new Group();
-            $group->server_id = $server->id;
-        } else {
-            $group = Group::find($args['group']);
+    protected function getGroup(ServerRequestInterface $request, Response $response, $id = null, Server $server = null) {
+        if ($id === null) {
+            return new Group([
+                'server_id' => $server->id
+            ]);
         }
-        
+
+        $group = Group::find($id);
         if (!$group) {
             throw new NotFoundException($request, $response);
         }

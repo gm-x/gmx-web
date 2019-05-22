@@ -29,10 +29,9 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(Request $request, Response $response, array $args = [])
+    public function indexAction(Request $request, Response $response)
     {
         $filter = array_key_exists('filter', $_GET) && !empty($_GET['filter']) ? $_GET['filter'] : null;
         $players = $filter === null ? Player::get() : Player::filterCollection($filter)->get();
@@ -51,14 +50,14 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RoleNotFoundException
      */
-    public function viewAction(Request $request, Response $response, array $args = [])
+    public function viewAction(Request $request, Response $response, $id)
     {
-        $player = $this->getPlayer($request, $response, $args);
+        $player = $this->getPlayer($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -103,14 +102,13 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function createAction(Request $request, Response $response, array $args = [])
+    public function createAction(Request $request, Response $response)
     {
-        $player = $this->getPlayer($request, $response, $args);
+        $player = $this->getPlayer($request, $response);
 
         $this->getBreadcrumbs()
             ->add(
@@ -136,14 +134,14 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function editAction(Request $request, Response $response, array $args = [])
+    public function editAction(Request $request, Response $response, $id)
     {
-        $player = $this->getPlayer($request, $response, $args);
+        $player = $this->getPlayer($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -173,13 +171,13 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function deleteAction(Request $request, Response $response, array $args = [])
+    public function deleteAction(Request $request, Response $response, $id)
     {
-        $player = $this->getPlayer($request, $response, $args);
+        $player = $this->getPlayer($request, $response, $id);
         
         try {
             $player->delete();
@@ -195,17 +193,17 @@ class PlayersController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return Player
      * @throws NotFoundException
      */
-    protected function getPlayer(Request $request, Response $response, array $args)
+    protected function getPlayer(Request $request, Response $response, $id = null)
     {
-        if (!array_key_exists('player', $args)) {
+        if ($id === null) {
             return new Player();
         }
         
-        $player = Player::find($args['player']);
+        $player = Player::find($id);
         if (!$player) {
             throw new NotFoundException($request, $response);
         }

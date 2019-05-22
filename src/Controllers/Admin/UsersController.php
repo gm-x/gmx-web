@@ -37,10 +37,9 @@ class UsersController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function indexAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_menu', 'users'));
@@ -55,13 +54,13 @@ class UsersController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function viewAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function viewAction(ServerRequestInterface $request, ResponseInterface $response, $id)
     {
-        $user = $this->getUserFromRequest($request, $response, $args);
+        $user = $this->getUserFromRequest($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -78,14 +77,14 @@ class UsersController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function editAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function editAction(ServerRequestInterface $request, ResponseInterface $response, $id)
     {
-        $user = $this->getUserFromRequest($request, $response, $args);
+        $user = $this->getUserFromRequest($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -115,13 +114,13 @@ class UsersController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param int $id
      * @return ResponseInterface
      * @throws NotFoundException
      */
-    public function activateAction(ServerRequestInterface $request, ResponseInterface $response, array $args = [])
+    public function activateAction(ServerRequestInterface $request, ResponseInterface $response, $id)
     {
-        $user = $this->getUserFromRequest($request, $response, $args);
+        $user = $this->getUserFromRequest($request, $response, $id);
         $authHelper = new AuthHelper($this->container);
         if ($authHelper->checkActivationCompleted($user)) {
             return $response->withJson([
@@ -137,13 +136,13 @@ class UsersController extends BaseAdminController
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array $args
+     * @param int $id
      * @return UserModel
      * @throws NotFoundException
      */
-    protected function getUserFromRequest(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    protected function getUserFromRequest(ServerRequestInterface $request, ResponseInterface $response, $id)
     {
-        $user = $this->userRepository->findById($args['user']);
+        $user = $this->userRepository->findById($id);
         if (!$user) {
             throw new NotFoundException($request, $response);
         }

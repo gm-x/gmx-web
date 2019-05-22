@@ -41,12 +41,11 @@ class PreferencesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws RedirectException
      * @throws RoleNotFoundException
      */
-    public function mainAction(Request $request, Response $response, array $args = [])
+    public function mainAction(Request $request, Response $response)
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_preferences', 'tab_main'));
@@ -74,14 +73,13 @@ class PreferencesController extends BaseAdminController
 	/**
 	 * @param Request $request
 	 * @param Response $response
-	 * @param array $args
 	 * @return ResponseInterface
 	 * @throws CantSaveException
 	 * @throws NotFoundException
 	 * @throws RedirectException
 	 * @throws RoleNotFoundException
 	 */
-    public function emailAction(Request $request, Response $response, array $args = [])
+    public function emailAction(Request $request, Response $response)
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_preferences', 'tab_email'));
@@ -110,10 +108,9 @@ class PreferencesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      */
-    public function testAction(Request $request, Response $response, array $args = [])
+    public function testAction(Request $request, Response $response)
     {
         try {
             /** @var Config $config */
@@ -170,12 +167,11 @@ class PreferencesController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return ResponseInterface
      * @throws RedirectException
      * @throws RoleNotFoundException
      */
-    public function updateAction(Request $request, Response $response, array $args = [])
+    public function updateAction(Request $request, Response $response)
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_preferences', 'tab_update'));
@@ -204,12 +200,11 @@ class PreferencesController extends BaseAdminController
 	/**
 	 * @param Request $request
 	 * @param Response $response
-	 * @param array $args
 	 * @return ResponseInterface
 	 * @throws RedirectException
 	 * @throws RoleNotFoundException
 	 */
-    public function cacheAction(Request $request, Response $response, array $args = [])
+    public function cacheAction(Request $request, Response $response)
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_preferences', 'tab_cache'));
@@ -239,10 +234,9 @@ class PreferencesController extends BaseAdminController
 	/**
 	 * @param Request $request
 	 * @param Response $response
-	 * @param array $args
 	 * @return ResponseInterface
 	 */
-    public function cronAction(Request $request, Response $response, array $args = [])
+    public function cronAction(Request $request, Response $response)
     {
         $this->getBreadcrumbs()
             ->add($this->getTranslate('admin_preferences', 'tab_cron'));
@@ -257,12 +251,11 @@ class PreferencesController extends BaseAdminController
 	/**
 	 * @param Request $request
 	 * @param Response $response
-	 * @param array $args
 	 * @return ResponseInterface
 	 * @throws RedirectException
 	 * @throws RoleNotFoundException
 	 */
-    public function socialAction(Request $request, Response $response, array $args = [])
+    public function socialAction(Request $request, Response $response)
     {
 	    $this->getBreadcrumbs()
 		    ->add($this->getTranslate('admin_preferences', 'tab_social'));
