@@ -1,14 +1,22 @@
 html {
     color: #cac5b6;
     font-size: 14px;
-    background: rgb(18,20,22);
-    background: radial-gradient(circle, rgb(26, 28, 30) 0%, rgba(10,11,11,1) 100%);
+    background: #020b1c;
+    /*background: radial-gradient(circle, #194662 0%, #1b2838 100%);*/
     font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
     line-height: 1.15;
 }
 
 h1, .uk-h1, h2, .uk-h2, h3, .uk-h3, h4, .uk-h4, h5, .uk-h5, h6, .uk-h6 {
-    color: #cac5b6;
+    color: #44a1d1;
+}
+
+.uk-section-dark {
+    background: #0a0c0b;
+}
+
+hr, .uk-hr {
+    border-top: 1px solid #44a1d1;
 }
 
 input {
@@ -61,6 +69,11 @@ input {
     font-size: 50px;
 }
 
+:not(pre) > code, :not(pre) > kbd, :not(pre) > samp {
+    white-space: pre-wrap !important;
+    background: transparent !important;
+}
+
 .sidenav {
     position: fixed;
     width: 30px;
@@ -98,7 +111,7 @@ input {
 .sidenav .nav-link {
     font-size: 1.3rem;
     display: flex !important;
-    margin: 5px 4px;
+    margin: 5px 7px;
 }
 
 .admin > .uk-sticky-placeholder {
@@ -135,13 +148,15 @@ input {
 }
 
 .uk-navbar-container:not(.uk-navbar-transparent) {
-    background: rgb(10, 11, 11);
+    background: #0a0c0b;
+    border-bottom: 1px solid #44a1d1;
 }
 
 .uk-card-default {
-    background: rgba(0, 0, 0, 0.2);
+    background: #182132;
     color: #fff;
     border-radius: 10px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 1);
 }
 
 div:active, div:focus {
@@ -180,13 +195,18 @@ span[contenteditable]:focus{
     left: 32px;
 }
 
-.uk-overlay-primary {
-    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=0 ); /* IE6-9 */
-    //background: rgba(0, 0, 0, 0.64);
-    border-radius: 10px;
+.uk-overlay-primary.uk-position-bottom {
+    background: rgba(2, 11, 28, 0.8);
+    border-radius: 0 0 10px 10px;
+}
+
+.uk-heading-line > ::before, .uk-heading-line > ::after {
+    border-bottom: 1px solid #44a1d1;
+}
+
+.uk-overlay-primary.uk-position-top {
+    background: rgba(2, 11, 28, 0.8);
+    border-radius: 10px 10px 0 0;
 }
 
 .border-10 {
@@ -274,7 +294,7 @@ span[contenteditable]:focus{
 }
 
 a, .uk-link {
-    color: #b3b3b3;
+    color: #44a1d1;
 }
 
 a:hover, .uk-link:hover {
@@ -300,8 +320,34 @@ a:hover, .uk-link:hover {
     color: #44a1d1;
     font-weight: 700;
     position: relative;
-    background: #2d2d2d;
-    border-bottom: 2px solid #44a1d1;
+}
+
+.fa, .fas {
+    font-size: 18px;
+}
+
+.uk-dotnav > .uk-active > * {
+    background-color: rgb(68, 161, 209);
+    border-color: transparent;
+}
+
+.uk-dotnav > * > :hover, .uk-dotnav > * > :focus {
+    background-color: rgb(68, 161, 209);
+}
+
+.uk-dotnav > * > * {
+    display: block;
+    box-sizing: border-box;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f3f0eb;
+    text-indent: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 1px solid #f3f0eb;
+    transition: 0.2s ease-in-out;
+    transition-property: background-color, border-color;
 }
 
 .uk-navbar-dropdown-nav .uk-nav-header {
@@ -326,27 +372,21 @@ a:hover, .uk-link:hover {
     }
 
 .uk-button-primary {
-    background-color: #202020;
-    color: #929292;
-    border-bottom: 2px solid #44a1d1;
+    background-color: #44a1d1;
+    color: #ffffff;
 }
 
 .uk-button-primary:active, .uk-button-primary.uk-active, .uk-button-primary:hover, .uk-button-primary:focus {
-    background-color: #272727;
-    color: #44a1d1;
-    border-bottom: 2px solid #44a1d1;
+    background-color: #3e85b0;
+    color: #ffffff;
 }
 
 .uk-button-secondary {
-    background-color: #292929;
-    color: #a0a0a0;
-    border-bottom: 2px solid #525252;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .uk-button-secondary:hover, .uk-button-secondary:focus {
-    background-color: #161616;
-    color: #525252;
-    border-bottom: 2px solid #525252;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .uk-button-default {
@@ -357,8 +397,13 @@ a:hover, .uk-link:hover {
 
 .uk-alert-success {
     text-align: center;
-    background: #333333;
+    background: rgba(255, 255, 255, 0.05);
     color: #9dc387;
+    border-radius: 10px;
+}
+
+.uk-padding-xsmall {
+    padding: 4px;
 }
 
 .uk-button-default:hover, .uk-button-default:focus {
@@ -367,9 +412,18 @@ a:hover, .uk-link:hover {
     border-color: #404040;
 }
 
+.uk-footer {
+    background: #182132;
+    padding: 20px 0 0 0;
+}
+
+.uk-light .uk-text-meta, .uk-section-primary:not(.uk-preserve-color) .uk-text-meta, .uk-section-secondary:not(.uk-preserve-color) .uk-text-meta, .uk-tile-primary:not(.uk-preserve-color) .uk-text-meta, .uk-tile-secondary:not(.uk-preserve-color) .uk-text-meta, .uk-card-primary.uk-card-body .uk-text-meta, .uk-card-primary > :not([class*='uk-card-media']) .uk-text-meta, .uk-card-secondary.uk-card-body .uk-text-meta, .uk-card-secondary > :not([class*='uk-card-media']) .uk-text-meta, .uk-overlay-primary .uk-text-meta, .uk-offcanvas-bar .uk-text-meta {
+    color: rgb(255, 255, 255);
+}
+
 .uk-card-default .uk-card-header {
-    border-bottom: 1px solid rgba(68, 161, 209, 0.2);
-    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 0;
+    background: #040d1e;
     border-radius: 4px 4px 0 0;
 }
 
@@ -399,9 +453,9 @@ a:hover, .uk-link:hover {
 
 .uk-input, .uk-select, .uk-textarea {
     background: rgba(0, 0, 0, 0.2);
-    color: #a0a0a0;
+    color: #ffffff;
     border: 0px solid rgba(255,255,255,0.1);
-    border-bottom: 2px solid #525252;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     height: 41px;
 }
 
@@ -425,6 +479,16 @@ fieldset {
     border-bottom: 1px solid #333333;
 }
 
+.uk-breadcrumb > :last-child > * {
+    color: #fff;
+}
+.uk-breadcrumb > * > * {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+}
+
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
     background: rgba(0, 0, 0, 0.3);
     border: 0px solid rgba(255,255,255,0.1);
@@ -435,7 +499,8 @@ fieldset {
 }
 
 .uk-card-default .uk-card-title {
-    color: #D7A17C;
+    color: #ffffff;
+    margin-bottom: 0;
 }
 
 .inputGroup {
@@ -541,7 +606,7 @@ fieldset {
     left: 0;
     width: 40px;
     height: 20px;
-    background-color: #202020;
+    background-color: #020b1c;
     border-radius: 10px;
     transition: all .3s ease;
 }
@@ -556,7 +621,7 @@ fieldset {
 }
 
 .switcher input:disabled + .switcher__indicator::after, input:disabled + .switcher__indicator::before {
-    background-color: #6e6e6e;
+    background-color: #020b1c;
 }
 
 @-webkit-keyframes pulsein {
