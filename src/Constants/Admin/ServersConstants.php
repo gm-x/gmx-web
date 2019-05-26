@@ -20,4 +20,8 @@ class ServersConstants
     const PERMISSION_TOKEN_GROUP = 'admin';
     const PERMISSION_TOKEN_TYPE = 'server';
     const PERMISSION_TOKEN_KEY = 'server_token';
+
+	const PERMISSION_RCON_GROUP = 'admin';
+	const PERMISSION_RCON_TYPE = 'server';
+	const PERMISSION_RCON_KEY = 'server_rcon';
 }

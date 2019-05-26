@@ -3,12 +3,14 @@
  * @var string $baseUrl
  */
 ?>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
     <title>GameX Install</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="assets/css/uikit.css" />
-    <script src="assets/js/uikit.js"></script>
+    <link rel="stylesheet" href="<?= $baseUrl; ?>/assets/css/uikit.css" />
+    <script src="<?= $baseUrl; ?>/assets/js/uikit.js"></script>
+	<script src="<?= $baseUrl; ?>/assets/js/jquery-3.3.1.min.js"></script>
 </head>
 <body>
 <div class="uk-container uk-container-small uk-margin-medium">
@@ -87,7 +89,6 @@
     </form>
 
 </div>
-<script src="assets/js/jquery-3.3.1.min.js"></script>
 <script>
     var statusList;
 	function result(message, nextCall) {
@@ -188,7 +189,7 @@
 	function finish() {
         $('#formSubmitButton').prop('disabled', false);
         alert("Successfully installed");
-        location.href = '/';
+        location.href = '<?= $baseUrl; ?>/';
 	}
 
     UIkit.util.on('#installForm', 'submit', function (e) {

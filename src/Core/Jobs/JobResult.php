@@ -15,10 +15,14 @@ class JobResult {
 	 */
 	protected $nextTimeExecute = null;
 
-	public function __construct($status, $nextTimeExecute = null) {
+	/**
+	 * JobResult constructor.
+	 * @param bool $status
+	 * @param Carbon|null $nextTimeExecute
+	 */
+	public function __construct($status, Carbon $nextTimeExecute = null) {
 		$this->status = (bool) $status;
-
-		$this->nextTimeExecute = $nextTimeExecute !== null ? Carbon::now()->addMinute($nextTimeExecute) : null;
+		$this->nextTimeExecute = $nextTimeExecute;
 	}
 
 	public function getStatus() {

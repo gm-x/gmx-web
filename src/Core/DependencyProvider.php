@@ -56,7 +56,8 @@ use \GameX\Core\AccessFlags\ViewExtension as AccessFlagsViewExtension;
 use \GameX\Core\Upload\ViewExtension as UploadFlagsViewExtension;
 use \GameX\Core\Constants\ViewExtension as ConstantsViewExtension;
 
-use \GameX\Core\Mail\Helpers\MailHelper;
+use \GameX\Core\Mail\Helper as MailHelper;
+use \GameX\Core\Mail\Helpers\SwiftMailer;
 
 use \GameX\Core\CSRF\Token;
 
@@ -431,7 +432,7 @@ class DependencyProvider implements ServiceProviderInterface
         /** @var Config $config */
         $config = $container->get('preferences');
         
-        return new MailHelper($container->get('view'), $config->getNode('mail'));
+        return new SwiftMailer($container->get('view'), $config->getNode('mail'));
     }
     
     /**

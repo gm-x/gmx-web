@@ -124,10 +124,11 @@ class PrivilegesForm extends BaseForm
      */
     protected function getGroups()
     {
-        $groups = [];
-        foreach ($this->server->groups as $group) {
-            $groups[$group->id] = $group->title;
+	    $groups = $this->server->groups()->orderBy('priority')->get();
+        $result = [];
+        foreach ($groups as $group) {
+	        $result[$group->id] = $group->title;
         }
-        return $groups;
+        return $result;
     }
 }

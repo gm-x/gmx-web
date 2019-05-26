@@ -42,7 +42,7 @@
 													<b>{{ trans('labels', 'server_address') }}</b>: <a href="steam://connect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a>
 													<br>
 													<b>{{ trans('labels', 'server_players') }}</b>:
-													{{ players[server.id] | length }}/{{ server.max_players }}
+													{{ server.num_players  }}/{{ server.max_players }}
 											</div>
 										</div>
 									</div>

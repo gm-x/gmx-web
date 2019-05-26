@@ -9,6 +9,7 @@ class PermissionsCron extends Migration {
         'key' => PreferencesConstants::PERMISSION_CRON_KEY,
         'type' => PreferencesConstants::PERMISSION_TYPE,
     ];
+
     /**
      * Do the migration
      */

@@ -23,5 +23,6 @@
     "admin_user_role": "Роли пользователей",
     "admin_preferences": "Настройки",
     "admin_server_group": "Группы сервера",
-    "admin_server_reason": "Причины банов"
+    "admin_server_reason": "Причины банов",
+    "admin_server_rcon": "RCON"
 }

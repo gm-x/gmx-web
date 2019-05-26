@@ -24,6 +24,7 @@ use \Carbon\Carbon;
  * @property UserModel $user
  * @property Privilege[] $privileges
  * @property Punishment[] $punishments
+ * @property PlayerSession[] $sessions
  * @property Server $server
  */
 class Player extends BaseModel
@@ -59,6 +60,14 @@ class Player extends BaseModel
      * @var array
      */
     protected $dates = ['created_at', 'updated_at'];
+
+	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'user_id' => 'int',
+		'emulator' => 'int',
+	];
     
     /**
      * @var array

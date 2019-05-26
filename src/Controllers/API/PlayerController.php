@@ -14,7 +14,7 @@ use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Number;
 use \GameX\Core\Validate\Rules\IPv4;
 use \GameX\Core\Validate\Rules\Length;
-use \GameX\Core\Exceptions\ApiException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class PlayerController extends BaseApiController
 {
@@ -22,12 +22,11 @@ class PlayerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function connectAction(Request $request, Response $response, array $args)
+    public function connectAction(Request $request, Response $response)
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator
@@ -52,7 +51,7 @@ class PlayerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         
         $server = $this->getServer($request);
@@ -110,6 +109,8 @@ class PlayerController extends BaseApiController
             $session->status = PlayerSession::STATUS_OFFLINE;
             $session->disconnected_at = Carbon::now();
             $session->save();
+
+	        $session = new PlayerSession();
             $session->fill([
                 'player_id' => $player->id,
                 'server_id' => $server->id,
@@ -140,12 +141,11 @@ class PlayerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function disconnectAction(Request $request, Response $response, array $args)
+    public function disconnectAction(Request $request, Response $response)
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator->set('session_id', true, [
@@ -155,7 +155,7 @@ class PlayerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
 
         $session = PlayerSession::find($result->getValue('session_id'));
@@ -179,11 +179,10 @@ class PlayerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      */
-    public function assignAction(Request $request, Response $response, array $args)
+    public function assignAction(Request $request, Response $response)
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator->set('id', true, [
@@ -195,18 +194,18 @@ class PlayerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         $player = Player::find($result->getValue('id'), ['id', 'user_id']);
         if (!$player) {
-            throw new ApiException('Player not found', ApiException::ERROR_VALIDATION);
+            throw new ValidationException('Player not found');
         }
         if ($player->user_id !== null) {
-            throw new ApiException('User already assigned', ApiException::ERROR_VALIDATION);
+            throw new ValidationException('User already assigned');
         }
         $user = UserModel::where('token', $result->getValue('token'))->first(['id']);
         if (!$user) {
-            throw new ApiException('Invalid user token', ApiException::ERROR_VALIDATION);
+            throw new ValidationException('Invalid user token');
         }
         
         $player->user_id = $user->id;

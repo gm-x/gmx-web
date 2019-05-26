@@ -10,7 +10,6 @@ use \GameX\Constants\Admin\UsersConstants;
 use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Constants\Admin\PermissionsConstants;
 use \GameX\Constants\Admin\PreferencesConstants;
-use \GameX\Constants\Admin\PreferencesMainConstants;
 
 class PermissionsList extends Migration {
 

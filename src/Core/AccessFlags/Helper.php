@@ -24,7 +24,7 @@ class Helper {
      */
     public static function getFlags($flags) {
         $result = '';
-        for ($i = 0; $i <= 32; $i++) {
+        for ($i = 0; $i <= 29; $i++) {
             if ( ($flags  & ( 1 << $i ) ) > 0 ) {
                 $result .= chr($i + 97);
             }

@@ -67,7 +67,7 @@
             <div class="uk-overlay uk-position-bottom uk-light">
                 Map: {{ server.map.exists() ? server.map.name : '-' }}
                 <br>
-                Online: {{ players | length }}/{{ server.max_players }}
+                Online: {{ server.num_players }}/{{ server.max_players }}
             </div>
         </div>
         <div>

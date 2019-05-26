@@ -8,12 +8,6 @@ $container = new Container();
 
 $container['phpmig.migrations_path'] = __DIR__ . DIRECTORY_SEPARATOR . 'migrations';
 
-// You can also provide an array of migration files
-// $container['phpmig.migrations'] = array_merge(
-//     glob('migrations_1/*.php'),
-//     glob('migrations_2/*.php')
-// );
-
 $container['root'] = __DIR__ . DIRECTORY_SEPARATOR;
 
 $container['config'] = function ($container) {

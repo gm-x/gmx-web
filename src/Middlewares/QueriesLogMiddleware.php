@@ -8,6 +8,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Configuration\Config;
 use \Monolog\Logger;
 use \Illuminate\Database\Capsule\Manager;
+use \Slim\Http\Request;
 
 class QueriesLogMiddleware
 {
@@ -29,10 +30,17 @@ class QueriesLogMiddleware
 			return $response;
 		}
 
-		$queries = $this->getDatabase()->getConnection()->getQueryLog();
+
 		$logger = $this->getLogger();
+
+		$request = $this->getRequest();
+		$logger->debug(sprintf(
+			'Request: %s %s', $request->getMethod(), $request->getUri()->getPath()
+		));
+
+		$queries = $this->getDatabase()->getConnection()->getQueryLog();
 		foreach ($queries as $query) {
-			$log = sprintf('Query (%s): %s', $query['time'], $query['query']);
+			$log = sprintf('Query (time %0.2f): %s', $query['time'], $query['query']);
 			$logger->debug($log, $query['bindings']);
 		}
 
@@ -61,5 +69,13 @@ class QueriesLogMiddleware
 	protected function getDatabase()
 	{
 		return $this->container->get('db');
+	}
+
+	/**
+	 * @return Request
+	 */
+	protected function getRequest()
+	{
+		return $this->container->get('request');
 	}
 }

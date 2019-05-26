@@ -17,19 +17,22 @@ class SwiftMailer extends Helper {
      * @return Swift_Message
      */
     protected function message(Email $to, $subject, $body) {
-        $message = new Swift_Message($subject, $body, 'text/html', 'utf-8');
+        $message = new Swift_Message($subject);
         $message
-            ->addFrom($this->from->getEmail(), $this->from->getName())
-            ->addTo($to->getEmail(), $to->getName());
+            ->setFrom([$this->from->getEmail() => $this->from->getName()])
+            ->setTo([$to->getEmail() => $to->getName()])
+	        ->setBody($body, 'text/html', 'utf-8');
         
         return $message;
     }
-    
-    /**
-     * @param $config
-     */
+
+	/**
+	 * @param Node $config
+	 * @throws \GameX\Core\Configuration\Exceptions\NotFoundException
+	 */
     protected function configure(Node $config) {
-        $this->from = new Email($config->get('email'), $config->get('name'));
+	    $sender = $config->getNode('sender');
+	    $this->from = new Email($sender->get('email'), $sender->get('name'));
         switch ($config->get('type')) {
             case 'smtp': {
                 $this->sender = new Swift_SmtpTransport($config->get('host'), $config->get('port'));

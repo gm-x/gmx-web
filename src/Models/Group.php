@@ -45,6 +45,14 @@ class Group extends BaseModel
      * @var array
      */
     protected $hidden = ['server_id', 'created_at', 'updated_at'];
+
+	/**
+	 * @var array
+	 */
+    protected $casts = [
+    	'flags' => 'int',
+    	'priority' => 'int',
+    ];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
