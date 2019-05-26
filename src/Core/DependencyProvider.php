@@ -417,7 +417,8 @@ class DependencyProvider implements ServiceProviderInterface
         $view->addExtension(new Twig_Dump());
         $view->addExtension(new UploadFlagsViewExtension($container));
         $view->addExtension(new ConstantsViewExtension());
-        
+        $view->addExtension(new AssetsExtension($container));
+
         $view->getEnvironment()->addGlobal('flash_messages', $container->get('flash'));
         $view->getEnvironment()->addGlobal('currentUri', (string)$uri->getPath());
         $view->getEnvironment()->addGlobal('title', $preferences

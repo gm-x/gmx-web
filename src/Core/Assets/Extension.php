@@ -22,7 +22,7 @@ class Extension extends Twig_Extension
         return [
 	        new Twig_SimpleFunction(
 		        'assets_set_data',
-		        [$this, 'assetssetData']
+		        [$this, 'assetsSetData']
 	        ),
 	        new Twig_SimpleFunction(
 		        'assets_get_data',
