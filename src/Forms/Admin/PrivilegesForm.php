@@ -95,6 +95,7 @@ class PrivilegesForm extends BaseForm
             ->set('expired', true, [
                 new ExpireRule()
             ], [
+            	'trim' => false,
 	            'check' => Validator::CHECK_ARRAY,
 	            'default' => false,
             	'allow_null' => true
@@ -116,9 +117,7 @@ class PrivilegesForm extends BaseForm
     {
         $this->privilege->group_id = $this->form->getValue('group');
         $this->privilege->prefix = $this->form->getValue('prefix');
-        $this->privilege->expired_at = !$this->form->getValue('forever')
-            ? $this->form->getValue('expired')
-            : null;
+        $this->privilege->expired_at = $this->form->getValue('expired');
         $this->privilege->active = $this->form->getValue('active') ? 1 : 0;
         return $this->privilege->save();
     }

@@ -3,6 +3,7 @@ namespace GameX\Core\Validate\Rules;
 
 use \GameX\Core\Validate\Rules\DateTime as DateTimeRule;
 use \Carbon\Carbon;
+use \Carbon\CarbonInterval;
 
 class Expire extends DateTimeRule {
 
@@ -31,9 +32,12 @@ class Expire extends DateTimeRule {
 
 		switch ($value['type']) {
 			case 'for_time': {
-				return $$this->isValidForTime($value)
-					? Carbon::now()->add($value['for_time_value'], $value['for_time_type'])
-					: null;
+				if (!$this->isValidForTime($value)) {
+					return null;
+				}
+
+				$interval = CarbonInterval::make($value['for_time_value'] . $value['for_time_type']);
+				return Carbon::now()->add($interval);
 			}
 
 			case 'to_date': {

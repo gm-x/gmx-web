@@ -236,13 +236,18 @@
 				<li><a href="#">Time</a></li>
 				<li><a href="#">Date</a></li>
 			</ul>
-			<input type="hidden" name="gender" id="expired-switch-input"/>
+			<input
+				type="hidden"
+				name="{{ element.getFormName() }}[{{ element.getName() }}][type]"
+				id="expired-switch-input"
+				value="forever"
+			/>
 			<ul class="uk-switcher uk-margin" id="expired-switch-id">
 				<li data-value="forever" data-input="#expired-switch-input"></li>
 				<li data-value="for_time" data-input="#expired-switch-input">
 					<div  class="uk-grid-small" uk-grid>
 						<div class="uk-width-1-6">
-							<select class="uk-select">
+							<select class="uk-select" name="{{ element.getFormName() }}[{{ element.getName() }}][for_time_type]">
 								<option value="seconds">Seconds</option>
 								<option value="minutes">Minutes</option>
 								<option value="hours">Hours</option>
@@ -253,7 +258,11 @@
 							</select>
 						</div>
 						<div class="uk-width-1-6">
-							<input type="number" class="uk-input" >
+							<input
+								type="number"
+								class="uk-input"
+								name="{{ element.getFormName() }}[{{ element.getName() }}][for_time_value]"
+							>
 						</div>
 					</div>
 				</li>
@@ -261,9 +270,9 @@
 					<input
 						type="{{ element.getType() }}"
 						id="{{ element.getId() }}"
-						name="{{ element.getFormName() }}[{{ element.getName() }}]"
+						name="{{ element.getFormName() }}[{{ element.getName() }}][to_date_value]"
 						value="{{ element.format(format) }}"
-						class="uk-input"
+						class="uk-input datepicker"
 					/>
 				</li>
 			</ul>
