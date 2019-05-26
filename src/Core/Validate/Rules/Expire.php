@@ -64,6 +64,7 @@ class Expire extends DateTimeRule {
     protected function isValidForTime(array $value) {
 		return isset($value['for_time_type'])
 			&& isset($value['for_time_value'])
+			&& $value['for_time_value'] > 0
 			&& in_array($value['for_time_type'], self::FOR_TIME, true);
     }
 }
