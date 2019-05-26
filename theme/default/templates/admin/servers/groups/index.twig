@@ -24,6 +24,10 @@
     {% endif %}
 {% endblock %}
 
+{% block data %}
+	{% do assets_set_data('GROUPS_PRIORITY_URL', path_for(constants.admin.groups.ROUTE_PRIORITY, {'server': server.id})) %}
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
 	<div f-table f-divider>
@@ -69,29 +73,13 @@
 		{% endfor %}
 	</div>
 </div>
-	<style>
-		/* TODO: Move to styles.css */
-		ul.uk-sortable-drag {
-			display: flex;
-			flex-flow: row wrap;
-			margin: 0;
-			padding: 0;
-			list-style: none;
-			width: 100%;
-		}
-
-		ul.uk-sortable-drag li {
-			padding: 14px;
-			display: inline-flex;
-		}
-	</style>
 </div>
 {% endblock %}
 
 {% block javascript %}
     {{ parent() }}
 	<script>
-	window.GROUPS_PRIORITY_URL = '{{ path_for(constants.admin.groups.ROUTE_PRIORITY, {'server': server.id}) }}';
+
 	</script>
-	<script src="{{ base_url() }}/assets/scripts/admin_groups.js"></script>
+	<script src="{{ base_url() }}/assets/scripts/admin/groups.js"></script>
 {% endblock %}

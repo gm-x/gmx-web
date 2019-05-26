@@ -68,6 +68,10 @@ use \GameX\Core\Update\Manifest;
 
 use \GameX\Core\Breadcrumbs\Breadcrumbs;
 
+use \GameX\Core\Assets\Loader as AssetsLoader;
+use \GameX\Core\Assets\Manager as AssetsManager;
+use \GameX\Core\Assets\Extension as AssetsExtension;
+
 class DependencyProvider implements ServiceProviderInterface
 {
     /**
@@ -157,10 +161,14 @@ class DependencyProvider implements ServiceProviderInterface
             return $this->getUpdater($container);
         };
 
-        $container['breadcrumbs'] = function (ContainerInterface $container) {
-            return $this->getBreadcrumbs($container);
+        $container['breadcrumbs'] = function () {
+            return $this->getBreadcrumbs();
         };
-        
+
+	    $container['assets'] = function (ContainerInterface $container) {
+		    return $this->getAssets($container);
+	    };
+
         $container['modules'] = function (ContainerInterface $container) {
             $modules = new \GameX\Core\Module\Module();
             //	$modules->addModule(new \GameX\Modules\TestModule\Module());
@@ -452,20 +460,50 @@ class DependencyProvider implements ServiceProviderInterface
     {
         return new FlashMessages($container->get('session'), 'flash_messages');
     }
-    
+
+	/**
+	 * @param ContainerInterface $container
+	 * @return Upload
+	 */
     public function getUpload(ContainerInterface $container)
     {
         return new Upload($container->get('root') . 'uploads', $container->get('base_url') . '/uploads');
     }
-    
+
+	/**
+	 * @param ContainerInterface $container
+	 * @return Updater
+	 */
     public function getUpdater(ContainerInterface $container)
     {
         $manifest = new Manifest($container->get('root') . 'manifest.json');
         return new Updater($manifest);
     }
 
-    public function getBreadcrumbs(ContainerInterface $container)
+	/**
+	 * @return Breadcrumbs
+	 */
+    public function getBreadcrumbs()
     {
-        return new Breadcrumbs($container);
+        return new Breadcrumbs();
+    }
+
+	/**
+	 * @param ContainerInterface $container
+	 * @return AssetsManager
+	 * @throws NotFoundException
+	 */
+    public function getAssets(ContainerInterface $container)
+    {
+	    /** @var Config $preferences */
+	    $preferences = $container->get('preferences');
+	    $theme = $preferences
+		    ->getNode(PreferencesConstants::CATEGORY_MAIN)
+		    ->get(PreferencesConstants::MAIN_THEME, 'default');
+
+	    $assets = $container->get('root') . 'theme' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'assets.json';
+
+    	$loader = new AssetsLoader($assets);
+        return new AssetsManager($loader);
     }
 }

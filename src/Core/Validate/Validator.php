@@ -64,7 +64,8 @@ class Validator {
         $this->options[$key] = array_merge([
             'check' => Validator::CHECK_LENGTH,
             'trim' => true,
-            'default' => null
+            'default' => null,
+            'allow_null' => false,
         ], $options);
         
         return $this;
@@ -110,8 +111,10 @@ class Validator {
                 foreach ($rules as $rule) {
                     $value = $rule->validate($value, $values);
                     if ($value === null) {
-                        $errors[$key] = $rule->getError($this->language);
-                        $isValid = false;
+                    	if (!$this->options[$key]['allow_null']) {
+		                    $errors[$key] = $rule->getError($this->language);
+		                    $isValid = false;
+	                    }
                         break;
                     }
                 }

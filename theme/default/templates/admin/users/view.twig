@@ -108,28 +108,5 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block javascript %}
-{{ parent() }}
-<script>
-    $(document).ready(function () {
-        UIkit.util.on('#activateUser', 'click', function (e) {
-            e.preventDefault();
-            e.target.blur();
-            var csrf_tocken = {{ csrf_token_json() }};
-            $.post($(this).attr('href'), csrf_tocken)
-                .done(function(data) {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        console.log('error')
-                    }
-                })
-                .fail(function() {
-                    console.log("error");
-                });
-        });
-    });
-</script>
+    {% do require_asset("admin_users") %}
 {% endblock %}

@@ -55,9 +55,9 @@ class Extension extends Twig_Extension {
      * @throws \Exception
      */
     public function renderCSRFTokenJSON() {
-        return json_encode([
+        return [
             $this->token->getNameKey() => $this->token->getName(),
             $this->token->getTokenKey() => $this->token->getToken()
-        ]);
+        ];
     }
 }

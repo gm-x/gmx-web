@@ -8,8 +8,17 @@
         {{ csrf_token() }}
 		{{ forms.element_select(form.group) }}
 		{{ forms.element_input(form.prefix) }}
-        {{ forms.element_checkbox(form.forever) }}
-		{{ forms.element_datetime(form.expired, 'Y-m-d') }}
+
+        {{ forms.element_expire(form.expired) }}
+
+        <style>
+            .expire-switch label.uk-active {
+                color: #44a1d1;
+                background: transparent;
+                border-bottom: 2px solid #44a1d1;
+            }
+        </style>
+
 		{{ forms.element_checkbox(form.active) }}
         <div class="form-group">
 			{% if create %}
@@ -25,4 +34,14 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block javascript %}
+	{{ parent() }}
+	<script>
+        UIkit.util.on('#expired-switch-id > li', 'show', function() {
+            var self = $(this);
+            $(self.data('input')).val(self.data('value'));
+        });
+    </script>
 {% endblock %}

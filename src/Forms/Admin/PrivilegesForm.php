@@ -7,12 +7,13 @@ use \GameX\Models\Server;
 use \GameX\Models\Privilege;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
-use \GameX\Core\Forms\Elements\Date as DateElement;
+use \GameX\Core\Forms\Elements\Expire as ExpireElement;
 use \GameX\Core\Forms\Elements\Checkbox;
+use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\InArray;
 use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\Number;
-use \GameX\Core\Validate\Rules\Date as DateRule;
+use \GameX\Core\Validate\Rules\Expire as ExpireRule;
 use \GameX\Core\Validate\Rules\Callback;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 
@@ -73,11 +74,10 @@ class PrivilegesForm extends BaseForm
                 'empty_option' => $this->getTranslate($this->name, 'group_empty'),
             ]))->add(new Text('prefix', $this->privilege->prefix, [
                 'title' => $this->getTranslate($this->name, 'prefix'),
-            ]))->add(new Checkbox('forever', $this->privilege->expired_at === null, [
-                'title' => $this->getTranslate($this->name, 'forever'),
-            ]))->add(new DateElement('expired', $this->privilege->expired_at, [
+            ]))->add(new ExpireElement('expired', $this->privilege->expired_at, [
                 'title' => $this->getTranslate($this->name, 'expired'),
                 'required' => true,
+	            'classes' => ['datepicker']
             ]))->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
                 'title' => $this->getTranslate($this->name, 'active'),
             ]));
@@ -93,7 +93,11 @@ class PrivilegesForm extends BaseForm
                 new Boolean()
             ])
             ->set('expired', true, [
-                new DateRule()
+                new ExpireRule()
+            ], [
+	            'check' => Validator::CHECK_ARRAY,
+	            'default' => false,
+            	'allow_null' => true
             ])
             ->set('active', false, [
                 new Boolean()

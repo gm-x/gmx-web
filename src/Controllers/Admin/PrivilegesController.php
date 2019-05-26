@@ -107,6 +107,10 @@ class PrivilegesController extends BaseAdminController
             )
             ->add($this->getTranslate('labels', 'create'));
 
+        /** @var \GameX\Core\Assets\Manager $assets */
+	    $assets = $this->getContainer('assets');
+        $assets->setData('test', ['key' => 'value']);
+
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {

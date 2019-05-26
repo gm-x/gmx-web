@@ -15,8 +15,20 @@
     <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
     {% block style %}{% endblock %}
+    <script>
+        {% block data %}{% endblock %}
+        {% do assets_set_data('CSRF_TOKEN', csrf_token_json()) %}
+        {% do assets_set_data('MESSAGES', {
+            'saved': trans('labels', 'saved'),
+            'exception': trans('labels', 'exception'),
+            'delete': trans('buttons', 'delete'),
+            'cancel': trans('buttons', 'cancel'),
+            'are_you_sure': trans('labels', 'are_you_sure')
+        }) %}
+        window.__GMX_DATA__ = {{ assets_get_data() | json_encode | raw }};
+    </script>
 </head>
-<body>
+<body data-lang="{{ userLang }}">
 <div class="uk-container-expand admin">
     <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
         {{ navbar.adminbar(menu, adminmenu) }}
@@ -60,20 +72,14 @@
         {% block content %}{% endblock %}
     </main>
     {% block modals %}{% endblock %}
-    <script>
-        window.CSRF_TOKEN = {{ csrf_token_json() }};
-        window.MESSAGES = {
-            saved: '{{ trans('labels', 'saved') }}',
-            exception: '{{ trans('labels', 'exception') }}',
-            delete: '{{ trans('buttons', 'delete') }}',
-            cancel: '{{ trans('buttons', 'cancel') }}',
-            are_you_sure: '{{ trans('buttons', 'are_you_sure') }}'
-        };
-    </script>
-    <script src="{{ base_url() }}/assets/scripts/xhr.js"></script>
-    <script src="{{ base_url() }}/assets/scripts/main.js"></script>
-    <script src="{{ base_url() }}/assets/scripts/admin.js"></script>
-    {% block javascript %}{% endblock %}
 </div>
+{% do require_asset("scripts") %}
+{% for style in assets_styles() %}
+    <link rel="stylesheet" href="{{ base_url() }}{{ style }}">
+{% endfor %}
+{% for script in assets_scripts() %}
+    <script src="{{ base_url() }}{{ script }}"></script>
+{% endfor %}
+{% block javascript %}{% endblock %}
 </body>
 </html>
