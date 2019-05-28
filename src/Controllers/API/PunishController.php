@@ -36,15 +36,19 @@ class PunishController extends BaseApiController
         };
         
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('player_id', true, [
+        $validator
+	        ->set('player_id', true, [
                 new Number(1),
                 new Callback($playerExists)
-            ])->set('punisher_id', true, [
+            ])
+	        ->set('punisher_id', true, [
                 new Number(0),
                 new Callback($punisherExists)
-            ])->set('type', true, [
-                new Number(0),
-            ])->set('reason', true)->set('details', false)->set('time', true, [
+            ])
+	        ->set('type', true)
+	        ->set('reason', true)
+	        ->set('details', false)
+	        ->set('time', true, [
                 new Number(0)
             ]);
         
@@ -87,15 +91,21 @@ class PunishController extends BaseApiController
         $serverId = $this->getServer($request)->id;
         
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('nick', true)->set('emulator', true, [
+        $validator
+	        ->set('nick', true)
+	        ->set('emulator', true, [
                 new Number()
-            ])->set('steamid', true, [
+            ])
+	        ->set('steamid', true, [
                 new SteamID()
-            ])->set('ip', true, [
+            ])
+	        ->set('ip', true, [
                 new IPv4()
-            ])->set('type', true, [
-                new Number(0),
-            ])->set('reason', true)->set('details', false)->set('time', true, [
+            ])
+	        ->set('type', true)
+	        ->set('reason', true)
+	        ->set('details', false)
+	        ->set('time', true, [
                 new Number(0)
             ]);
         
