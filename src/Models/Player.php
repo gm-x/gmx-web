@@ -160,12 +160,19 @@ class Player extends BaseModel
      */
     public function getActivePunishments(Server $server)
     {
-        return $this->punishments()->select('punishments.*')->with('reason')->leftJoin('reasons',
-                'punishments.reason_id', '=', 'reasons.id')->where('status', '=',
-                Punishment::STATUS_PUNISHED)->where(function (Builder $query) {
-                $query->where('expired_at', '>', Carbon::now()->toDateTimeString())->orWhereNull('expired_at');
+        return $this->punishments()
+	        ->select('punishments.*')
+	        ->with('reason')
+	        ->leftJoin('reasons', 'punishments.reason_id', '=', 'reasons.id')
+	        ->where('status', '=', Punishment::STATUS_PUNISHED)
+	        ->where(function (Builder $query) {
+                $query
+	                ->where('expired_at', '>', Carbon::now()->toDateTimeString())
+	                ->orWhereNull('expired_at');
             })->where(function (Builder $query) use ($server) {
-                $query->where('reasons.overall', 1)->orWhere(function (Builder $query) use ($server) {
+                $query
+	                ->where('reasons.overall', 1)
+	                ->orWhere(function (Builder $query) use ($server) {
                         $query->where([
                             'reasons.overall' => 0,
                             'punishments.server_id' => $server->id
