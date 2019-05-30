@@ -16,7 +16,7 @@ use \GameX\Core\Auth\Models\UserModel;
  * @property integer $server_id
  * @property integer $reason_id
  * @property string $details
- * @property integer $type
+ * @property string $type
  * @property string $expired_at
  * @property string $status
  * @property Player $player

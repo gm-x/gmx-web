@@ -29,20 +29,33 @@ class PunishmentsController extends BaseAdminController
     {
         return PlayersConstants::ROUTE_LIST;
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws NotAllowedException
-     * @throws NotFoundException
-     * @throws \GameX\Core\Exceptions\RoleNotFoundException
-     */
-    public function viewAction(Request $request, Response $response, array $args = [])
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param int $playerId
+	 * @param int $punishmentId
+	 * @return ResponseInterface
+	 * @throws NotAllowedException
+	 * @throws NotFoundException
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 * @throws \GameX\Core\Exceptions\RoleNotFoundException
+	 */
+    public function viewAction(Request $request, Response $response, $playerId, $punishmentId)
     {
-        $player = $this->getPlayer($request, $response, $args);
-        $punishment = $this->getPunishment($request, $response, $args, $player);
+        $player = $this->getPlayer($request, $response, $playerId);
+        $punishment = $this->getPunishment($request, $response, $player, $punishmentId);
+
+	    $this->getBreadcrumbs()
+		    ->add(
+			    $this->getTranslate('admin_menu', 'players'),
+			    $this->pathFor(PlayersConstants::ROUTE_LIST)
+		    )
+		    ->add(
+			    $player->nick,
+			    $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+		    )
+		    ->add($this->getTranslate('admin_privileges', 'punishments'));
         
         $hasAccess = $this->getPermissions()->hasUserAccessToResource(PunishmentsConstants::PERMISSION_GROUP,
             PunishmentsConstants::PERMISSION_KEY, $punishment->server_id, Permissions::ACCESS_VIEW);
@@ -60,17 +73,18 @@ class PunishmentsController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $playerId
+     * @param int $serverId
      * @return ResponseInterface
      * @throws NotAllowedException
      * @throws NotFoundException
      * @throws \GameX\Core\Exceptions\RedirectException
      */
-    public function createAction(Request $request, Response $response, array $args = [])
+    public function createAction(Request $request, Response $response, $playerId, $serverId)
     {
-        $player = $this->getPlayer($request, $response, $args);
-        $server = $this->getServer($request, $response, $args);
-        $punishment = $this->getPunishment($request, $response, $args, $player, $server);
+        $player = $this->getPlayer($request, $response, $playerId);
+        $server = $this->getServer($request, $response, $serverId);
+        $punishment = $this->getPunishment($request, $response, $player, null, $server);
         
         $form = new PunishmentsForm($server, $punishment);
         try {
@@ -93,20 +107,23 @@ class PunishmentsController extends BaseAdminController
             'create' => true,
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws NotAllowedException
-     * @throws NotFoundException
-     * @throws \GameX\Core\Exceptions\RedirectException
-     */
-    public function editAction(Request $request, Response $response, array $args = [])
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param int $playerId
+	 * @param int $punishmentId
+	 * @return ResponseInterface
+	 * @throws NotAllowedException
+	 * @throws NotFoundException
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 * @throws \GameX\Core\Exceptions\RedirectException
+	 * @throws \GameX\Core\Exceptions\RoleNotFoundException
+	 */
+    public function editAction(Request $request, Response $response, $playerId, $punishmentId)
     {
-        $player = $this->getPlayer($request, $response, $args);
-        $punishment = $this->getPunishment($request, $response, $args, $player);
+        $player = $this->getPlayer($request, $response, $playerId);
+        $punishment = $this->getPunishment($request, $response, $player, $punishmentId);
         $server = $this->getServerForPunishment($punishment, Permissions::ACCESS_DELETE);
         
         $form = new PunishmentsForm($server, $punishment);
@@ -130,19 +147,22 @@ class PunishmentsController extends BaseAdminController
             'create' => false,
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return ResponseInterface
-     * @throws NotAllowedException
-     * @throws NotFoundException
-     */
-    public function deleteAction(Request $request, Response $response, array $args = [])
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param int $playerId
+	 * @param int $punishmentId
+	 * @return ResponseInterface
+	 * @throws NotAllowedException
+	 * @throws NotFoundException
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 * @throws \GameX\Core\Exceptions\RoleNotFoundException
+	 */
+    public function deleteAction(Request $request, Response $response, $playerId, $punishmentId)
     {
-        $player = $this->getPlayer($request, $response, $args);
-        $punishment = $this->getPunishment($request, $response, $args, $player);
+        $player = $this->getPlayer($request, $response, $playerId);
+        $punishment = $this->getPunishment($request, $response, $player, $punishmentId);
         $this->getServerForPunishment($punishment, Permissions::ACCESS_DELETE);
         
         try {
@@ -159,50 +179,46 @@ class PunishmentsController extends BaseAdminController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
-     * @param bool $withPunishments
+     * @param int $id
      * @return Player
      * @throws NotFoundException
      */
-    protected function getPlayer(Request $request, Response $response, array $args, $withPunishments = false)
+    protected function getPlayer(Request $request, Response $response, $id)
     {
-        if (!array_key_exists('player', $args)) {
-            return new Player();
-        }
-        
-        $player = $withPunishments ? Player::with('punishments')->find($args['player']) : Player::find($args['player']);
-        
+        $player = Player::find($id);
+
         if (!$player) {
             throw new NotFoundException($request, $response);
         }
-        
+
         return $player;
     }
     
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
+     * @param int $id
      * @return Server
      * @throws NotFoundException
      */
-    protected function getServer(Request $request, Response $response, array $args)
+    protected function getServer(Request $request, Response $response, $id)
     {
-        $server = Server::find($args['server']);
+        $server = Server::find($id);
         if (!$server) {
             throw new NotFoundException($request, $response);
         }
         
         return $server;
     }
-    
-    /**
-     * @param Punishment $punishment
-     * @param $access
-     * @return Server
-     * @throws NotAllowedException
-     * @throws \GameX\Core\Exceptions\RoleNotFoundException
-     */
+
+	/**
+	 * @param Punishment $punishment
+	 * @param int $access
+	 * @return Server
+	 * @throws NotAllowedException
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 * @throws \GameX\Core\Exceptions\RoleNotFoundException
+	 */
     protected function getServerForPunishment(Punishment $punishment, $access)
     {
         if (!$this->hasAccess($punishment->server_id, $access)) {
@@ -211,25 +227,20 @@ class PunishmentsController extends BaseAdminController
         
         return $punishment->server;
     }
-    
+
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @param Player $player
+     * @param int $id
      * @param Server|null $server
      * @return Punishment
      * @throws NotFoundException
      * @throws NotAllowedException
      */
-    protected function getPunishment(
-        Request $request,
-        Response $response,
-        array $args,
-        Player $player,
-        Server $server = null
-    ) {
-        if (!array_key_exists('punishment', $args)) {
+    protected function getPunishment(Request $request, Response $response, Player $player, $id = null, Server $server = null)
+    {
+        if ($id === null) {
             return new Punishment([
                 'player_id' => $player->id,
                 'punisher_id' => null,
@@ -237,48 +248,49 @@ class PunishmentsController extends BaseAdminController
                 'server_id' => $server->id
             ]);
         }
-        
-        $punishment = Punishment::find($args['punishment']);
+
+        $punishment = Punishment::find($id);
         if (!$punishment) {
             throw new NotFoundException($request, $response);
         }
-        
+
         if ($punishment->player_id !== $player->id) {
             throw new NotAllowedException();
         }
-        
+
         return $punishment;
     }
-    
-    /**
-     * @param $serverId
-     * @param $access
-     * @return bool
-     * @throws \GameX\Core\Exceptions\RoleNotFoundException
-     */
+
+	/**
+	 * @param $serverId
+	 * @param $access
+	 * @return bool
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 * @throws \GameX\Core\Exceptions\RoleNotFoundException
+	 */
     protected function hasAccess($serverId, $access)
     {
         /** @var Permissions $permissions */
         $permissions = $this->getContainer('permissions');
-        
+
         $user = $this->getUser();
         if (!$user) {
             return false;
         }
-        
+
         if ($permissions->isRootUser($user)) {
             return true;
         }
-        
+
         if (!$user->role) {
             return false;
         }
-        
+
         if (!$permissions->hasAccessToResource($user->role, PunishmentsConstants::PERMISSION_GROUP,
             PunishmentsConstants::PERMISSION_KEY, $serverId, $access)) {
             return false;
         }
-        
+
         return true;
     }
 }
