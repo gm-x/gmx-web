@@ -33,11 +33,7 @@ class Punishment extends BaseModel
     const STATUS_PUNISHED = 'punished';
     const STATUS_EXPIRED = 'expired';
     const STATUS_AMNESTIED = 'amnestied';
-    
-    const TYPE_BANNED = 1;
-    const TYPE_GAGED = 2;
-    const TYPE_MUTED = 4;
-    
+
     /**
      * The table associated with the model.
      *
@@ -78,7 +74,7 @@ class Punishment extends BaseModel
     /**
      * @var array
      */
-    protected $appends = ['types', 'time'];
+    protected $appends = ['time'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -134,23 +130,5 @@ class Punishment extends BaseModel
     public function getPermanentAttribute()
     {
         return $this->attributes['expired_at'] === null;
-    }
-    
-    /**
-     * @return array
-     */
-    public function getTypesAttribute()
-    {
-        $types = [];
-        if ($this->attributes['type'] && self::TYPE_BANNED) {
-            $types[] = 'ban';
-        }
-        if ($this->attributes['type'] && self::TYPE_GAGED) {
-            $types[] = 'gag';
-        }
-        if ($this->attributes['type'] && self::TYPE_MUTED) {
-            $types[] = 'mute';
-        }
-        return $types;
     }
 }
