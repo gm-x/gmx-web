@@ -28,6 +28,10 @@ use \GameX\Core\Auth\Models\UserModel;
  */
 class Punishment extends BaseModel
 {
+	public function fill(array $attributes)
+	{
+		return parent::fill($attributes);
+	}
     
     const STATUS_NONE = 'none';
     const STATUS_PUNISHED = 'punished';
@@ -75,7 +79,7 @@ class Punishment extends BaseModel
      * @var array
      */
     protected $appends = ['time'];
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -121,7 +125,7 @@ class Punishment extends BaseModel
      */
     public function getTimeAttribute()
     {
-        return $this->attributes['expired_at'] !== null ? $this->attributes['expired_at']->diffInSeconds($this->attributes['created_at']) : 0;
+        return $this->attributes['expired_at'] !== null ? $this->expired_at->diffInSeconds($this->attributes['created_at']) : 0;
     }
     
     /**
