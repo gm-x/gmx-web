@@ -47,6 +47,9 @@ class PunishController extends BaseApiController
                 new Callback($punisherExists)
             ])
 	        ->set('type', true)
+	        ->set('extra', false, [
+		        new Number(0)
+	        ])
 	        ->set('reason', true)
 	        ->set('details', false)
 	        ->set('time', true, [
@@ -69,6 +72,7 @@ class PunishController extends BaseApiController
             'punisher_id' => $punisherId > 0 ? $punisherId : null,
             'server_id' => $serverId,
             'type' => $result->getValue('type'),
+            'extra' => $result->getValue('extra'),
             'reason_id' => $reason->id,
             'details' => $result->getValue('details'),
             'expired_at' => $time > 0 ? Carbon::now()->addSeconds($time) : null,
@@ -105,6 +109,9 @@ class PunishController extends BaseApiController
                 new IPv4()
             ])
 	        ->set('type', true)
+	        ->set('extra', false, [
+		        new Number(0)
+	        ])
 	        ->set('reason', true)
 	        ->set('details', false)
 	        ->set('time', true, [
@@ -132,6 +139,7 @@ class PunishController extends BaseApiController
             'punisher_id' => null,
             'server_id' => $serverId,
             'type' => $result->getValue('type'),
+	        'extra' => $result->getValue('extra'),
             'reason_id' => $reason->id,
             'details' => $result->getValue('details'),
             'expired_at' => $time > 0 ? Carbon::now()->addSeconds($time) : null,

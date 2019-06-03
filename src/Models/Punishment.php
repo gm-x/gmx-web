@@ -17,6 +17,7 @@ use \GameX\Core\Auth\Models\UserModel;
  * @property integer $reason_id
  * @property string $details
  * @property string $type
+ * @property integer $extra
  * @property string $expired_at
  * @property string $status
  * @property Player $player
@@ -28,11 +29,6 @@ use \GameX\Core\Auth\Models\UserModel;
  */
 class Punishment extends BaseModel
 {
-	public function fill(array $attributes)
-	{
-		return parent::fill($attributes);
-	}
-    
     const STATUS_NONE = 'none';
     const STATUS_PUNISHED = 'punished';
     const STATUS_EXPIRED = 'expired';
@@ -61,6 +57,7 @@ class Punishment extends BaseModel
         'reason_id',
         'details',
         'type',
+	    'extra',
         'expired_at',
         'status'
     ];
