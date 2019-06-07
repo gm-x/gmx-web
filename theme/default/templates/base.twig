@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
     <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
+    <script src="{{ base_url() }}/assets/js/Chart.bundle.js"></script>
     {% block style %}{% endblock %}
     {{ head.get_scheme() }}
 </head>
@@ -58,11 +59,6 @@
                 <div class="uk-width-1-1 uk-text-meta">
                     GameX CMS - это лучшее мобильное решение для управления серверами игрового сообщества Counter-Strike, разработанное в 2019 году.<br>
                     Мы развиваемся каждый день, чтобы наше сообщество было одним из лучших!
-                </div>
-                <div class="uk-width-1-1">
-                    {% for item in menu.getItems() if item.getType() == 'item' and menu.hasAccess(item) %}
-                        <a class="uk-text-uppercase uk-margin-small-right" href="{{ path_for(item.getRoute(), item.getParams()) }}">{{ item.getTitle() }}</a>
-                    {% endfor %}
                 </div>
             </div>
         </div>
