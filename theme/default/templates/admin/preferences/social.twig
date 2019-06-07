@@ -20,16 +20,16 @@
 					uk-tab="connect: #social; animation: uk-animation-slide-top-medium,uk-animation-slide-bottom-medium; swiping: false"
 			>
 				<li class="uk-active">
-					<a href="#">Steam</a>
+					<a href="#"><i class="fab fa-steam"></i> Steam</a>
 				</li>
 				<li>
-					<a href="#">VK</a>
+					<a href="#"><i class="fab fa-vk"></i> VK</a>
 				</li>
 				<li>
-					<a href="#">Facebook</a>
+					<a href="#"><i class="fab fa-facebook"></i> Facebook</a>
 				</li>
 				<li>
-					<a href="#">Discord</a>
+					<a href="#"><i class="fab fa-discord"></i> Discord</a>
 				</li>
 			</ul>
             {% if hasAccessToEdit %}
@@ -42,12 +42,12 @@
 		<div class="uk-width-3-4@m">
 				<ul id="social" class="uk-switcher">
 					<li>
-						<h1>Steam</h1>
+						<h1><i class="fab fa-steam"></i> Steam</h1>
 						{{ forms.element_checkbox(form.steam_enabled) }}
 						{{ forms.element_input(form.steam_icon) }}
 					</li>
 					<li>
-						<h1>VK</h1>
+						<h1><i class="fab fa-vk"></i> VK</h1>
 						{{ forms.element_checkbox(form.vk_enabled) }}
 						{{ forms.element_input(form.vk_icon) }}
 						{{ forms.element_input(form.vk_id) }}
@@ -55,7 +55,7 @@
 						{{ forms.element_input(form.vk_secret) }}
 					</li>
 					<li>
-						<h1>Facebook</h1>
+						<h1><i class="fab fa-facebook"></i> Facebook</h1>
                         {{ forms.element_checkbox(form.facebook_enabled) }}
                         {{ forms.element_input(form.facebook_icon) }}
                         {{ forms.element_input(form.facebook_id) }}
@@ -63,7 +63,7 @@
                         {{ forms.element_input(form.facebook_secret) }}
 					</li>
 					<li>
-						<h1>Discord</h1>
+						<h1><i class="fab fa-discord"></i> Discord</h1>
                         {{ forms.element_checkbox(form.discord_enabled) }}
                         {{ forms.element_input(form.discord_icon) }}
                         {{ forms.element_input(form.discord_id) }}

@@ -6,7 +6,6 @@
     <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
         <div uk-grid>
             <div class="uk-width-1-4@m">
-                <h1>{{ user.login }}</h1>
                 <form action="{{ avatarForm.getAction() }}" id="avatar_form" method="post" enctype="multipart/form-data">
                     {{ csrf_token() }}
                     {% set holder =
@@ -16,6 +15,7 @@
                     %}
                     {{ forms.element_file(avatarForm.avatar, holder) }}
                 </form>
+                <h1>{{ user.login }}</h1>
                 <ul
                     class="uk-tab-left"
                     uk-tab="connect: #settings; animation: uk-animation-slide-top-medium,uk-animation-slide-bottom-medium"

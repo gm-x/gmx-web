@@ -463,10 +463,10 @@ a:hover, .uk-link:hover {
 }
 
 .uk-input, .uk-select, .uk-textarea {
-    background: rgba(0, 0, 0, 0.2);
+    background: transparent;
     color: #ffffff;
     border: 0px solid rgba(255,255,255,0.1);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
     height: 41px;
 }
 
@@ -501,9 +501,9 @@ fieldset {
 }
 
 .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
-    background: rgba(0, 0, 0, 0.3);
+    background: transparent;
     border: 0px solid rgba(255,255,255,0.1);
-    border-bottom: 2px solid #44a1d1;
+    border-bottom: 1px dashed #44a1d1;
     height: 41px;
     outline: none;
     color: #999;
