@@ -173,7 +173,7 @@ class PunishmentsController extends BaseAdminController
             $this->getLogger()->exception($e);
         }
         
-        return $this->redirect(PunishmentsConstants::ROUTE_LIST, ['player' => $player->id]);
+        return $this->redirect(PlayersConstants::ROUTE_VIEW, ['player' => $player->id]);
     }
     
     /**
