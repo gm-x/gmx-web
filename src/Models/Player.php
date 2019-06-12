@@ -20,6 +20,7 @@ use \Carbon\Carbon;
  * @property string $auth_type
  * @property string $password
  * @property int $access
+ * @property string $prefix
  * @property int $server_id
  * @property UserModel $user
  * @property Privilege[] $privileges
@@ -54,7 +55,7 @@ class Player extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'ip', 'auth_type', 'password', 'access'];
+    protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'ip', 'auth_type', 'password', 'access', 'prefix'];
     
     /**
      * @var array

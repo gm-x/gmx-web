@@ -9,6 +9,7 @@
   "auth_type": "Auth Type",
   "choose_auth_type": "Choose auth type",
   "password": "Password",
+  "prefix": "Chat prefix",
   "reserve_nickname": "Reserve nickname",
   "block_nickname": "Block change nick",
   "pass_error": "Password must be provided",
