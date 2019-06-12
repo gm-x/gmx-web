@@ -48,15 +48,16 @@ class PlayersController extends BaseAdminController
             'filter' => $filter
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param int $id
-     * @return ResponseInterface
-     * @throws NotFoundException
-     * @throws \GameX\Core\Exceptions\RoleNotFoundException
-     */
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $id
+	 * @return ResponseInterface
+	 * @throws NotFoundException
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 * @throws \GameX\Core\Exceptions\RoleNotFoundException
+	 */
     public function viewAction(Request $request, Response $response, $id)
     {
         $player = $this->getPlayer($request, $response, $id);

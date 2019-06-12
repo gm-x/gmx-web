@@ -2,6 +2,8 @@
 
 namespace GameX\Controllers\Admin;
 
+use GameX\Core\Jobs\JobHelper;
+use GameX\Models\Task;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
@@ -110,6 +112,7 @@ class PrivilegesController extends BaseAdminController
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
+	            $this->reloadAdmins($server);
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
                 return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
                     'player' => $player->id,
@@ -162,6 +165,7 @@ class PrivilegesController extends BaseAdminController
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
+	            $this->reloadAdmins($server);
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
                 return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
                     'player' => $player->id,
@@ -193,10 +197,11 @@ class PrivilegesController extends BaseAdminController
     {
         $player = $this->getPlayer($request, $response, $playerId);
         $privilege = $this->getPrivilege($request, $response, $id);
-        $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_DELETE);
+        $server = $this->getServerForPrivilege($request, $response, $privilege, Permissions::ACCESS_DELETE);
         
         try {
             $privilege->delete();
+	        $this->reloadAdmins($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
@@ -293,4 +298,17 @@ class PrivilegesController extends BaseAdminController
         return $this->getPermissions()->hasUserAccessToResource(PrivilegesConstants::PERMISSION_GROUP,
             PrivilegesConstants::PERMISSION_KEY, $serverId, $access);
     }
+
+	/**
+	 * @param Server $server
+	 */
+	protected function reloadAdmins(Server $server)
+	{
+		JobHelper::createTaskIfNotExists('rcon_exec', [
+			'server_id' => $server->id,
+			'command' => 'amx_reloadadmins'
+		], null, function (Task $task) use ($server) {
+			return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
+		});
+	}
 }
