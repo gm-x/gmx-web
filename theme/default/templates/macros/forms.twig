@@ -28,6 +28,7 @@
 			value="{{ element.getValue() }}"
 			class="{{ classes | join(' ') }}"
 			placeholder="{{ element.getTitle() }}"
+			autocomplete="new-password"
 		{% if element.getDisabled() %}
 			disabled="disabled"
 		{% endif %}

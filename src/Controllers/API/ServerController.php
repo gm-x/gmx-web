@@ -11,7 +11,7 @@ use \GameX\Models\Map;
 use \GameX\Models\Player;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\Number;
-use \GameX\Core\Exceptions\ApiException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class ServerController extends BaseApiController
 {
@@ -19,10 +19,9 @@ class ServerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
      */
-    public function privilegesAction(Request $request, Response $response, array $args)
+    public function privilegesAction(Request $request, Response $response)
     {
         $server = $this->getServer($request);
     
@@ -70,10 +69,9 @@ class ServerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
      */
-    public function reasonsAction(Request $request, Response $response, array $args)
+    public function reasonsAction(Request $request, Response $response)
     {
         $server = $this->getServer($request);
         $reasons = $server->reasons()->where('active', 1)->get();
@@ -87,12 +85,11 @@ class ServerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      * @throws \GameX\Core\Cache\NotFoundException
      */
-    public function infoAction(Request $request, Response $response, array $args)
+    public function infoAction(Request $request, Response $response)
     {
         $server = $this->getServer($request);
 
@@ -106,7 +103,7 @@ class ServerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
 
         if (!$result->getIsValid()) {
-            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
 
         $map = Map::firstOrCreate([
@@ -135,13 +132,25 @@ class ServerController extends BaseApiController
 	/**
 	 * @param Request $request
 	 * @param Response $response
-	 * @param array $args
 	 * @return Response
-	 * @throws ApiException
+	 * @throws ValidationException
 	 */
-	public function pingAction(Request $request, Response $response, array $args)
+	public function pingAction(Request $request, Response $response)
 	{
-		$server = $this->getServer($request);
+        $validator = new Validator($this->getContainer('lang'));
+        $validator
+            ->set('num_players', true, [
+                new Number(0),
+            ]);
+
+        $result = $validator->validate($this->getBody($request));
+
+        if (!$result->getIsValid()) {
+            throw new ValidationException($result->getFirstError());
+        }
+
+        $server = $this->getServer($request);
+		$server->num_players = $result->getValue('num_players');
 		$server->ping_at = Carbon::now()->toDateTimeString();
 		$server->save();
 
@@ -153,11 +162,10 @@ class ServerController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      */
-    public function updateAction(Request $request, Response $response, array $args)
+    public function updateAction(Request $request, Response $response)
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator->set('num_players', true, [
@@ -169,7 +177,7 @@ class ServerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         
         $server = $this->getServer($request);

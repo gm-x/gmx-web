@@ -49,7 +49,7 @@
                     </td>
                     <td class="text-nowrap">{{ player.nick }}</td>
                     <td class="text-nowrap">
-                        {% embed "admin/actions.twig" with {'actionId': role.id} %}
+                        {% embed "admin/actions.twig" with {'actionId': player.id} %}
                             {% block actions %}
                                 <li>
                                     <a

@@ -62,4 +62,18 @@ class PlayerSession extends BaseModel
     {
         return $this->belongsTo(Server::class, 'server_id', 'id');
     }
+
+	/**
+	 * @return bool
+	 */
+	public function getOnlineAttribute()
+	{
+		// TODO: remove from this part of code
+		/** @var \GameX\Core\Lang\Language $lang */
+		$lang = self::$container->get('lang');
+		Carbon::setLocale($lang->getUserLanguage());
+		return $this->disconnected_at !== null
+			? $this->disconnected_at->diffForHumans($this->created_at, true, true, 3)
+			: null;
+	}
 }

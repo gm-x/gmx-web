@@ -7,15 +7,7 @@ use \Pimple\ServiceProviderInterface;
 use \Pimple\Container as PimpleContainer;
 use \Psr\Container\ContainerInterface;
 
-use \GameX\Middlewares\AuthMiddleware;
 use \GameX\Core\CSRF\Middleware as CSRFMiddleware;
-use \GameX\Middlewares\SecurityMiddleware;
-use \GameX\Middlewares\ApiTokenMiddleware;
-use \GameX\Middlewares\ApiRequestMiddleware;
-use \GameX\Middlewares\IpAddressMiddleware;
-use \GameX\Middlewares\QueriesLogMiddleware;
-use \GameX\Middlewares\RedirectMiddleware;
-use \GameX\Middlewares\TrailSlashMiddleware;
 
 class DependencyProvider implements ServiceProviderInterface
 {

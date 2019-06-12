@@ -3,7 +3,6 @@
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
-use \DateTime;
 
 /**
  * Class Privilege
@@ -46,6 +45,15 @@ class Privilege extends BaseModel
      * @var array
      */
     protected $hidden = ['server_id', 'player_id', 'created_at', 'updated_at'];
+
+	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'player_id' => 'int',
+		'group_id' => 'int',
+		'active' => 'int',
+	];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -62,15 +70,7 @@ class Privilege extends BaseModel
     {
         return $this->belongsTo(Player::class, 'player_id', 'id');
     }
-    
-    /**
-     * @return DateTime
-     */
-    public function expired()
-    {
-        return new DateTime($this->expired_at);
-    }
-    
+
     /**
      * @param string $value
      * @return string

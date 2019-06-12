@@ -78,6 +78,7 @@ class PreferencesController extends BaseAdminController
 	 * @throws NotFoundException
 	 * @throws RedirectException
 	 * @throws RoleNotFoundException
+	 * @throws \GameX\Core\Cache\NotFoundException
 	 */
     public function emailAction(Request $request, Response $response)
     {
@@ -126,7 +127,7 @@ class PreferencesController extends BaseAdminController
             $mail = $this->getContainer('mail');
             $mail->setConfiguration($config->getNode('mail'));
             $to = new Email($this->getUser()->email, $this->getUser()->login);
-            $mail->send($to, 'test', 'Test Email');
+            $mail->send($to, 'test', $mail->render('test'));
             return $response->withJson([
                 'success' => true,
             ]);
@@ -163,14 +164,15 @@ class PreferencesController extends BaseAdminController
             ]);
         }
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @return ResponseInterface
-     * @throws RedirectException
-     * @throws RoleNotFoundException
-     */
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return ResponseInterface
+	 * @throws RedirectException
+	 * @throws RoleNotFoundException
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 */
     public function updateAction(Request $request, Response $response)
     {
         $this->getBreadcrumbs()

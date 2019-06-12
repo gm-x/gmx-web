@@ -5,6 +5,7 @@ namespace GameX\Controllers\API;
 use \GameX\Core\BaseApiController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
+use \Carbon\Carbon;
 use \GameX\Models\Player;
 use \GameX\Models\Punishment;
 use \GameX\Models\Reason;
@@ -13,18 +14,17 @@ use \GameX\Core\Validate\Rules\Number;
 use \GameX\Core\Validate\Rules\IPv4;
 use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Callback;
-use \GameX\Core\Exceptions\ApiException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class PunishController extends BaseApiController
 {
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      */
-    public function indexAction(Request $request, Response $response, array $args)
+    public function indexAction(Request $request, Response $response)
     {
         $serverId = $this->getServer($request)->id;
         
@@ -37,22 +37,29 @@ class PunishController extends BaseApiController
         };
         
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('player_id', true, [
+        $validator
+	        ->set('player_id', true, [
                 new Number(1),
                 new Callback($playerExists)
-            ])->set('punisher_id', true, [
+            ])
+	        ->set('punisher_id', true, [
                 new Number(0),
                 new Callback($punisherExists)
-            ])->set('type', true, [
-                new Number(0),
-            ])->set('reason', true)->set('details', false)->set('time', true, [
+            ])
+	        ->set('type', true)
+	        ->set('extra', false, [
+		        new Number(0)
+	        ])
+	        ->set('reason', true)
+	        ->set('details', false)
+	        ->set('time', true, [
                 new Number(0)
             ]);
         
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException($result->getFirstError(), ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         
         $reason = $this->getReason($serverId, $result->getValue('reason'));
@@ -65,12 +72,14 @@ class PunishController extends BaseApiController
             'punisher_id' => $punisherId > 0 ? $punisherId : null,
             'server_id' => $serverId,
             'type' => $result->getValue('type'),
+            'extra' => $result->getValue('extra'),
             'reason_id' => $reason->id,
             'details' => $result->getValue('details'),
-            'expired_at' => $time > 0 ? time() + ($time * 60) : null,
+            'expired_at' => $time > 0 ? Carbon::now()->addSeconds($time) : null,
             'status' => Punishment::STATUS_PUNISHED
         ]);
         $punishment->save();
+	    $punishment->load('reason')->makeVisible('reason');
         return $response->withStatus(200)->withJson([
             'success' => true,
             'punishment' => $punishment,
@@ -80,24 +89,32 @@ class PunishController extends BaseApiController
     /**
      * @param Request $request
      * @param Response $response
-     * @param array $args
      * @return Response
-     * @throws ApiException
+     * @throws ValidationException
      */
-    public function immediatelyAction(Request $request, Response $response, array $args)
+    public function immediatelyAction(Request $request, Response $response)
     {
         $serverId = $this->getServer($request)->id;
         
         $validator = new Validator($this->getContainer('lang'));
-        $validator->set('nick', true)->set('emulator', true, [
+        $validator
+	        ->set('nick', true)
+	        ->set('emulator', true, [
                 new Number()
-            ])->set('steamid', true, [
+            ])
+	        ->set('steamid', true, [
                 new SteamID()
-            ])->set('ip', true, [
+            ])
+	        ->set('ip', true, [
                 new IPv4()
-            ])->set('type', true, [
-                new Number(0),
-            ])->set('reason', true)->set('details', false)->set('time', true, [
+            ])
+	        ->set('type', true)
+	        ->set('extra', false, [
+		        new Number(0)
+	        ])
+	        ->set('reason', true)
+	        ->set('details', false)
+	        ->set('time', true, [
                 new Number(0)
             ]);
         
@@ -105,14 +122,16 @@ class PunishController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ApiException('Validation', ApiException::ERROR_VALIDATION);
+            throw new ValidationException($result->getFirstError());
         }
         
-        $player = $this->getPlayer($result->getValue('steamid'), $result->getValue('emulator'),
-            $result->getValue('nick'));
+        $player = $this->getPlayer(
+        	$result->getValue('steamid'),
+	        $result->getValue('emulator'),
+	        $result->getValue('nick')
+        );
         
         $reason = $this->getReason($serverId, $result->getValue('reason'));
-        
         $time = $result->getValue('time');
         
         $punishment = new Punishment([
@@ -120,9 +139,10 @@ class PunishController extends BaseApiController
             'punisher_id' => null,
             'server_id' => $serverId,
             'type' => $result->getValue('type'),
+	        'extra' => $result->getValue('extra'),
             'reason_id' => $reason->id,
             'details' => $result->getValue('details'),
-            'expired_at' => $time > 0 ? time() + ($time * 60) : null,
+            'expired_at' => $time > 0 ? Carbon::now()->addSeconds($time) : null,
             'status' => Punishment::STATUS_PUNISHED
         ]);
         $punishment->save();

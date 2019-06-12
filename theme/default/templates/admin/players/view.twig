@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-1@s uk-margin" uk-grid>
+            <div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-1@s uk-margin" uk-grid>
                 <div>
                     <div class="uk-card-body uk-padding-small">
                         <div class="uk-overflow-auto">
@@ -63,6 +63,7 @@
                                 <li><a href="#">Main</a></li>
                                 <li><a href="#">{{ trans('admin_privileges', 'privileges') }}</a></li>
                                 <li><a href="#">{{ trans('admin_punishments', 'punishments') }}</a></li>
+                                <li><a href="#">sessions</a></li>
                             </ul>
                         </div>
                         <ul id="player-info" class="uk-switcher uk-margin">
@@ -262,6 +263,24 @@
                                             </li>
                                         </ul>
                                     {% endfor %}
+                                </div>
+                            </li>
+                            <li>
+                                <div class="uk-card-body">
+                                    <div f-table f-divider>
+                                        <ul th>
+                                            <li class="uk-width-1-6@m uk-width-1-6@s">Server</li>
+                                            <li class="uk-width-1-6@m uk-width-1-6@s">Date</li>
+                                            <li class="uk-width-1-6@m uk-width-1-6@s">Time</li>
+                                        </ul>
+                                        {% for session in player.sessions %}
+                                            <ul>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s">{{ session.server.name }}</li>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s">{{ session.created_at }}</li>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s">{{ session.online }}</li>
+                                            </ul>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </li>
                         </ul>

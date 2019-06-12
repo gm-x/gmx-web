@@ -7,6 +7,7 @@ use \GameX\Models\Punishment;
 use \Cartalyst\Sentinel\Persistences\EloquentPersistence;
 use \Cartalyst\Sentinel\Users\UserInterface;
 use \Cartalyst\Sentinel\Persistences\PersistableInterface;
+use Illuminate\Database\Eloquent\Collection;
 use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -25,7 +26,7 @@ use \Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \DateTime $update_at
  * @property RoleModel $role
  * @property Player[] $players
- * @property UserSocialModel $social
+ * @property UserSocialModel[]|Collection $socials
  */
 class UserModel extends BaseModel implements UserInterface, PersistableInterface {
 
@@ -169,10 +170,10 @@ class UserModel extends BaseModel implements UserInterface, PersistableInterface
     }
     
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function social()
+    public function socials()
     {
-        return $this->hasOne(UserSocialModel::class, 'user_id', 'id');
+        return $this->hasMany(UserSocialModel::class, 'user_id', 'id');
     }
 }

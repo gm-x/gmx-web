@@ -8,5 +8,8 @@ if (is_file($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME'])) {
     return false;
 }
 
-require __DIR__ . DIRECTORY_SEPARATOR . 'index.php';
-
+if (preg_match('#^/install#', $_SERVER['REQUEST_URI'])) {
+	require __DIR__ . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'index.php';
+} else {
+	require __DIR__ . DIRECTORY_SEPARATOR . 'index.php';
+}

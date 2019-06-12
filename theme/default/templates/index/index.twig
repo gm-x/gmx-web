@@ -7,66 +7,77 @@
 {% block content %}
 <div class="uk-child-width-1-1@m uk-grid-small" uk-grid>
 	<div>
-		<div uk-slider="center: true">
+		<h2 class="uk-heading-line uk-text-center uk-text-uppercase"><span>Добро пожаловать</span></h2>
+		<div uk-slider="center: true; autoplay: true">
 			<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
 				<ul class="uk-slider-items uk-child-width-1-1@s uk-grid">
                     {% for server in servers %}
 						<li>
-							<div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
-								<div class="uk-inline uk-card-media-left">
-									{% if server.online and server.map.exists() %}
-										<img
-											src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
-											alt="{{ server.map.name }}"
-											onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';"
-											class="border-10"
-										>
-									{% else %}
-										<img src="{{ base_url() }}/assets/images/blank600x400.png" alt="" class="border-10">
-									{% endif %}
-									<div class="uk-overlay-primary uk-position-cover"></div>
-									<div class="uk-overlay uk-position-bottom uk-light">
-										<h3 class="uk-card-title">{{ server.name }}</h3>
-										<p>
-											<b>{{ trans('labels', 'server_address') }}</b>: {{ server.ip }}:{{ server.port }}
-											<br>
-											<b>{{ trans('labels', 'server_players') }}</b>:
-											{{ players[server.id] | length }}/{{ server.max_players }}
-										</p>
-									</div>
-									<div class="uk-card-badge uk-label">
-                                        {% if server.online %}
-                                            {{ server.map.exists() ? server.map.name : '-' }}
-                                        {% else %}
-											OFFLINE
-                                        {% endif %}
+							<div class="uk-child-width-1-2@s uk-grid">
+								<div>
+									<div class="uk-card uk-margin">
+										<div class="uk-inline">
+											{% if server.online and server.map.exists() %}
+												<img
+													src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
+													alt="{{ server.map.name }}"
+													onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';"
+													class="border-10"
+												>
+											{% else %}
+												<img src="{{ base_url() }}/assets/images/maps/cs_italy.jpg" alt="" class="border-10">
+											{% endif %}
+
+											<div class="uk-overlay uk-position-top uk-overlay-primary">
+												<h3 class="uk-card-title">{{ server.name }}</h3>
+											</div>
+											<div class="uk-card-badge uk-label">
+                                                {% if server.online %}
+                                                    {{ server.map.exists() ? server.map.name : '-' }}
+                                                {% else %}
+													OFFLINE
+                                                {% endif %}
+											</div>
+											<div class="uk-overlay uk-position-bottom uk-overlay-primary">
+													<b>{{ trans('labels', 'server_address') }}</b>: <a href="steam://connect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a>
+													<br>
+													<b>{{ trans('labels', 'server_players') }}</b>:
+													{{ server.num_players  }}/{{ server.max_players }}
+											</div>
+										</div>
 									</div>
 								</div>
-									<div class="uk-card-body">
-										<h3 class="uk-card-title">Список игроков</h3>
-										<table class="uk-table uk-table-divider">
-											<tr>
-												<th>Никнейм</th>
-												<th>Убийств</th>
-												<th>Смертей</th>
-											</tr>
-											<tr>
-												<td>Gamer 1</td>
-												<td>1</td>
-												<td>2</td>
-											</tr>
-											<tr>
-												<td>Gamer 2</td>
-												<td>1</td>
-												<td>2</td>
-											</tr>
-											<tr>
-												<td>Gamer 3</td>
-												<td>1</td>
-												<td>2</td>
-											</tr>
-										</table>
+								<div>
+									<div class="uk-card uk-card-default uk-margin">
+										<div class="uk-card-header">
+											<h3 class="uk-card-title"><i class="fas fa-history"></i> Список игроков</h3>
+										</div>
+										<div class="uk-card-body">
+											<table class="uk-table uk-table-striped">
+												<tr>
+													<th>Никнейм</th>
+													<th>Убийств</th>
+													<th>Смертей</th>
+												</tr>
+												<tr>
+													<td>Gamer 1</td>
+													<td>1</td>
+													<td>2</td>
+												</tr>
+												<tr>
+													<td>Gamer 2</td>
+													<td>1</td>
+													<td>2</td>
+												</tr>
+												<tr>
+													<td>Gamer 3</td>
+													<td>1</td>
+													<td>2</td>
+												</tr>
+											</table>
+										</div>
 									</div>
+								</div>
 							</div>
 						</li>
                     {% endfor %}
@@ -78,11 +89,13 @@
 		</div>
 	</div>
 </div>
-<div class="uk-grid-small uk-child-width-expand@s" uk-grid>
+<div class="uk-grid-small uk-child-width-expand@s uk-margin" uk-grid>
 	<div>
 		<div class="uk-card uk-card-default">
+			<div class="uk-card-header">
+				<h3 class="uk-card-title"><i class="fas fa-history"></i> Последние наказания</h3>
+			</div>
 			<div class="uk-card-body">
-				<h3 class="uk-card-title">Последние наказания</h3>
 				<div f-table f-divider>
 					<ul th>
 						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Nick</li>
@@ -110,8 +123,10 @@
 	</div>
 	<div>
 		<div class="uk-card uk-card-default">
+			<div class="uk-card-header">
+				<h3 class="uk-card-title"><i class="fas fa-history"></i> Последние наказания</h3>
+			</div>
 			<div class="uk-card-body">
-				<h3 class="uk-card-title">Последние наказания</h3>
 				<div f-table f-divider>
 					<ul th>
 						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Nick</li>
@@ -138,5 +153,21 @@
 		</div>
 	</div>
 </div>
-
+{% if is_guest() %}
+</div>
+	<div class="uk-section uk-section-dark uk-margin-large-bottom">
+		<div class="uk-container">
+			<h3 class="uk-heading-line uk-text-center"><span>Мало информации?</span></h3>
+			<div class="uk-flex uk-flex-middle uk-flex-center uk-child-width-1-4">
+				<div class="uk-text-center">
+					Войдите, чтобы узнать больше информации<br>
+					<button class="uk-button uk-button-primary uk-button-small uk-margin">Войти</button><br>
+					Или <a href="">присоединяйтесь</a> к GameX бесплатно
+				</div>
+			</div>
+			<hr>
+		</div>
+	</div>
+<div class="uk-container">
+{% endif %}
 {% endblock %}

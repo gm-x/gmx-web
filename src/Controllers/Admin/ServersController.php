@@ -3,6 +3,9 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
+use GameX\Models\Player;
+use GameX\Models\Privilege;
+use Illuminate\Database\Eloquent\Collection;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
@@ -10,6 +13,7 @@ use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Server;
 use \GameX\Forms\Admin\ServersForm;
+use \GameX\Core\Auth\Permissions;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -59,14 +63,22 @@ class ServersController extends BaseAdminController
                 $this->pathFor(ServersConstants::ROUTE_LIST)
             )
             ->add($server->name);
-    
-        /** @var \GameX\Core\Cache\Cache $cache */
-        $cache = $this->getContainer('cache');
-        $players = $cache->get('players_online', $server);
-        
+
+	    $sessions = $server->getActiveSessions();
+
+	    $privileges = $server->groups()
+		    ->get()
+		    ->reduce(function ($privileges, $item) {
+		    	if ($privileges === null) {
+				    $privileges = new Collection();
+			    }
+			    return $privileges->merge($item->players);
+		    });
+
         return $this->getView()->render($response, 'admin/servers/view.twig', [
             'server' => $server,
-            'players' => $players,
+            'sessions' => $sessions,
+	        'privileges' => $privileges
         ]);
     }
     
@@ -88,7 +100,7 @@ class ServersController extends BaseAdminController
             )
             ->add($this->getTranslate('labels', 'create'));
         
-        $form = new ServersForm($server);
+        $form = new ServersForm($server, true);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(ServersConstants::ROUTE_VIEW, [
@@ -99,17 +111,20 @@ class ServersController extends BaseAdminController
         return $this->getView()->render($response, 'admin/servers/form.twig', [
             'form' => $form->getForm(),
             'create' => true,
+	        'rconEnabled' => true,
         ]);
     }
-    
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param int $id
-     * @return ResponseInterface
-     * @throws NotFoundException
-     * @throws \GameX\Core\Exceptions\RedirectException
-     */
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @param $id
+	 * @return ResponseInterface
+	 * @throws NotFoundException
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 * @throws \GameX\Core\Exceptions\RedirectException
+	 * @throws \GameX\Core\Exceptions\RoleNotFoundException
+	 */
     public function editAction(Request $request, Response $response, $id)
     {
         $server = $this->getServer($request, $response, $id);
@@ -124,8 +139,15 @@ class ServersController extends BaseAdminController
                 $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
             )
             ->add($this->getTranslate('labels', 'edit'));
-        
-        $form = new ServersForm($server);
+
+	    $rconEnabled = $this->getPermissions()->hasUserAccessToResource(
+		    ServersConstants::PERMISSION_RCON_GROUP,
+		    ServersConstants::PERMISSION_RCON_KEY,
+		    $server->id,
+		    Permissions::ACCESS_EDIT
+	    );
+
+	    $form = new ServersForm($server, $rconEnabled);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(ServersConstants::ROUTE_VIEW, [
@@ -136,6 +158,7 @@ class ServersController extends BaseAdminController
         return $this->getView()->render($response, 'admin/servers/form.twig', [
             'form' => $form->getForm(),
             'create' => false,
+	        'rconEnabled' => $rconEnabled,
         ]);
     }
     

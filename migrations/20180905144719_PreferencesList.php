@@ -9,7 +9,7 @@ class PreferencesList extends Migration
      */
     public function up() {
         foreach ($this->getList() as $item) {
-            Preference::create($item);
+            Preference::updateOrCreate($item);
         }
     }
 

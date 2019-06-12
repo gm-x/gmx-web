@@ -12,6 +12,7 @@ use \GameX\Core\Utils;
  * @package GameX\Models
  *
  * @property integer $id
+ * @property string $type
  * @property string $name
  * @property string $ip
  * @property integer $port
@@ -50,7 +51,7 @@ class Server extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['name', 'ip', 'port', 'token', 'rcon', 'active', 'num_players', 'max_players', 'map_id'];
+    protected $fillable = ['type', 'name', 'ip', 'port', 'token', 'rcon', 'active', 'num_players', 'max_players', 'map_id'];
     
     /**
      * @var array
@@ -66,6 +67,16 @@ class Server extends BaseModel
 	 * @var array
 	 */
 	protected $appends = ['online'];
+
+	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'port' => 'int',
+		'num_players' => 'int',
+		'max_players' => 'int',
+		'map_id' => 'int',
+	];
 
 	/**
 	 * @return bool
@@ -125,6 +136,8 @@ class Server extends BaseModel
             ->sessions()
             ->with('player')
             ->where('status', '=', PlayerSession::STATUS_ONLINE)
+//	        ->whereTime('updated_at', '>', Carbon::today())
+	        ->groupBy('id', 'player_id')
             ->orderBy('created_at', 'DESC')
             ->get();
     }

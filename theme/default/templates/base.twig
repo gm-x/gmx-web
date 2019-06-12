@@ -20,7 +20,7 @@
             {{ navbar.mainbar(menu) }}
         </div>
     </div>
-    <div class="uk-container">
+    <div class="uk-container" uk-height-viewport="offset-top: true; offset-bottom: true">
         <main role="main" class="container">
             <div class="uk-margin uk-flex uk-flex-right">
                 {% block subnav %}{% endblock %}
@@ -42,6 +42,36 @@
             {% block content %}{% endblock %}
         </main>
     </div>
+    <footer class="uk-footer">
+        <div class="uk-container">
+            <div class="uk-flex uk-flex-wrap uk-flex-top uk-flex-between uk-margin-small-bottom">
+                <div>
+                    <a class="uk-logo" href="{{ path_for('index') }}">
+                        <img src="{{ base_url() }}/assets/images/logo.svg" width="100">
+                    </a>
+                </div>
+                <div class="uk-text-right">
+                    <a href="" class="uk-icon-button uk-margin-small-right"><i class="fab fa-steam-square fa-lg"></i></a>
+                    <a href="" class="uk-icon-button uk-margin-small-right"><i class="fab fa-discord fa-lg"></i></a>
+                    <a href="" class="uk-icon-button uk-margin-small-right"><i class="fab fa-facebook-square fa-lg"></i></a>
+                </div>
+                <div class="uk-width-1-1 uk-text-meta">
+                    GameX CMS - это лучшее мобильное решение для управления серверами игрового сообщества Counter-Strike, разработанное в 2019 году.<br>
+                    Мы развиваемся каждый день, чтобы наше сообщество было одним из лучших!
+                </div>
+                <div class="uk-width-1-1">
+                    {% for item in menu.getItems() if item.getType() == 'item' and menu.hasAccess(item) %}
+                        <a class="uk-text-uppercase uk-margin-small-right" href="{{ path_for(item.getRoute(), item.getParams()) }}">{{ item.getTitle() }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="uk-section uk-section-dark uk-padding-xsmall">
+            <div class="uk-container uk-text-small">
+                <h6>CMS Software by GameX 2019</h6>
+            </div>
+        </div>
+    </footer>
     {% block modals %}{% endblock %}
     <script>
         $(document).ready(function () {
