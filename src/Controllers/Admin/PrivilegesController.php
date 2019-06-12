@@ -2,8 +2,6 @@
 
 namespace GameX\Controllers\Admin;
 
-use GameX\Core\Jobs\JobHelper;
-use GameX\Models\Task;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
@@ -16,6 +14,8 @@ use \GameX\Models\Player;
 use \GameX\Models\Server;
 use \GameX\Models\Privilege;
 use \GameX\Forms\Admin\PrivilegesForm;
+use \GameX\Core\Jobs\JobHelper;
+use \GameX\Models\Task;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 use \GameX\Core\Exceptions\RedirectException;
 use \Slim\Exception\NotFoundException;

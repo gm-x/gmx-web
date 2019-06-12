@@ -5,7 +5,6 @@ namespace GameX\Forms\Admin;
 use \GameX\Core\BaseForm;
 use \GameX\Models\Server;
 use \GameX\Models\Privilege;
-use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Date as DateElement;
 use \GameX\Core\Forms\Elements\Checkbox;
@@ -71,8 +70,6 @@ class PrivilegesForm extends BaseForm
                 'title' => $this->getTranslate($this->name, 'group'),
                 'required' => true,
                 'empty_option' => $this->getTranslate($this->name, 'group_empty'),
-            ]))->add(new Text('prefix', $this->privilege->prefix, [
-                'title' => $this->getTranslate($this->name, 'prefix'),
             ]))->add(new Checkbox('forever', $this->privilege->expired_at === null, [
                 'title' => $this->getTranslate($this->name, 'forever'),
             ]))->add(new DateElement('expired', $this->privilege->expired_at, [
@@ -88,7 +85,6 @@ class PrivilegesForm extends BaseForm
                 new Number(1),
                 new InArray(array_keys($groups)),
             ])
-            ->set('prefix', false)
             ->set('forever', false, [
                 new Boolean()
             ])
@@ -111,7 +107,6 @@ class PrivilegesForm extends BaseForm
     protected function processForm()
     {
         $this->privilege->group_id = $this->form->getValue('group');
-        $this->privilege->prefix = $this->form->getValue('prefix');
         $this->privilege->expired_at = !$this->form->getValue('forever')
             ? $this->form->getValue('expired')
             : null;
