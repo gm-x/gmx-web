@@ -252,14 +252,18 @@ class DependencyProvider implements ServiceProviderInterface
      */
     public function getLanguage(ContainerInterface $container)
     {
+	    /** @var Config $config */
+	    $config = $container->get('config');
+
         /** @var Config $config */
-        $config = $container->get('preferences');
+        $preferences = $container->get('preferences');
         
         $loader = new JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
         $provider = new SlimProvider($container->get('request'));
         return new Language($loader, $provider,
-            $config->getNode('languages')->toArray(),
-            $config->getNode(PreferencesConstants::CATEGORY_MAIN)->get(PreferencesConstants::MAIN_LANGUAGE)
+	        $preferences->getNode('languages')->toArray(),
+	        $preferences->getNode(PreferencesConstants::CATEGORY_MAIN)->get(PreferencesConstants::MAIN_LANGUAGE),
+            $config->getNode('debug')->get('lang')
         );
     }
     
