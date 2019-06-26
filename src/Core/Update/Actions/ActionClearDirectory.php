@@ -23,7 +23,10 @@ class ActionClearDirectory implements ActionInterface {
      * @inheritdoc
      */
     public function run() {
-        var_dump($this->dir);
+    	if (!is_dir(($this->dir))){
+    		return true;
+	    }
+
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($this->dir, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST

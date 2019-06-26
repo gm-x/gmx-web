@@ -468,8 +468,8 @@ class DependencyProvider implements ServiceProviderInterface
         return new Updater($manifest);
     }
 
-    public function getBreadcrumbs(ContainerInterface $container)
+    public function getBreadcrumbs()
     {
-        return new Breadcrumbs($container);
+        return new Breadcrumbs();
     }
 }

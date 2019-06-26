@@ -217,13 +217,9 @@ class PreferencesController extends BaseAdminController
 		    Permissions::ACCESS_EDIT
 	    );
 
-        $root = $this->container->get('root') . 'runtime' . DIRECTORY_SEPARATOR;
-        $form = new CacheForm([
-            $root . 'cache',
-            $root . 'twig_cache',
-        ], $hasAccessToEdit);
+        $form = new CacheForm($this->container->get('root'), $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            $this->addSuccessMessage($this->getTranslate('admin_preferences', 'cache_success'));
             return $this->redirect(PreferencesConstants::ROUTE_CACHE);
         }
         

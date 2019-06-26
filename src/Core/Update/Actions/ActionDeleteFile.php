@@ -21,6 +21,8 @@ class ActionDeleteFile implements ActionInterface {
      * @inheritdoc
      */
     public function run() {
-        return unlink($this->destination);
+    	return is_file($this->destination)
+            ? unlink($this->destination)
+		    : true;
     }
 }

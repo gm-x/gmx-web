@@ -89,11 +89,12 @@ class Updater
             
             $actions->add(new ActionDeleteFile($destination));
         }
-        
-        $actions->add(new ActionComposerInstall($baseDir));
-        $actions->add(new ActionMigrationsRun($baseDir));
-        $actions->add(new ActionClearDirectory($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
-        $actions->add(new ActionClearDirectory($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
+
+	    $actions->add(new ActionComposerInstall($baseDir));
+	    $actions->add(new ActionMigrationsRun($baseDir));
+	    $actions->add(new ActionClearDirectory($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
+	    $actions->add(new ActionClearDirectory($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
+	    $actions->add(new ActionDeleteFile($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'routes.php'));
         $actions->add(new ActionCopyFile($updatesDir . 'manifest.json', $baseDir . 'manifest.json'));
         $actions->add(new ActionClearDirectory($updatesDir));
         

@@ -56,12 +56,15 @@ class UpdateForm extends BaseForm
      */
     protected function createForm()
     {
-        $this->form->add(new FileInput('updates', '', [
-            'title' => 'Updates',
-            'required' => true,
-            'disabled' => !$this->hasAccessToEdit,
-        ]));
-        $this->form->getValidator()->set('updates', true, [
+        $this->form
+	        ->add(new FileInput('updates', '', [
+	            'title' => 'Updates',
+	            'required' => true,
+	            'disabled' => !$this->hasAccessToEdit,
+	        ]));
+
+        $this->form->getValidator()
+	        ->set('updates', true, [
                 new FileRule(),
                 new FileExtension(['zip']),
                 new FileSize('10M'),
