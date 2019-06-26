@@ -1,5 +1,6 @@
 {
     "group": "Group name",
     "flags": "Access flags",
-    "priority": "Priority"
+    "priority": "Priority",
+    "prefix": "Chat prefix"
 }

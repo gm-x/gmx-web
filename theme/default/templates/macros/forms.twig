@@ -15,7 +15,12 @@
 
 	<div class="uk-margin uk-inline uk-width-1-1">
         {% if config is null or config.label %}
-        <label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+        <label class="uk-form-label" for="{{ element.getId() }}">
+	        {{ element.getTitle() }}
+	        {% if element.getDescription() %}
+		        <i class="fas fa-info" uk-tooltip="{{ element.getDescription() }}"></i>
+	        {% endif %}
+        </label>
         <div class="uk-form-controls">
         {% endif %}
 		{% if config.icon %}

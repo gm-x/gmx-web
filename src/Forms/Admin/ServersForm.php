@@ -15,6 +15,10 @@ use \GameX\Core\Validate\Rules\Callback;
 
 class ServersForm extends BaseForm
 {
+	const TYPES = [
+		'cstrike' => 'Counter-Strike 1.6',
+		'csgo' => 'CS:GO',
+	];
 
     /**
      * @var string
@@ -60,9 +64,7 @@ class ServersForm extends BaseForm
     protected function createForm()
     {
         $this->form
-            ->add(new Select('type', $this->server->type, [
-                'cstrike' => 'Counter-Strike 1.6'
-            ], [
+            ->add(new Select('type', $this->server->type, self::TYPES, [
                 'title' => $this->getTranslate($this->name, 'type'),
                 'required' => true,
                 'empty_option' => $this->getTranslate($this->name, 'choose_type')
@@ -83,7 +85,7 @@ class ServersForm extends BaseForm
         
         $this->form->getValidator()
             ->set('type', true, [
-                new InArray(['cstrike'])
+                new InArray(array_keys(self::TYPES))
             ])
             ->set('ip', true, [
                 new IPv4()

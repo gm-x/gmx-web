@@ -2,22 +2,31 @@
 
 namespace GameX\Controllers\Cron;
 
-
 use \GameX\Core\BaseCronController;
 use \GameX\Core\Jobs\JobResult;
 use \GameX\Models\Task;
 use \GameX\Models\Server;
-use \GameX\Core\Rcon\Rcon;
+use xPaw\SourceQuery\SourceQuery;
 
 class RconController extends BaseCronController
 {
+	const ENGINES = [
+		'cstrike' => SourceQuery::GOLDSOURCE,
+		'csgo' => SourceQuery::SOURCE
+	];
+
     public function run(Task $task)
     {
-    	// TODO: Only for goldsrc
 	    $server = Server::find($task->data['server_id']);
-	    $rcon = new Rcon($server->ip, $server->port, $server->rcon, ['timeout' => 10]);
-	    $rcon->execute($task->data['command']);
 
-        return new JobResult(true);
+	    if (!empty($server->rcon) && array_key_exists($server->type, self::ENGINES, true)) {
+		    $query = new SourceQuery();
+		    $query->Connect($server->ip, $server->port, 10, self::ENGINES[$server->type]);
+		    $query->SetRconPassword($server->rcon);
+		    $query->Rcon($task->data['command']);
+		    $query->Disconnect();
+	    }
+
+	    return new JobResult(true);
     }
 }

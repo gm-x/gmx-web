@@ -123,7 +123,7 @@ class PlayerController extends BaseApiController
         
         $session->save();
         
-//        $punishments = $player->getActivePunishments($server);
+        $punishments = $player->getActivePunishments($server);
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
@@ -134,7 +134,7 @@ class PlayerController extends BaseApiController
             'player_id' => $player->id,
             'session_id' => $session->id,
             'user_id' => $player->user ? $player->user->id : null,
-//            'punishments' => $punishments,
+            'punishments' => $punishments,
         ]);
     }
     

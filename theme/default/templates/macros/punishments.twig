@@ -48,11 +48,7 @@
 {% endmacro %}
 
 {% macro type(punishment) %}
-    <ul>
-        {% for type in punishment.types %}
-            <li>{{ type }}</li>
-        {% endfor %}
-    </ul>
+    {{ punishment.type }}
 {% endmacro %}
 
 {% macro reason(punishment) %}

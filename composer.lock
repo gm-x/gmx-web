@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "387a1aeaa394e0d3c0321a0b33790df3",
+    "content-hash": "76b8ef248963351e50f48beacfe32fd2",
     "packages": [
         {
             "name": "cartalyst/sentinel",
@@ -2246,12 +2246,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "d34d10236300876d14291e9df85c6ef3d3bb9066"
+                "reference": "7b92618169c44af4bb226f69dbac42b56b1a7745"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/d34d10236300876d14291e9df85c6ef3d3bb9066",
-                "reference": "d34d10236300876d14291e9df85c6ef3d3bb9066",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/7b92618169c44af4bb226f69dbac42b56b1a7745",
+                "reference": "7b92618169c44af4bb226f69dbac42b56b1a7745",
                 "shasum": ""
             },
             "require": {
@@ -2307,7 +2307,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2019-02-23T15:06:07+00:00"
+            "time": "2019-06-13T16:26:35+00:00"
         },
         {
             "name": "tedivm/stash",
@@ -2434,6 +2434,58 @@
                 "templating"
             ],
             "time": "2019-02-27T07:39:35+00:00"
+        },
+        {
+            "name": "xpaw/php-source-query-class",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xPaw/PHP-Source-Query.git",
+                "reference": "84a18a41906b3cac0964cfb7060c591033b9b4f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xPaw/PHP-Source-Query/zipball/84a18a41906b3cac0964cfb7060c591033b9b4f5",
+                "reference": "84a18a41906b3cac0964cfb7060c591033b9b4f5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "xPaw\\SourceQuery\\": "SourceQuery/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "authors": [
+                {
+                    "name": "Pavel Djundik",
+                    "email": "sourcequery@xpaw.me"
+                }
+            ],
+            "description": "PHP library to query and send RCON commands to servers based on \"Source Engine Query\" protocol",
+            "homepage": "https://github.com/xPaw/PHP-Source-Query",
+            "keywords": [
+                "ark",
+                "counter-strike",
+                "csgo",
+                "gmod",
+                "minecraft",
+                "rcon",
+                "rust",
+                "starbound",
+                "team fortress"
+            ],
+            "time": "2019-04-24T07:47:17+00:00"
         }
     ],
     "packages-dev": [
@@ -2607,7 +2659,8 @@
         "davedevelopment/phpmig": 20,
         "composer/composer": 20,
         "hybridauth/hybridauth": 20,
-        "symfony/var-dumper": 20
+        "symfony/var-dumper": 20,
+        "xpaw/php-source-query-class": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

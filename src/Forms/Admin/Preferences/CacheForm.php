@@ -3,9 +3,15 @@
 namespace GameX\Forms\Admin\Preferences;
 
 use \GameX\Core\BaseForm;
-use \DirectoryIterator;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Validate\Rules\Boolean;
+use \GameX\Core\Update\Actions;
+use \GameX\Core\Update\Actions\ActionClearDirectory;
+use \GameX\Core\Update\Actions\ActionComposerInstall;
+use \GameX\Core\Update\Actions\ActionDeleteFile;
+use \GameX\Core\Update\Actions\ActionMigrationsRun;
+use \GameX\Core\Update\Exceptions\ActionException;
+use \GameX\Core\Exceptions\ValidationException;
 
 class CacheForm extends BaseForm
 {
@@ -16,9 +22,9 @@ class CacheForm extends BaseForm
     protected $name = 'admin_preferences_cache';
     
     /**
-     * @var string[]
+     * @var string
      */
-    protected $dirs;
+    protected $baseDir;
 
 	/**
 	 * @var bool
@@ -26,12 +32,12 @@ class CacheForm extends BaseForm
 	protected $hasAccessToEdit;
     
     /**
-     * @param string[] $dirs
+     * @param string $baseDir
      * @param bool $hasAccessToEdit
      */
-    public function __construct(array $dirs, $hasAccessToEdit = true)
+    public function __construct($baseDir, $hasAccessToEdit = true)
     {
-        $this->dirs = $dirs;
+        $this->baseDir = $baseDir;
         $this->hasAccessToEdit = $hasAccessToEdit;
     }
     
@@ -40,15 +46,33 @@ class CacheForm extends BaseForm
      */
     protected function createForm()
     {
-        $this->form->add(new Checkbox('accept', false, [
-            'title' => $this->getTranslate('admin_preferences', 'cache_accept'),
-            'required' => false,
-	        'disabled' => !$this->hasAccessToEdit,
-        ]));
+        $this->form
+	        ->add(new Checkbox('cache', false, [
+	            'title' => $this->getTranslate('admin_preferences', 'clear_cache'),
+	            'required' => false,
+		        'disabled' => !$this->hasAccessToEdit,
+	        ]))
+	        ->add(new Checkbox('dependencies', false, [
+		        'title' => $this->getTranslate('admin_preferences', 'update_dependencies'),
+		        'required' => false,
+		        'disabled' => !$this->hasAccessToEdit,
+	        ]))
+	        ->add(new Checkbox('migrations', false, [
+		        'title' => $this->getTranslate('admin_preferences', 'update_migrations'),
+		        'required' => false,
+		        'disabled' => !$this->hasAccessToEdit,
+	        ]));
         
-        $this->form->getValidator()->set('accept', false, [
-            new Boolean()
-        ]);
+        $this->form->getValidator()
+	        ->set('cache', false, [
+	            new Boolean()
+	        ])
+	        ->set('dependencies', false, [
+	            new Boolean()
+	        ])
+	        ->set('migrations', false, [
+	            new Boolean()
+	        ]);
     }
     
     /**
@@ -57,23 +81,27 @@ class CacheForm extends BaseForm
      */
     protected function processForm()
     {
-        if ($this->form->getValue('accept')) {
-            foreach ($this->dirs as $dir) {
-                $this->rmDir($dir);
-            }
-        }
-        return true;
-    }
-    
-    protected function rmDir($dir)
-    {
-        $i = new DirectoryIterator($dir);
-        foreach($i as $f) {
-            if($f->isFile()) {
-                unlink($f->getRealPath());
-            } else if(!$f->isDot() && $f->isDir()) {
-                $this->rmDir($f->getRealPath());
-            }
-        }
+	    $actions = new Actions();
+
+	    if ($this->form->getValue('cache')) {
+		    $actions->add(new ActionClearDirectory($this->baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
+		    $actions->add(new ActionClearDirectory($this->baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));
+		    $actions->add(new ActionDeleteFile($this->baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'routes.php'));
+	    }
+
+	    if ($this->form->getValue('dependencies')) {
+		    $actions->add(new ActionComposerInstall($this->baseDir));
+	    }
+
+	    if ($this->form->getValue('migrations')) {
+		    $actions->add(new ActionMigrationsRun($this->baseDir));
+	    }
+
+	    try {
+		    $actions->run();
+		    return true;
+	    } catch (ActionException $e) {
+	    	throw new ValidationException($this->getTranslate('admin_preferences', 'cache_error'));
+	    }
     }
 }

@@ -8,7 +8,7 @@ use \GameX\Core\Configuration\Config;
 use \GameX\Core\Configuration\Node;
 use \Stash\Driver\Redis;
 use \Stash\Driver\Memcache;
-use \Stash\Driver\FileSystem;
+use \GameX\Core\Cache\Drivers\FileSystem;
 use \GameX\Core\Configuration\Exceptions\NotFoundException;
 
 class CacheDriverFactory

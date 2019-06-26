@@ -20,6 +20,7 @@ use \Carbon\Carbon;
  * @property string $auth_type
  * @property string $password
  * @property int $access
+ * @property string $prefix
  * @property int $server_id
  * @property UserModel $user
  * @property Privilege[] $privileges
@@ -54,7 +55,7 @@ class Player extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'ip', 'auth_type', 'password', 'access'];
+    protected $fillable = ['user_id', 'steamid', 'emulator', 'nick', 'ip', 'auth_type', 'password', 'access', 'prefix'];
     
     /**
      * @var array
@@ -160,12 +161,19 @@ class Player extends BaseModel
      */
     public function getActivePunishments(Server $server)
     {
-        return $this->punishments()->select('punishments.*')->with('reason')->leftJoin('reasons',
-                'punishments.reason_id', '=', 'reasons.id')->where('status', '=',
-                Punishment::STATUS_PUNISHED)->where(function (Builder $query) {
-                $query->where('expired_at', '>', Carbon::now()->toDateTimeString())->orWhereNull('expired_at');
+        return $this->punishments()
+	        ->select('punishments.*')
+	        ->with('reason')
+	        ->leftJoin('reasons', 'punishments.reason_id', '=', 'reasons.id')
+	        ->where('status', '=', Punishment::STATUS_PUNISHED)
+	        ->where(function (Builder $query) {
+                $query
+	                ->where('expired_at', '>', Carbon::now()->toDateTimeString())
+	                ->orWhereNull('expired_at');
             })->where(function (Builder $query) use ($server) {
-                $query->where('reasons.overall', 1)->orWhere(function (Builder $query) use ($server) {
+                $query
+	                ->where('reasons.overall', 1)
+	                ->orWhere(function (Builder $query) use ($server) {
                         $query->where([
                             'reasons.overall' => 0,
                             'punishments.server_id' => $server->id

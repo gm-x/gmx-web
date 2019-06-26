@@ -16,7 +16,8 @@ use \GameX\Core\Auth\Models\UserModel;
  * @property integer $server_id
  * @property integer $reason_id
  * @property string $details
- * @property integer $type
+ * @property string $type
+ * @property integer $extra
  * @property string $expired_at
  * @property string $status
  * @property Player $player
@@ -28,16 +29,11 @@ use \GameX\Core\Auth\Models\UserModel;
  */
 class Punishment extends BaseModel
 {
-    
     const STATUS_NONE = 'none';
     const STATUS_PUNISHED = 'punished';
     const STATUS_EXPIRED = 'expired';
     const STATUS_AMNESTIED = 'amnestied';
-    
-    const TYPE_BANNED = 1;
-    const TYPE_GAGED = 2;
-    const TYPE_MUTED = 4;
-    
+
     /**
      * The table associated with the model.
      *
@@ -61,6 +57,7 @@ class Punishment extends BaseModel
         'reason_id',
         'details',
         'type',
+	    'extra',
         'expired_at',
         'status'
     ];
@@ -78,8 +75,8 @@ class Punishment extends BaseModel
     /**
      * @var array
      */
-    protected $appends = ['types', 'time'];
-    
+    protected $appends = ['time'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -125,7 +122,7 @@ class Punishment extends BaseModel
      */
     public function getTimeAttribute()
     {
-        return $this->attributes['expired_at'] !== null ? $this->attributes['expired_at']->diffInSeconds($this->attributes['created_at']) : 0;
+        return $this->attributes['expired_at'] !== null ? $this->expired_at->diffInSeconds($this->attributes['created_at']) : 0;
     }
     
     /**
@@ -134,23 +131,5 @@ class Punishment extends BaseModel
     public function getPermanentAttribute()
     {
         return $this->attributes['expired_at'] === null;
-    }
-    
-    /**
-     * @return array
-     */
-    public function getTypesAttribute()
-    {
-        $types = [];
-        if ($this->attributes['type'] && self::TYPE_BANNED) {
-            $types[] = 'ban';
-        }
-        if ($this->attributes['type'] && self::TYPE_GAGED) {
-            $types[] = 'gag';
-        }
-        if ($this->attributes['type'] && self::TYPE_MUTED) {
-            $types[] = 'mute';
-        }
-        return $types;
     }
 }
