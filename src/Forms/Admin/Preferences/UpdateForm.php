@@ -7,7 +7,9 @@ use \GameX\Core\Update\Updater;
 use \GameX\Core\Update\Manifest;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Forms\Elements\File as FileInput;
+use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Validate\Rules\File as FileRule;
+use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\FileExtension;
 use \GameX\Core\Validate\Rules\FileSize;
 use \Psr\Http\Message\UploadedFileInterface;
@@ -58,9 +60,14 @@ class UpdateForm extends BaseForm
     {
         $this->form
 	        ->add(new FileInput('updates', '', [
-	            'title' => 'Updates',
+	            'title' => $this->getTranslate('admin_preferences', 'updates_file'),
 	            'required' => true,
 	            'disabled' => !$this->hasAccessToEdit,
+	        ]))
+	        ->add(new Checkbox('force', '', [
+		        'title' => $this->getTranslate('admin_preferences', 'updates_force'),
+		        'required' => false,
+		        'disabled' => !$this->hasAccessToEdit,
 	        ]));
 
         $this->form->getValidator()
@@ -71,7 +78,10 @@ class UpdateForm extends BaseForm
             ], [
                 'check' => Validator::CHECK_EMPTY,
                 'trim' => false,
-            ]);
+            ])
+	        ->set('force', false, [
+		        new Boolean()
+	        ]);
     }
     
     /**

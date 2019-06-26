@@ -24,6 +24,8 @@
     "update_migrations": "Обновить структуру базы",
     "cache_error": "Произошла ошибка! Повторите попытку позже",
     "cache_success": "Успешно выполнено",
+    "updates_file": "Файл обновлений",
+    "updates_force": "Принудительное обновление",
     "current_version": "Текущая версия",
     "social_enabled": "Enable",
     "social_icon": "Icon",

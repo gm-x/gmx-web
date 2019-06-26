@@ -38,11 +38,12 @@ class Updater
     
     /**
      * @param Manifest $updates
+     * @param bool $force
      * @throws \Exception
      */
-    public function run(Manifest $updates)
+    public function run(Manifest $updates, $force = false)
     {
-        if (version_compare($this->manifest->getVersion(), $updates->getVersion(), '>=')) {
+        if (!$force && version_compare($this->manifest->getVersion(), $updates->getVersion(), '>=')) {
             throw new LastVersionException();
         }
         
@@ -63,7 +64,7 @@ class Updater
                     throw new FileNotExistsException($source);
                 } elseif (!is_readable($destination)) {
                     $actions->add(new ActionCopyFile($source, $destination));
-                } elseif ($baseFiles[$key] !== sha1_file($destination)) {
+                } elseif (!$force && $baseFiles[$key] !== sha1_file($destination)) {
                     throw new IsModifiedException($key);
                 } elseif (!is_writable($destination)) {
                     throw new CanWriteException($destination);
@@ -83,7 +84,7 @@ class Updater
                 continue;
             }
             
-            if ($value !== sha1_file($destination)) {
+            if (!$force && $value !== sha1_file($destination)) {
                 throw new IsModifiedException($key);
             }
             
