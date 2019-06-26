@@ -7,7 +7,9 @@ use \GameX\Core\Update\Updater;
 use \GameX\Core\Update\Manifest;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Forms\Elements\File as FileInput;
+use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Validate\Rules\File as FileRule;
+use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\FileExtension;
 use \GameX\Core\Validate\Rules\FileSize;
 use \Psr\Http\Message\UploadedFileInterface;
@@ -56,19 +58,30 @@ class UpdateForm extends BaseForm
      */
     protected function createForm()
     {
-        $this->form->add(new FileInput('updates', '', [
-            'title' => 'Updates',
-            'required' => true,
-            'disabled' => !$this->hasAccessToEdit,
-        ]));
-        $this->form->getValidator()->set('updates', true, [
+        $this->form
+	        ->add(new FileInput('updates', '', [
+	            'title' => $this->getTranslate('admin_preferences', 'updates_file'),
+	            'required' => true,
+	            'disabled' => !$this->hasAccessToEdit,
+	        ]))
+	        ->add(new Checkbox('force', '', [
+		        'title' => $this->getTranslate('admin_preferences', 'updates_force'),
+		        'required' => false,
+		        'disabled' => !$this->hasAccessToEdit,
+	        ]));
+
+        $this->form->getValidator()
+	        ->set('updates', true, [
                 new FileRule(),
                 new FileExtension(['zip']),
                 new FileSize('10M'),
             ], [
                 'check' => Validator::CHECK_EMPTY,
                 'trim' => false,
-            ]);
+            ])
+	        ->set('force', false, [
+		        new Boolean()
+	        ]);
     }
     
     /**

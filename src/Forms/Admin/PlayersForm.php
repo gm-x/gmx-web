@@ -3,12 +3,13 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
-use GameX\Core\Validate\Rules\IPv4;
 use \GameX\Models\Player;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Password;
 use \GameX\Core\Forms\Elements\Checkbox;
+use \GameX\Core\Validate\Rules\Length;
+use \GameX\Core\Validate\Rules\IPv4;
 use \GameX\Core\Validate\Rules\InArray;
 use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\SteamID;
@@ -68,16 +69,20 @@ class PlayersForm extends BaseForm
      */
     protected function createForm()
     {
-        $this->form->add(new Text('nick', $this->player->nick, [
+        $this->form
+	        ->add(new Text('nick', $this->player->nick, [
                 'title' => $this->getTranslate($this->name, 'nickname'),
                 'required' => true,
-            ]))->add(new Text('steamid', $this->player->steamid, [
+            ]))
+	        ->add(new Text('steamid', $this->player->steamid, [
                 'title' => $this->getTranslate($this->name, 'steam_id'),
                 'required' => true,
-            ]))->add(new Text('ip', $this->player->ip, [
+            ]))
+	        ->add(new Text('ip', $this->player->ip, [
                 'title' => $this->getTranslate($this->name, 'ip'),
                 'required' => true,
-            ]))->add(new Select('auth_type', $this->player->auth_type, [
+            ]))
+	        ->add(new Select('auth_type', $this->player->auth_type, [
                 Player::AUTH_TYPE_STEAM => $this->getTranslate($this->name, 'steam_id'),
                 Player::AUTH_TYPE_STEAM_AND_PASS => $this->getTranslate($this->name, 'steam_id_pass'),
                 Player::AUTH_TYPE_NICK_AND_PASS => $this->getTranslate($this->name, 'nickname_pass'),
@@ -87,30 +92,46 @@ class PlayersForm extends BaseForm
                 'title' => $this->getTranslate($this->name, 'auth_type'),
                 'required' => true,
                 'empty_option' => $this->getTranslate($this->name, 'choose_auth_type'),
-            ]))->add(new Password('password', '', [
+            ]))
+	        ->add(new Password('password', '', [
                 'title' => $this->getTranslate($this->name, 'password'),
                 'required' => false,
-            ]))->add(new Checkbox('access_reserve_nick', $this->player->hasAccess(Player::ACCESS_RESERVE_NICK), [
+            ]))
+	        ->add(new Text('prefix', $this->player->prefix, [
+		        'title' => $this->getTranslate($this->name, 'prefix'),
+		        'required' => false,
+	        ]))
+	        ->add(new Checkbox('access_reserve_nick', $this->player->hasAccess(Player::ACCESS_RESERVE_NICK), [
                 'title' => $this->getTranslate($this->name, 'reserve_nickname'),
                 'required' => false,
-            ]))->add(new Checkbox('access_block_change_nick',
+            ]))
+	        ->add(new Checkbox('access_block_change_nick',
                 $this->player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK), [
                     'title' => $this->getTranslate($this->name, 'block_nickname'),
                     'required' => false,
                 ]));
 
         $validator = $this->form->getValidator();
-        $validator->set('nick', true)->set('steamid', true, [
+        $validator
+	        ->set('nick', true)->set('steamid', true, [
                 new SteamID()
-            ])->set('ip', true, [
+            ])
+	        ->set('ip', true, [
                 new IPv4()
-            ])->set('auth_type', true, [
+            ])
+	        ->set('auth_type', true, [
                 new InArray(self::VALID_AUTH_TYPES)
-            ])->set('password', false, [
+            ])
+	        ->set('password', false, [
                 new Callback([$this, 'checkPassword'], $this->getTranslate($this->name, 'pass_error'))
-            ])->set('access_reserve_nick', false, [
+            ])
+	        ->set('prefix', false, [
+		        new Length(1, 64)
+	        ])
+	        ->set('access_reserve_nick', false, [
                 new Boolean()
-            ])->set('access_block_change_nick', false, [
+            ])
+	        ->set('access_block_change_nick', false, [
                 new Boolean()
             ]);
         
@@ -142,6 +163,7 @@ class PlayersForm extends BaseForm
             $access |= Player::ACCESS_BLOCK_CHANGE_NICK;
         }
         $this->player->access = $access;
+	    $this->player->prefix = $this->form->getValue('prefix');
         return $this->player->save();
     }
 }

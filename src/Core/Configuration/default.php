@@ -4,6 +4,7 @@ return [
         'exceptions' => false,
         'pretty' => false,
         'routes' => false,
+	    'lang' => false,
     ],
     'db' => [
         'driver' => 'mysql',

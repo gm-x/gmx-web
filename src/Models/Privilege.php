@@ -10,7 +10,6 @@ use \GameX\Core\BaseModel;
  *
  * @property integer $player_id
  * @property integer $group_id
- * @property string $prefix
  * @property \DateTime expired_at
  * @property bool active
  * @property Group $group
@@ -34,7 +33,7 @@ class Privilege extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['player_id', 'group_id', 'prefix', 'expired_at', 'active'];
+    protected $fillable = ['player_id', 'group_id', 'expired_at', 'active'];
     
     /**
      * @var array
@@ -70,14 +69,4 @@ class Privilege extends BaseModel
     {
         return $this->belongsTo(Player::class, 'player_id', 'id');
     }
-
-    /**
-     * @param string $value
-     * @return string
-     */
-//    public function getPrefixAttribute($value) {
-//        return $value === null
-//            ? $this->group->title
-//            : $value;
-//    }
 }

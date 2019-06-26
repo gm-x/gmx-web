@@ -24,6 +24,11 @@ class Language {
      */
     protected $languages = [];
 
+	/**
+	 * @var boolean
+	 */
+    protected $debug;
+
     /**
      * @var string
      */
@@ -40,12 +45,14 @@ class Language {
      * @param Provider $provider
      * @param string[] $languages
      * @param string $default
-     * @throws CantReadException|BadLanguageException
+     * @param boolean $debug
+     * @throws BadLanguageException
      */
-    public function __construct(Loader $loader, Provider $provider, array $languages = ['en' => 'English'], $default = 'en') {
+    public function __construct(Loader $loader, Provider $provider, array $languages = ['en' => 'English'], $default = 'en', $debug = false) {
         $this->loader = $loader;
         $this->provider = $provider;
         $this->languages = $languages;
+        $this->debug = (bool) $debug;
         $this->userLanguage = $this->checkUserLanguage($default);
         if (!$this->userLanguage) {
             throw new BadLanguageException();
@@ -72,6 +79,9 @@ class Language {
      * @return string
      */
     public function format($section, $key, $args = null) {
+    	if ($this->debug) {
+		    return sprintf('{%s.%s}', $section, $key);
+	    }
         $message = $this->getMessage($section, $key);
         if (!$message) {
             return sprintf('{%s.%s}', $section, $key);

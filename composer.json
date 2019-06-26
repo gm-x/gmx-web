@@ -28,7 +28,8 @@
 		"swiftmailer/swiftmailer": "5.4.9",
 		"composer/composer": "^1.8@dev",
 		"hybridauth/hybridauth": "^3.0@dev",
-		"symfony/var-dumper": "3.4.x-dev"
+		"symfony/var-dumper": "3.4.x-dev",
+		"xpaw/php-source-query-class": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
