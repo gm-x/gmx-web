@@ -19,6 +19,7 @@ $ignoreList = [
     '^vendor',
     '^uploads',
     '^config\.json',
+    '^config\.php',
     '^router\.php',
     '^manifest\.json',
     '^manifest\.php',
