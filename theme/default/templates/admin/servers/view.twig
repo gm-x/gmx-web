@@ -43,7 +43,7 @@
             'icon': 'fas fa-barcode',
             'size': 'l',
             'attrs': {
-                'id': 'tokenModal'
+                'id': 'tokenModalBtn'
             }
         }) }}
     {% endif %}
@@ -162,28 +162,53 @@
 
 {% endblock %}
 
+{% block modals %}
+<div id="tokenModalPrompt" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">{{ trans('labels', 'are_you_sure') }}</h2>
+        <p class="uk-text-danger">{{ trans('admin_servers', 'token_warn') }}</p>
+        <p class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">{{ trans('labels', 'no') }}</button>
+            <button id="tokenModalConfirmBtn" class="uk-button uk-button-primary" type="button">{{ trans('labels', 'yes') }}</button>
+        </p>
+    </div>
+</div>
+<div id="tokenModal" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-light uk-background-secondary">
+        <h2 class="uk-modal-title">{{ trans("admin_servers", "token") }}</h2>
+        <p class="uk-modal-body token"></p>
+        <p class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">{{ trans('buttons', 'close') }}</button>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
 {% block javascript %}
     {{ parent() }}
 	<script>
 		$(document).ready(function () {
-			UIkit.util.on('#tokenModal', 'click', function (e) {
-			    e.preventDefault();
-           		e.target.blur();
-				$.getJSON($(this).attr('href'))
-					.done(function(data) {
-                        if (data.success) {
-                            var html = [
-                                '<div class="uk-modal-header uk-light uk-background-secondary">' +
-								'<h2 class="uk-modal-title">{{ trans("admin_servers", "token") }}</h2>' +
-								'</div><p class="uk-modal-body token">' + data.token + '</p>'
-							];
-                             UIkit.modal.dialog(html.join(''));
-                        }
-					})
-                    .fail(function() {
-                        console.log("error");
-                    });
-			});
+		    $('#tokenModalBtn').on('click', function(e) {
+		        e.preventDefault();
+		        e.stopPropagation();
+
+		        UIkit.modal('#tokenModalPrompt').show();
+		    });
+
+		    $('#tokenModalConfirmBtn').on('click', function(e) {
+		        e.preventDefault();
+		        e.stopPropagation();
+
+		        $.getJSON($('#tokenModalBtn').attr('href'))
+		            .done(function(data) {
+		                if (data.success) {
+		                    $("#tokenModal .uk-modal-body.token").text(data.token);
+		                    UIkit.modal('#tokenModal').show();
+		                }
+		            });
+
+
+		    });
         });
 	</script>
 {% endblock %}
