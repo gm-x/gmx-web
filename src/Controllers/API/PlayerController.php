@@ -56,6 +56,7 @@ class PlayerController extends BaseApiController
         
         $server = $this->getServer($request);
         $session = null;
+	    $now = Carbon::now();
         
         /** @var Player|null $player */
         $player = Player::query()->when($result->getValue('id'), function ($query) use ($result) {
@@ -103,11 +104,12 @@ class PlayerController extends BaseApiController
                 'player_id' => $player->id,
                 'server_id' => $server->id,
                 'status' => PlayerSession::STATUS_ONLINE,
-                'disconnected_at' => null
+                'disconnected_at' => null,
+	            'ping_at' => $now,
             ]);
         } elseif ($session->server_id != $server->id) {
             $session->status = PlayerSession::STATUS_OFFLINE;
-            $session->disconnected_at = Carbon::now();
+            $session->disconnected_at = $now;
             $session->save();
 
 	        $session = new PlayerSession();
@@ -115,10 +117,12 @@ class PlayerController extends BaseApiController
                 'player_id' => $player->id,
                 'server_id' => $server->id,
                 'status' => PlayerSession::STATUS_ONLINE,
-                'disconnected_at' => null
+                'disconnected_at' => null,
+                'ping_at' => $now,
             ]);
         } else {
-            $session->updated_at = Carbon::now();
+            $session->ping_at = $now;
+            $session->updated_at = $now;
         }
         
         $session->save();

@@ -1,25 +1,40 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
-$container = new \Slim\Container([
+
+use \Slim\Container;
+use \GameX\Core\BaseCronController;
+use \GameX\Core\Jobs\JobHelper;
+use \GameX\Models\Task;
+use \GameX\Core\Configuration\Providers\PHPProvider;
+use \GameX\Core\Configuration\Config;
+use \GameX\Core\Configuration\Exceptions\CantLoadException;
+use \GameX\Core\DependencyProvider;
+use \GameX\Core\BaseModel;
+use \GameX\Core\BaseForm;
+use \GameX\Constants\CronConstants;
+use \GameX\Controllers\Cron\SendMailController;
+use \GameX\Controllers\Cron\PunishmentsController;
+use \GameX\Controllers\Cron\ClearDataController;
+use \GameX\Controllers\Cron\RconController;
+use \GameX\Controllers\Cron\CheckStatusController;
+
+$container = new Container([
     'root' => __DIR__ . DIRECTORY_SEPARATOR
 ]);
 
 try {
-    $configProvider = new \GameX\Core\Configuration\Providers\PHPProvider(__DIR__ . DIRECTORY_SEPARATOR . 'config.php');
-    $config = new \GameX\Core\Configuration\Config($configProvider);
-} catch (\GameX\Core\Configuration\Exceptions\CantLoadException $e) {
+    $configProvider = new PHPProvider(__DIR__ . DIRECTORY_SEPARATOR . 'config.php');
+    $config = new Config($configProvider);
+} catch (CantLoadException $e) {
     die('Can\'t load configuration file');
 }
 
-$container->register(new \GameX\Core\DependencyProvider($config));
+$container->register(new DependencyProvider($config));
 
-\GameX\Core\BaseModel::setContainer($container);
-\GameX\Core\BaseForm::setContainer($container);
+BaseModel::setContainer($container);
+BaseForm::setContainer($container);
 date_default_timezone_set('UTC');
 
-use \GameX\Core\BaseCronController;
-use \GameX\Core\Jobs\JobHelper;
-use \GameX\Models\Task;
 
 /** @var \GameX\Core\Log\Logger $logger */
 $logger = $container->get('log');
@@ -28,10 +43,11 @@ set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
     $logger->error("#$errno: $error in $file:$line");
 }, E_ALL);
 
-BaseCronController::registerKey('sendmail', \GameX\Controllers\Cron\SendMailController::class);
-BaseCronController::registerKey('punishments', \GameX\Controllers\Cron\PunishmentsController::class);
-BaseCronController::registerKey('clear_data', \GameX\Controllers\Cron\ClearDataController::class);
-BaseCronController::registerKey('rcon_exec', \GameX\Controllers\Cron\RconController::class);
+BaseCronController::registerKey(CronConstants::TASK_SENDMAIL, SendMailController::class);
+BaseCronController::registerKey(CronConstants::TASK_PUNISHMENTS, PunishmentsController::class);
+BaseCronController::registerKey(CronConstants::TASK_CLEAR_DATA, ClearDataController::class);
+BaseCronController::registerKey(CronConstants::TASK_RCON_EXEC, RconController::class);
+BaseCronController::registerKey(CronConstants::TASK_CHECK_STATUS, CheckStatusController::class);
 
 $task = null;
 try {

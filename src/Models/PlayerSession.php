@@ -14,6 +14,7 @@ use \Carbon\Carbon;
  * @property integer $server_id
  * @property string $status
  * @property Carbon $disconnected_at
+ * @property Carbon $ping_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Player $player
@@ -40,12 +41,12 @@ class PlayerSession extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['player_id', 'server_id', 'status', 'disconnected_at'];
+    protected $fillable = ['player_id', 'server_id', 'status', 'disconnected_at', 'ping_at'];
     
     /**
      * @var array
      */
-    protected $dates = ['created_at', 'updated_at', 'disconnected_at'];
+    protected $dates = ['created_at', 'updated_at', 'disconnected_at', 'ping_at'];
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

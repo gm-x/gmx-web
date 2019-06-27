@@ -13,7 +13,7 @@ class ClearDataController extends BaseCronController
 {
     public function run(Task $task)
     {
-    	PlayerSession::where('status', 'offline')
+    	PlayerSession::where('status', PlayerSession::STATUS_OFFLINE)
 		    ->where('created_at', '<', Carbon::now()->subMonth())
 		    ->delete();
 
