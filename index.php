@@ -7,7 +7,12 @@ if (!is_file(__DIR__ . '/vendor/autoload.php')) {
     redirectToInstall();
 }
 
-require __DIR__ . '/vendor/autoload.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+/** @var \Composer\Autoload\ClassLoader $autoload */
+$autoload = require __DIR__ . '/vendor/autoload.php';
+$autoload->setPsr4('GameX\\Plugins\\', ['plugins/']);
 
 try {
     $configProvider = new \GameX\Core\Configuration\Providers\PHPProvider(__DIR__ . '/config.php');
