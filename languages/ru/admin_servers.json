@@ -13,5 +13,5 @@
     "updated": "Сервер успешно изменен",
     "removed": "Сервер успешноь удален",
     "choose_type": "Укажите тип",
-    "token_warn": "Regeneration of token makes irrelevant old!"
+    "token_warn": "Регенерация токена делает неактуальным старый!"
 }

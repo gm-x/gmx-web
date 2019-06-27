@@ -10,5 +10,5 @@
     "reasons": "Bans reasons",
     "already_exists": "Server already exists",
     "choose_type": "Choose type",
-    "token_warn": "Регенерация токена делает неактуальным старый!"
+    "token_warn": "Regeneration of token makes irrelevant the old one!"
 }
