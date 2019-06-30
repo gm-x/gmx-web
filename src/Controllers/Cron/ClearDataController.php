@@ -13,8 +13,9 @@ class ClearDataController extends BaseCronController
 {
     public function run(Task $task)
     {
+    	$date = Carbon::now()->subMonth();
     	PlayerSession::where('status', PlayerSession::STATUS_OFFLINE)
-		    ->where('created_at', '<', Carbon::now()->subMonth())
+		    ->where('created_at', '<', $date)
 		    ->delete();
 
 	    Task::where(function(Builder $query) {
@@ -22,8 +23,8 @@ class ClearDataController extends BaseCronController
 			    ->where('status', Task::STATUS_DONE)
 			    ->orWhere('status', Task::STATUS_FAILED);
 	        })
-		    ->where('created_at', '<', Carbon::now()->subMonth())
-		    ->get();
+		    ->where('created_at', '<', $date)
+		    ->delete();
 
 	    return new JobResult(true, Carbon::now()->addMonth(1));
     }
