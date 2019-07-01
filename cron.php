@@ -4,6 +4,7 @@ require __DIR__ . '/vendor/autoload.php';
 use \Slim\Container;
 use \GameX\Core\BaseCronController;
 use \GameX\Core\Jobs\JobHelper;
+use \GameX\Core\Jobs\JobResult;
 use \GameX\Models\Task;
 use \GameX\Core\Configuration\Providers\PHPProvider;
 use \GameX\Core\Configuration\Config;
@@ -52,14 +53,15 @@ BaseCronController::registerKey(CronConstants::TASK_PUNISHMENTS_STATUS, Punishme
 $task = null;
 try {
 //    return (php_sapi_name() === 'cli');
-    $task = JobHelper::getTask();
+//    $task = JobHelper::getTask();
+	$task = Task::where('id', 10)->first();
     if ($task) {
         $logger->debug('Start cron task', [
             'task' => $task->id
         ]);
         JobHelper::markTask($task, Task::STATUS_IN_PROGRESS);
         $result = BaseCronController::execute($task->key, $task, $container);
-        if ($result->getStatus()) {
+        if ($result && $result instanceof JobResult &&  $result->getStatus()) {
             if ($result->getNextTimeExecute() === null) {
                 JobHelper::markTask($task, Task::STATUS_DONE);
             } else {

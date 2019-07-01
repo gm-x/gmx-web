@@ -65,7 +65,7 @@ class PlayerSession extends BaseModel
     }
 
 	/**
-	 * @return bool
+	 * @return string|null
 	 */
 	public function getOnlineAttribute()
 	{
@@ -75,6 +75,6 @@ class PlayerSession extends BaseModel
 		Carbon::setLocale($lang->getUserLanguage());
 		return $this->disconnected_at !== null
 			? $this->disconnected_at->diffForHumans($this->created_at, true, true, 3)
-			: null;
+			: Carbon::now()->diffForHumans($this->created_at, true, true, 3);
 	}
 }

@@ -151,6 +151,9 @@ class ServerController extends BaseApiController
                     $value = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
                     return $value !== false ? $value : null;
                 }, '')
+            ], [
+            	'check' => Validator::CHECK_ARRAY,
+	            'trim' => false
             ]);
 
         $result = $validator->validate($this->getBody($request));

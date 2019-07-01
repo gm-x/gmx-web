@@ -122,7 +122,6 @@ class PlayerController extends BaseApiController
             ]);
         } else {
             $session->ping_at = $now;
-            $session->updated_at = $now;
         }
         
         $session->save();
