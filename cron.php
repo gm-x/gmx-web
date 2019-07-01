@@ -13,10 +13,10 @@ use \GameX\Core\BaseModel;
 use \GameX\Core\BaseForm;
 use \GameX\Constants\CronConstants;
 use \GameX\Controllers\Cron\SendMailController;
-use \GameX\Controllers\Cron\RconController;
+use \GameX\Controllers\Cron\RconExecController;
 use \GameX\Controllers\Cron\ClearDataController;
-use \GameX\Controllers\Cron\OnlineStatus;
-use \GameX\Controllers\Cron\PunishmentsStatus;
+use \GameX\Controllers\Cron\OnlineStatusController;
+use \GameX\Controllers\Cron\PunishmentsStatusController;
 
 $container = new Container([
     'root' => __DIR__ . DIRECTORY_SEPARATOR
@@ -44,10 +44,10 @@ set_error_handler(function ($errno, $error, $file, $line) use ($logger) {
 }, E_ALL);
 
 BaseCronController::registerKey(CronConstants::TASK_SENDMAIL, SendMailController::class);
-BaseCronController::registerKey(CronConstants::TASK_RCON_EXEC, RconController::class);
+BaseCronController::registerKey(CronConstants::TASK_RCON_EXEC, RconExecController::class);
 BaseCronController::registerKey(CronConstants::TASK_CLEAR_DATA, ClearDataController::class);
-BaseCronController::registerKey(CronConstants::TASK_ONLINE_STATUS, OnlineStatus::class);
-BaseCronController::registerKey(CronConstants::TASK_PUNISHMENTS_STATUS, PunishmentsStatus::class);
+BaseCronController::registerKey(CronConstants::TASK_ONLINE_STATUS, OnlineStatusController::class);
+BaseCronController::registerKey(CronConstants::TASK_PUNISHMENTS_STATUS, PunishmentsStatusController::class);
 
 $task = null;
 try {

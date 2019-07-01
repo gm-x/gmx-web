@@ -8,7 +8,7 @@ use \GameX\Models\Task;
 use \Carbon\Carbon;
 use \GameX\Models\Punishment;
 
-class PunishmentsStatus extends BaseCronController
+class PunishmentsStatusController extends BaseCronController
 {
     public function run(Task $task)
     {

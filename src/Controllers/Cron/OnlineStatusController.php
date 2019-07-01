@@ -8,7 +8,7 @@ use \GameX\Models\Task;
 use \Carbon\Carbon;
 use \GameX\Models\PlayerSession;
 
-class OnlineStatus extends BaseCronController
+class OnlineStatusController extends BaseCronController
 {
     public function run(Task $task)
     {
