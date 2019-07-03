@@ -53,8 +53,7 @@ BaseCronController::registerKey(CronConstants::TASK_PUNISHMENTS_STATUS, Punishme
 $task = null;
 try {
 //    return (php_sapi_name() === 'cli');
-//    $task = JobHelper::getTask();
-	$task = Task::where('id', 10)->first();
+    $task = JobHelper::getTask();
     if ($task) {
         $logger->debug('Start cron task', [
             'task' => $task->id
