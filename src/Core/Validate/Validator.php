@@ -140,7 +140,7 @@ class Validator {
             }
             
             case self::CHECK_ARRAY: {
-                return is_array($value) && count($value) > 0;
+                return is_array($value) && count($value) >= 0;
             }
     
             case self::CHECK_LENGTH:

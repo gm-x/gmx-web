@@ -38,12 +38,14 @@
 													OFFLINE
                                                 {% endif %}
 											</div>
+											{% if server.online %}
 											<div class="uk-overlay uk-position-bottom uk-overlay-primary">
 													<b>{{ trans('labels', 'server_address') }}</b>: <a href="steam://connect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a>
 													<br>
 													<b>{{ trans('labels', 'server_players') }}</b>:
 													{{ server.num_players  }}/{{ server.max_players }}
 											</div>
+											{% endif %}
 										</div>
 									</div>
 								</div>
@@ -53,28 +55,25 @@
 											<h3 class="uk-card-title"><i class="fas fa-history"></i> Список игроков</h3>
 										</div>
 										<div class="uk-card-body">
-											<table class="uk-table uk-table-striped">
-												<tr>
-													<th>Никнейм</th>
-													<th>Убийств</th>
-													<th>Смертей</th>
-												</tr>
-												<tr>
-													<td>Gamer 1</td>
-													<td>1</td>
-													<td>2</td>
-												</tr>
-												<tr>
-													<td>Gamer 2</td>
-													<td>1</td>
-													<td>2</td>
-												</tr>
-												<tr>
-													<td>Gamer 3</td>
-													<td>1</td>
-													<td>2</td>
-												</tr>
-											</table>
+											{% if server.online %}
+												{% set players = server.getActiveSessions() %}
+												{% if players | length > 0 %}
+													<table class="uk-table uk-table-striped">
+														<tr>
+															<th>Nick</th>
+															<th>Joined</th>
+															<th>Online</th>
+														</tr>
+														{% for session in players %}
+														<tr>
+															<td>{{ session.player.nick }}</td>
+															<td>{{ session.created_at }}</td>
+															<td>{{ session.online }}</td>
+														</tr>
+														{% endfor %}
+													</table>
+												{% endif %}
+											{% endif %}
 										</div>
 									</div>
 								</div>

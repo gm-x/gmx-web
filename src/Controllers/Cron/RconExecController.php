@@ -8,7 +8,7 @@ use \GameX\Models\Task;
 use \GameX\Models\Server;
 use xPaw\SourceQuery\SourceQuery;
 
-class RconController extends BaseCronController
+class RconExecController extends BaseCronController
 {
 	const ENGINES = [
 		'cstrike' => SourceQuery::GOLDSOURCE,
