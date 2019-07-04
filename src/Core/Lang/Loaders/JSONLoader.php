@@ -1,25 +1,29 @@
 <?php
+
 namespace GameX\Core\Lang\Loaders;
 
 use \GameX\Core\Lang\Interfaces\Loader;
 use \GameX\Core\Lang\Exceptions\CantReadException;
 
-class JSONLoader implements Loader {
+class JSONLoader implements Loader
+{
     protected $baseDir;
 
     /**
      * JSONLoader constructor.
      * @param string $baseDir
      */
-    public function __construct($baseDir) {
+    public function __construct($baseDir)
+    {
         $this->baseDir = $baseDir;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function loadSection($language, $section) {
-        $filePath = $this->baseDir . DIRECTORY_SEPARATOR .$language . DIRECTORY_SEPARATOR . $section . '.json';
+    public function loadSection($language, $section)
+    {
+        $filePath = $this->baseDir . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . $section . '.json';
         if (!is_readable($filePath)) {
             throw new CantReadException('Can\'t read file ' . $filePath);
         }
