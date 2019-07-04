@@ -63,7 +63,7 @@ class PunishmentsForm extends BaseForm
             ]))->add(new Select('type', $this->punishment->type, [
                 'ban' => 'Ban',
             ], [
-		        'title' => $this->getTranslate($this->name, 'reason'),
+		        'title' => $this->getTranslate($this->name, 'type'),
 		        'required' => true,
 		        'empty_option' => $this->getTranslate($this->name, 'type_empty'),
 	        ]))->add(new Checkbox('forever', $this->punishment->expired_at === null, [

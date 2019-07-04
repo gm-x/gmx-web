@@ -96,6 +96,7 @@ class PlayersController extends BaseAdminController
         }
         
         return $this->getView()->render($response, 'admin/players/view.twig', [
+            'tab' => $request->getParam('tab', 'info'),
             'player' => $player,
             'privileges' => $privileges,
             'servers' => $servers,

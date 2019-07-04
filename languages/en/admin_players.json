@@ -17,5 +17,7 @@
   "user": "User",
   "status": "Status",
   "sessions": "Sessions",
-  "info": "Info"
+  "info": "Info",
+  "session_created": "Join time",
+  "session_time": "Online time"
 }

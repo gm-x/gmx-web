@@ -55,14 +55,37 @@
                 </div>
             </div>
 
+            {% set hasPrivilegesPermissions = has_access_resource(
+                constants.admin.privileges.PERMISSION_GROUP,
+                constants.admin.privileges.PERMISSION_KEY,
+                server.id,
+                permissions.ACCESS_LIST
+            ) %}
+
+            {% set hasPunishmentsPermissions = has_access_resource(
+                constants.admin.punishments.PERMISSION_GROUP,
+                constants.admin.punishments.PERMISSION_KEY,
+                server.id,
+                permissions.ACCESS_LIST
+            ) %}
             <div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-1@s uk-margin" uk-grid>
                 <div>
                     <div class="uk-card-body uk-padding-small">
                         <div class="uk-overflow-auto">
                             <ul class="uk-flex-left uk-flex-nowrap" uk-tab="connect: #player-info;animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium">
-                                <li><a href="#">{{ trans('admin_players', 'info') }}</a></li>
-                                <li><a href="#">{{ trans('admin_privileges', 'privileges') }}</a></li>
-                                <li><a href="#">{{ trans('admin_punishments', 'punishments') }}</a></li>
+                                <li {% if tab == 'info' %}class="uk-active"{% endif %}>
+                                    <a href="#">{{ trans('admin_players', 'info') }}</a>
+                                </li>
+                                {% if hasPrivilegesPermissions %}
+                                    <li {% if tab == 'privileges' %}class="uk-active"{% endif %}>
+                                        <a href="#">{{ trans('admin_privileges', 'privileges') }}</a>
+                                    </li>
+                                {% endif %}
+                                {% if hasPunishmentsPermissions %}
+                                <li {% if tab == 'punishments' %}class="uk-active"{% endif %}>
+                                    <a href="#">{{ trans('admin_punishments', 'punishments') }}</a>
+                                </li>
+                                {% endif %}
                                 <li><a href="#">{{ trans('admin_players', 'sessions') }}</a></li>
                             </ul>
                         </div>
@@ -105,6 +128,7 @@
                                     </ul>
                                 </div>
                             </li>
+                            {% if hasPrivilegesPermissions %}
                             <li>
                                 <div f-table f-divider>
                                     {% for serverId, serverData in privileges %}
@@ -178,6 +202,8 @@
                                     {% endfor %}
                                 </div>
                             </li>
+                            {% endif %}
+                            {% if hasPunishmentsPermissions %}
                             <li>
                                 <div f-table f-divider>
                                     <ul th>
@@ -265,13 +291,14 @@
                                     {% endfor %}
                                 </div>
                             </li>
+                            {% endif %}
                             <li>
                                 <div class="uk-card-body">
                                     <div f-table f-divider>
                                         <ul th>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s">Server</li>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s">Date</li>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s">Time</li>
+                                            <li class="uk-width-1-6@m uk-width-1-6@s">{{ trans('admin_servers', 'name') }}</li>
+                                            <li class="uk-width-1-6@m uk-width-1-6@s">{{ trans('admin_players', 'session_created') }}</li>
+                                            <li class="uk-width-1-6@m uk-width-1-6@s">{{ trans('admin_players', 'session_time') }}</li>
                                         </ul>
                                         {% for session in player.sessions %}
                                             <ul>
