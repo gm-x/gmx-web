@@ -39,22 +39,30 @@ abstract class BaseAdminController extends BaseMainController
         $menu = new Menu($this->container);
         
         $menu
-            ->setActiveRoute($this->getActiveMenu())
-            ->add(new MenuItem($lang->format('admin_menu', 'users'),
+            ->setActiveRoute($this->getActiveMenu());
+
+        $itemGroup = new MenuGroup($lang->format('admin_menu', 'servers'), 'fa-network-wired');
+        $itemGroup
+            ->add(new MenuItem($lang->format('admin_menu', 'list'),ServersConstants::ROUTE_LIST, [], [
+                ServersConstants::PERMISSION_GROUP,
+                ServersConstants::PERMISSION_KEY
+            ], 'fa-list'))
+            ->add(new MenuItem($lang->format('admin_menu', 'players'), PlayersConstants::ROUTE_LIST, [],
+                [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY], 'fa-user-circle'));
+        $menu->add($itemGroup);
+
+        $itemGroup = new MenuGroup($lang->format('admin_menu', 'users'), 'fa-users');
+        $itemGroup
+            ->add(new MenuItem($lang->format('admin_menu', 'list'),
                 UsersConstants::ROUTE_LIST, [], [
                     ServersConstants::PERMISSION_GROUP,
                     ServersConstants::PERMISSION_KEY
-                ], 'fa-users'))
+                ], 'fa-list'))
             ->add(new MenuItem($lang->format('admin_menu', 'roles'), RolesConstants::ROUTE_LIST, [], [
-                    RolesConstants::PERMISSION_GROUP,
-                    RolesConstants::PERMISSION_KEY
-                ], 'fa-user-lock'))
-            ->add(new MenuItem($lang->format('admin_menu', 'servers'), ServersConstants::ROUTE_LIST, [], [
-                    ServersConstants::PERMISSION_GROUP,
-                    ServersConstants::PERMISSION_KEY
-                ], 'fa-server'))
-            ->add(new MenuItem($lang->format('admin_menu', 'players'), PlayersConstants::ROUTE_LIST, [],
-                [PlayersConstants::PERMISSION_GROUP, PlayersConstants::PERMISSION_KEY], 'fa-user-circle'));
+                RolesConstants::PERMISSION_GROUP,
+                RolesConstants::PERMISSION_KEY
+            ], 'fa-user-lock'));
+        $menu->add($itemGroup);
 
         $itemGroup = new MenuGroup($lang->format('admin_menu', 'preferences'), 'fa-database');
         $itemGroup
@@ -70,7 +78,6 @@ abstract class BaseAdminController extends BaseMainController
 		        PreferencesConstants::ROUTE_CRON, [], null, 'fa-tasks'))
 	        ->add(new MenuItem($lang->format('admin_menu', 'preferences_social'),
 		        PreferencesConstants::ROUTE_SOCIAL, [], null, 'fa-share-alt'));
-
         $menu->add($itemGroup);
         
         /** @var Twig $view */

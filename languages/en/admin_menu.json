@@ -12,5 +12,6 @@
 	"players": "Players",
 	"permissions": "Permissions",
 	"role": "Role",
-	"name": "Name"
+	"name": "Name",
+	"list": "List"
 }
