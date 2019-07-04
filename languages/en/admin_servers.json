@@ -10,5 +10,10 @@
     "reasons": "Bans reasons",
     "already_exists": "Server already exists",
     "choose_type": "Choose type",
-    "token_warn": "Regeneration of token makes irrelevant the old one!"
+    "token_warn": "Regeneration of token makes irrelevant the old one!",
+    "nick": "Nick",
+    "steamid": "STEAM_ID",
+    "no_players": "There are no online players on server",
+    "map": "Map",
+    "online": "Online"
 }

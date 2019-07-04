@@ -65,9 +65,9 @@
             {% endif %}
             <div class="uk-overlay-primary uk-position-cover"></div>
             <div class="uk-overlay uk-position-bottom uk-light">
-                Map: {{ server.map.exists() ? server.map.name : '-' }}
+                {{ trans('admin_servers', 'map') }}: {{ server.map.exists() ? server.map.name : '-' }}
                 <br>
-                Online: {{ server.num_players }}/{{ server.max_players }}
+                {{ trans('admin_servers', 'online') }}: {{ server.num_players }}/{{ server.max_players }}
             </div>
         </div>
         <div>
@@ -95,9 +95,9 @@
         ) %}
         <div f-table f-divider>
             <ul th>
-                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Nick</li>
-                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">STEAM_ID</li>
-                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">IP</li>
+                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_servers', 'nick') }}</li>
+                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_servers', 'steamid') }}</li>
+                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_servers', 'ip') }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m"></li>
             </ul>
             {% for player in players %}
@@ -153,13 +153,12 @@
                 </ul>
             {% else %}
                 <ul>
-                    <li>There are no online players on server</li>
+                    <li>{{ trans('admin_servers', 'no_players') }}</li>
                 </ul>
             {% endfor %}
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block modals %}
