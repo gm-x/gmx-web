@@ -92,6 +92,7 @@
             <ul class="uk-flex-left uk-flex-nowrap" uk-tab="connect: #server-info;animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium">
                 <li><a href="#">{{ trans('admin_servers', 'players_online') }}</a></li>
                 <li><a href="#">{{ trans('admin_servers', 'groups') }}</a></li>
+                <li><a href="#">{{ trans('admin_servers', 'reasons') }}</a></li>
             </ul>
         </div>
         <ul id="server-info" class="uk-switcher uk-margin">
@@ -215,6 +216,61 @@
                                     ) %}
                                         {{ admin.delete_btn(
                                             path_for(constants.admin.groups.ROUTE_DELETE, {'server': server.id, 'group': group.id})
+                                        ) }}
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+                    <div f-table f-divider>
+                        <ul th>
+                            <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">{{ trans('admin_reasons', 'reason') }}</li>
+                            <li class="uk-width-1-3@m uk-width-1-3@s uk-visible@s">{{ trans('admin_reasons', 'time') }}</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@m">
+                                {% if has_access_resource(
+                                    constants.admin.reasons.PERMISSION_GROUP,
+                                    constants.admin.reasons.PERMISSION_KEY,
+                                    server.id,
+                                    permissions.ACCESS_CREATE
+                                ) %}
+                                    {{ admin.add_btn(path_for(constants.admin.reasons.ROUTE_CREATE, {'server': server.id}), 's') }}
+                                {% endif %}
+                            </li>
+                        </ul>
+                        {% for reason in server.reasons %}
+                            <ul >
+                                <li class="uk-width-1-3@m uk-width-1-3@s" s-title="Title">{{ reason.title }}</li>
+                                <li class="uk-width-1-3@m uk-width-1-3@s" s-title="Time">
+                                    {% if reason.time is null %}
+                                        Not setted
+                                    {% else %}
+                                        {{ reason.time }} minutes
+                                    {% endif %}
+                                </li>
+                                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@m">
+                                    {% if has_access_resource(
+                                        constants.admin.reasons.PERMISSION_GROUP,
+                                        constants.admin.reasons.PERMISSION_KEY,
+                                        server.id,
+                                        permissions.ACCESS_EDIT
+                                    ) %}
+                                        {{ admin.edit_btn(
+                                            path_for(constants.admin.reasons.ROUTE_EDIT, {'server': server.id, 'reason': reason.id})
+                                        ) }}
+                                    {% endif %}
+
+                                    {% if has_access_resource(
+                                        constants.admin.reasons.PERMISSION_GROUP,
+                                        constants.admin.reasons.PERMISSION_KEY,
+                                        server.id,
+                                        permissions.ACCESS_DELETE
+                                    ) %}
+                                        {{ admin.delete_btn(
+                                            path_for(constants.admin.reasons.ROUTE_DELETE, {'server': server.id, 'reason': reason.id})
                                         ) }}
                                     {% endif %}
                                 </li>
