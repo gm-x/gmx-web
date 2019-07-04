@@ -16,5 +16,6 @@
   "player_exists": "Player already exists",
   "user": "User",
   "status": "Status",
-  "sessions": "Sessions"
+  "sessions": "Sessions",
+  "info": "Info"
 }

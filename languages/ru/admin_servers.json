@@ -18,5 +18,6 @@
     "steamid": "STEAM_ID",
     "no_players": "На сервере нет онлайн игроков",
     "map": "Карта",
-    "online": "Онлайн"
+    "online": "Онлайн",
+    "players_online": "Игроки онлайн"
 }
