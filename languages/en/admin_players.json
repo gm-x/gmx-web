@@ -15,5 +15,6 @@
   "pass_error": "Password must be provided",
   "player_exists": "Player already exists",
   "user": "User",
-  "status": "Статус"
+  "status": "Status",
+  "sessions": "Sessions"
 }

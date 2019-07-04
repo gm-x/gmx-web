@@ -63,7 +63,7 @@
                                 <li><a href="#">Main</a></li>
                                 <li><a href="#">{{ trans('admin_privileges', 'privileges') }}</a></li>
                                 <li><a href="#">{{ trans('admin_punishments', 'punishments') }}</a></li>
-                                <li><a href="#">sessions</a></li>
+                                <li><a href="#">{{ trans('admin_players', 'sessions') }}</a></li>
                             </ul>
                         </div>
                         <ul id="player-info" class="uk-switcher uk-margin">
@@ -81,7 +81,7 @@
                                         constants.admin.users.PERMISSION_GROUP,
                                         constants.admin.users.PERMISSION_KEY,
                                         premissions.ACCESS_VIEW
-                                        ) %}
+                                    ) %}
                                         <ul>
                                             <li class="uk-width-1-2@m uk-width-1-2@s">{{ trans('admin_players', 'user') }}</li>
                                             <li class="uk-width-1-2@m uk-width-1-2@s">
@@ -116,7 +116,7 @@
                                                     constants.admin.privileges.PERMISSION_KEY,
                                                     serverId,
                                                     permissions.ACCESS_CREATE
-                                                    ) %}
+                                                ) %}
                                                     {{ admin.add_btn(
                                                         path_for(constants.admin.privileges.ROUTE_CREATE, {
                                                             'player': player.id,
@@ -143,7 +143,7 @@
                                                     constants.admin.privileges.PERMISSION_KEY,
                                                     serverId,
                                                     permissions.ACCESS_EDIT
-                                                    ) %}
+                                                ) %}
                                                     <li class="uk-width-xxs">
                                                         {{ admin.edit_btn(
                                                             path_for(constants.admin.privileges.ROUTE_EDIT, {
@@ -159,7 +159,7 @@
                                                     constants.admin.privileges.PERMISSION_KEY,
                                                     serverId,
                                                     permissions.ACCESS_DELETE
-                                                    ) %}
+                                                ) %}
                                                     <li class="uk-width-xxs">
                                                         {{ admin.delete_btn(
                                                             path_for(constants.admin.privileges.ROUTE_DELETE, {
