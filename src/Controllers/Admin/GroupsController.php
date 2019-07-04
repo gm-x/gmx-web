@@ -81,7 +81,7 @@ class GroupsController extends BaseAdminController
             )
             ->add(
                 $this->getTranslate('admin_servers', 'groups'),
-                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'groups'])
             )
             ->add($this->getTranslate('labels', 'create'));
         
@@ -89,10 +89,9 @@ class GroupsController extends BaseAdminController
         if ($this->processForm($request, $form)) {
         	$this->reloadAdmins($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(GroupsConstants::ROUTE_EDIT, [
-                'server' => $server->id,
-                'group' => $group->id
-            ]);
+            return $this->redirect(ServersConstants::ROUTE_VIEW, [
+                'server' => $server->id
+            ], ['tab' => 'groups']);
         }
         
         return $this->getView()->render($response, 'admin/servers/groups/form.twig', [
@@ -127,11 +126,11 @@ class GroupsController extends BaseAdminController
             )
             ->add(
                 $this->getTranslate('admin_servers', 'groups'),
-                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+	            $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'groups'])
             )
             ->add(
                 $group->title,
-                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'groups'])
             )
             ->add($this->getTranslate('labels', 'edit'));
         
@@ -139,10 +138,9 @@ class GroupsController extends BaseAdminController
         if ($this->processForm($request, $form)) {
 	        $this->reloadAdmins($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(GroupsConstants::ROUTE_EDIT, [
-                'server' => $server->id,
-                'group' => $group->id
-            ]);
+	        return $this->redirect(ServersConstants::ROUTE_VIEW, [
+		        'server' => $server->id
+	        ], ['tab' => 'groups']);
         }
         
         return $this->getView()->render($response, 'admin/servers/groups/form.twig', [
@@ -173,8 +171,10 @@ class GroupsController extends BaseAdminController
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
-        
-        return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
+
+	    return $this->redirect(ServersConstants::ROUTE_VIEW, [
+		    'server' => $server->id
+	    ], ['tab' => 'groups']);
     }
     
     /**

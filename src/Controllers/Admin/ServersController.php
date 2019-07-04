@@ -78,6 +78,7 @@ class ServersController extends BaseAdminController
 		    });
 
         return $this->getView()->render($response, 'admin/servers/view.twig', [
+	        'tab' => $request->getParam('tab', 'online'),
             'server' => $server,
             'sessions' => $sessions,
 	        'groups' => $groups,

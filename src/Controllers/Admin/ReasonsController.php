@@ -79,17 +79,16 @@ class ReasonsController extends BaseAdminController
             )
             ->add(
                 $this->getTranslate('admin_servers', 'reasons'),
-                $this->pathFor(ReasonsConstants::ROUTE_LIST, ['server' => $server->id])
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'reasons'])
             )
             ->add($this->getTranslate('labels', 'create'));
         
         $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(ReasonsConstants::ROUTE_EDIT, [
-                'server' => $server->id,
-                'reason' => $reason->id
-            ]);
+	        return $this->redirect(ServersConstants::ROUTE_VIEW, [
+		        'server' => $server->id
+	        ], ['tab' => 'reasons']);
         }
         
         return $this->getView()->render($response, 'admin/servers/reasons/form.twig', [
@@ -124,21 +123,20 @@ class ReasonsController extends BaseAdminController
             )
             ->add(
                 $this->getTranslate('admin_servers', 'groups'),
-                $this->pathFor(ReasonsConstants::ROUTE_LIST, ['server' => $server->id])
+	            $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'reasons'])
             )
             ->add(
                 $reason->title,
-                $this->pathFor(ReasonsConstants::ROUTE_LIST, ['server' => $server->id])
+	            $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'reasons'])
             )
             ->add($this->getTranslate('labels', 'edit'));
         
         $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(ReasonsConstants::ROUTE_EDIT, [
-                'server' => $server->id,
-                'reason' => $reason->id
-            ]);
+	        return $this->redirect(ServersConstants::ROUTE_VIEW, [
+		        'server' => $server->id
+	        ], ['tab' => 'reasons']);
         }
         
         return $this->getView()->render($response, 'admin/servers/reasons/form.twig', [
@@ -168,8 +166,10 @@ class ReasonsController extends BaseAdminController
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
-        
-        return $this->redirect(ReasonsConstants::ROUTE_LIST, ['server' => $server->id]);
+
+	    return $this->redirect(ServersConstants::ROUTE_VIEW, [
+		    'server' => $server->id
+	    ], ['tab' => 'reasons']);
     }
     
     /**

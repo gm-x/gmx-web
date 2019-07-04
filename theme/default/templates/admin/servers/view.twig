@@ -88,11 +88,34 @@
         </div>
     </div>
     <div class="uk-card-body uk-padding-small">
+        {% set hasGroupsPermissions = has_access_resource(
+            constants.admin.groups.PERMISSION_GROUP,
+            constants.admin.groups.PERMISSION_KEY,
+            server.id,
+            permissions.ACCESS_LIST
+        ) %}
+
+        {% set hasReasonsPermissions = has_access_resource(
+            constants.admin.reasons.PERMISSION_GROUP,
+            constants.admin.reasons.PERMISSION_KEY,
+            server.id,
+            permissions.ACCESS_LIST
+        ) %}
         <div class="uk-overflow-auto">
             <ul class="uk-flex-left uk-flex-nowrap" uk-tab="connect: #server-info;animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium">
-                <li><a href="#">{{ trans('admin_servers', 'players_online') }}</a></li>
-                <li><a href="#">{{ trans('admin_servers', 'groups') }}</a></li>
-                <li><a href="#">{{ trans('admin_servers', 'reasons') }}</a></li>
+                <li {% if tab == 'online' %}class="uk-active"{% endif %}>
+                    <a href="#">{{ trans('admin_servers', 'players_online') }}</a>
+                </li>
+                {% if hasGroupsPermissions %}
+                    <li {% if tab == 'groups' %}class="uk-active"{% endif %}>
+                        <a href="#">{{ trans('admin_servers', 'groups') }}</a>
+                    </li>
+                {% endif %}
+                {% if hasReasonsPermissions %}
+                    <li {% if tab == 'reasons' %}class="uk-active"{% endif %}>
+                        <a href="#">{{ trans('admin_servers', 'reasons') }}</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         <ul id="server-info" class="uk-switcher uk-margin">
@@ -123,42 +146,42 @@
                                 <li class="uk-width-1-4@m uk-width-1-4@s" data-title="IP">{{ player.ip }}</li>
                                 <li class="uk-width-1-6@m uk-width-1-6@s">
                                     {% embed "admin/actions.twig" with {'actionId': server.id} %}
-                                    {% block actions %}
-                                    {% if has_access_resource(
-                                        constants.admin.privileges.PERMISSION_GROUP,
-                                        constants.admin.privileges.PERMISSION_KEY,
-                                        serverId,
-                                        permissions.ACCESS_CREATE
-                                        ) %}
-                                <li>
-                                    <a
-                                            href="{{ path_for(constants.admin.privileges.ROUTE_CREATE, {
-                                                'player': player.id,
-                                                'server': server.id
-                                            }) }}"
-                                            class="dropdown-item"
-                                    >Create Privilege</a>
-                                </li>
-                                {% endif %}
+                                        {% block actions %}
+                                            {% if has_access_resource(
+                                                constants.admin.privileges.PERMISSION_GROUP,
+                                                constants.admin.privileges.PERMISSION_KEY,
+                                                serverId,
+                                                permissions.ACCESS_CREATE
+                                            ) %}
+                                                <li>
+                                                    <a
+                                                        href="{{ path_for(constants.admin.privileges.ROUTE_CREATE, {
+                                                            'player': player.id,
+                                                            'server': server.id
+                                                        }) }}"
+                                                        class="dropdown-item"
+                                                    >Create Privilege</a>
+                                                </li>
+                                            {% endif %}
 
-                                {% if has_access_resource(
-                                    constants.admin.punishments.PERMISSION_GROUP,
-                                    constants.admin.punishments.PERMISSION_KEY,
-                                    serverId,
-                                    permissions.ACCESS_CREATE
-                                    ) %}
-                                    <li>
-                                        <a
-                                                href="{{ path_for(constants.admin.punishments.ROUTE_CREATE, {
-                                                    'player': player.id,
-                                                    'server': server.id
-                                                }) }}"
-                                                class="dropdown-item"
-                                        >Punish</a>
-                                    </li>
-                                {% endif %}
-                                {% endblock %}
-                                {% endembed %}
+                                            {% if has_access_resource(
+                                                constants.admin.punishments.PERMISSION_GROUP,
+                                                constants.admin.punishments.PERMISSION_KEY,
+                                                serverId,
+                                                permissions.ACCESS_CREATE
+                                            ) %}
+                                                <li>
+                                                    <a
+                                                        href="{{ path_for(constants.admin.punishments.ROUTE_CREATE, {
+                                                            'player': player.id,
+                                                            'server': server.id
+                                                        }) }}"
+                                                        class="dropdown-item"
+                                                    >Punish</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endblock %}
+                                    {% endembed %}
                                 </li>
                             </ul>
                         {% else %}
@@ -169,6 +192,7 @@
                     </div>
                 </div>
             </li>
+            {% if hasGroupsPermissions %}
             <li>
                 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
                     <div f-table f-divider>
@@ -224,6 +248,8 @@
                     </div>
                 </div>
             </li>
+            {% endif %}
+            {% if hasReasonsPermissions %}
             <li>
                 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
                     <div f-table f-divider>
@@ -279,6 +305,7 @@
                     </div>
                 </div>
             </li>
+            {% endif %}
         </ul>
     </div>
 
