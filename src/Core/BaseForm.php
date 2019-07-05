@@ -7,7 +7,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \GameX\Core\Helpers\UriHelper;
 use \GameX\Core\Lang\Language;
 use \GameX\Core\Forms\Form;
-use \GameX\Core\Validate\Validator;
 use \GameX\Core\Exceptions\ValidationException;
 
 abstract class BaseForm

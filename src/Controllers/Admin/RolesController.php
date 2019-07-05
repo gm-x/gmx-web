@@ -9,6 +9,7 @@ use \GameX\Constants\Admin\RolesConstants;
 use \GameX\Core\Pagination\Pagination;
 use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Forms\Admin\RolesForm;
+use \GameX\Forms\Admin\PermissionsForm;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -37,13 +38,14 @@ class RolesController extends BaseAdminController
             'roles' => RoleModel::get()
         ]);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param int $id
+     * @param $id
      * @return ResponseInterface
      * @throws NotFoundException
+     * @throws \GameX\Core\Exceptions\RedirectException
      */
     public function viewAction(ServerRequestInterface $request, ResponseInterface $response, $id)
     {
@@ -58,10 +60,25 @@ class RolesController extends BaseAdminController
         
         $pagination = new Pagination($role->users()->get(), $request);
         $users = $pagination->getCollection();
+
+        $form = new PermissionsForm($role);
+        if ($this->processForm($request, $form)) {
+            /** @var Cache $cache */
+            $cache = $this->getContainer('cache');
+            $cache->clear('permissions');
+            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
+            return $this->redirect(RolesConstants::ROUTE_VIEW, [
+                'role' => $role->id,
+            ], ['tab' => 'permissions']);
+        }
         
         return $this->getView()->render($response, 'admin/roles/view.twig', [
+            'tab' => $request->getParam('tab', 'users'),
             'users' => $users,
             'pagination' => $pagination,
+            'permissionsForm' => $form->getForm(),
+            'permissionsList' => $form->getList(),
+            'servers' => $form->getServers()
         ]);
     }
     
