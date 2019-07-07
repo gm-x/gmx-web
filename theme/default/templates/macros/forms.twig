@@ -83,6 +83,54 @@
 	</div>
 {% endmacro %}
 
+{% macro element_datepicker(element, format) %}
+	<input
+			type="hidden"
+			id="{{ element.getId() }}"
+			name="{{ element.getFormName() }}[{{ element.getName() }}]"
+			value="{{ element.format(format) }}"
+	>
+	<div class="uk-input uk-margin-bottom" uk-toggle="target: #datepicker-{{ element.getFormName() }}-{{ element.getName() }}">
+        {% if element.getValue() %}
+            {{ element.format(format) }}
+		{% else %}
+            {{ trans('forms_macro', 'default_value') }}
+        {% endif %}
+	</div>
+	<div id="datepicker-{{ element.getFormName() }}-{{ element.getName() }}" class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m uk-margin-bottom" hidden>
+		<ul class="uk-subnav" uk-switcher>
+			<li><a href="#">{{ trans('forms_macro', 'date') }}</a></li>
+			<li><a href="#">{{ trans('forms_macro', 'period') }}</a></li>
+		</ul>
+
+		<ul class="uk-switcher uk-margin">
+			<li>
+                {{ _self.element_datetime(element, format) }}
+			</li>
+			<li uk-grid>
+				<div class="uk-width-1-1@s uk-grid-small uk-child-width-auto uk-grid" uk-grid>
+					<label class="uk-first-column"><input class="uk-radio" type="radio" name="radio2"> {{ trans('forms_macro', 'add') }}</label>
+					<label><input class="uk-radio" type="radio" name="radio2" checked> {{ trans('forms_macro', 'set') }}</label>
+				</div>
+				<div class="uk-width-1-2@s">
+					<input class="uk-input" type="number" placeholder="50">
+				</div>
+				<div class="uk-width-1-2@s">
+					<select class="uk-select" id="form-horizontal-select">
+						<option>{{ trans('date', 'seconds') }}</option>
+						<option>{{ trans('date', 'minutes') }}</option>
+						<option>{{ trans('date', 'hours') }}</option>
+						<option>{{ trans('date', 'days') }}</option>
+						<option>{{ trans('date', 'months') }}</option>
+						<option>{{ trans('date', 'years') }}</option>
+					</select>
+				</div>
+			</li>
+		</ul>
+		<a class="uk-button uk-button-primary"><i class="fas fa-calculator"></i></a>
+	</div>
+{% endmacro %}
+
 {% macro element_checkbox(element, label = true) %}
 	{% set classes = ['uk-checkbox'] %}
 	{% if element.getHasError() %}

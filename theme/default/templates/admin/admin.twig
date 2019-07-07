@@ -70,10 +70,10 @@
             are_you_sure: '{{ trans('labels', 'are_you_sure') }}'
         };
     </script>
+    {% block javascript %}{% endblock %}
     <script src="{{ base_url() }}/assets/scripts/xhr.js"></script>
     <script src="{{ base_url() }}/assets/scripts/main.js"></script>
     <script src="{{ base_url() }}/assets/scripts/admin.js"></script>
-    {% block javascript %}{% endblock %}
 </div>
 </body>
 </html>
