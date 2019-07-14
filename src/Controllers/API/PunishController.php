@@ -153,6 +153,25 @@ class PunishController extends BaseApiController
             'punishment' => $punishment,
         ]);
     }
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function reasonsAction(Request $request, Response $response)
+	{
+		$server = $this->getServer($request);
+		$reasons = $server->reasons()->where([
+			'active' => true,
+			'menu' => true
+		])->get();
+
+		return $response->withStatus(200)->withJson([
+			'success' => true,
+			'reasons' => $reasons,
+		]);
+	}
     
     /**
      * @param $serverId
