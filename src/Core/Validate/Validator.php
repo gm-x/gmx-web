@@ -8,6 +8,7 @@ use \GameX\Core\Validate\Rules\Required;
 
 class Validator {
     
+    const CHECK_IGNORE = 'ignore';
     const CHECK_EMPTY = 'empty';
     const CHECK_LENGTH = 'length';
     const CHECK_ARRAY = 'array';
@@ -135,12 +136,16 @@ class Validator {
      */
     protected function checkEmpty($key, $value) {
         switch ($this->options[$key]['check']) {
+	        case self::CHECK_IGNORE: {
+	        	return true;
+	        }
+
             case self::CHECK_EMPTY: {
                 return !empty($value);
             }
             
             case self::CHECK_ARRAY: {
-                return is_array($value) && count($value) >= 0;
+                return is_array($value) && count($value) > 0;
             }
     
             case self::CHECK_LENGTH:

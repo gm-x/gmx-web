@@ -7,7 +7,7 @@
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
 		{{ forms.element_select(form.group) }}
-        {{ forms.element_checkbox(form.forever) }}
+{#        {{ forms.element_checkbox(form.forever) }}#}
         {{ forms.element_datepicker(form.expired, 'd-m-Y') }}
         {{ forms.element_checkbox(form.active) }}
 

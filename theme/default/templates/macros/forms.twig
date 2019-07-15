@@ -85,21 +85,21 @@
 
 {% macro element_datepicker(element, format) %}
 	<input
-			type="hidden"
-			id="{{ element.getId() }}"
-			name="{{ element.getFormName() }}[{{ element.getName() }}]"
-			value="{{ element.format(format) }}"
+		type="hidden"
+		id="{{ element.getId() }}"
+		name="{{ element.getFormName() }}[{{ element.getName() }}]"
+		value="{{ element.format(format) }}"
 	>
-	<div
-		class="uk-input uk-margin-bottom"
-		uk-toggle="target: #datepicker-{{ element.getFormName() }}-{{ element.getName() }}"
-	>
-        {% if element.getValue() %}
-            {{ element.format(format) }}
-		{% else %}
-            {{ trans('forms_macro', 'default_value') }}
-        {% endif %}
-	</div>
+{#	<div#}
+{#		class="uk-input uk-margin-bottom"#}
+{#		uk-toggle="target: #datepicker-{{ element.getFormName() }}-{{ element.getName() }}"#}
+{#	>#}
+{#        {% if element.getValue() %}#}
+{#            {{ element.format(format) }}#}
+{#		{% else %}#}
+{#            {{ trans('forms_macro', 'default_value') }}#}
+{#        {% endif %}#}
+{#	</div>#}
 	<div class="uk-margin uk-inline uk-width-1-1">
 		<label class="switcher">
 			<input
@@ -109,7 +109,7 @@
 				uk-toggle="target: #datepicker-{{ element.getFormName() }}-{{ element.getName() }}"
 			/>
 			<div class="switcher__indicator"></div>
-			<span>Forever</span>
+			<span>{{ trans('admin_privileges', 'forever') }}</span>
 		</label>
 	</div>
 	<div id="datepicker-{{ element.getFormName() }}-{{ element.getName() }}" class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m uk-margin-bottom" hidden>

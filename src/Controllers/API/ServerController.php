@@ -136,7 +136,7 @@ class ServerController extends BaseApiController
                     return $value !== false ? $value : null;
                 }, '')
             ], [
-            	'check' => Validator::CHECK_ARRAY,
+            	'check' => Validator::CHECK_IGNORE,
 	            'trim' => false
             ]);
 
