@@ -8,9 +8,11 @@
     <title>{% block title %}{{ title }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/pickadate.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
     <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
+    <script src="{{ base_url() }}/assets/js/pickadate.min.js"></script>
     {% block style %}{% endblock %}
     {{ head.get_scheme() }}
 </head>
@@ -74,18 +76,16 @@
     </footer>
     {% block modals %}{% endblock %}
     <script>
-        $(document).ready(function () {
-            $('.lang-select').on('click', 'a', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var lang = $(this).data('lang');
-                $.post('{{ path_for('language')}}', {lang: lang})
-                    .always(function() {
-                        location.reload()
-                    });
-            });
-        });
+        window.CSRF_TOKEN = {{ csrf_token_json() }};
+        window.MESSAGES = {
+            saved: '{{ trans('labels', 'saved') }}',
+            exception: '{{ trans('labels', 'exception') }}',
+            delete: '{{ trans('buttons', 'delete') }}',
+            cancel: '{{ trans('buttons', 'cancel') }}',
+            are_you_sure: '{{ trans('labels', 'are_you_sure') }}'
+        };
     </script>
+    <script src="{{ base_url() }}/assets/scripts/main.js"></script>
     {% block javascript %}{% endblock %}
 </body>
 </html>

@@ -6,7 +6,8 @@
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
-		{{ forms.element_select(form.group) }}
+		{{ forms.element_select(form.g
+            roup) }}
 {#        {{ forms.element_checkbox(form.forever) }}#}
         {{ forms.element_datepicker(form.expired, 'd-m-Y') }}
         {{ forms.element_checkbox(form.active) }}
