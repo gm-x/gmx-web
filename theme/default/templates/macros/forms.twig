@@ -84,35 +84,34 @@
 {% endmacro %}
 
 {% macro element_datepicker(element, format) %}
+	{% set forever = element.getValue() is null ? true : false %}
 	<input
 		type="hidden"
 		id="{{ element.getId() }}"
 		name="{{ element.getFormName() }}[{{ element.getName() }}]"
 		value="{{ element.format(format) }}"
 	>
-{#	<div#}
-{#		class="uk-input uk-margin-bottom"#}
-{#		uk-toggle="target: #datepicker-{{ element.getFormName() }}-{{ element.getName() }}"#}
-{#	>#}
-{#        {% if element.getValue() %}#}
-{#            {{ element.format(format) }}#}
-{#		{% else %}#}
-{#            {{ trans('forms_macro', 'default_value') }}#}
-{#        {% endif %}#}
-{#	</div>#}
+
 	<div class="uk-margin uk-inline uk-width-1-1">
 		<label class="switcher">
 			<input
 				type="checkbox"
 				value="1"
 				class="uk-checkbox"
-				uk-toggle="target: #datepicker-{{ element.getFormName() }}-{{ element.getName() }}"
+				uk-toggle="target: #datepicker-{{ element.getId() }}"
+				{% if forever %}
+					checked
+				{% endif %}
 			/>
 			<div class="switcher__indicator"></div>
 			<span>{{ trans('admin_privileges', 'forever') }}</span>
 		</label>
 	</div>
-	<div id="datepicker-{{ element.getFormName() }}-{{ element.getName() }}" class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m uk-margin-bottom" hidden>
+	<div
+		id="datepicker-{{ element.getId() }}"
+		class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m uk-margin-bottom"
+		{% if forever %}hidden{% endif %}
+	>
 		<ul class="uk-subnav" uk-switcher>
 			<li><a href="#">{{ trans('forms_macro', 'date') }}</a></li>
 			<li><a href="#">{{ trans('forms_macro', 'period') }}</a></li>
@@ -120,7 +119,12 @@
 
 		<ul class="uk-switcher uk-margin">
 			<li>
-                {{ _self.element_datetime(element, format) }}
+				<div class="uk-margin uk-inline uk-width-1-1">
+					<label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+					<div class="uk-form-controls">
+						<input type="datetime-local" class="uk-input datepicker" />
+					</div>
+				</div>
 			</li>
 			<li uk-grid>
 				<div class="uk-width-1-1@s uk-grid-small uk-child-width-auto uk-grid" uk-grid>
@@ -142,7 +146,7 @@
 				</div>
 			</li>
 		</ul>
-		<a class="uk-button uk-button-primary"><i class="fas fa-calculator"></i></a>
+{#		<a class="uk-button uk-button-primary"><i class="fas fa-calculator"></i></a>#}
 	</div>
 {% endmacro %}
 

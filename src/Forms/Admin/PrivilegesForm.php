@@ -8,6 +8,7 @@ use \GameX\Models\Privilege;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Date as DateElement;
 use \GameX\Core\Forms\Elements\Checkbox;
+use \GameX\Core\Forms\Elements\DatePicker;
 use \GameX\Core\Validate\Rules\InArray;
 use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\Number;
@@ -66,16 +67,17 @@ class PrivilegesForm extends BaseForm
             throw new PrivilegeFormException();
         }
 
-        $this->form->add(new Select('group', $this->privilege->group_id, $groups, [
+        $this->form
+	        ->add(new Select('group', $this->privilege->group_id, $groups, [
                 'title' => $this->getTranslate($this->name, 'group'),
                 'required' => true,
                 'empty_option' => $this->getTranslate($this->name, 'group_empty'),
-            ]))->add(new Checkbox('forever', $this->privilege->expired_at === null, [
-                'title' => $this->getTranslate($this->name, 'forever'),
-            ]))->add(new DateElement('expired', $this->privilege->expired_at, [
+            ]))
+	        ->add(new DatePicker('expired', $this->privilege->expired_at, [
+		        'id' => 'expired',
                 'title' => $this->getTranslate($this->name, 'expired'),
-                'required' => true,
-            ]))->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
+            ]))
+	        ->add(new Checkbox('active', !$this->privilege->exists || $this->privilege->active ? true : false, [
                 'title' => $this->getTranslate($this->name, 'active'),
             ]));
 

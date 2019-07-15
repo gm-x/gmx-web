@@ -59,10 +59,10 @@ $(document).ready(function () {
     });
 
     $( '.datepicker' ).pickadate({
-        lang: 'ru',
-        format: 'dd.mm.yyyy',
-        formatSubmit: 'yyyy-mm-dd',
-        //min: new Date(),
-        closeOnSelect: true,
+	    lang: 'ru',
+	    format: 'dd.mm.yyyy',
+	    formatSubmit: 'yyyy-mm-dd',
+	    //min: new Date(),
+	    closeOnSelect: true
     });
 });
