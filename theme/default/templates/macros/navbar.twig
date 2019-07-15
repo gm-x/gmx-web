@@ -30,7 +30,7 @@
                     <ul class="uk-navbar-nav">
                         <li>
                             <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
-                            <div class="uk-navbar-dropdown" uk-dropdown="pos: bottom-right; animation:uk-animation-shake; delay-hide: 0">
+                            <div class="uk-navbar-dropdown" uk-dropdown="pos: bottom-right; uk-animation-fade; delay-hide: 0">
                                 <ul class="uk-nav uk-navbar-dropdown-nav lang-select" data-href="{{ path_for('language') }}">
                                     {% for key,value in siteLanguages %}
                                         <li><a data-lang="{{ key }}">{{ value }}</a></li>
@@ -47,7 +47,7 @@
                                     <i class="fas fa-user-circle"></i>
                                 {% endif %}
                             </a>
-                            <div class="uk-navbar-dropdown" uk-dropdown="pos: bottom-right; animation:uk-animation-shake; delay-hide: 0">
+                            <div class="uk-navbar-dropdown" uk-dropdown="pos: bottom-right; animation: uk-animation-fade; delay-hide: 0">
                                 <ul class="uk-nav uk-navbar-dropdown-nav">
                                     {% if is_guest() %}
                                         <li>
@@ -170,7 +170,7 @@
                     <ul class="uk-navbar-nav">
                         <li>
                             <a href="#"><i class="fas fa-globe" title="{{ userLangName }}"></i></a>
-                            <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
+                            <div class="uk-navbar-dropdown" uk-dropdown="animation: uk-animation-fade; delay-hide: 0">
                                 <ul class="uk-nav uk-navbar-dropdown-nav lang-select" data-href="{{ path_for('language') }}">
                                     {% for key,value in siteLanguages %}
                                         <li><a data-lang="{{ key }}">{{ value }}</a></li>
@@ -187,7 +187,7 @@
                                     <i class="fas fa-user-circle"></i>
                                 {% endif %}
                             </a>
-                            <div class="uk-navbar-dropdown" uk-dropdown="animation:uk-animation-shake; delay-hide: 0">
+                            <div class="uk-navbar-dropdown" uk-dropdown="animation: uk-animation-fade; delay-hide: 0">
                                 <ul class="uk-nav uk-navbar-dropdown-nav">
                                     {% if is_guest() %}
                                         <li><a class="dropdown-item" href="{{ path_for('login') }}">
