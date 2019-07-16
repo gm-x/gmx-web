@@ -58,7 +58,7 @@ $(document).ready(function () {
             });
     });
 
-    $( '.datepicker' ).pickadate({
+    $('.datepicker').pickadate({
 	    lang: 'ru',
 	    format: 'dd.mm.yyyy',
 	    formatSubmit: 'yyyy-mm-dd',
