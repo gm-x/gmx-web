@@ -6,6 +6,7 @@ use \GameX\Core\BaseAdminController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
+use \GameX\Core\Pagination\Pagination;
 use \GameX\Core\Update\Updater;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Constants\Admin\PreferencesConstants;
@@ -16,6 +17,7 @@ use \GameX\Forms\Admin\Preferences\CacheForm;
 use \GameX\Forms\Admin\Preferences\SocialForm;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Mail\Email;
+use \GameX\Models\Task;
 use \GameX\Core\Mail\Exceptions\ConnectException;
 use \GameX\Core\Mail\Exceptions\CryptoException;
 use \GameX\Core\Mail\Exceptions\CodeException;
@@ -44,6 +46,7 @@ class PreferencesController extends BaseAdminController
      * @return ResponseInterface
      * @throws RedirectException
      * @throws RoleNotFoundException
+     * @throws \GameX\Core\Cache\NotFoundException
      */
     public function mainAction(Request $request, Response $response)
     {
@@ -199,13 +202,14 @@ class PreferencesController extends BaseAdminController
         ]);
     }
 
-	/**
-	 * @param Request $request
-	 * @param Response $response
-	 * @return ResponseInterface
-	 * @throws RedirectException
-	 * @throws RoleNotFoundException
-	 */
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return ResponseInterface
+     * @throws RedirectException
+     * @throws RoleNotFoundException
+     * @throws \GameX\Core\Cache\NotFoundException
+     */
     public function cacheAction(Request $request, Response $response)
     {
         $this->getBreadcrumbs()
@@ -240,19 +244,25 @@ class PreferencesController extends BaseAdminController
             ->add($this->getTranslate('admin_preferences', 'tab_cron'));
         
         $root = $this->container->get('root');
+
+        $tasks = Task::get();
+        $pagination = new Pagination($tasks, $request);
         
         return $this->getView()->render($response, 'admin/preferences/cron.twig', [
             'root' => $root,
+            'tasks' => $pagination->getCollection(),
+            'pagination' => $pagination,
         ]);
     }
 
-	/**
-	 * @param Request $request
-	 * @param Response $response
-	 * @return ResponseInterface
-	 * @throws RedirectException
-	 * @throws RoleNotFoundException
-	 */
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return ResponseInterface
+     * @throws RedirectException
+     * @throws RoleNotFoundException
+     * @throws \GameX\Core\Cache\NotFoundException
+     */
     public function socialAction(Request $request, Response $response)
     {
 	    $this->getBreadcrumbs()
