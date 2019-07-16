@@ -63,6 +63,10 @@ $(document).ready(function () {
 	    format: 'dd.mm.yyyy',
 	    formatSubmit: 'yyyy-mm-dd',
 	    //min: new Date(),
-	    closeOnSelect: true
+	    closeOnSelect: true,
+        editable: true,
+        hiddenName: true,
+        selectYears: true,
+        selectMonths: true
     });
 });
