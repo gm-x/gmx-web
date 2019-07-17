@@ -82,12 +82,15 @@ input {
     background: -webkit-linear-gradient(360deg,#030303 10%,#1f1f1f 360%);
     background: linear-gradient(360deg,#030303 10%,#1f1f1f 360%);
     overflow: hidden;
-    transition: width .3s ease;
+    -webkit-transition: .5s ease-in-out;
+    -moz-transition: .5s ease-in-out;
+    -o-transition: .5s ease-in-out;
+    transition: .5s ease-in-out;
     cursor: pointer;
     box-shadow: 4px 7px 10px rgba(0, 0, 0, 0.4);
 }
 .sidenav:hover {
-    min-width: 200px;
+    width: 200px;
 }
 
 .sidenav .uk-nav-sub {
@@ -467,6 +470,10 @@ a:hover, .uk-link:hover {
 fieldset {
     border: 1px dashed rgba(255,255,255,0.1);
     min-width: 100%;
+}
+
+.uk-nav-primary > li.uk-active > a {
+    color: #44a1d1;
 }
 
 .uk-background-secondary {
