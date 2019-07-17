@@ -74,7 +74,11 @@
 														</tr>
 														{% endfor %}
 													</table>
-												{% endif %}
+												{% else %}
+													<h2 class="uk-heading-line uk-text-center"><span>Нет игроков</span></h2>
+                                                {% endif %}
+                                            {% else %}
+												<h2 class="uk-heading-line uk-text-center"><span>Нет игроков</span></h2>
 											{% endif %}
 										</div>
 									</div>

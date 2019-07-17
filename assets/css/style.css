@@ -93,6 +93,14 @@ input {
     width: 200px;
 }
 
+.uk-transparent {
+    background: transparent !important;
+}
+
+.uk-placeholder {
+    border: 1px dashed #333f56;
+}
+
 .uk-nav-primary .uk-nav-divider {
     border-top: 1px solid rgba(229, 229, 229, 0.1);
 }
