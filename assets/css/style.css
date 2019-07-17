@@ -93,6 +93,10 @@ input {
     width: 200px;
 }
 
+.uk-nav-primary .uk-nav-divider {
+    border-top: 1px solid rgba(229, 229, 229, 0.1);
+}
+
 .sidenav .uk-nav-sub {
     display: none;
 }
