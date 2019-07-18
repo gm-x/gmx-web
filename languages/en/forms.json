@@ -5,7 +5,6 @@
     "date_time": "Must be a valid datetime",
     "time": "Must be a valid time",
     "email": "Must be a valid email address",
-    "file": "Value is not a valid file",
     "file_extension": "File type %s is not enabled",
     "file_mime_type": "File type %s is not enabled",
     "file_size": "File size must be less than %d bytes",
@@ -32,5 +31,8 @@
     "required": "Can not be blank",
     "string": "Must be a valid value",
     "steamid": "Must be a valid STEAM_ID",
-    "flags": "Must be a valid value"
+    "flags": "Must be a valid value",
+    "file_upload_size": "File size exceeded",
+    "file_upload_no_file": "File not uploaded",
+    "file_upload_cant_write": "Cannot write file"
 }
