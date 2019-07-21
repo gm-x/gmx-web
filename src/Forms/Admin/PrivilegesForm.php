@@ -8,7 +8,6 @@ use \GameX\Models\Privilege;
 use \GameX\Core\Forms\Elements\Select;
 use \GameX\Core\Forms\Elements\Date as DateElement;
 use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Forms\Elements\Expired;
 use \GameX\Core\Validate\Rules\InArray;
 use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\Number;
@@ -73,7 +72,7 @@ class PrivilegesForm extends BaseForm
                 'required' => true,
                 'empty_option' => $this->getTranslate($this->name, 'group_empty'),
             ]))
-	        ->add(new Expired('expired', $this->privilege->expired_at, [
+	        ->add(new DateElement('expired', $this->privilege->expired_at, [
 		        'id' => 'expired',
                 'title' => $this->getTranslate($this->name, 'expired'),
             ]))
