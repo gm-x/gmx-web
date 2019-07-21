@@ -83,7 +83,7 @@
 	</div>
 {% endmacro %}
 
-{% macro element_datepicker(element, format) %}
+{% macro element_expired(element, format) %}
 	{% set forever = element.getValue() is null ? true : false %}
 	<input
 		type="hidden"
