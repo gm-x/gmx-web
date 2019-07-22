@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Forms\Elements;
 
+use \Carbon\Carbon;
 use \DateTime;
 
 class DateTimeInput extends BaseElement {
@@ -31,8 +32,10 @@ class DateTimeInput extends BaseElement {
      * @return $this
      */
 	public function setValue($value) {
-	    if ($value instanceof DateTime) {
-	        $this->value = $value;
+		if ($value instanceof Carbon) {
+			$this->value = $value;
+		} else if ($value instanceof DateTime) {
+	        $this->value = Carbon::instance($value);
         } elseif($value !== null && !empty($value)) {
 	        $date = DateTime::createFromFormat($this->format, $value);
 	        $this->value = ($date !== false) ? $date : null;

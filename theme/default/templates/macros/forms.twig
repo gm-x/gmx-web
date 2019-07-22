@@ -83,73 +83,6 @@
 	</div>
 {% endmacro %}
 
-{% macro element_expired(element, format) %}
-	{% set forever = element.getValue() is null ? true : false %}
-	<input
-		type="hidden"
-		id="{{ element.getId() }}"
-		name="{{ element.getFormName() }}[{{ element.getName() }}]"
-		value="{{ element.format(format) }}"
-	>
-
-	<div class="uk-margin uk-inline uk-width-1-1">
-		<label class="switcher">
-			<input
-				type="checkbox"
-				value="1"
-				class="uk-checkbox"
-				uk-toggle="target: #datepicker-{{ element.getId() }}"
-				{% if forever %}
-					checked
-				{% endif %}
-			/>
-			<div class="switcher__indicator"></div>
-			<span>{{ trans('admin_privileges', 'forever') }}</span>
-		</label>
-	</div>
-	<div
-		id="datepicker-{{ element.getId() }}"
-		class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m uk-margin-bottom"
-		{% if forever %}hidden{% endif %}
-	>
-		<ul class="uk-subnav" uk-switcher>
-			<li><a href="#">{{ trans('forms_macro', 'date') }}</a></li>
-			<li><a href="#">{{ trans('forms_macro', 'period') }}</a></li>
-		</ul>
-
-		<ul class="uk-switcher uk-margin">
-			<li>
-				<div class="uk-margin uk-inline uk-width-1-1">
-					<label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
-					<div class="uk-form-controls">
-						<input type="datetime-local" class="uk-input datepicker" />
-					</div>
-				</div>
-			</li>
-			<li uk-grid>
-				<div class="uk-width-1-1@s uk-grid-small uk-child-width-auto uk-grid" uk-grid>
-					<label class="uk-first-column"><input class="uk-radio" type="radio" name="radio2"> {{ trans('forms_macro', 'add') }}</label>
-					<label><input class="uk-radio" type="radio" name="radio2" checked> {{ trans('forms_macro', 'set') }}</label>
-				</div>
-				<div class="uk-width-1-2@s">
-					<input class="uk-input" type="number" placeholder="50">
-				</div>
-				<div class="uk-width-1-2@s">
-					<select class="uk-select" id="form-horizontal-select">
-						<option>{{ trans('date', 'seconds') }}</option>
-						<option>{{ trans('date', 'minutes') }}</option>
-						<option>{{ trans('date', 'hours') }}</option>
-						<option>{{ trans('date', 'days') }}</option>
-						<option>{{ trans('date', 'months') }}</option>
-						<option>{{ trans('date', 'years') }}</option>
-					</select>
-				</div>
-			</li>
-		</ul>
-{#		<a class="uk-button uk-button-primary"><i class="fas fa-calculator"></i></a>#}
-	</div>
-{% endmacro %}
-
 {% macro element_checkbox(element, label = true) %}
 	{% set classes = ['uk-checkbox'] %}
 	{% if element.getHasError() %}
@@ -291,4 +224,76 @@
 			</label>
 		</div>
 	{% endfor %}
+{% endmacro %}
+
+{% macro element_expired(element, format) %}
+	{% set forever = element.getValue() is null ? true : false %}
+{#	<input#}
+{#		type="hidden"#}
+{#		id="{{ element.getId() }}"#}
+{#		name="{{ element.getFormName() }}[{{ element.getName() }}]"#}
+{#		value="{{ element.format(format) }}"#}
+{#	>#}
+
+	<div class="uk-margin uk-inline uk-width-1-1">
+		<label class="switcher">
+			<input
+				type="checkbox"
+				value="1"
+				class="uk-checkbox"
+				uk-toggle="target: #datepicker-{{ element.getId() }}"
+				{% if forever %}
+					checked
+				{% endif %}
+			/>
+			<div class="switcher__indicator"></div>
+			<span>{{ trans('admin_privileges', 'forever') }}</span>
+		</label>
+	</div>
+	<div
+		id="datepicker-{{ element.getId() }}"
+		class="uk-card uk-card-secondary uk-card-body uk-width-1-1@m uk-margin-bottom"
+		{% if forever %}hidden{% endif %}
+	>
+		<ul class="uk-subnav" uk-switcher>
+			<li><a href="#">{{ trans('forms_macro', 'date') }}</a></li>
+			<li><a href="#">{{ trans('forms_macro', 'period') }}</a></li>
+		</ul>
+
+		<ul class="uk-switcher uk-margin">
+			<li>
+				<div class="uk-margin uk-inline uk-width-1-1">
+					<label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
+					<div class="uk-form-controls">
+						<input
+							type="datetime-local"
+							class="uk-input datepicker"
+							name="{{ element.getFormName() }}[{{ element.getName() }}]"
+							value="{{ element.format(format) }}"
+						/>
+					</div>
+				</div>
+			</li>
+			<li uk-grid>
+				<div class="uk-width-1-1@s uk-grid-small uk-child-width-auto uk-grid" uk-grid>
+					<label class="uk-first-column"><input class="uk-radio" type="radio" name="radio2"> {{ trans('forms_macro', 'add') }}</label>
+					<label><input class="uk-radio" type="radio" name="radio2" checked> {{ trans('forms_macro', 'set') }}</label>
+				</div>
+				<div class="uk-width-1-2@s">
+					<input class="uk-input" type="number" placeholder="50">
+				</div>
+				<div class="uk-width-1-2@s">
+					<select class="uk-select" id="form-horizontal-select">
+						<option>{{ trans('date', 'seconds') }}</option>
+						<option>{{ trans('date', 'minutes') }}</option>
+						<option>{{ trans('date', 'hours') }}</option>
+						<option>{{ trans('date', 'days') }}</option>
+						<option>{{ trans('date', 'months') }}</option>
+						<option>{{ trans('date', 'years') }}</option>
+					</select>
+				</div>
+			</li>
+		</ul>
+		{#		<a class="uk-button uk-button-primary"><i class="fas fa-calculator"></i></a>#}
+	</div>
 {% endmacro %}
