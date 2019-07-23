@@ -69,4 +69,10 @@ $(document).ready(function () {
         selectYears: true,
         selectMonths: true
     });
+
+    UIkit.util.on('.forms-expired-element > li', 'show', function() {
+        var self = $(this);
+        $(self.data('input')).val(self.data('value'));
+        console.log(this, $(self.data('input')), self.data('value'));
+    });
 });

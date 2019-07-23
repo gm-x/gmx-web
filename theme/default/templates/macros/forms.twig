@@ -228,17 +228,12 @@
 
 {% macro element_expired(element, format) %}
 	{% set forever = element.getValue() is null ? true : false %}
-{#	<input#}
-{#		type="hidden"#}
-{#		id="{{ element.getId() }}"#}
-{#		name="{{ element.getFormName() }}[{{ element.getName() }}]"#}
-{#		value="{{ element.format(format) }}"#}
-{#	>#}
 
 	<div class="uk-margin uk-inline uk-width-1-1">
 		<label class="switcher">
 			<input
 				type="checkbox"
+				name="{{ element.getFormName() }}[{{ element.getName() }}][forever]"
 				value="1"
 				class="uk-checkbox"
 				uk-toggle="target: #datepicker-{{ element.getId() }}"
@@ -260,36 +255,48 @@
 			<li><a href="#">{{ trans('forms_macro', 'period') }}</a></li>
 		</ul>
 
-		<ul class="uk-switcher uk-margin">
-			<li>
+		<input
+			type="hidden"
+			name="{{ element.getFormName() }}[{{ element.getName() }}][type]"
+			id="{{ element.getId() }}-type"
+			value="datetime"
+		/>
+
+		<ul class="uk-switcher uk-margin forms-expired-element">
+			<li data-value="datetime" data-input="#{{ element.getId() }}-type">
 				<div class="uk-margin uk-inline uk-width-1-1">
 					<label class="uk-form-label" for="{{ element.getId() }}">{{ element.getTitle() }}</label>
 					<div class="uk-form-controls">
 						<input
 							type="datetime-local"
 							class="uk-input datepicker"
-							name="{{ element.getFormName() }}[{{ element.getName() }}]"
+							name="{{ element.getFormName() }}[{{ element.getName() }}][datetime]"
 							value="{{ element.format(format) }}"
 						/>
 					</div>
 				</div>
 			</li>
-			<li uk-grid>
+			<li uk-grid data-value="interval" data-input="#{{ element.getId() }}-type">
 				<div class="uk-width-1-1@s uk-grid-small uk-child-width-auto uk-grid" uk-grid>
 					<label class="uk-first-column"><input class="uk-radio" type="radio" name="radio2"> {{ trans('forms_macro', 'add') }}</label>
 					<label><input class="uk-radio" type="radio" name="radio2" checked> {{ trans('forms_macro', 'set') }}</label>
 				</div>
 				<div class="uk-width-1-2@s">
-					<input class="uk-input" type="number" placeholder="50">
+					<input
+						type="number"
+						name="{{ element.getFormName() }}[{{ element.getName() }}][count]"
+						class="uk-input"
+						placeholder="50"
+					/>
 				</div>
 				<div class="uk-width-1-2@s">
-					<select class="uk-select" id="form-horizontal-select">
-						<option>{{ trans('date', 'seconds') }}</option>
-						<option>{{ trans('date', 'minutes') }}</option>
-						<option>{{ trans('date', 'hours') }}</option>
-						<option>{{ trans('date', 'days') }}</option>
-						<option>{{ trans('date', 'months') }}</option>
-						<option>{{ trans('date', 'years') }}</option>
+					<select name="{{ element.getFormName() }}[{{ element.getName() }}][interval]" class="uk-select" id="form-horizontal-select">
+						<option value="seconds">{{ trans('date', 'seconds') }}</option>
+						<option value="minutes">{{ trans('date', 'minutes') }}</option>
+						<option value="hours">{{ trans('date', 'hours') }}</option>
+						<option value="days">{{ trans('date', 'days') }}</option>
+						<option value="months">{{ trans('date', 'months') }}</option>
+						<option value="years">{{ trans('date', 'years') }}</option>
 					</select>
 				</div>
 			</li>

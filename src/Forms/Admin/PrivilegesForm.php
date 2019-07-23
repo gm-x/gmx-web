@@ -3,15 +3,16 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
+use \GameX\Core\Validate\Validator;
 use \GameX\Models\Server;
 use \GameX\Models\Privilege;
 use \GameX\Core\Forms\Elements\Select;
-use \GameX\Core\Forms\Elements\Date as DateElement;
+use \GameX\Core\Forms\Elements\Expired as ExpiredElement;
 use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Validate\Rules\InArray;
 use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\Number;
-use \GameX\Core\Validate\Rules\Date as DateRule;
+use \GameX\Core\Validate\Rules\Expired as ExpiredRule;
 use \GameX\Core\Validate\Rules\Callback;
 use \GameX\Core\Exceptions\PrivilegeFormException;
 
@@ -72,7 +73,7 @@ class PrivilegesForm extends BaseForm
                 'required' => true,
                 'empty_option' => $this->getTranslate($this->name, 'group_empty'),
             ]))
-	        ->add(new DateElement('expired', $this->privilege->expired_at, [
+	        ->add(new ExpiredElement('expired', $this->privilege->expired_at, [
 		        'id' => 'expired',
                 'title' => $this->getTranslate($this->name, 'expired'),
             ]))
@@ -86,11 +87,12 @@ class PrivilegesForm extends BaseForm
                 new Number(1),
                 new InArray(array_keys($groups)),
             ])
-            ->set('forever', false, [
-                new Boolean()
-            ])
-            ->set('expired', true, [
-                new DateRule()
+            ->set('expired', false, [
+                new ExpiredRule()
+            ], [
+                'check' => Validator::CHECK_ARRAY,
+                'trim' => false,
+                'allow_null' => true,
             ])
             ->set('active', false, [
                 new Boolean()
@@ -108,9 +110,7 @@ class PrivilegesForm extends BaseForm
     protected function processForm()
     {
         $this->privilege->group_id = $this->form->getValue('group');
-        $this->privilege->expired_at = !$this->form->getValue('forever')
-            ? $this->form->getValue('expired')
-            : null;
+        $this->privilege->expired_at = $this->form->getValue('expired');
         $this->privilege->active = $this->form->getValue('active') ? 1 : 0;
         return $this->privilege->save();
     }
