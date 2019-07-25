@@ -101,6 +101,11 @@
             server.id,
             permissions.ACCESS_LIST
         ) %}
+        {% set hasPlayerViewPermissions = has_access_permission(
+            constants.admin.players.PERMISSION_GROUP,
+            constants.admin.players.PERMISSION_KEY,
+            permissions.ACCESS_VIEW
+        ) %}
         <div class="uk-overflow-auto">
             <ul class="uk-flex-left uk-flex-nowrap" uk-tab="connect: #server-info;animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium">
                 <li {% if tab == 'online' %}class="uk-active"{% endif %}>
@@ -117,7 +122,7 @@
                     </li>
                 {% endif %}
                 <li>
-                    <a href="#">Privileges</a>
+                    <a href="#">{{ trans('admin_privileges', 'privileges') }}</a>
                 </li>
             </ul>
         </div>
@@ -313,15 +318,61 @@
                 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
                     <div f-table f-divider>
                         <ul th>
-                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Title</li>
-                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Player</li>
-                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">Expired</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_privileges', 'group') }}</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_privileges', 'player') }}</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_privileges', 'expired') }}</li>
+                            <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s"></li>
                         </ul>
                         {% for privilege in privileges %}
                             <ul>
-                                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ privilege.group.title }}</li>
-                                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ privilege.player.nick }}</li>
-                                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ privilege.expired_at }}</li>
+                                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">
+                                    {{ privilege.group.title }}
+                                </li>
+                                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">
+                                    {% if hasPlayerViewPermissions %}
+                                        <a href="{{ path_for(constants.admin.players.ROUTE_VIEW, {'player': privilege.player.id}) }}">
+                                            {{ privilege.player.nick }}
+                                        </a>
+                                    {% else %}
+                                        {{ privilege.player.nick }}
+                                    {% endif %}
+                                </li>
+                                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">
+                                    {% if privilege.expired_at is null %}
+                                        {{ trans('admin_privileges', 'forever') }}
+                                    {% else %}
+                                        {{ privilege.expired_at }}
+                                    {% endif %}
+                                </li>
+                                <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">
+                                    {% if has_access_resource(
+                                        constants.admin.privileges.PERMISSION_GROUP,
+                                        constants.admin.privileges.PERMISSION_KEY,
+                                        server.id,
+                                        permissions.ACCESS_EDIT
+                                    ) %}
+                                        {{ admin.edit_btn(
+                                            path_for(constants.admin.privileges.ROUTE_EDIT, {
+                                                'player': privilege.player.id,
+                                                'privilege' : privilege.id
+                                            })
+                                        ) }}
+                                    {% endif %}
+
+                                    {% if has_access_resource(
+                                        constants.admin.privileges.PERMISSION_GROUP,
+                                        constants.admin.privileges.PERMISSION_KEY,
+                                        server.id,
+                                        permissions.ACCESS_DELETE
+                                    ) %}
+                                        {{ admin.delete_btn(
+                                            path_for(constants.admin.privileges.ROUTE_DELETE, {
+                                                'player': privilege.player.id,
+                                                'privilege' : privilege.id
+                                            })
+                                        ) }}
+                                    {% endif %}
+                                </li>
                             </ul>
                         {% else %}
                             <ul>
