@@ -58,23 +58,27 @@
 										</div>
 										<div class="uk-card-body">
 											{% if server.online %}
-												{% set players = server.getActiveSessions() %}
-												{% if players | length > 0 %}
-													<table class="uk-table uk-table-striped">
+                                                {% set players = server.getActiveSessions() %}
+                                                {% if players | length > 0 %}
+													<table class="uk-table uk-table-striped uk-table-small paginate">
+														<thead>
 														<tr>
 															<th>Nick</th>
 															<th>Joined</th>
 															<th>Online</th>
 														</tr>
-														{% for session in players %}
-														<tr>
-															<td>{{ session.player.nick }}</td>
-															<td>{{ session.created_at }}</td>
-															<td>{{ session.online }}</td>
-														</tr>
-														{% endfor %}
+														</thead>
+														<tbody>
+                                                        {% for session in players %}
+															<tr>
+																<td>{{ session.player.nick }}</td>
+																<td>{{ session.created_at }}</td>
+																<td>{{ session.online }}</td>
+															</tr>
+                                                        {% endfor %}
+														</tbody>
 													</table>
-												{% else %}
+                                                {% else %}
 													<h2 class="uk-heading-line uk-text-center"><span>Нет игроков</span></h2>
                                                 {% endif %}
                                             {% else %}

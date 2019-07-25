@@ -60,6 +60,28 @@ input {
     background: rgba(0, 0, 0, 0.1) !important;
 }
 
+.players_list {
+    max-height: 211px;
+    overflow-y: scroll;
+}
+
+.players_list td {
+    padding: 8px 12px;
+}
+
+.paginate tbody tr {
+    display: none;
+}
+
+.uk-pagination li .uk-icon-button i {
+    margin: 9px 10px;
+}
+
+.uk-disabled a {
+    color: rgba(255, 255, 255, 0.2) !important;
+}
+
+
 .avatar__holder:after {
     content: '+';
     position: absolute;
