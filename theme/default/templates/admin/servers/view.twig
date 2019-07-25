@@ -121,7 +121,7 @@
                         <a href="#">{{ trans('admin_servers', 'reasons') }}</a>
                     </li>
                 {% endif %}
-                <li>
+                <li {% if tab == 'privileges' %}class="uk-active"{% endif %}>
                     <a href="#">{{ trans('admin_privileges', 'privileges') }}</a>
                 </li>
             </ul>
