@@ -37,6 +37,12 @@ class IndexController extends BaseMainController
             ->limit(20)
             ->get();
 
+//	    $punishments = Punishment::with('player')
+//		    ->where('status', Punishment::STATUS_PUNISHED)
+//		    ->orderBy('created_at', 'DESC')
+//		    ->limit(20)
+//		    ->get();
+
         return $this->getView()->render($response, 'index/index.twig', [
             'servers' => $servers,
             'punishments' => $punishments,

@@ -45,7 +45,7 @@ class PrivilegesController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add(
@@ -96,7 +96,7 @@ class PrivilegesController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add(
@@ -146,7 +146,7 @@ class PrivilegesController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add(

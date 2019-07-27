@@ -15,8 +15,6 @@ use \GameX\Models\Privilege;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\PunishmentsConstants;
-use \GameX\Core\Jobs\JobHelper;
-use \GameX\Models\Task;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
