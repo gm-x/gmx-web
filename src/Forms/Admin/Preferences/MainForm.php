@@ -48,6 +48,7 @@ class MainForm extends BaseForm
         $main = $this->preferences->getNode(PreferencesConstants::CATEGORY_MAIN);
         $languages = $this->preferences->getNode('languages')->toArray();
         $themes = $this->preferences->getNode('themes')->toArray();
+        $cron = $this->preferences->getNode(PreferencesConstants::CATEGORY_CRON);
         $this->form->add(new Text('title', $main->get(PreferencesConstants::MAIN_TITLE), [
                 'title' => $this->getTranslate('admin_preferences', 'title'),
                 'required' => true,
@@ -64,15 +65,26 @@ class MainForm extends BaseForm
                 'title' => $this->getTranslate('admin_preferences', 'auto_activate_users'),
                 'required' => false,
                 'disabled' => !$this->hasAccessToEdit,
-            ]));
+            ]))
+	        ->add(new Checkbox('cron_reload_admins', $cron->get('reload_admins'), [
+		        'title' => $this->getTranslate('admin_preferences', 'cron_reload_admins'),
+		        'required' => false,
+		        'disabled' => !$this->hasAccessToEdit,
+	        ]));
         
-        $this->form->getValidator()->set('title', true)->set('language', true, [
+        $this->form->getValidator()->set('title', true)
+	        ->set('language', true, [
                 new InArray(array_keys($languages))
-            ])->set('theme', true, [
+            ])
+	        ->set('theme', true, [
                 new InArray(array_keys($themes))
-            ])->set('auto_activate_users', false, [
+            ])
+	        ->set('auto_activate_users', false, [
                 new Boolean()
-            ], ['check' => Validator::CHECK_EMPTY, 'default' => false]);
+            ], ['check' => Validator::CHECK_EMPTY, 'default' => false])
+	        ->set('cron_reload_admins', false, [
+		        new Boolean()
+	        ], ['check' => Validator::CHECK_EMPTY, 'default' => false]);
     }
     
     /**
@@ -87,6 +99,11 @@ class MainForm extends BaseForm
         $main->set(PreferencesConstants::MAIN_LANGUAGE, $this->form->getValue('language'));
         $main->set(PreferencesConstants::MAIN_THEME, $this->form->getValue('theme'));
         $main->set(PreferencesConstants::MAIN_AUTO_ACTIVATE_USERS, $this->form->getValue('auto_activate_users'));
+
+	    $this->preferences
+		    ->getNode(PreferencesConstants::CATEGORY_CRON)
+		    ->set('reload_admins', $this->form->getValue('cron_reload_admins'));
+
         $this->preferences->save();
         return true;
     }

@@ -298,11 +298,6 @@ class PrivilegesController extends BaseAdminController
 	 */
 	protected function reloadAdmins(Server $server)
 	{
-		JobHelper::createTaskIfNotExists('rcon_exec', [
-			'server_id' => $server->id,
-			'command' => 'amx_reloadadmins'
-		], null, function (Task $task) use ($server) {
-			return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
-		});
+		$this->getContainer('utils_rcon_exec')->reloadAdmins($server);
 	}
 }

@@ -214,18 +214,4 @@ class PlayersController extends BaseAdminController
         
         return $player;
     }
-
-	/**
-	 * @param Server $server
-	 * @param Player $player
-	 */
-	protected function reloadAdmins(Server $server, Player $player)
-	{
-		JobHelper::createTaskIfNotExists('rcon_exec', [
-			'server_id' => $server->id,
-			'command' => 'amx_reloadadmins'
-		], null, function (Task $task) use ($server) {
-			return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
-		});
-	}
 }

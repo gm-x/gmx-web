@@ -5,7 +5,6 @@ namespace GameX\Controllers\Admin;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Response;
-use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Core\BaseAdminController;
 use \GameX\Models\Server;
@@ -260,11 +259,6 @@ class GroupsController extends BaseAdminController
 	 */
     protected function reloadAdmins(Server $server)
     {
-	    JobHelper::createTaskIfNotExists('rcon_exec', [
-		    'server_id' => $server->id,
-		    'command' => 'amx_reloadadmins'
-	    ], null, function (Task $task) use ($server) {
-		    return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
-	    });
+    	$this->getContainer('utils_rcon_exec')->reloadAdmins($server);
     }
 }
