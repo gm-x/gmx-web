@@ -5,13 +5,12 @@ namespace GameX\Core\Utils;
 use \Psr\Container\ContainerInterface;
 use \xPaw\SourceQuery\SourceQuery;
 use \GameX\Core\Configuration\Config;
+use \GameX\Core\Log\Logger;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Models\Task;
 use \GameX\Models\Server;
 use \GameX\Core\Configuration\Exceptions\NotFoundException;
-use \xPaw\SourceQuery\Exception\InvalidArgumentException;
-use \xPaw\SourceQuery\Exception\InvalidPacketException;
-use \xPaw\SourceQuery\Exception\SocketException;
+use \xPaw\SourceQuery\Exception\SourceQueryException;
 
 class RconExec
 {
@@ -36,16 +35,11 @@ class RconExec
 
 	/**
 	 * @param Server $server
-	 * @throws InvalidArgumentException
-	 * @throws InvalidPacketException
 	 * @throws NotFoundException
-	 * @throws SocketException
 	 */
-	public function reloadAdmins(Server $server)
+	public function reloadPrivileges(Server $server)
 	{
-        /** @var Config $config */
-    	$config = $this->container->get('preferences');
-	    if ($config->getNode('cron')->get('reload_admins')) {
+	    if ($this->getPreferences()->getNode('cron')->get('reload_admins')) {
 		    JobHelper::createTaskIfNotExists('rcon_exec', [
 			    'server_id' => $server->id,
 			    'command' => 'amx_reloadadmins'
@@ -60,18 +54,40 @@ class RconExec
 	/**
 	 * @param Server $server
 	 * @param $command
-	 * @throws InvalidArgumentException
-	 * @throws InvalidPacketException
-	 * @throws SocketException
 	 */
 	public function sendCommand(Server $server, $command)
 	{
 		if (!empty($server->rcon) && array_key_exists($server->type, self::ENGINES)) {
-			$query = new SourceQuery();
-			$query->Connect($server->ip, $server->port, 10, self::ENGINES[$server->type]);
-			$query->SetRconPassword($server->rcon);
-			$query->Rcon($command);
-			$query->Disconnect();
+			try {
+				$query = new SourceQuery();
+				$query->Connect($server->ip, $server->port, 10, self::ENGINES[$server->type]);
+				$query->SetRconPassword($server->rcon);
+				$query->Rcon($command);
+				$query->Disconnect();
+			} catch (SourceQueryException $e) {
+				$this->getLogger()->exception($e);
+			}
+		} else {
+			$this->getLogger()->error(sprintf(
+				'Can\'t execute rcon command %s for %s',
+				$command, $server->name
+			));
 		}
+	}
+
+	/**
+	 * @return Config
+	 */
+	protected function getPreferences()
+	{
+		return $this->container->get('preferences');
+	}
+
+	/**
+	 * @return Logger
+	 */
+	protected function getLogger()
+	{
+		return $this->container->get('log');
 	}
 }
