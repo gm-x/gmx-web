@@ -25,6 +25,7 @@ use \Monolog\Formatter\LineFormatter;
 use \Monolog\Handler\RotatingFileHandler;
 
 use \Illuminate\Database\Capsule\Manager as DataBaseManager;
+use \Illuminate\Events\Dispatcher as DataBaseDispatcher;
 
 use \GameX\Core\Lang\Loaders\JSONLoader;
 use \GameX\Core\Lang\Providers\SlimProvider;
@@ -238,6 +239,8 @@ class DependencyProvider implements ServiceProviderInterface
         
         $capsule = new DataBaseManager;
         $capsule->addConnection($config->getNode('db')->toArray());
+
+	    $capsule->setEventDispatcher(new DataBaseDispatcher());
         
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
