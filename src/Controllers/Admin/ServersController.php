@@ -66,6 +66,8 @@ class ServersController extends BaseAdminController
 
 	    $sessions = $server->getActiveSessions();
 
+        $groups = $server->groups()->orderBy('priority', 'asc')->get();
+
 	    $privileges = $server->groups()
 		    ->get()
 		    ->reduce(function ($privileges, $item) {
@@ -76,8 +78,10 @@ class ServersController extends BaseAdminController
 		    });
 
         return $this->getView()->render($response, 'admin/servers/view.twig', [
+	        'tab' => $request->getParam('tab', 'online'),
             'server' => $server,
             'sessions' => $sessions,
+	        'groups' => $groups,
 	        'privileges' => $privileges
         ]);
     }

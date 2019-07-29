@@ -17,5 +17,7 @@
     "main_tab": "Main",
     "assign_tab": "Assign",
     "create": "Create",
-    "edit": "Edit"
+    "edit": "Edit",
+    "yes": "Yes",
+    "no": "No"
 }

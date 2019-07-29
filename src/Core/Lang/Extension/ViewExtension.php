@@ -1,14 +1,14 @@
 <?php
 namespace GameX\Core\Lang\Extension;
 
-
 use \Psr\Container\ContainerInterface;
 use \Twig\Extension\AbstractExtension;
 use \Twig_SimpleFunction;
 use \Twig\Extension\GlobalsInterface;
 use \GameX\Core\Lang\Language;
 
-class ViewExtension extends AbstractExtension implements GlobalsInterface {
+class ViewExtension extends AbstractExtension implements GlobalsInterface
+{
 
 	/**
 	 * @var ContainerInterface
@@ -19,11 +19,13 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface {
 	 * ViewExtension constructor.
 	 * @param ContainerInterface $container
 	 */
-	public function __construct(ContainerInterface $container) {
+	public function __construct(ContainerInterface $container)
+    {
 		$this->container = $container;
 	}
 
-    public function getGlobals() {
+    public function getGlobals()
+    {
         return [
             'userLang' => $this->getLanguage()->getUserLanguage(),
             'userLangName' => $this->getLanguage()->getUserLanguageName(),
@@ -34,7 +36,8 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface {
     /**
 	 * @return array
 	 */
-	public function getFunctions() {
+	public function getFunctions()
+    {
 		return [
 			new Twig_SimpleFunction(
 				'trans',
@@ -50,7 +53,8 @@ class ViewExtension extends AbstractExtension implements GlobalsInterface {
 	 * @param array $args
 	 * @return string
 	 */
-	public function translate($section, $key, ...$args) {
+	public function translate($section, $key, ...$args)
+    {
 		return $this->getLanguage()->format($section, $key, $args);
 	}
 

@@ -168,7 +168,7 @@ class Player extends BaseModel
 	        ->where('status', '=', Punishment::STATUS_PUNISHED)
 	        ->where(function (Builder $query) {
                 $query
-	                ->where('expired_at', '>', Carbon::now()->toDateTimeString())
+	                ->where('expired_at', '>', Carbon::now())
 	                ->orWhereNull('expired_at');
             })->where(function (Builder $query) use ($server) {
                 $query

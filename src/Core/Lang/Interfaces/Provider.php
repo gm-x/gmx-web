@@ -1,7 +1,9 @@
 <?php
+
 namespace GameX\Core\Lang\Interfaces;
 
-interface Provider {
+interface Provider
+{
     /**
      * @return string
      */

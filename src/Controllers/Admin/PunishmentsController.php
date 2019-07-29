@@ -55,7 +55,7 @@ class PunishmentsController extends BaseAdminController
 			    $player->nick,
 			    $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
 		    )
-		    ->add($this->getTranslate('admin_privileges', 'punishments'));
+		    ->add($this->getTranslate('admin_punishments', 'punishments'));
         
         $hasAccess = $this->getPermissions()->hasUserAccessToResource(PunishmentsConstants::PERMISSION_GROUP,
             PunishmentsConstants::PERMISSION_KEY, $punishment->server_id, Permissions::ACCESS_VIEW);
@@ -85,15 +85,29 @@ class PunishmentsController extends BaseAdminController
         $player = $this->getPlayer($request, $response, $playerId);
         $server = $this->getServer($request, $response, $serverId);
         $punishment = $this->getPunishment($request, $response, $player, null, $server);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'players'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_punishments', 'punishments'),
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'punishments'])
+            )
+            ->add($this->getTranslate('labels', 'create'));
         
         $form = new PunishmentsForm($server, $punishment);
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect(PunishmentsConstants::ROUTE_VIEW, [
+                return $this->redirect(PlayersConstants::ROUTE_VIEW, [
                     'player' => $player->id,
-                    'punishment' => $punishment->id,
-                ]);
+                ], ['tab' => 'punishments']);
             }
         } catch (PunishmentsFormException $e) {
             $this->addErrorMessage($this->getTranslate('admin_punishments', 'empty_reasons_list'));
@@ -124,16 +138,30 @@ class PunishmentsController extends BaseAdminController
     {
         $player = $this->getPlayer($request, $response, $playerId);
         $punishment = $this->getPunishment($request, $response, $player, $punishmentId);
-        $server = $this->getServerForPunishment($punishment, Permissions::ACCESS_DELETE);
+        $server = $this->getServerForPunishment($punishment, Permissions::ACCESS_EDIT);
+
+        $this->getBreadcrumbs()
+            ->add(
+                $this->getTranslate('admin_menu', 'players'),
+                $this->pathFor(PlayersConstants::ROUTE_LIST)
+            )
+            ->add(
+                $player->nick,
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id])
+            )
+            ->add(
+                $this->getTranslate('admin_punishments', 'punishments'),
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'punishments'])
+            )
+            ->add($this->getTranslate('labels', 'edit'));
         
         $form = new PunishmentsForm($server, $punishment);
         try {
             if ($this->processForm($request, $form)) {
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect(PunishmentsConstants::ROUTE_VIEW, [
+                return $this->redirect(PlayersConstants::ROUTE_VIEW, [
                     'player' => $player->id,
-                    'punishment' => $punishment->id,
-                ]);
+                ], ['tab' => 'punishments']);
             }
         } catch (PunishmentsFormException $e) {
             $this->addErrorMessage($this->getTranslate('admin_punishments', 'empty_reasons_list'));
@@ -172,8 +200,10 @@ class PunishmentsController extends BaseAdminController
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
-        
-        return $this->redirect(PlayersConstants::ROUTE_VIEW, ['player' => $player->id]);
+
+        return $this->redirect(PlayersConstants::ROUTE_VIEW, [
+            'player' => $player->id,
+        ], ['tab' => 'punishments']);
     }
     
     /**

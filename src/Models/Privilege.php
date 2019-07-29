@@ -3,6 +3,7 @@
 namespace GameX\Models;
 
 use \GameX\Core\BaseModel;
+use \Carbon\Carbon;
 
 /**
  * Class Privilege
@@ -10,7 +11,9 @@ use \GameX\Core\BaseModel;
  *
  * @property integer $player_id
  * @property integer $group_id
- * @property \DateTime expired_at
+ * @property Carbon|null $expired_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property bool active
  * @property Group $group
  * @property Player $player

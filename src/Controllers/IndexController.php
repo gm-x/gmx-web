@@ -8,6 +8,7 @@ use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Lang\Language;
 use \GameX\Models\Server;
+use \GameX\Models\Punishment;
 use \GameX\Constants\IndexConstants;
 
 class IndexController extends BaseMainController
@@ -30,8 +31,21 @@ class IndexController extends BaseMainController
     {
         $servers = Server::with('map')->where('active', true)->get();
 
+        $punishments = Punishment::with('player')
+            ->where('status', Punishment::STATUS_PUNISHED)
+            ->orderBy('created_at', 'DESC')
+            ->limit(20)
+            ->get();
+
+//	    $punishments = Punishment::with('player')
+//		    ->where('status', Punishment::STATUS_PUNISHED)
+//		    ->orderBy('created_at', 'DESC')
+//		    ->limit(20)
+//		    ->get();
+
         return $this->getView()->render($response, 'index/index.twig', [
             'servers' => $servers,
+            'punishments' => $punishments,
         ]);
     }
     

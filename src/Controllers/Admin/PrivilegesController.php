@@ -45,7 +45,7 @@ class PrivilegesController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add(
@@ -96,7 +96,7 @@ class PrivilegesController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add(
@@ -105,19 +105,16 @@ class PrivilegesController extends BaseAdminController
             )
             ->add(
                 $this->getTranslate('admin_privileges', 'privileges'),
-                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'privileges'])
             )
             ->add($this->getTranslate('labels', 'create'));
 
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
-	            $this->reloadAdmins($server);
+	            $this->reloadPrivileges($server);
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
-                    'player' => $player->id,
-                    'privilege' => $privilege->id,
-                ]);
+                return $this->redirect(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'privileges']);
             }
         } catch (PrivilegeFormException $e) {
             $this->addErrorMessage($this->getTranslate('admin_privileges', 'empty_groups_list'));
@@ -149,7 +146,7 @@ class PrivilegesController extends BaseAdminController
 
         $this->getBreadcrumbs()
             ->add(
-                $this->getTranslate('admin_menu', 'users'),
+                $this->getTranslate('admin_menu', 'players'),
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add(
@@ -158,19 +155,16 @@ class PrivilegesController extends BaseAdminController
             )
             ->add(
                 $this->getTranslate('admin_privileges', 'privileges'),
-                $this->pathFor(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id])
+                $this->pathFor(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'privileges'])
             )
             ->add($this->getTranslate('labels', 'edit'));
 
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
-	            $this->reloadAdmins($server);
+	            $this->reloadPrivileges($server);
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-                return $this->redirect(PrivilegesConstants::ROUTE_EDIT, [
-                    'player' => $player->id,
-                    'privilege' => $privilege->id,
-                ]);
+                return $this->redirect(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'privileges']);
             }
         } catch (PrivilegeFormException $e) {
             $this->addErrorMessage($this->getTranslate('admin_privileges', 'empty_groups_list'));
@@ -201,14 +195,14 @@ class PrivilegesController extends BaseAdminController
         
         try {
             $privilege->delete();
-	        $this->reloadAdmins($server);
+	        $this->reloadPrivileges($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
         
-        return $this->redirect(PrivilegesConstants::ROUTE_LIST, ['player' => $player->id]);
+        return $this->redirect(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'privileges']);
     }
     
     /**
@@ -302,13 +296,8 @@ class PrivilegesController extends BaseAdminController
 	/**
 	 * @param Server $server
 	 */
-	protected function reloadAdmins(Server $server)
+	protected function reloadPrivileges(Server $server)
 	{
-		JobHelper::createTaskIfNotExists('rcon_exec', [
-			'server_id' => $server->id,
-			'command' => 'amx_reloadadmins'
-		], null, function (Task $task) use ($server) {
-			return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
-		});
+		$this->getContainer('utils_rcon_exec')->reloadPrivileges($server);
 	}
 }

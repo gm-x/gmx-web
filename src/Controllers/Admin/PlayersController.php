@@ -15,8 +15,6 @@ use \GameX\Models\Privilege;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\PunishmentsConstants;
-use \GameX\Core\Jobs\JobHelper;
-use \GameX\Models\Task;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
@@ -96,6 +94,7 @@ class PlayersController extends BaseAdminController
         }
         
         return $this->getView()->render($response, 'admin/players/view.twig', [
+            'tab' => $request->getParam('tab', 'info'),
             'player' => $player,
             'privileges' => $privileges,
             'servers' => $servers,
@@ -213,18 +212,4 @@ class PlayersController extends BaseAdminController
         
         return $player;
     }
-
-	/**
-	 * @param Server $server
-	 * @param Player $player
-	 */
-	protected function reloadAdmins(Server $server, Player $player)
-	{
-		JobHelper::createTaskIfNotExists('rcon_exec', [
-			'server_id' => $server->id,
-			'command' => 'amx_reloadadmins'
-		], null, function (Task $task) use ($server) {
-			return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
-		});
-	}
 }

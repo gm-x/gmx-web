@@ -10,13 +10,16 @@
     <title>{% block title %}{{ title }} | {{ trans('labels', 'admin_panel') }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/pickadate.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
     <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
+    <script src="{{ base_url() }}/assets/js/pickadate.min.js"></script>
     {% block style %}{% endblock %}
 </head>
 <body>
+
 <div class="uk-container-expand admin">
     <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
         {{ navbar.adminbar(menu, adminmenu) }}
@@ -67,12 +70,10 @@
             exception: '{{ trans('labels', 'exception') }}',
             delete: '{{ trans('buttons', 'delete') }}',
             cancel: '{{ trans('buttons', 'cancel') }}',
-            are_you_sure: '{{ trans('buttons', 'are_you_sure') }}'
+            are_you_sure: '{{ trans('labels', 'are_you_sure') }}'
         };
     </script>
-    <script src="{{ base_url() }}/assets/scripts/xhr.js"></script>
     <script src="{{ base_url() }}/assets/scripts/main.js"></script>
-    <script src="{{ base_url() }}/assets/scripts/admin.js"></script>
     {% block javascript %}{% endblock %}
 </div>
 </body>

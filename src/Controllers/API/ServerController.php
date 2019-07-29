@@ -9,8 +9,11 @@ use \Carbon\Carbon;
 use \GameX\Models\Privilege;
 use \GameX\Models\Map;
 use \GameX\Models\Player;
+use \GameX\Models\PlayerSession;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\Number;
+use \GameX\Core\Validate\Rules\ArrayRule;
+use \GameX\Core\Validate\Rules\ArrayCallback;
 use \GameX\Core\Exceptions\ValidationException;
 
 class ServerController extends BaseApiController
@@ -63,22 +66,6 @@ class ServerController extends BaseApiController
             'success' => true,
             'groups' => $server->groups,
             'privileges' => array_values($privileges),
-        ]);
-    }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     */
-    public function reasonsAction(Request $request, Response $response)
-    {
-        $server = $this->getServer($request);
-        $reasons = $server->reasons()->where('active', 1)->get();
-
-        return $response->withStatus(200)->withJson([
-            'success' => true,
-            'reasons' => $reasons,
         ]);
     }
     
@@ -141,6 +128,16 @@ class ServerController extends BaseApiController
         $validator
             ->set('num_players', true, [
                 new Number(0),
+            ])
+            ->set('sessions', true, [
+                new ArrayRule(),
+                new ArrayCallback(function ($value) {
+                    $value = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+                    return $value !== false ? $value : null;
+                }, '')
+            ], [
+            	'check' => Validator::CHECK_IGNORE,
+	            'trim' => false
             ]);
 
         $result = $validator->validate($this->getBody($request));
@@ -149,10 +146,19 @@ class ServerController extends BaseApiController
             throw new ValidationException($result->getFirstError());
         }
 
+        $now = Carbon::now();
+
         $server = $this->getServer($request);
-		$server->num_players = $result->getValue('num_players');
-		$server->ping_at = Carbon::now()->toDateTimeString();
+		$server->fill([
+		    'num_players' => $result->getValue('num_players'),
+		    'ping_at' => $now,
+		]);
 		$server->save();
+
+        PlayerSession::whereIn('id',  $result->getValue('sessions'))
+            ->update([
+                'ping_at' => $now,
+            ]);
 
 		return $response->withStatus(200)->withJson([
 			'success' => true

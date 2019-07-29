@@ -17,6 +17,7 @@
 		{{ forms.element_select(form.language) }}
 		{{ forms.element_select(form.theme) }}
 		{{ forms.element_checkbox(form.auto_activate_users) }}
+		{{ forms.element_checkbox(form.cron_reload_admins) }}
 
 		{% if hasAccessToEdit %}
 			<div class="form-group">

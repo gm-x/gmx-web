@@ -51,7 +51,7 @@
 								) %}
 									<li>
 										<a
-											href="{{ path_for(constants.admin.groups.ROUTE_LIST, {'server': server.id}) }}"
+											href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': server.id}, {'tab': 'groups'}) }}"
 											class="dropdown-item"
 										>
 											<i class="fas fa-users uk-margin-small-right"></i> &nbsp;{{ trans('admin_servers', 'groups') }}
@@ -67,13 +67,29 @@
 								) %}
 									<li>
 										<a
-											href="{{ path_for(constants.admin.reasons.ROUTE_LIST, {'server': server.id}) }}"
+											href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': server.id}, {'tab': 'reasons'}) }}"
 											class="dropdown-item"
 										>
 											<i class="fas fa-tasks uk-margin-small-right"></i> &nbsp;{{ trans('admin_servers', 'reasons') }}
 										</a>
 									</li>
 								{% endif %}
+
+                                {% if has_access_resource(
+                                    constants.admin.privileges.PERMISSION_GROUP,
+                                    constants.admin.privileges.PERMISSION_KEY,
+                                    server.id,
+                                    permissions.ACCESS_LIST
+								) %}
+									<li>
+										<a
+											href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {'server': server.id}, {'tab': 'privileges'}) }}"
+											class="dropdown-item"
+										>
+											<i class="fas fa-tasks uk-margin-small-right"></i> &nbsp;{{ trans('admin_privileges', 'privileges') }}
+										</a>
+									</li>
+                                {% endif %}
                             {% endblock %}
                         {% endembed %}
 

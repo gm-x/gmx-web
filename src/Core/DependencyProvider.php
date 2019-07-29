@@ -68,6 +68,8 @@ use \GameX\Core\Update\Manifest;
 
 use \GameX\Core\Breadcrumbs\Breadcrumbs;
 
+use \GameX\Core\Utils\RconExec;
+
 class DependencyProvider implements ServiceProviderInterface
 {
     /**
@@ -165,6 +167,10 @@ class DependencyProvider implements ServiceProviderInterface
             $modules = new \GameX\Core\Module\Module();
             //	$modules->addModule(new \GameX\Modules\TestModule\Module());
             return $modules;
+        };
+
+        $container['utils_rcon_exec'] = function (ContainerInterface $container) {
+        	return new RconExec($container);
         };
     }
     

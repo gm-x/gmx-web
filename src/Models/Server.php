@@ -2,9 +2,9 @@
 
 namespace GameX\Models;
 
-use \Carbon\Carbon;
+use \Illuminate\Database\Eloquent\SoftDeletes;
 use \GameX\Core\BaseModel;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use \Carbon\Carbon;
 use \GameX\Core\Utils;
 
 /**
@@ -51,7 +51,7 @@ class Server extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['type', 'name', 'ip', 'port', 'token', 'rcon', 'active', 'num_players', 'max_players', 'map_id'];
+    protected $fillable = ['type', 'name', 'ip', 'port', 'token', 'rcon', 'active', 'num_players', 'max_players', 'map_id', 'ping_at'];
     
     /**
      * @var array
@@ -78,13 +78,19 @@ class Server extends BaseModel
 		'map_id' => 'int',
 	];
 
+	protected $isOnline = null;
+
 	/**
 	 * @return bool
 	 */
 	public function getOnlineAttribute()
 	{
-		return $this->ping_at !== null
-			&& $this->ping_at->diffInMinutes(Carbon::now(), false) < 2;
+		if ($this->isOnline === null) {
+			$this->isOnline = $this->ping_at !== null
+				&& $this->ping_at->diffInMinutes(Carbon::now(), false) < 3;
+		}
+
+		return $this->isOnline;
 	}
     
     /**
@@ -135,10 +141,11 @@ class Server extends BaseModel
         return $this
             ->sessions()
             ->with('player')
-            ->where('status', '=', PlayerSession::STATUS_ONLINE)
+            ->where('status', PlayerSession::STATUS_ONLINE)
 //	        ->whereTime('updated_at', '>', Carbon::today())
 	        ->groupBy('id', 'player_id')
             ->orderBy('created_at', 'DESC')
+            ->limit($this->max_players)
             ->get();
     }
     
