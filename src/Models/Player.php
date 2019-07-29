@@ -78,7 +78,7 @@ class Player extends BaseModel
     public static function boot() {
         parent::boot();
         
-        static::deleting(function(Player $player) {
+        Player::deleting(function(Player $player) {
             $player->privileges()->delete();
             $player->punishments()->delete();
             $player->sessions()->delete();
