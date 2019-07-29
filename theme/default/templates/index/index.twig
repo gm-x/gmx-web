@@ -1,5 +1,7 @@
 {% extends 'base.twig' %}
 
+{% import 'macros/punishments.twig' as punishments_macro %}
+
 {% block style %}
 	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
 {% endblock %}
@@ -56,23 +58,31 @@
 										</div>
 										<div class="uk-card-body">
 											{% if server.online %}
-												{% set players = server.getActiveSessions() %}
-												{% if players | length > 0 %}
-													<table class="uk-table uk-table-striped">
+                                                {% set players = server.getActiveSessions() %}
+                                                {% if players | length > 0 %}
+													<table class="uk-table uk-table-striped uk-table-small paginate">
+														<thead>
 														<tr>
 															<th>Nick</th>
 															<th>Joined</th>
 															<th>Online</th>
 														</tr>
-														{% for session in players %}
-														<tr>
-															<td>{{ session.player.nick }}</td>
-															<td>{{ session.created_at }}</td>
-															<td>{{ session.online }}</td>
-														</tr>
-														{% endfor %}
+														</thead>
+														<tbody>
+                                                        {% for session in players %}
+															<tr>
+																<td>{{ session.player.nick }}</td>
+																<td>{{ session.created_at }}</td>
+																<td>{{ session.online }}</td>
+															</tr>
+                                                        {% endfor %}
+														</tbody>
 													</table>
-												{% endif %}
+                                                {% else %}
+													<h2 class="uk-heading-line uk-text-center"><span>Нет игроков</span></h2>
+                                                {% endif %}
+                                            {% else %}
+												<h2 class="uk-heading-line uk-text-center"><span>Нет игроков</span></h2>
 											{% endif %}
 										</div>
 									</div>
@@ -92,30 +102,24 @@
 	<div>
 		<div class="uk-card uk-card-default">
 			<div class="uk-card-header">
-				<h3 class="uk-card-title"><i class="fas fa-history"></i> Последние наказания</h3>
+				<h3 class="uk-card-title"><i class="fas fa-history"></i> {{ trans('punishments', 'last_title') }}</h3>
 			</div>
 			<div class="uk-card-body">
 				<div f-table f-divider>
 					<ul th>
-						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Nick</li>
-						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Reason</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">{{ trans('punishments', 'player') }}</li>
+						<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">{{ trans('punishments', 'reason') }}</li>
 					</ul>
-					<ul>
-						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
-						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
-					</ul>
-					<ul>
-						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
-						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
-					</ul>
-					<ul>
-						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
-						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
-					</ul>
-					<ul>
-						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">fdfsf</li>
-						<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Reason">sdfsd</li>
-					</ul>
+					{% for punishment in punishments %}
+						<ul>
+							<li class="uk-width-1-2@m uk-width-1-1@s">{{ punishment.player.nick }}</li>
+							<li class="uk-width-1-2@m uk-width-1-1@s">{{ punishments_macro.reason(punishment) }}</li>
+						</ul>
+					{% else %}
+						<ul>
+							<li class="uk-width-1-2@m uk-width-1-1@s">{{ trans('punishments', 'nothing_to_show') }}</li>
+						</ul>
+					{% endfor %}
 				</div>
 			</div>
 		</div>

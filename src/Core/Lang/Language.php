@@ -1,4 +1,5 @@
 <?php
+
 namespace GameX\Core\Lang;
 
 use \GameX\Core\Lang\Interfaces\Loader;
@@ -6,7 +7,8 @@ use \GameX\Core\Lang\Interfaces\Provider;
 use \GameX\Core\Lang\Exceptions\BadLanguageException;
 use \GameX\Core\Lang\Exceptions\CantReadException;
 
-class Language {
+class Language
+{
     const HTTP_ACCEPT_PATTERN = '/([[:alpha:]]{1,8}(?:-[[:alpha:]|-]{1,8})?)(?:\\s*;\\s*q\\s*=\\s*(?:1\\.0{0,3}|0\\.\\d{0,3}))?\\s*(?:,|$)/i';
 
     /**
@@ -24,9 +26,9 @@ class Language {
      */
     protected $languages = [];
 
-	/**
-	 * @var boolean
-	 */
+    /**
+     * @var boolean
+     */
     protected $debug;
 
     /**
@@ -48,11 +50,12 @@ class Language {
      * @param boolean $debug
      * @throws BadLanguageException
      */
-    public function __construct(Loader $loader, Provider $provider, array $languages = ['en' => 'English'], $default = 'en', $debug = false) {
+    public function __construct(Loader $loader, Provider $provider, array $languages = ['en' => 'English'], $default = 'en', $debug = false)
+    {
         $this->loader = $loader;
         $this->provider = $provider;
         $this->languages = $languages;
-        $this->debug = (bool) $debug;
+        $this->debug = (bool)$debug;
         $this->userLanguage = $this->checkUserLanguage($default);
         if (!$this->userLanguage) {
             throw new BadLanguageException();
@@ -64,7 +67,8 @@ class Language {
      * @return $this
      * @throws BadLanguageException
      */
-    public function setUserLang($lang) {
+    public function setUserLang($lang)
+    {
         if (!$this->exists($lang)) {
             throw new BadLanguageException();
         }
@@ -78,10 +82,11 @@ class Language {
      * @param array $args
      * @return string
      */
-    public function format($section, $key, $args = null) {
-    	if ($this->debug) {
-		    return sprintf('{%s.%s}', $section, $key);
-	    }
+    public function format($section, $key, $args = null)
+    {
+        if ($this->debug) {
+            return sprintf('{%s.%s}', $section, $key);
+        }
         $message = $this->getMessage($section, $key);
         if (!$message) {
             return sprintf('{%s.%s}', $section, $key);
@@ -94,21 +99,24 @@ class Language {
     /**
      * @return string
      */
-    public function getUserLanguage() {
+    public function getUserLanguage()
+    {
         return $this->userLanguage;
     }
 
     /**
      * @return string
      */
-    public function getUserLanguageName() {
+    public function getUserLanguageName()
+    {
         return $this->languages[$this->userLanguage];
     }
 
     /**
      * @return string[]
      */
-    public function getLanguages() {
+    public function getLanguages()
+    {
         return $this->languages;
     }
 
@@ -116,7 +124,8 @@ class Language {
      * @param string $default
      * @return string
      */
-    protected function checkUserLanguage($default) {
+    protected function checkUserLanguage($default)
+    {
         $language = $this->provider->getLang();
         if ($language && $this->exists($language)) {
             return $language;
@@ -124,7 +133,7 @@ class Language {
         $language = $this->provider->getAcceptLanguageHeader();
         if ($language) {
             preg_match_all(self::HTTP_ACCEPT_PATTERN, $language, $matches);
-            foreach($matches[1] as $match) {
+            foreach ($matches[1] as $match) {
                 $language = str_replace('-', '_', $match);
                 if ($language && $this->exists($language)) {
                     return $language;
@@ -135,7 +144,8 @@ class Language {
         return $this->exists($default) ? $default : null;
     }
 
-    protected function exists($lang) {
+    protected function exists($lang)
+    {
         return array_key_exists($lang, $this->languages);
     }
 
@@ -144,7 +154,8 @@ class Language {
      * @param string $key
      * @return string|null
      */
-    protected function getMessage($section, $key) {
+    protected function getMessage($section, $key)
+    {
         if (!array_key_exists($section, $this->dictionary)) {
             try {
                 $this->dictionary[$section] = (array)$this->loader->loadSection($this->userLanguage, $section);

@@ -53,7 +53,7 @@ class Updater
         $updatesFiles = $updates->getFiles();
         $baseDir = $this->manifest->getDir();
         $updatesDir = $updates->getDir();
-        
+
         foreach ($updatesFiles as $key => $value) {
             $source = $updatesDir . $key;
             $destination = $baseDir . $key;
@@ -73,21 +73,21 @@ class Updater
                 }
             }
         }
-        
+
         foreach ($baseFiles as $key => $value) {
             if (array_key_exists($key, $updatesFiles)) {
                 continue;
             }
-            
+
             $destination = $baseDir . $key;
             if (!is_file($destination)) {
                 continue;
             }
-            
+
             if (!$force && $value !== sha1_file($destination)) {
                 throw new IsModifiedException($key);
             }
-            
+
             $actions->add(new ActionDeleteFile($destination));
         }
 

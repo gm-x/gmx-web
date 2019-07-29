@@ -23,7 +23,9 @@
                 permissions.ACCESS_LIST
             ) %}
                 <a
-                    href="{{ path_for(constants.admin.groups.ROUTE_LIST, {'server': server.id}) }}"
+                    href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {
+                        'server': server.id
+                    }, {'tab': 'groups'}) }}"
                     class="uk-button uk-button-secondary"
                 >
                     {{ trans('buttons', 'cancel') }}

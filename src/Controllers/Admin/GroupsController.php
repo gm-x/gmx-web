@@ -5,7 +5,6 @@ namespace GameX\Controllers\Admin;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Slim\Http\Response;
-use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Core\BaseAdminController;
 use \GameX\Models\Server;
@@ -81,18 +80,17 @@ class GroupsController extends BaseAdminController
             )
             ->add(
                 $this->getTranslate('admin_servers', 'groups'),
-                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'groups'])
             )
             ->add($this->getTranslate('labels', 'create'));
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
-        	$this->reloadAdmins($server);
+        	$this->reloadPrivileges($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(GroupsConstants::ROUTE_EDIT, [
-                'server' => $server->id,
-                'group' => $group->id
-            ]);
+            return $this->redirect(ServersConstants::ROUTE_VIEW, [
+                'server' => $server->id
+            ], ['tab' => 'groups']);
         }
         
         return $this->getView()->render($response, 'admin/servers/groups/form.twig', [
@@ -127,22 +125,21 @@ class GroupsController extends BaseAdminController
             )
             ->add(
                 $this->getTranslate('admin_servers', 'groups'),
-                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+	            $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'groups'])
             )
             ->add(
                 $group->title,
-                $this->pathFor(GroupsConstants::ROUTE_LIST, ['server' => $server->id])
+                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'groups'])
             )
             ->add($this->getTranslate('labels', 'edit'));
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
-	        $this->reloadAdmins($server);
+	        $this->reloadPrivileges($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(GroupsConstants::ROUTE_EDIT, [
-                'server' => $server->id,
-                'group' => $group->id
-            ]);
+	        return $this->redirect(ServersConstants::ROUTE_VIEW, [
+		        'server' => $server->id
+	        ], ['tab' => 'groups']);
         }
         
         return $this->getView()->render($response, 'admin/servers/groups/form.twig', [
@@ -167,14 +164,16 @@ class GroupsController extends BaseAdminController
         
         try {
             $group->delete();
-	        $this->reloadAdmins($server);
+	        $this->reloadPrivileges($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
             $this->getLogger()->exception($e);
         }
-        
-        return $this->redirect(GroupsConstants::ROUTE_LIST, ['server' => $server->id]);
+
+	    return $this->redirect(ServersConstants::ROUTE_VIEW, [
+		    'server' => $server->id
+	    ], ['tab' => 'groups']);
     }
     
     /**
@@ -258,13 +257,8 @@ class GroupsController extends BaseAdminController
 	/**
 	 * @param Server $server
 	 */
-    protected function reloadAdmins(Server $server)
+    protected function reloadPrivileges(Server $server)
     {
-	    JobHelper::createTaskIfNotExists('rcon_exec', [
-		    'server_id' => $server->id,
-		    'command' => 'amx_reloadadmins'
-	    ], null, function (Task $task) use ($server) {
-		    return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
-	    });
+    	$this->getContainer('utils_rcon_exec')->reloadPrivileges($server);
     }
 }

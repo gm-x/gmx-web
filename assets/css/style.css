@@ -60,6 +60,28 @@ input {
     background: rgba(0, 0, 0, 0.1) !important;
 }
 
+.players_list {
+    max-height: 211px;
+    overflow-y: scroll;
+}
+
+.players_list td {
+    padding: 8px 12px;
+}
+
+.paginate tbody tr {
+    display: none;
+}
+
+.uk-pagination li .uk-icon-button i {
+    margin: 9px 10px;
+}
+
+.uk-disabled a {
+    color: rgba(255, 255, 255, 0.2) !important;
+}
+
+
 .avatar__holder:after {
     content: '+';
     position: absolute;
@@ -82,12 +104,27 @@ input {
     background: -webkit-linear-gradient(360deg,#030303 10%,#1f1f1f 360%);
     background: linear-gradient(360deg,#030303 10%,#1f1f1f 360%);
     overflow: hidden;
-    transition: width .3s ease;
+    -webkit-transition: .5s ease-in-out;
+    -moz-transition: .5s ease-in-out;
+    -o-transition: .5s ease-in-out;
+    transition: .5s ease-in-out;
     cursor: pointer;
     box-shadow: 4px 7px 10px rgba(0, 0, 0, 0.4);
 }
 .sidenav:hover {
-    min-width: 200px;
+    width: 200px;
+}
+
+.uk-transparent {
+    background: transparent !important;
+}
+
+.uk-placeholder {
+    border: 1px dashed #333f56;
+}
+
+.uk-nav-primary .uk-nav-divider {
+    border-top: 1px solid rgba(229, 229, 229, 0.1);
 }
 
 .sidenav .uk-nav-sub {
@@ -469,6 +506,10 @@ fieldset {
     min-width: 100%;
 }
 
+.uk-nav-primary > li.uk-active > a {
+    color: #44a1d1;
+}
+
 .uk-background-secondary {
     background-color: #171717;
 }
@@ -483,7 +524,7 @@ fieldset {
     color: #fff;
 }
 .uk-breadcrumb > * > * {
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-weight: 700;
     font-size: 1rem;
     color: #fff;
@@ -725,4 +766,18 @@ svg.progress_circle.r-150 {
     stroke-dasharray: 100;
     stroke-width: 1.8;
     transition: stroke-dashoffset 3s ease-in-out;
+}
+
+ul.uk-sortable-drag {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+}
+
+ul.uk-sortable-drag li {
+    padding: 14px;
+    display: inline-flex;
 }

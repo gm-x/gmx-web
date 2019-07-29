@@ -68,22 +68,6 @@ class ServerController extends BaseApiController
             'privileges' => array_values($privileges),
         ]);
     }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     */
-    public function reasonsAction(Request $request, Response $response)
-    {
-        $server = $this->getServer($request);
-        $reasons = $server->reasons()->where('active', 1)->get();
-
-        return $response->withStatus(200)->withJson([
-            'success' => true,
-            'reasons' => $reasons,
-        ]);
-    }
     
     /**
      * @param Request $request
@@ -152,7 +136,7 @@ class ServerController extends BaseApiController
                     return $value !== false ? $value : null;
                 }, '')
             ], [
-            	'check' => Validator::CHECK_ARRAY,
+            	'check' => Validator::CHECK_IGNORE,
 	            'trim' => false
             ]);
 

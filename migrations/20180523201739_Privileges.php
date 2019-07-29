@@ -14,7 +14,7 @@ class Privileges extends Migration {
                 $table->unsignedInteger('player_id')->references('id')->on('players');
                 $table->unsignedInteger('group_id')->references('id')->on('groups');
                 $table->string('prefix', 255)->nullable();
-                $table->date('expired_at')->nullable();
+                $table->datetime('expired_at')->nullable();
                 $table->unsignedTinyInteger('active')->default('1');
                 $table->timestamps();
             });

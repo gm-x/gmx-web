@@ -2,6 +2,7 @@
 
 {% import 'macros/admin.twig' as admin %}
 {% import 'macros/forms.twig' as forms %}
+{% import 'macros/paginator.twig' as paginator %}
 
 {% block subnav %}
     <div class="uk-float-left">
@@ -12,7 +13,32 @@
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <div class="uk-light uk-background-secondary token">
-        <b>* * * * * php -f {{ root }}cron.php</b>
+        <b>* * * * * {{ constant('PHP_BINARY') }} -f {{ root }}cron.php</b>
     </div>
+</div>
+<div class="uk-card uk-card-default">
+    <div class="uk-card-body">
+        <div f-table f-divider>
+            <ul th>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Key</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">KeyID</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Status</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Retries</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">Created</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@ss">Executed</li>
+            </ul>
+            {% for task in tasks %}
+            <ul>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.key }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.key_id }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.status }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.retries }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.created_at }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.executed_at }}</li>
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+    {{ paginator.render(pagination) }}
 </div>
 {% endblock %}

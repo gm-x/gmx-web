@@ -27,9 +27,10 @@
     "updates_file": "Файл обновлений",
     "updates_force": "Принудительное обновление",
     "current_version": "Текущая версия",
-    "social_enabled": "Enable",
-    "social_icon": "Icon",
+    "social_enabled": "Включено",
+    "social_icon": "Иконка",
     "social_id": "App ID",
     "social_key": "App Key",
-    "social_secret": "App Secret"
+    "social_secret": "App Secret",
+    "cron_reload_admins": "Перезагружать администраторова через CRON"
 }

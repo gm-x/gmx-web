@@ -3,16 +3,15 @@
 namespace GameX\Forms\Admin;
 
 use \GameX\Core\BaseForm;
-use GameX\Core\Forms\Elements\Checkbox;
+use \GameX\Core\Validate\Validator;
 use \GameX\Models\Server;
 use \GameX\Models\Punishment;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
-use \GameX\Core\Forms\Elements\Date as DateElement;
+use \GameX\Core\Forms\Elements\Expired as ExpiredElement;
 use \GameX\Core\Validate\Rules\InArray;
-use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\Number;
-use \GameX\Core\Validate\Rules\Date as DateRule;
+use \GameX\Core\Validate\Rules\Expired as ExpiredRule;
 use \GameX\Core\Exceptions\PunishmentsFormException;
 
 class PunishmentsForm extends BaseForm
@@ -63,12 +62,10 @@ class PunishmentsForm extends BaseForm
             ]))->add(new Select('type', $this->punishment->type, [
                 'ban' => 'Ban',
             ], [
-		        'title' => $this->getTranslate($this->name, 'reason'),
+		        'title' => $this->getTranslate($this->name, 'type'),
 		        'required' => true,
 		        'empty_option' => $this->getTranslate($this->name, 'type_empty'),
-	        ]))->add(new Checkbox('forever', $this->punishment->expired_at === null, [
-                'title' => $this->getTranslate($this->name, 'forever'),
-            ]))->add(new DateElement('expired', $this->punishment->expired_at, [
+            ]))->add(new ExpiredElement('expired', $this->punishment->expired_at, [
                 'title' => $this->getTranslate($this->name, 'expired'),
                 'required' => false,
             ]));
@@ -84,14 +81,13 @@ class PunishmentsForm extends BaseForm
                 new InArray(array_keys($reasons)),
             ])
 	        ->set('details', false)
-	        ->set('forever', false, [
-                new Boolean()
-            ], [
-                'default' => false
-            ])
 	        ->set('expired', false, [
-                new DateRule()
-            ]);
+                new ExpiredRule()
+            ], [
+		        'check' => Validator::CHECK_ARRAY,
+		        'trim' => false,
+		        'allow_null' => true,
+	        ]);
     }
     
     /**
@@ -102,7 +98,7 @@ class PunishmentsForm extends BaseForm
     {
         $this->punishment->reason_id = $this->form->getValue('reason');
         $this->punishment->type = $this->form->getValue('type');
-        $this->punishment->expired_at = !$this->form->getValue('forever') ? $this->form->getValue('expired') : null;
+        $this->punishment->expired_at = $this->form->getValue('expired');
         $this->punishment->status = Punishment::STATUS_PUNISHED;
         return $this->punishment->save();
     }

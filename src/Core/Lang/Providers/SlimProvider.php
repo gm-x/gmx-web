@@ -1,11 +1,12 @@
 <?php
+
 namespace GameX\Core\Lang\Providers;
 
 use \GameX\Core\Lang\Interfaces\Provider;
 use \Slim\Http\Request;
-use \GameX\Core\Session\Session;
 
-class SlimProvider implements Provider {
+class SlimProvider implements Provider
+{
     const COOKIE_KEY = 'lang';
     const COOKIE_LIFETIME = 31556926; // 1 year
 
@@ -18,28 +19,32 @@ class SlimProvider implements Provider {
      * SlimProvider constructor.
      * @param Request $request
      */
-    public function __construct(Request $request) {
+    public function __construct(Request $request)
+    {
         $this->request = $request;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getAcceptLanguageHeader() {
+    public function getAcceptLanguageHeader()
+    {
         return $this->request->getServerParam('HTTP_ACCEPT_LANGUAGE');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getLang() {
+    public function getLang()
+    {
         return array_key_exists(self::COOKIE_KEY, $_COOKIE) ? $_COOKIE[self::COOKIE_KEY] : null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setLang($lang) {
+    public function setLang($lang)
+    {
         setcookie(
             self::COOKIE_KEY,
             $lang,

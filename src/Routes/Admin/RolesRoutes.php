@@ -32,6 +32,13 @@ class RolesRoutes extends BaseRoute
 				Permissions::ACCESS_VIEW
 			));
 
+        $app->post('/{role:\d+}/view', [RolesController::class, 'view'])
+            ->add($this->getPermissions()->hasAccessToPermissionMiddleware(
+                PermissionsConstants::PERMISSION_GROUP,
+                PermissionsConstants::PERMISSION_KEY,
+                Permissions::ACCESS_EDIT
+            ));
+
 		$app
 			->map(['GET', 'POST'], '/create', [RolesController::class, 'create'])
 			->setName(RolesConstants::ROUTE_CREATE)

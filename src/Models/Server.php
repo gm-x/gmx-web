@@ -145,6 +145,7 @@ class Server extends BaseModel
 //	        ->whereTime('updated_at', '>', Carbon::today())
 	        ->groupBy('id', 'player_id')
             ->orderBy('created_at', 'DESC')
+            ->limit($this->max_players)
             ->get();
     }
     

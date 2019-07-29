@@ -23,7 +23,6 @@ class ApiRoutes extends BaseRoute
     public function server(App $app)
     {
 	    $app->post('/privileges', [ServerController::class, 'privileges']);
-	    $app->post('/reasons', [ServerController::class, 'reasons']);
 	    $app->post('/info', [ServerController::class, 'info']);
 	    $app->post('/ping', [ServerController::class, 'ping']);
     }
@@ -39,5 +38,6 @@ class ApiRoutes extends BaseRoute
     {
 	    $app->post('', [PunishController::class, 'index']);
 	    $app->post('/immediately', [PunishController::class, 'immediately']);
+	    $app->post('/reasons', [PunishController::class, 'reasons']);
     }
 }
