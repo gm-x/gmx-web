@@ -7,8 +7,10 @@ use \GameX\Core\BaseApiController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Models\Punishment;
 use \GameX\Models\Player;
 use \GameX\Models\PlayerSession;
+use \GameX\Models\PlayerPreference;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Number;
@@ -125,8 +127,14 @@ class PlayerController extends BaseApiController
         }
         
         $session->save();
-        
+
+        /** @var Punishment[] $punishments */
         $punishments = $player->getActivePunishments($server);
+
+        /** @var PlayerPreference $preferences */
+        $preferences = $player->preferences()
+	        ->where('server_id', $server->id)
+	        ->first();
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
@@ -138,6 +146,7 @@ class PlayerController extends BaseApiController
             'session_id' => $session->id,
             'user_id' => $player->user ? $player->user->id : null,
             'punishments' => $punishments,
+	        'preferences' => $preferences ? $preferences->data : [],
         ]);
     }
     
@@ -218,5 +227,10 @@ class PlayerController extends BaseApiController
             'success' => true,
             'user_id' => $user->id
         ]);
+    }
+
+    public function preferenceAction(Request $request, Response $response)
+    {
+    	
     }
 }
