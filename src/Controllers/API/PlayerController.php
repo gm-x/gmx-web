@@ -7,13 +7,16 @@ use \GameX\Core\BaseApiController;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Core\Auth\Models\UserModel;
+use \GameX\Models\Punishment;
 use \GameX\Models\Player;
 use \GameX\Models\PlayerSession;
+use \GameX\Models\PlayerPreference;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Number;
 use \GameX\Core\Validate\Rules\IPv4;
 use \GameX\Core\Validate\Rules\Length;
+use \GameX\Core\Validate\Rules\ArrayRule;
 use \GameX\Core\Exceptions\ValidationException;
 
 class PlayerController extends BaseApiController
@@ -125,8 +128,14 @@ class PlayerController extends BaseApiController
         }
         
         $session->save();
-        
+
+        /** @var Punishment[] $punishments */
         $punishments = $player->getActivePunishments($server);
+
+        /** @var PlayerPreference $preferences */
+        $preferences = $player->preferences()
+	        ->where('server_id', $server->id)
+	        ->first();
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
@@ -138,6 +147,7 @@ class PlayerController extends BaseApiController
             'session_id' => $session->id,
             'user_id' => $player->user ? $player->user->id : null,
             'punishments' => $punishments,
+	        'preferences' => $preferences ? $preferences->data : new \stdClass(),
         ]);
     }
     
@@ -218,5 +228,50 @@ class PlayerController extends BaseApiController
             'success' => true,
             'user_id' => $user->id
         ]);
+    }
+
+    public function preferencesAction(Request $request, Response $response)
+    {
+	    $validator = new Validator($this->getContainer('lang'));
+	    $validator
+		    ->set('player_id', true, [
+		        new Number(1)
+		    ])
+		    ->set('data', true, [
+			    new ArrayRule()
+		    ], [
+			    'check' => Validator::CHECK_IGNORE,
+			    'trim' => false
+		    ]);
+
+	    $result = $validator->validate($this->getBody($request));
+
+	    if (!$result->getIsValid()) {
+		    throw new ValidationException($result->getFirstError());
+	    }
+	    $player = Player::find($result->getValue('player_id'));
+	    if (!$player) {
+		    throw new ValidationException('Player not found');
+	    }
+
+	    $server = $this->getServer($request);
+
+	    $preferences = $player->preferences()
+		    ->where('server_id', $server->id)
+		    ->first();
+
+	    if (!$preferences) {
+		    $preferences = new PlayerPreference([
+		    	'server_id' => $server->id,
+		    	'player_id' => $player->id,
+		    ]);
+	    }
+
+	    $preferences->data = array_merge($preferences->data ?: [], $result->getValue('data'));
+	    $preferences->save();
+
+	    return $this->response($response, 200, [
+		    'success' => true,
+	    ]);
     }
 }

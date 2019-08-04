@@ -26,6 +26,7 @@ use \Carbon\Carbon;
  * @property Privilege[] $privileges
  * @property Punishment[] $punishments
  * @property PlayerSession[] $sessions
+ * @property PlayerPreference[] $preferences
  * @property Server $server
  */
 class Player extends BaseModel
@@ -124,6 +125,14 @@ class Player extends BaseModel
     {
         return $this->hasMany(PlayerSession::class, 'player_id', 'id');
     }
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function preferences()
+	{
+		return $this->hasMany(PlayerPreference::class, 'player_id', 'id');
+	}
     
     /**
      * @param $value

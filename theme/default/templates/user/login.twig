@@ -33,8 +33,10 @@
                         {% if enabledEmail %}
                             <a href="{{ path_for('reset_password') }}" class="uk-button uk-button-warning">{{ trans('buttons', 'reset_password') }}</a>
                         {% endif %}
-                        <br> <br>
-                        или <a href="{{ path_for('register') }}">{{ trans('buttons', 'register') }}</a>
+                        <br> <br>{{ trans('labels', 'or') }}
+                        <a href="{{ path_for('register') }}">
+                            {{ trans('buttons', 'register') }}
+                        </a>
                     </div>
                     {% if social is not empty %}
                     <div class="uk-margin">
