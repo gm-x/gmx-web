@@ -64,7 +64,7 @@ file_put_contents(ROOT . 'manifest.json', json_encode([
 ], JSON_PRETTY_PRINT));
 
 $zip = new ZipArchive();
-$filename = ROOT . 'gmx-' . $argv[1] . '.zip';
+$filename = ROOT . 'gmx-web-updates.zip';
 
 if (!$zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
     die('Error while creating file ' . $filename);

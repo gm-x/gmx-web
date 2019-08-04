@@ -1,5 +1,16 @@
 language: php
 php:
   - 7.2.21
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+deploy:
+  provider: releases
+  api_key: "$GH_TOKEN"
+  name: "v0.1.$(git rev-list --count HEAD)-alpha"
+  file: "gmx-web-updates.zip"
+  skip_cleanup: true
+  on:
+    branch: travis
 before_script: composer install
-script: php manifest.php 0.1.222
+script: php manifest.php 0.1.$(git rev-list --count HEAD)-alpha
