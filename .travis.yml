@@ -11,6 +11,6 @@ deploy:
   file: "gmx-web-updates.zip"
   skip_cleanup: true
   on:
-    branch: travis
+    branch: master
 before_script: composer install
 script: php manifest.php 0.1.$(git rev-list --count HEAD)-alpha

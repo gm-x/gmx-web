@@ -18,6 +18,7 @@ $ignoreList = [
     '^runtime',
     '^vendor',
     '^uploads',
+    '^\.travis\.yml',
     '^config\.json',
     '^config\.php',
     '^router\.php',
