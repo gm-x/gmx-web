@@ -54,7 +54,9 @@
 								<div>
 									<div class="uk-card uk-card-default uk-margin">
 										<div class="uk-card-header">
-											<h3 class="uk-card-title"><i class="fas fa-history"></i> Список игроков</h3>
+											<h3 class="uk-card-title">
+												<i class="fas fa-history"></i> {{ trans('index', 'players_list') }}
+											</h3>
 										</div>
 										<div class="uk-card-body">
 											{% if server.online %}
@@ -62,11 +64,11 @@
                                                 {% if players | length > 0 %}
 													<table class="uk-table uk-table-striped uk-table-small paginate">
 														<thead>
-														<tr>
-															<th>Nick</th>
-															<th>Joined</th>
-															<th>Online</th>
-														</tr>
+															<tr>
+																<th>{{ trans('index', 'player_nick') }}</th>
+																<th>{{ trans('index', 'player_joined') }}</th>
+																<th>{{ trans('index', 'player_online') }}</th>
+															</tr>
 														</thead>
 														<tbody>
                                                         {% for session in players %}
@@ -79,10 +81,14 @@
 														</tbody>
 													</table>
                                                 {% else %}
-													<h2 class="uk-heading-line uk-text-center"><span>Нет игроков</span></h2>
+													<h2 class="uk-heading-line uk-text-center">
+														<span>{{ trans('index', 'players_empty') }}</span>
+													</h2>
                                                 {% endif %}
                                             {% else %}
-												<h2 class="uk-heading-line uk-text-center"><span>Нет игроков</span></h2>
+												<h2 class="uk-heading-line uk-text-center">
+													<span>{{ trans('index', 'players_empty') }}</span>
+												</h2>
 											{% endif %}
 										</div>
 									</div>
@@ -91,8 +97,8 @@
 						</li>
                     {% endfor %}
 				</ul>
-				<a class="uk-position-center-left uk-position-small" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-				<a class="uk-position-center-right uk-position-small" href="#" uk-slidenav-next uk-slider-item="next"></a>
+				<a class="uk-position-center-left uk-position-small" uk-slidenav-previous uk-slider-item="previous"></a>
+				<a class="uk-position-center-right uk-position-small" uk-slidenav-next uk-slider-item="next"></a>
 			</div>
 			<ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
 		</div>
