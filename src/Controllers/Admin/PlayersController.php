@@ -92,12 +92,15 @@ class PlayersController extends BaseAdminController
                 $privileges[$serverId]['privileges'][] = $privilege;
             }
         }
+
+        $last_session = $player->sessions()->orderBy('created_at', 'desc')->limit(1)->first();
         
         return $this->getView()->render($response, 'admin/players/view.twig', [
             'tab' => $request->getParam('tab', 'info'),
             'player' => $player,
             'privileges' => $privileges,
             'servers' => $servers,
+            'last_session' => $last_session,
         ]);
     }
     

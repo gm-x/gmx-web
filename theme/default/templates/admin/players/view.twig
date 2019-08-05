@@ -43,12 +43,12 @@
                     <h2>{{ player.nick }}</h2>
                 </div>
                 <div class="uk-width-1-2@m uk-width-1-2@s">
-                    Last join: {{ datetime.datetime(player.updated_at) }}
-                    <br>
+                    {% if last_session %}
+                    Last join: {{ datetime.datetime(last_session.created_at) }} <br>
+                    {% endif %}
                     {{ trans('admin_players', 'status') }}:
-                    {# TODO: check session #}
-                    {% if player.server_id %}
-                        Online: {{ player.server.name }}
+                    {% if last_session and last_session.status == 'online' %}
+                        Online: {{ last_session.server.name }}
                     {% else %}
                         Offline
                     {% endif %}
