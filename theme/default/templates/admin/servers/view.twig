@@ -77,11 +77,11 @@
                 <div f-table f-divider>
                     <ul>
                         <li>{{ trans('labels', 'created_at') }}</li>
-                        <li>{{ server.created_at|date("d/m/Y H:i") }}</li>
+                        <li>{{ datetime.datetime(server.created_at) }}</li>
                     </ul>
                     <ul>
                         <li>{{ trans('labels', 'updated_at') }}</li>
-                        <li>{{ server.updated_at|date("d/m/Y H:i") }}</li>
+                        <li>{{ datetime.datetime(server.updated_at) }}</li>
                     </ul>
                 </div>
             </div>
@@ -341,7 +341,7 @@
                                     {% if privilege.expired_at is null %}
                                         {{ trans('admin_privileges', 'forever') }}
                                     {% else %}
-                                        {{ privilege.expired_at }}
+                                        {{ datetime.datetime(privilege.expired_at) }}
                                     {% endif %}
                                 </li>
                                 <li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">

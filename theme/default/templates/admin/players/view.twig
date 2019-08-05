@@ -43,7 +43,7 @@
                     <h2>{{ player.nick }}</h2>
                 </div>
                 <div class="uk-width-1-2@m uk-width-1-2@s">
-                    Last join: {{ player.updated_at|date('d.m.Y H:i') }}
+                    Last join: {{ datetime.datetime(player.updated_at) }}
                     <br>
                     {{ trans('admin_players', 'status') }}:
                     {# TODO: check session #}
@@ -120,11 +120,11 @@
                                     {% endif %}
                                     <ul>
                                         <li class="uk-width-1-2@m uk-width-1-2@s">{{ trans('labels', 'created_at') }}</li>
-                                        <li class="uk-width-1-2@m uk-width-1-2@s">{{ player.created_at }}</li>
+                                        <li class="uk-width-1-2@m uk-width-1-2@s">{{ datetime.datetime(player.created_at) }}</li>
                                     </ul>
                                     <ul>
                                         <li class="uk-width-1-2@m uk-width-1-2@s">{{ trans('labels', 'updated_at') }}</li>
-                                        <li class="uk-width-1-2@m uk-width-1-2@s">{{ player.updated_at }}</li>
+                                        <li class="uk-width-1-2@m uk-width-1-2@s">{{ datetime.datetime(player.created_at) }}</li>
                                     </ul>
                                 </div>
                             </li>
@@ -156,7 +156,11 @@
                                                     {{ privilege.group.title }}
                                                 </li>
                                                 <li class="uk-width-expand">
-                                                    {{ privilege.expired_at }}
+                                                    {% if privilege.expired_at is null %}
+                                                        {{ trans('admin_privileges', 'forever') }}
+                                                    {% else %}
+                                                        {{ datetime.datetime(privilege.expired_at) }}
+                                                    {% endif %}
                                                 </li>
                                                 <li class="uk-width-expand">
                                                     {{ privilege.prefix }}
@@ -303,7 +307,7 @@
                                         {% for session in player.sessions %}
                                             <ul>
                                                 <li class="uk-width-1-6@m uk-width-1-6@s">{{ session.server.name }}</li>
-                                                <li class="uk-width-1-6@m uk-width-1-6@s">{{ session.created_at }}</li>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s">{{ datetime.datetime(session.created_at) }}</li>
                                                 <li class="uk-width-1-6@m uk-width-1-6@s">{{ session.online }}</li>
                                             </ul>
                                         {% endfor %}
