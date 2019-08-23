@@ -86,19 +86,23 @@ class PlayerController extends BaseApiController
             $player = new Player();
             $player->steamid = $result->getValue('steamid');
             $player->emulator = $result->getValue('emulator');
-            $player->nick = $result->getValue('nick');
+	        $player->nick = $result->getValue('nick');
             $player->ip = $result->getValue('ip');
             $player->auth_type = Player::AUTH_TYPE_STEAM;
-//        } else if ($player->getIsAuthByNick()) {
-//            $player->emulator = $result->getValue('emulator');
-//            $player->steamid = $result->getValue('steamid');
-//        } else {
-//            $player->nick = $result->getValue('nick');
-            $player->save();
+	        $player->save();
         } else if($result->getValue('session_id')) {
             $session = PlayerSession::find($result->getValue('session_id'));
         } else {
             $session = $player->getActiveSession();
+        }
+
+        if (
+        	$player->exists &&
+	        $player->nick !== $result->getValue('nick') &&
+	        !$player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK)
+        ) {
+	        $player->nick = $result->getValue('nick');
+	        $player->save();
         }
         
         if (!$session) {

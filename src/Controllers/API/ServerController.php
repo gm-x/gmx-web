@@ -112,7 +112,8 @@ class ServerController extends BaseApiController
         return $response->withStatus(200)->withJson([
             'success' => true,
             'server_id' => $server->id,
-            'map' => $map
+            'map' => $map,
+	        'time' => time()
         ]);
     }
 
