@@ -47,7 +47,7 @@ class RconExec
 			    return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
 		    });
 	    } else {
-	    	$this->sendCommand($server, 'amx_reloadadmins');
+	    	$this->sendCommand($server, 'gmx_reloadadmins');
 	    }
 	}
 
