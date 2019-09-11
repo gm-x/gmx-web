@@ -53,7 +53,7 @@ function rrmdir($dir) {
 }
 
 function composerInstall() {
-	$tempDir = sys_get_temp_dir() . DS . uniqid('GameX', true) . DS;
+	$tempDir = BASE_DIR  . 'runtime' . DS . 'install' . DS;
 
 	if (!is_dir($tempDir)) {
 		if (!mkdir($tempDir, 0777, true)) {

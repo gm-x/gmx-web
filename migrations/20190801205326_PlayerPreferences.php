@@ -14,7 +14,7 @@ class PlayerPreferences extends Migration
 		    ->create($this->getTableName(), function (Blueprint $table) {
 			    $table->unsignedInteger('player_id')->references('id')->on('players');
 			    $table->unsignedInteger('server_id')->references('id')->on('servers');
-			    $table->json('data');
+			    $table->text('data');
 			    $table->unique(['player_id', 'server_id']);
 		    });
     }

@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @OA\Info(title="My First API", version="0.1")
+ */
 namespace GameX\Controllers\API;
 
 use \GameX\Core\BaseApiController;
@@ -118,6 +120,29 @@ class ServerController extends BaseApiController
     }
 
 	/**
+	 * @OA\Post(
+	 *     path="/api/server/ping",
+	 *     @OA\RequestBody(
+	 *         required=true,
+	 *         @OA\MediaType(
+	 *             mediaType="application/json",
+	 *             @OA\Schema(
+	 *                 @OA\Property(
+	 *                     property="num_players",
+	 *                     type="integer"
+	 *                 ),
+	 *                 @OA\Property(
+	 *                     property="sessions",
+	 *                     type="array",
+	 *                     @OA\Items(
+	 *                          type="integer"
+	 *                     )
+	 *                 )
+	 *             )
+	 *         )
+	 *     ),
+	 *     @OA\Response(response="200", description="An example resource")
+	 * )
 	 * @param Request $request
 	 * @param Response $response
 	 * @return Response

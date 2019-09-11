@@ -29,7 +29,8 @@
 		"composer/composer": "^1.8@dev",
 		"hybridauth/hybridauth": "^3.0@dev",
 		"symfony/var-dumper": "3.4.x-dev",
-		"xpaw/php-source-query-class": "dev-master"
+		"xpaw/php-source-query-class": "dev-master",
+		"zircote/swagger-php": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
