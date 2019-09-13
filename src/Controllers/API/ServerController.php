@@ -22,6 +22,10 @@ class ServerController extends BaseApiController
 {
     
     /**
+     * @OA\Post(
+     *     path="/api/server/privileges",
+     *     @OA\Response(response="200", description="Server privileges response")
+     * )
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -72,6 +76,26 @@ class ServerController extends BaseApiController
     }
     
     /**
+     * @OA\Post(
+     *     path="/api/server/info",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="map",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="max_players",
+     *                     type="integer"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Server info response")
+     * )
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -141,7 +165,7 @@ class ServerController extends BaseApiController
 	 *             )
 	 *         )
 	 *     ),
-	 *     @OA\Response(response="200", description="An example resource")
+	 *     @OA\Response(response="200", description="Server ping response")
 	 * )
 	 * @param Request $request
 	 * @param Response $response
@@ -180,6 +204,15 @@ class ServerController extends BaseApiController
 		    'ping_at' => $now,
 		]);
 		$server->save();
+
+		PlayerSession::
+			where('server_id', $server->id)
+			->where('status', PlayerSession::STATUS_ONLINE)
+			->whereNotIn('id',  $result->getValue('sessions'))
+			->update([
+				'status' => PlayerSession::STATUS_OFFLINE,
+				'disconnected_at' => Carbon::now(),
+			]);
 
         PlayerSession::whereIn('id',  $result->getValue('sessions'))
             ->update([

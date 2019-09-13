@@ -23,6 +23,42 @@ class PlayerController extends BaseApiController
 {
     
     /**
+     * @OA\Post(
+     *     path="/api/player/connect",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="emulator",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="steamid",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="nick",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="ip",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="session_id",
+     *                     type="integer"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Player connect response")
+     * )
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -156,6 +192,22 @@ class PlayerController extends BaseApiController
     }
     
     /**
+     * @OA\Post(
+     *     path="/api/player/disconnect",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="session_id",
+     *                     type="integer"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Player disconnect response")
+     * )
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -194,6 +246,26 @@ class PlayerController extends BaseApiController
     }
     
     /**
+     * @OA\Post(
+     *     path="/api/player/assign",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="token",
+     *                     type="string"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Player assign response")
+     * )
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -234,6 +306,32 @@ class PlayerController extends BaseApiController
         ]);
     }
 
+	/**
+	 * @OA\Post(
+	 *     path="/api/player/preferences",
+	 *     @OA\RequestBody(
+	 *         required=true,
+	 *         @OA\MediaType(
+	 *             mediaType="application/json",
+	 *             @OA\Schema(
+	 *                 @OA\Property(
+	 *                     property="player_id",
+	 *                     type="integer"
+	 *                 ),
+	 *                 @OA\Property(
+	 *                     property="data",
+	 *                     type="object"
+	 *                 )
+	 *             )
+	 *         )
+	 *     ),
+	 *     @OA\Response(response="200", description="Player preferences response")
+	 * )
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws ValidationException
+	 */
     public function preferencesAction(Request $request, Response $response)
     {
 	    $validator = new Validator($this->getContainer('lang'));
