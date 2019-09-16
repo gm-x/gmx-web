@@ -8,4 +8,5 @@ RewriteRule ^(assets/.+) - [L]
 RewriteRule ^(upload.+) - [F,L]
 
 RewriteRule ^install install/index.php [QSA,L]
+RewriteRule ^cron /cron.php [QSA,L]
 RewriteRule ^ index.php [QSA,L]
