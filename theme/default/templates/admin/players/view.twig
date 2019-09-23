@@ -44,13 +44,14 @@
                 </div>
                 <div class="uk-width-1-2@m uk-width-1-2@s">
                     {% if last_session %}
-                    Last join: {{ datetime.datetime(last_session.created_at) }} <br>
+                    Last join: {{ datetime.datetime(last_session.created_at) }}<br>
                     {% endif %}
-                    {{ trans('admin_players', 'status') }}:
                     {% if last_session and last_session.status == 'online' %}
-                        Online: {{ last_session.server.name }}
+                        {{ trans('admin_players', 'status') }}: Online
+                        <br>
+                        Server: {{ last_session.server.name }}
                     {% else %}
-                        Offline
+                        {{ trans('admin_players', 'status') }}: Offline
                     {% endif %}
                 </div>
             </div>

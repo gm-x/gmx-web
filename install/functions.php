@@ -76,10 +76,13 @@ function composerInstall() {
 	putenv('COMPOSER_BIN_DIR=' . BASE_DIR . 'vendor/bin');
 
 	$input = new \Symfony\Component\Console\Input\ArrayInput(['command' => 'install']);
-	$output = new \Symfony\Component\Console\Output\NullOutput();
+	$output = new \Symfony\Component\Console\Output\BufferedOutput();
 	$application = new \Composer\Console\Application();
 	$application->setAutoExit(false);
-	$application->run($input, $output);
+	if ($application->run($input, $output) !== 0) {
+        logMessage($output->fetch());
+        throw new Exception('Can\'t install composer dependencies');
+    }
 
 	rrmdir($tempDir);
 }
