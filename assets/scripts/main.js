@@ -82,6 +82,7 @@ $(document).ready(function () {
     });
 
     // FIXME
+    /*
     $('.paginate').after('<ul class="uk-pagination uk-flex-center" uk-margin id="nav"></ul>');
     var rowsShown = 4;
     var rowsTotal = $('.paginate tbody tr').length;
@@ -112,4 +113,5 @@ $(document).ready(function () {
         $('.paginate tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
         css('display','table-row').animate({opacity:1}, 300);
     });
+    */
 });

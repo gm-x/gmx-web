@@ -55,10 +55,10 @@ function rrmdir($dir) {
 function composerInstall() {
 	$tempDir = BASE_DIR  . 'runtime' . DS . 'install' . DS;
 
-	if (!is_dir($tempDir)) {
-		if (!mkdir($tempDir, 0777, true)) {
-			throw new Exception('Can\'t create folder ' . $tempDir);
-		}
+	if (is_dir($tempDir)) {
+		clearDir($tempDir);
+	} else if (!mkdir($tempDir, 0777, true)) {
+		throw new Exception('Can\'t create folder ' . $tempDir);
 	}
 
 	if (!downloadComposer($tempDir)) {
@@ -202,9 +202,9 @@ function cronjobAppend($command){
     return false;
 }
 
-function clearTwigCache() {
+function clearDir($path) {
     foreach (new \RecursiveIteratorIterator(
-                 new \RecursiveDirectoryIterator(BASE_DIR . 'runtime' . DS . 'twig_cache'),
+                 new \RecursiveDirectoryIterator($path),
                  \RecursiveIteratorIterator::LEAVES_ONLY) as $file
     ) {
         if ($file->isFile()) {
