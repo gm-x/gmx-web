@@ -53,12 +53,12 @@ function rrmdir($dir) {
 }
 
 function composerInstall() {
-	$tempDir = sys_get_temp_dir() . DS . uniqid('GameX', true) . DS;
+	$tempDir = BASE_DIR  . 'runtime' . DS . 'install' . DS;
 
-	if (!is_dir($tempDir)) {
-		if (!mkdir($tempDir, 0777, true)) {
-			throw new Exception('Can\'t create folder ' . $tempDir);
-		}
+	if (is_dir($tempDir)) {
+		clearDir($tempDir);
+	} else if (!mkdir($tempDir, 0777, true)) {
+		throw new Exception('Can\'t create folder ' . $tempDir);
 	}
 
 	if (!downloadComposer($tempDir)) {
@@ -76,10 +76,13 @@ function composerInstall() {
 	putenv('COMPOSER_BIN_DIR=' . BASE_DIR . 'vendor/bin');
 
 	$input = new \Symfony\Component\Console\Input\ArrayInput(['command' => 'install']);
-	$output = new \Symfony\Component\Console\Output\NullOutput();
+	$output = new \Symfony\Component\Console\Output\BufferedOutput();
 	$application = new \Composer\Console\Application();
 	$application->setAutoExit(false);
-	$application->run($input, $output);
+	if ($application->run($input, $output) !== 0) {
+        logMessage($output->fetch());
+        throw new Exception('Can\'t install composer dependencies');
+    }
 
 	rrmdir($tempDir);
 }
@@ -202,9 +205,9 @@ function cronjobAppend($command){
     return false;
 }
 
-function clearTwigCache() {
+function clearDir($path) {
     foreach (new \RecursiveIteratorIterator(
-                 new \RecursiveDirectoryIterator(BASE_DIR . 'runtime' . DS . 'twig_cache'),
+                 new \RecursiveDirectoryIterator($path),
                  \RecursiveIteratorIterator::LEAVES_ONLY) as $file
     ) {
         if ($file->isFile()) {

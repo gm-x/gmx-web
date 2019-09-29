@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @OA\Info(title="My First API", version="0.1")
+ */
 namespace GameX\Controllers\API;
 
 use \GameX\Core\BaseApiController;
@@ -20,6 +22,10 @@ class ServerController extends BaseApiController
 {
     
     /**
+     * @OA\Post(
+     *     path="/api/server/privileges",
+     *     @OA\Response(response="200", description="Server privileges response")
+     * )
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -70,6 +76,26 @@ class ServerController extends BaseApiController
     }
     
     /**
+     * @OA\Post(
+     *     path="/api/server/info",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="map",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="max_players",
+     *                     type="integer"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Server info response")
+     * )
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -112,11 +138,35 @@ class ServerController extends BaseApiController
         return $response->withStatus(200)->withJson([
             'success' => true,
             'server_id' => $server->id,
-            'map' => $map
+            'map' => $map,
+	        'time' => time()
         ]);
     }
 
 	/**
+	 * @OA\Post(
+	 *     path="/api/server/ping",
+	 *     @OA\RequestBody(
+	 *         required=true,
+	 *         @OA\MediaType(
+	 *             mediaType="application/json",
+	 *             @OA\Schema(
+	 *                 @OA\Property(
+	 *                     property="num_players",
+	 *                     type="integer"
+	 *                 ),
+	 *                 @OA\Property(
+	 *                     property="sessions",
+	 *                     type="array",
+	 *                     @OA\Items(
+	 *                          type="integer"
+	 *                     )
+	 *                 )
+	 *             )
+	 *         )
+	 *     ),
+	 *     @OA\Response(response="200", description="Server ping response")
+	 * )
 	 * @param Request $request
 	 * @param Response $response
 	 * @return Response
@@ -154,6 +204,15 @@ class ServerController extends BaseApiController
 		    'ping_at' => $now,
 		]);
 		$server->save();
+
+		PlayerSession::
+			where('server_id', $server->id)
+			->where('status', PlayerSession::STATUS_ONLINE)
+			->whereNotIn('id',  $result->getValue('sessions'))
+			->update([
+				'status' => PlayerSession::STATUS_OFFLINE,
+				'disconnected_at' => Carbon::now(),
+			]);
 
         PlayerSession::whereIn('id',  $result->getValue('sessions'))
             ->update([

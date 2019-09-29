@@ -76,6 +76,13 @@ $(document).ready(function () {
         console.log(this, $(self.data('input')), self.data('value'));
     });
 
+    $('.gmx-datetime').each(function() {
+        var self = $(this);
+        self.text(moment.utc(self.data('value')).local().format(self.data('format')));
+    });
+
+    // FIXME
+    /*
     $('.paginate').after('<ul class="uk-pagination uk-flex-center" uk-margin id="nav"></ul>');
     var rowsShown = 4;
     var rowsTotal = $('.paginate tbody tr').length;
@@ -106,4 +113,5 @@ $(document).ready(function () {
         $('.paginate tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
         css('display','table-row').animate({opacity:1}, 300);
     });
+    */
 });

@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     BASE_DIR . 'runtime' . DS . 'twig_cache',
                 ]);
     
-                clearTwigCache();
+                clearDir(BASE_DIR . 'runtime' . DS . 'twig_cache');
 
                 $databaseCfg = array_merge([
                     'engine' => 'mysql',
