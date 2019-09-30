@@ -7,8 +7,7 @@ if ($argc < 2) {
     die('Version is not provided');
 }
 
-define('ROOT', __DIR__ . DIRECTORY_SEPARATOR);
-define('INSTALL', ROOT . 'install'. DIRECTORY_SEPARATOR);
+define('ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 
 $ignoreList = [
     '^\.idea',
@@ -64,36 +63,3 @@ file_put_contents(ROOT . 'manifest.json', json_encode([
     'files' => $files
 ], JSON_PRETTY_PRINT));
 
-$zip = new ZipArchive();
-$filename = ROOT . 'gmx-web-updates.zip';
-
-if (!$zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-    die('Error while creating file ' . $filename);
-}
-
-foreach ($files as $path => $v) {
-    $zip->addFile(ROOT . $path, $path);
-}
-
-$zip->addFile(ROOT . 'manifest.json', 'manifest.json');
-
-$flags = FilesystemIterator::KEY_AS_PATHNAME
-    | FilesystemIterator::CURRENT_AS_SELF
-    | FilesystemIterator::UNIX_PATHS
-    | FilesystemIterator::SKIP_DOTS;
-$iterator = new RecursiveDirectoryIterator(INSTALL, $flags);
-$iterator = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
-
-/**
- * @var string $path
- * @var RecursiveDirectoryIterator $it
- */
-foreach($iterator as $path => $it) {
-    if ($it->isFile()) {
-        $zip->addFile(INSTALL . $it->getSubPathName(), 'install/' . $it->getSubPathName());
-    }
-}
-
-$zip->close();
-
-echo 'Completed successfully' . PHP_EOL;

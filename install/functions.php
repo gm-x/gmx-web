@@ -75,7 +75,10 @@ function composerInstall() {
 	putenv('COMPOSER_VENDOR_DIR=' . BASE_DIR . 'vendor');
 	putenv('COMPOSER_BIN_DIR=' . BASE_DIR . 'vendor/bin');
 
-	$input = new \Symfony\Component\Console\Input\ArrayInput(['command' => 'install']);
+	$input = new \Symfony\Component\Console\Input\ArrayInput([
+		'command' => 'install',
+		'--no-dev' => true
+	]);
 	$output = new \Symfony\Component\Console\Output\BufferedOutput();
 	$application = new \Composer\Console\Application();
 	$application->setAutoExit(false);
