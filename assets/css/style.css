@@ -143,6 +143,7 @@ input {
 
 .token {
     word-wrap: break-word;
+    padding: 10px 5px;
 }
 
 .sidenav .nav-link {

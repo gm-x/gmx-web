@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     BASE_DIR . 'runtime' . DS . 'twig_cache',
                 ]);
     
+                clearDir(BASE_DIR . 'runtime' . DS . 'cache');
                 clearDir(BASE_DIR . 'runtime' . DS . 'twig_cache');
 
                 $databaseCfg = array_merge([
@@ -112,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 json(true);
 			} catch (Exception $e) {
                 logException($e);
-                json(false, $e->getMessage());
+                json(false, 'Error!!! Please see log file.');
 			}
 		}
 

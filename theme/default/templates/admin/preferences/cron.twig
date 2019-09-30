@@ -13,6 +13,8 @@
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <div class="uk-light uk-background-secondary token">
+        <b>* * * * * wget -O /dev/null -o /dev/null {{ base_url() }}/cron</b>
+        <br>OR<br>
         <b>* * * * * {{ constant('PHP_BINARY') }} -f {{ root }}cron.php</b>
     </div>
 </div>
@@ -31,7 +33,18 @@
             <ul>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.key }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.key_id }}</li>
-                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.status }}</li>
+                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">
+                    {# TODO: Refactor this #}
+                    {% if task.status == 0 %}
+                        Waiting
+                    {% elseif task.status == 1 %}
+                        In progress
+                    {% elseif task.status == 2 %}
+                        Failed
+                    {% elseif task.status == 3 %}
+                        Done
+                    {% endif %}
+                </li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.retries }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.created_at }}</li>
                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ task.executed_at }}</li>
