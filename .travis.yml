@@ -8,11 +8,11 @@ deploy:
   provider: releases
   api_key: "$GH_TOKEN"
   tag_name: "v0.1.$(git rev-list --count HEAD)-alpha"
-  script: chmod +x scripts/deploy.sh && bash scripts/deploy.sh
   name: "v0.1.$(git rev-list --count HEAD)-alpha"
   file: "gmx-web.zip"
   skip_cleanup: true
   on:
     tags: false
     branch: master
+before_deploy: bash scripts/deploy.sh
 script: composer install --no-dev
