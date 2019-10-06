@@ -100,6 +100,14 @@ class Server extends BaseModel
     {
         return $this->hasMany(Group::class, 'server_id');
     }
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function access()
+	{
+		return $this->hasMany(Access::class, 'server_id');
+	}
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

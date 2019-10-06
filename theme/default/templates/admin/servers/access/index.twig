@@ -1,0 +1,77 @@
+{% extends 'admin/admin.twig' %}
+
+{% import 'macros/admin.twig' as admin %}
+{% import 'macros/paginator.twig' as paginator %}
+
+{% block subnav %}
+    {% if has_access_permission(
+		constants.admin.servers.PERMISSION_GROUP,
+		constants.admin.servers.PERMISSION_KEY,
+		permissions.ACCESS_LIST
+    ) %}
+        {{ admin.back_btn(path_for(constants.admin.servers.ROUTE_LIST), 'l') }}
+    {% endif %}
+
+    {% if has_access_resource(
+		constants.admin.reasons.PERMISSION_GROUP,
+		constants.admin.reasons.PERMISSION_KEY,
+		server.id,
+		permissions.ACCESS_CREATE
+    ) %}
+        {{ admin.add_btn(path_for(constants.admin.reasons.ROUTE_CREATE, {'server': server.id}), 'l') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+	<div class="uk-overflow-auto">
+		<table class="uk-table uk-table-divider">
+			<thead>
+				<tr>
+					<th>{{ trans('admin_reasons', 'reason') }}</th>
+					<th>{{ trans('admin_reasons', 'time') }}</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for reason in reasons %}
+				<tr>
+					<td class="text-nowrap">{{ reason.title }}</td>
+					<td class="text-nowrap">
+						{% if reason.time is null %}
+							Not setted
+						{% else %}
+							{{ reason.time }} minutes
+						{% endif %}
+					</td>
+					<td class="text-nowrap">
+                        {% if has_access_resource(
+							constants.admin.reasons.PERMISSION_GROUP,
+							constants.admin.reasons.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_EDIT
+                        ) %}
+                            {{ admin.edit_btn(
+                            	path_for(constants.admin.reasons.ROUTE_EDIT, {'server': server.id, 'reason': reason.id})
+                            ) }}
+                        {% endif %}
+
+                        {% if has_access_resource(
+							constants.admin.reasons.PERMISSION_GROUP,
+							constants.admin.reasons.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_DELETE
+                        ) %}
+                            {{ admin.delete_btn(
+                            	path_for(constants.admin.reasons.ROUTE_DELETE, {'server': server.id, 'reason': reason.id})
+                            ) }}
+                        {% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{{ paginator.render(pagination) }}
+</div>
+{% endblock %}

@@ -6,14 +6,15 @@ use \GameX\Core\BaseAdminController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Constants\Admin\ServersConstants;
+use \GameX\Constants\Admin\ReasonsConstants;
 use \GameX\Core\Pagination\Pagination;
-use \GameX\Models\Access;
+use \GameX\Models\Reason;
 use \GameX\Models\Server;
-use \GameX\Forms\Admin\AccessForm;
+use \GameX\Forms\Admin\ReasonsForm;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
-class ReasonsController extends BaseAdminController
+class AccessController extends BaseAdminController
 {
     
     /**
@@ -47,7 +48,7 @@ class ReasonsController extends BaseAdminController
             ->add($this->getTranslate('admin_servers', 'reasons'));
 
         $pagination = new Pagination($server->reasons()->get(), $request);
-        return $this->getView()->render($response, 'admin/servers/access/index.twig', [
+        return $this->getView()->render($response, 'admin/servers/reasons/index.twig', [
             'server' => $server,
             'reasons' => $pagination->getCollection(),
             'pagination' => $pagination,
@@ -65,7 +66,7 @@ class ReasonsController extends BaseAdminController
     public function createAction(ServerRequestInterface $request, ResponseInterface $response, $serverId)
     {
         $server = $this->getServer($request, $response, $serverId);
-	    $access = $this->getAccess($request, $response, null, $server);
+        $reason = $this->getReason($request, $response, null, $server);
 
         $this->getBreadcrumbs()
             ->add(
@@ -82,15 +83,15 @@ class ReasonsController extends BaseAdminController
             )
             ->add($this->getTranslate('labels', 'create'));
         
-        $form = new AccessForm($access);
+        $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
 	        return $this->redirect(ServersConstants::ROUTE_VIEW, [
 		        'server' => $server->id
-	        ], ['tab' => 'access']);
+	        ], ['tab' => 'reasons']);
         }
         
-        return $this->getView()->render($response, 'admin/servers/access/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/reasons/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => true,
@@ -109,7 +110,7 @@ class ReasonsController extends BaseAdminController
     public function editAction(ServerRequestInterface $request, ResponseInterface $response, $serverId, $id)
     {
         $server = $this->getServer($request, $response, $serverId);
-        $access = $this->getAccess($request, $response, $id);
+        $reason = $this->getReason($request, $response, $id);
 
         $this->getBreadcrumbs()
             ->add(
@@ -125,20 +126,20 @@ class ReasonsController extends BaseAdminController
 	            $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'reasons'])
             )
             ->add(
-	            $access->description,
+                $reason->title,
 	            $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'reasons'])
             )
             ->add($this->getTranslate('labels', 'edit'));
         
-        $form = new AccessForm($access);
+        $form = new ReasonsForm($reason);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
 	        return $this->redirect(ServersConstants::ROUTE_VIEW, [
 		        'server' => $server->id
-	        ], ['tab' => 'access']);
+	        ], ['tab' => 'reasons']);
         }
         
-        return $this->getView()->render($response, 'admin/servers/access/form.twig', [
+        return $this->getView()->render($response, 'admin/servers/reasons/form.twig', [
             'server' => $server,
             'form' => $form->getForm(),
             'create' => false,
@@ -156,10 +157,10 @@ class ReasonsController extends BaseAdminController
     public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, $serverId, $id)
     {
         $server = $this->getServer($request, $response, $serverId);
-        $access = $this->getAccess($request, $response, $id);
+        $group = $this->getReason($request, $response, $id);
         
         try {
-	        $access->delete();
+            $group->delete();
             $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
@@ -193,22 +194,22 @@ class ReasonsController extends BaseAdminController
      * @param ResponseInterface $response
      * @param int $id
      * @param Server $server
-     * @return Access
+     * @return Reason
      * @throws NotFoundException
      */
-    protected function getAccess(ServerRequestInterface $request, ResponseInterface $response, $id = null, Server $server = null) {
+    protected function getReason(ServerRequestInterface $request, ResponseInterface $response, $id = null, Server $server = null) {
         if ($id === null) {
-            return new Access([
+            return new Reason([
                 'server_id' => $server->id
             ]);
         }
 
-	    $access = Access::find($id);
-        if (!$access) {
+        $reason = Reason::find($id);
+        if (!$reason) {
             throw new NotFoundException($request, $response);
         }
         
         
-        return $access;
+        return $reason;
     }
 }
