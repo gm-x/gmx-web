@@ -4,6 +4,7 @@ namespace GameX\Controllers\API;
 
 use \Carbon\Carbon;
 use \GameX\Core\BaseApiController;
+use GameX\Models\Privilege;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Core\Auth\Models\UserModel;
@@ -11,6 +12,7 @@ use \GameX\Models\Punishment;
 use \GameX\Models\Player;
 use \GameX\Models\PlayerSession;
 use \GameX\Models\PlayerPreference;
+use \GameX\Models\Group;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Number;
@@ -376,4 +378,95 @@ class PlayerController extends BaseApiController
 		    'success' => true,
 	    ]);
     }
+
+	/**
+	 * @OA\Post(
+	 *     path="/api/player/privilege/add",
+	 *     @OA\RequestBody(
+	 *         required=true,
+	 *         @OA\MediaType(
+	 *             mediaType="application/json",
+	 *             @OA\Schema(
+	 *                 @OA\Property(
+	 *                     property="player_id",
+	 *                     type="integer"
+	 *                 ),
+	 *                 @OA\Property(
+	 *                     property="group_id",
+	 *                     type="integer"
+	 *                 ),
+	 *                 @OA\Property(
+	 *                     property="expired_at",
+	 *                     type="integer"
+	 *                 ),
+	 *                 @OA\Property(
+	 *                     property="active",
+	 *                     type="boolean"
+	 *                 )
+	 *             )
+	 *         )
+	 *     ),
+	 *     @OA\Response(response="200", description="Player preferences response")
+	 * )
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws ValidationException
+	 */
+	public function privilegeAddAction(Request $request, Response $response)
+	{
+		$validator = new Validator($this->getContainer('lang'));
+		$validator
+			->set('player_id', true, [
+				new Number(1)
+			])
+			->set('group_id', true, [
+				new Number(1)
+			])
+			->set('time', true, [
+				new Number(0)
+			]);
+
+		$result = $validator->validate($this->getBody($request));
+
+		if (!$result->getIsValid()) {
+			throw new ValidationException($result->getFirstError());
+		}
+		$player = Player::find($result->getValue('player_id'));
+		if (!$player) {
+			throw new ValidationException('Player not found');
+		}
+
+		$group = Group::find($result->getValue('group_id'));
+		if (!$group || $group->server_id !== $this->getServer($request)->id) {
+			throw new ValidationException('Group not found');
+		}
+
+		$expiredAt = $result->getValue('time') > 0
+			? Carbon::now()->addSeconds($result->getValue('time'))
+			: null;
+
+		$privilege = Privilege::where(['player_id' => $player->id, 'group_id' => $group->id])->first();
+		if (!$privilege) {
+			$privilege = new Privilege([
+				'player_id' => $player->id,
+				'group_id' => $group->id,
+				'expired_at' => $expiredAt,
+				'active' => true,
+			]);
+		} elseif ($privilege->expired_at === null || ($expiredAt !== null && $expiredAt->isBefore($privilege->expired_at))) {
+			throw new ValidationException('Privilege already exists');
+		} else {
+			$privilege->expired_at = $expiredAt;
+			$privilege->active = true;
+		}
+
+		$privilege->save();
+
+		return $this->response($response, 200, [
+			'success' => true,
+			'privilege' => $privilege,
+			'group' => $group
+		]);
+	}
 }
