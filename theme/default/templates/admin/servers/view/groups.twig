@@ -1,0 +1,55 @@
+<li>
+	<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+		<div f-table f-divider>
+			<ul th>
+				<li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s"></li>
+				<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_groups', 'group') }}</li>
+				<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_groups', 'flags') }}</li>
+				<li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
+					{% if has_access_resource(
+						constants.admin.groups.PERMISSION_GROUP,
+						constants.admin.groups.PERMISSION_KEY,
+						server.id,
+						permissions.ACCESS_CREATE
+					) %}
+						{{ admin.add_btn(path_for(constants.admin.groups.ROUTE_CREATE, {'server': server.id}), 's') }}
+					{% endif %}
+				</li>
+			</ul>
+		</div>
+		<div f-table f-divider uk-sortable="handle: .uk-sortable-handle">
+			{% for group in groups %}
+				<ul data-id="{{ group.id }}">
+					<li class="uk-width-1-6@m uk-width-1-6@s" s-title="Priority">
+						<span class="uk-sortable-handle"><i class="fas fa-sort"></i></span>
+					</li>
+					<li class="uk-width-1-4@m uk-width-1-4@s">{{ group.title }}</li>
+					<li class="uk-width-1-4@m uk-width-1-4@s">{{ get_flags(group.flags) }}</li>
+					<li class="uk-width-1-6@m uk-width-1-6@s">
+						{% if has_access_resource(
+							constants.admin.groups.PERMISSION_GROUP,
+							constants.admin.groups.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_EDIT
+						) %}
+							{{ admin.edit_btn(
+								path_for(constants.admin.groups.ROUTE_EDIT, {'server': server.id, 'group': group.id})
+							) }}
+						{% endif %}
+
+						{% if has_access_resource(
+							constants.admin.groups.PERMISSION_GROUP,
+							constants.admin.groups.PERMISSION_KEY,
+							server.id,
+							permissions.ACCESS_DELETE
+						) %}
+							{{ admin.delete_btn(
+								path_for(constants.admin.groups.ROUTE_DELETE, {'server': server.id, 'group': group.id})
+							) }}
+						{% endif %}
+					</li>
+				</ul>
+			{% endfor %}
+		</div>
+	</div>
+</li>

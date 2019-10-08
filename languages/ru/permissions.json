@@ -25,5 +25,6 @@
     "admin_preferences": "Настройки",
     "admin_server_group": "Группы сервера",
     "admin_server_reason": "Причины банов",
-    "admin_server_rcon": "RCON"
+    "admin_server_rcon": "RCON",
+    "admin_access": "Доступы"
 }

@@ -12,5 +12,5 @@ class AccessConstants
     
     const PERMISSION_GROUP = 'admin';
     const PERMISSION_TYPE = 'server';
-    const PERMISSION_KEY = 'reason';
+    const PERMISSION_KEY = 'access';
 }
