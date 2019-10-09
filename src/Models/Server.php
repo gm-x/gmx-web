@@ -26,6 +26,7 @@ use \GameX\Core\Utils;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Group[] $groups
+ * @property Access[] $access
  * @property Reason[] $reasons
  * @property Map $map
  * @property Player[] $players

@@ -181,7 +181,7 @@ class ServerController extends BaseApiController
             ])
             ->set('sessions', true, [
                 new ArrayRule(),
-                new ArrayCallback(function ($value) {
+                new ArrayCallback(function ($key, $value) {
                     $value = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
                     return $value !== false ? $value : null;
                 }, '')

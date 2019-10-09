@@ -31,7 +31,7 @@ class ArrayCallback extends BaseRule {
 	    }
 
 	    foreach ($value as $key => $val) {
-            $val = call_user_func($this->callback, $val, $values);
+            $val = call_user_func($this->callback, $key, $val, $values);
             if ($val === null) {
                 return null;
             }

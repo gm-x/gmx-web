@@ -9,6 +9,7 @@
         {{ forms.element_input(form.title, {"label": true}) }}
         {{ forms.element_input(form.flags, {"label": true}) }}
         {{ forms.element_input(form.prefix, {"label": true}) }}
+        {{ forms.array_checkbox(form.access, true) }}
         <div class="uk-margin">
             {% if create %}
                 <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
