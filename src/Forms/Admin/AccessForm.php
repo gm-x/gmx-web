@@ -14,16 +14,16 @@ class AccessForm extends BaseForm
     /**
      * @var string
      */
-    protected $name = 'admin_reasons';
+    protected $name = 'admin_access';
 
     /**
      * @var Access
      */
     protected $access;
 
-    /**
-     * @param Access $reason
-     */
+	/**
+	 * @param Access $access
+	 */
     public function __construct(Access $access)
     {
         $this->access = $access;
@@ -52,7 +52,7 @@ class AccessForm extends BaseForm
                 'error' => 'Required',
                 'required' => true,
             ]))
-	        ->add(new Text('title', $this->access->description, [
+	        ->add(new Text('description', $this->access->description, [
 		        'title' => $this->getTranslate($this->name, 'description'),
 		        'error' => 'Required',
 		        'required' => true,
@@ -70,17 +70,15 @@ class AccessForm extends BaseForm
                 new Callback([$this, 'checkExists'], $this->getTranslate($this->name, 'exists')));
         }
     }
-    
-    /**
-     * @return boolean
-     */
+
+	/**
+	 * @return bool
+	 * @throws \Exception
+	 */
     protected function processForm()
     {
-        $this->access->title = $this->form->getValue('title');
-        $this->access->time = !$this->form->getValue('time_enabled') ? $this->form->getValue('time') : null;
-        $this->access->overall = $this->form->getValue('overall') ? 1 : 0;
-        $this->access->menu = $this->form->getValue('menu') ? 1 : 0;
-        $this->access->active = $this->form->getValue('active') ? 1 : 0;
+        $this->access->key = $this->form->getValue('key');
+        $this->access->description = $this->form->getValue('description');
         return $this->access->save();
     }
 }

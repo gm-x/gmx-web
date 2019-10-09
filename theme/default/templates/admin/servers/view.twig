@@ -101,6 +101,12 @@
             server.id,
             permissions.ACCESS_LIST
         ) %}
+        {% set hasAccessPermissions = has_access_resource(
+            constants.admin.access.PERMISSION_GROUP,
+            constants.admin.access.PERMISSION_KEY,
+            server.id,
+            permissions.ACCESS_LIST
+            ) %}
         {% set hasPlayerViewPermissions = has_access_permission(
             constants.admin.players.PERMISSION_GROUP,
             constants.admin.players.PERMISSION_KEY,
@@ -124,17 +130,25 @@
                 <li {% if tab == 'privileges' %}class="uk-active"{% endif %}>
                     <a href="#">{{ trans('admin_privileges', 'privileges') }}</a>
                 </li>
+                {% if hasAccessPermissions %}
+                    <li {% if tab == 'access' %}class="uk-active"{% endif %}>
+                        <a href="#">{{ trans('admin_servers', 'access') }}</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         <ul id="server-info" class="uk-switcher uk-margin">
             {% include 'admin/servers/view/players_online.twig' with {'server': server, 'players': players} %}
             {% if hasGroupsPermissions %}
-                {% include 'admin/servers/view/groups.twig' with {'server': server, 'groups': groups} %}
+                {% include 'admin/servers/groups/list.twig' with {'server': server, 'groups': groups} %}
             {% endif %}
             {% if hasReasonsPermissions %}
-                {% include 'admin/servers/view/reasons.twig' with {'server': server} %}
+                {% include 'admin/servers/reasons/list.twig' with {'server': server} %}
             {% endif %}
 	        {% include 'admin/servers/view/privileges.twig' with {'server': server, 'privileges': privileges} %}
+            {% if hasAccessPermissions %}
+                {% include 'admin/servers/access/list.twig' with {'server': server} %}
+            {% endif %}
         </ul>
     </div>
 

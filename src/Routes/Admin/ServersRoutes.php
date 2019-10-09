@@ -81,16 +81,6 @@ class ServersRoutes extends BaseRoute
 	public function groups(App $app)
 	{
 		$app
-			->get('', [GroupsController::class, 'index'])
-			->setName(GroupsConstants::ROUTE_LIST)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				GroupsConstants::PERMISSION_GROUP,
-				GroupsConstants::PERMISSION_KEY,
-				Permissions::ACCESS_LIST
-			));
-
-		$app
 			->map(['GET', 'POST'], '/create', [GroupsController::class, 'create'])
 			->setName(GroupsConstants::ROUTE_CREATE)
 			->add($this->getPermissions()->hasAccessToResourceMiddleware(
@@ -134,16 +124,6 @@ class ServersRoutes extends BaseRoute
 	public function reasons(App $app)
 	{
 		$app
-			->get('', [ReasonsController::class, 'index'])
-			->setName(ReasonsConstants::ROUTE_LIST)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				ReasonsConstants::PERMISSION_GROUP,
-				ReasonsConstants::PERMISSION_KEY,
-				Permissions::ACCESS_LIST
-			));
-
-		$app
 			->map(['GET', 'POST'], '/create', [ReasonsController::class, 'create'])
 			->setName(ReasonsConstants::ROUTE_CREATE)
 			->add($this->getPermissions()->hasAccessToResourceMiddleware(
@@ -176,16 +156,6 @@ class ServersRoutes extends BaseRoute
 
 	public function access(App $app)
 	{
-		$app
-			->get('', [AccessController::class, 'index'])
-			->setName(AccessConstants::ROUTE_LIST)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				AccessConstants::PERMISSION_GROUP,
-				AccessConstants::PERMISSION_KEY,
-				Permissions::ACCESS_LIST
-			));
-
 		$app
 			->map(['GET', 'POST'], '/create', [AccessController::class, 'create'])
 			->setName(AccessConstants::ROUTE_CREATE)
