@@ -66,6 +66,18 @@ class Punishment extends BaseModel
      * @var array
      */
     protected $dates = ['created_at', 'updated_at', 'expired_at'];
+
+	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'player_id' => 'int',
+		'punisher_id' => 'int',
+		'punisher_user_id' => 'int',
+		'server_id' => 'int',
+		'reason_id' => 'int',
+		'extra' => 'int',
+	];
     
     /**
      * @var array

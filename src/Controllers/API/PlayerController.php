@@ -428,7 +428,6 @@ class PlayerController extends BaseApiController
 			]);
 
 		$result = $validator->validate($this->getBody($request));
-
 		if (!$result->getIsValid()) {
 			throw new ValidationException($result->getFirstError());
 		}

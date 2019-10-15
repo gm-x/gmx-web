@@ -33,6 +33,14 @@ class GroupAccess extends BaseModel
     protected $fillable = ['group_id', 'access_id'];
 
 	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'group_id' => 'int',
+		'access_id' => 'int',
+	];
+
+	/**
 	 * Set the keys for a save update query.
 	 *
 	 * @param  Builder  $query

@@ -51,6 +51,7 @@ class Group extends BaseModel
 	 * @var array
 	 */
     protected $casts = [
+    	'server_id' => 'int',
     	'flags' => 'int',
     	'priority' => 'int',
     ];
