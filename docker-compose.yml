@@ -1,0 +1,65 @@
+version: '3.3'
+
+services:
+  http:
+    image: nginx:1.17-alpine
+    depends_on:
+      - php
+    ports:
+      - ${HTTP_LOCAL_PORT}:80
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:${HOSTNAME}
+      - traefik.docker.network=proxy
+    networks:
+      - bridge
+      - proxy
+    volumes:
+      - .:/var/www/${HOSTNAME}
+      - .docker/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+
+  php:
+    depends_on:
+      - memcached
+      - db
+    build: .docker/php
+    environment:
+      - PHP_IDE_CONFIG=serverName=${HOSTNAME}
+    extra_hosts:
+      - ${HOSTNAME}:${DOCKER_HOST_IP}
+    networks:
+      - bridge
+      - proxy
+    volumes:
+      - .:/var/www/${HOSTNAME}
+      - .docker/php/php-fpm.d:/etc/php-fpm.d
+      - .docker/php/php.d/0-main.ini:/etc/php.d/0-main.ini
+      - .docker/php/php.d/15-xdebug.ini:/etc/php.d/15-xdebug.ini
+      - .docker/php/php.d/10-tzone.ini:/etc/php.d/10-tzone.ini
+      - .docker/php/php.d/20-soap.ini:/etc/php.d/20-soap.ini
+      - .docker/php/php.d/25-grpc.ini:/etc/php.d/25-grpc.ini
+
+  db:
+    image: percona:5.7.24-centos
+    networks:
+      - bridge
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+
+    ports:
+      - ${MYSQL_HOST_PORT}:3306
+    volumes:
+      - .docker/mysql/mysqld.cnf:/etc/my.cnf.d/mysqld.cnf
+      - .docker/data/mysql:/var/lib/mysql
+
+  memcached:
+    image: memcached:1.5-alpine
+    networks:
+      - bridge
+    command: memcached -p 11211 -u memcached
+
+networks:
+  proxy:
+    external: true
+  bridge:
