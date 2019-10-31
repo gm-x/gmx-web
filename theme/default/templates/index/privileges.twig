@@ -1,0 +1,23 @@
+<div class="uk-card uk-card-default">
+	<div class="uk-card-header">
+		<h3 class="uk-card-title"><i class="fas fa-history"></i> Последние привилегии</h3>
+	</div>
+	<div class="uk-card-body">
+		<div f-table f-divider>
+			<ul th>
+				<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Nick</li>
+				<li class="uk-width-1-2@m uk-width-1-1@s uk-visible@s">Privilege</li>
+			</ul>
+			{% for privilege in privileges %}
+			<ul>
+				<li class="uk-width-1-2@m uk-width-1-1@s">{{ privilege.player.nick }}</li>
+				<li class="uk-width-1-2@m uk-width-1-1@s">{{ privilege.group.title }}</li>
+			</ul>
+			{% else %}
+				<ul>
+					<li class="uk-width-1-2@m uk-width-1-1@s">{{ trans('punishments', 'nothing_to_show') }}</li>
+				</ul>
+			{% endfor %}
+		</div>
+	</div>
+</div>

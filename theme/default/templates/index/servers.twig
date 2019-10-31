@@ -1,0 +1,92 @@
+<div uk-slider="center: true; autoplay: true">
+	<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
+		<ul class="uk-slider-items uk-child-width-1-1@s uk-grid">
+			{% for server in servers %}
+				<li>
+					<div class="uk-child-width-1-2@s uk-grid">
+						<div>
+							<div class="uk-card uk-margin">
+								<div class="uk-inline">
+									{% if server.online and server.map.exists() %}
+										<img
+												src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
+												alt="{{ server.map.name }}"
+												onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';"
+												class="border-10"
+										>
+									{% else %}
+										<img src="{{ base_url() }}/assets/images/maps/cs_italy.jpg" alt="" class="border-10">
+									{% endif %}
+
+									<div class="uk-overlay uk-position-top uk-overlay-primary">
+										<h3 class="uk-card-title">{{ server.name }}</h3>
+									</div>
+									<div class="uk-card-badge uk-label">
+										{% if server.online %}
+											{{ server.map.exists() ? server.map.name : '-' }}
+										{% else %}
+											OFFLINE
+										{% endif %}
+									</div>
+									{% if server.online %}
+										<div class="uk-overlay uk-position-bottom uk-overlay-primary">
+											<b>{{ trans('labels', 'server_address') }}</b>: <a href="steam://connect/{{ server.ip }}:{{ server.port }}">{{ server.ip }}:{{ server.port }}</a>
+											<br>
+											<b>{{ trans('labels', 'server_players') }}</b>:
+											{{ server.num_players  }}/{{ server.max_players }}
+										</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+						<div>
+							<div class="uk-card uk-card-default uk-margin">
+								<div class="uk-card-header">
+									<h3 class="uk-card-title">
+										<i class="fas fa-history"></i> {{ trans('index', 'players_list') }}
+									</h3>
+								</div>
+								<div class="uk-card-body">
+									{% if server.online %}
+										{% set players = server.getActiveSessions() %}
+										{% if players | length > 0 %}
+											<table class="uk-table uk-table-striped uk-table-small paginate">
+												<thead>
+												<tr>
+													<th>{{ trans('index', 'player_nick') }}</th>
+													<th>{{ trans('index', 'player_joined') }}</th>
+													<th>{{ trans('index', 'player_online') }}</th>
+												</tr>
+												</thead>
+												<tbody>
+												{% for session in players %}
+													<tr>
+														<td>{{ session.player.nick }}</td>
+														<td>{{ datetime.datetime(session.created_at) }}</td>
+														<td>{{ session.online }}</td>
+													</tr>
+												{% endfor %}
+												</tbody>
+											</table>
+										{% else %}
+											<h2 class="uk-heading-line uk-text-center">
+												<span>{{ trans('index', 'players_empty') }}</span>
+											</h2>
+										{% endif %}
+									{% else %}
+										<h2 class="uk-heading-line uk-text-center">
+											<span>{{ trans('index', 'players_empty') }}</span>
+										</h2>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+		<a class="uk-position-center-left uk-position-small" uk-slidenav-previous uk-slider-item="previous"></a>
+		<a class="uk-position-center-right uk-position-small" uk-slidenav-next uk-slider-item="next"></a>
+	</div>
+	<ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
+</div>
