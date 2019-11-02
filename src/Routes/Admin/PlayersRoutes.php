@@ -83,11 +83,23 @@ class PlayersRoutes extends BaseRoute
 
 		$app
 			->map(['GET', 'POST'], '/{privilege:\d+}/edit', [PrivilegesController::class, 'edit'])
-			->setName(PrivilegesConstants::ROUTE_EDIT);
+			->setName(PrivilegesConstants::ROUTE_EDIT)
+			->add($this->getPermissions()->hasAccessToResourceMiddleware(
+				'server',
+				PrivilegesConstants::PERMISSION_GROUP,
+				PrivilegesConstants::PERMISSION_KEY,
+				Permissions::ACCESS_EDIT
+			));
 
 		$app
 			->post('/{privilege:\d+}/delete', [PrivilegesController::class, 'delete'])
-			->setName(PrivilegesConstants::ROUTE_DELETE);
+			->setName(PrivilegesConstants::ROUTE_DELETE)
+			->add($this->getPermissions()->hasAccessToResourceMiddleware(
+				'server',
+				PrivilegesConstants::PERMISSION_GROUP,
+				PrivilegesConstants::PERMISSION_KEY,
+				Permissions::ACCESS_DELETE
+			));
 	}
 
 	public function punishments(App $app)
@@ -114,14 +126,33 @@ class PlayersRoutes extends BaseRoute
 
 		$app
 			->map(['GET', 'POST'], '/{punishment:\d+}/edit', [PunishmentsController::class, 'edit'])
-			->setName(PunishmentsConstants::ROUTE_EDIT);
+			->setName(PunishmentsConstants::ROUTE_EDIT)
+			->add($this->getPermissions()->hasAccessToResourceMiddleware(
+				'server',
+				PunishmentsConstants::PERMISSION_GROUP,
+				PunishmentsConstants::PERMISSION_KEY,
+				Permissions::ACCESS_EDIT
+			));
 
+		// TODO: Add permissions
 		$app
 			->map(['GET', 'POST'], '/{punishment:\d+}/amnesty', [PunishmentsController::class, 'amnesty'])
-			->setName(PunishmentsConstants::ROUTE_AMNESTY);
+			->setName(PunishmentsConstants::ROUTE_AMNESTY)
+			->add($this->getPermissions()->hasAccessToResourceMiddleware(
+				'server',
+				PunishmentsConstants::PERMISSION_GROUP,
+				PunishmentsConstants::PERMISSION_KEY,
+				Permissions::ACCESS_EDIT
+			));
 
 		$app
 			->post('/{punishment:\d+}/delete', [PunishmentsController::class, 'delete'])
-			->setName(PunishmentsConstants::ROUTE_DELETE);
+			->setName(PunishmentsConstants::ROUTE_DELETE)
+			->add($this->getPermissions()->hasAccessToResourceMiddleware(
+				'server',
+				PunishmentsConstants::PERMISSION_GROUP,
+				PunishmentsConstants::PERMISSION_KEY,
+				Permissions::ACCESS_DELETE
+			));
 	}
 }

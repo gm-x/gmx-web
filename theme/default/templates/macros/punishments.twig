@@ -60,6 +60,7 @@
 {% endmacro %}
 
 {% macro status(punishment) %}
+    {# TODO: Translate #}
     {% if punishment.status == models.punishment.STATUS_AMNESTIED %}
         Amnestied
     {% elseif punishment.status == models.punishment.STATUS_EXPIRED %}
