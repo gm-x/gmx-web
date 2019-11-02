@@ -21,7 +21,7 @@ function json($status, $message = '') {
 function getBaseUrl() {
     $url = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
     $url = str_replace('\\', '/', $url);
-	return rtrim(dirname($url), '/');
+	return rtrim(str_replace('\\', '/', dirname($url)), '/');
 }
 
 function checkPhpVersion($version) {

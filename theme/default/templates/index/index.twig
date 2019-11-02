@@ -7,13 +7,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="uk-child-width-1-1@m uk-grid-small" uk-grid>
+<div class="uk-grid-medium uk-child-width-1-2@m uk-margin" uk-grid>
 	<div>
-		<h2 class="uk-heading-line uk-text-center uk-text-uppercase"><span>Добро пожаловать</span></h2>
 		{% include 'index/servers.twig' with({'servers': servers}) %}
 	</div>
-</div>
-<div class="uk-grid-small uk-child-width-expand@s uk-margin" uk-grid>
 	<div>
 		{% include 'index/punishments.twig' with({'punishments': punishments}) %}
 	</div>
