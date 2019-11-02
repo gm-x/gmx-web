@@ -60,11 +60,16 @@
 {% endmacro %}
 
 {% macro status(punishment) %}
-    {#{% if punishment.status === models.punishment.STATUS_PUNISHED %}#}
-    Expired:
-    {% if punishment.expired_at %}
-        {{ punishment.expired_at | date('d.m.Y H:i') }}
+    {% if punishment.status == models.punishment.STATUS_AMNESTIED %}
+        Amnestied
+    {% elseif punishment.status == models.punishment.STATUS_EXPIRED %}
+        Expired
     {% else %}
-        Never
+        Expired:
+        {% if punishment.expired_at %}
+            {{ punishment.expired_at | date('d.m.Y H:i') }}
+        {% else %}
+            Never
+        {% endif %}
     {% endif %}
 {% endmacro %}

@@ -117,6 +117,10 @@ class PlayersRoutes extends BaseRoute
 			->setName(PunishmentsConstants::ROUTE_EDIT);
 
 		$app
+			->map(['GET', 'POST'], '/{punishment:\d+}/amnesty', [PunishmentsController::class, 'amnesty'])
+			->setName(PunishmentsConstants::ROUTE_AMNESTY);
+
+		$app
 			->post('/{punishment:\d+}/delete', [PunishmentsController::class, 'delete'])
 			->setName(PunishmentsConstants::ROUTE_DELETE);
 	}

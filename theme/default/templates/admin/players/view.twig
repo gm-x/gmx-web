@@ -269,7 +269,7 @@
                                                     constants.admin.punishments.PERMISSION_KEY,
                                                     punishment.server_id,
                                                     permissions.ACCESS_EDIT
-                                                    ) %}
+                                                ) %}
                                                     {{ admin.edit_btn(
                                                         path_for(constants.admin.punishments.ROUTE_EDIT, {
                                                             'player': player.id,
@@ -282,8 +282,25 @@
                                                     constants.admin.punishments.PERMISSION_GROUP,
                                                     constants.admin.punishments.PERMISSION_KEY,
                                                     punishment.server_id,
+                                                    permissions.ACCESS_EDIT
+                                                ) %}
+                                                    {{ admin.form_btn(
+                                                        trans('buttons', 'delete'),
+                                                        path_for(constants.admin.punishments.ROUTE_AMNESTY, {
+                                                            'player': player.id,
+                                                            'punishment': punishment.id
+                                                        }),
+                                                        'delete-form',
+                                                        'fa-unlock'
+                                                    ) }}
+                                                {% endif %}
+
+                                                {% if has_access_resource(
+                                                    constants.admin.punishments.PERMISSION_GROUP,
+                                                    constants.admin.punishments.PERMISSION_KEY,
+                                                    punishment.server_id,
                                                     permissions.ACCESS_DELETE
-                                                    ) %}
+                                                ) %}
                                                     {{ admin.delete_btn(
                                                         path_for(constants.admin.punishments.ROUTE_DELETE, {
                                                             'player': player.id,
