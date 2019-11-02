@@ -33,35 +33,6 @@ class GroupsController extends BaseAdminController
      * @param int $serverId
      * @return ResponseInterface
      * @throws NotFoundException
-     */
-    public function indexAction(ServerRequestInterface $request, Response $response, $serverId)
-    {
-        $server = $this->getServer($request, $response, $serverId);
-
-        $this->getBreadcrumbs()
-            ->add(
-                $this->getTranslate('admin_menu', 'servers'),
-                $this->pathFor(ServersConstants::ROUTE_LIST)
-            )
-            ->add(
-                $server->name,
-                $this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
-            )
-            ->add($this->getTranslate('admin_servers', 'groups'));
-
-        $groups = $server->groups()->orderBy('priority', 'asc')->get();
-        return $this->getView()->render($response, 'admin/servers/groups/index.twig', [
-            'server' => $server,
-            'groups' => $groups,
-        ]);
-    }
-    
-    /**
-     * @param ServerRequestInterface $request
-     * @param Response $response
-     * @param int $serverId
-     * @return ResponseInterface
-     * @throws NotFoundException
      * @throws RedirectException
      */
     public function createAction(ServerRequestInterface $request, Response $response, $serverId)

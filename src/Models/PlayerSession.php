@@ -47,8 +47,16 @@ class PlayerSession extends BaseModel
      * @var array
      */
     protected $dates = ['created_at', 'updated_at', 'disconnected_at', 'ping_at'];
-    
-    /**
+
+	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'player_id' => 'int',
+		'server_id' => 'int',
+	];
+
+	/**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function player()

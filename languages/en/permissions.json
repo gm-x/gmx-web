@@ -20,5 +20,6 @@
     "admin_server_token": "Server token",
     "admin_user": "Users",
     "admin_role": "Roles",
-    "admin_server_rcon": "RCON"
+    "admin_server_rcon": "RCON",
+    "admin_access": "Access"
 }

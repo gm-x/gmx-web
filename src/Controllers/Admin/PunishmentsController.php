@@ -179,6 +179,38 @@ class PunishmentsController extends BaseAdminController
 	/**
 	 * @param Request $request
 	 * @param Response $response
+	 * @param $playerId
+	 * @param $punishmentId
+	 * @return ResponseInterface
+	 * @throws NotAllowedException
+	 * @throws NotFoundException
+	 * @throws \GameX\Core\Cache\NotFoundException
+	 * @throws \GameX\Core\Exceptions\RoleNotFoundException
+	 */
+    public function amnestyAction(Request $request, Response $response, $playerId, $punishmentId)
+    {
+	    $player = $this->getPlayer($request, $response, $playerId);
+	    $punishment = $this->getPunishment($request, $response, $player, $punishmentId);
+	    $this->getServerForPunishment($punishment, Permissions::ACCESS_DELETE);
+
+	    try {
+		    $punishment->update([
+		    	'status' => Punishment::STATUS_AMNESTIED
+		    ]);
+		    $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
+	    } catch (Exception $e) {
+		    $this->addErrorMessage($this->getTranslate('labels', 'exception'));
+		    $this->getLogger()->exception($e);
+	    }
+
+	    return $this->redirect(PlayersConstants::ROUTE_VIEW, [
+		    'player' => $player->id,
+	    ], ['tab' => 'punishments']);
+    }
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
 	 * @param int $playerId
 	 * @param int $punishmentId
 	 * @return ResponseInterface

@@ -33,6 +33,7 @@ class ApiRoutes extends BaseRoute
 	    $app->post('/disconnect', [PlayerController::class, 'disconnect']);
 	    $app->post('/assign', [PlayerController::class, 'assign']);
 	    $app->post('/preferences', [PlayerController::class, 'preferences']);
+	    $app->post('/privilege/add', [PlayerController::class, 'privilegeAdd']);
     }
 
     public function punish(App $app)

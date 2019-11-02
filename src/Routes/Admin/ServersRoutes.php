@@ -7,10 +7,12 @@ use \GameX\Core\BaseRoute;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Constants\Admin\GroupsConstants;
 use \GameX\Constants\Admin\ReasonsConstants;
+use \GameX\Constants\Admin\AccessConstants;
 use \GameX\Core\Auth\Permissions;
 use \GameX\Controllers\Admin\ServersController;
 use \GameX\Controllers\Admin\GroupsController;
 use \GameX\Controllers\Admin\ReasonsController;
+use \GameX\Controllers\Admin\AccessController;
 
 class ServersRoutes extends BaseRoute
 {
@@ -73,20 +75,11 @@ class ServersRoutes extends BaseRoute
 
 		$app->group('/{server:\d+}/groups', [$this, 'groups']);
 		$app->group('/{server:\d+}/reasons', [$this, 'reasons']);
+		$app->group('/{server:\d+}/access', [$this, 'access']);
 	}
 	
 	public function groups(App $app)
 	{
-		$app
-			->get('', [GroupsController::class, 'index'])
-			->setName(GroupsConstants::ROUTE_LIST)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				GroupsConstants::PERMISSION_GROUP,
-				GroupsConstants::PERMISSION_KEY,
-				Permissions::ACCESS_LIST
-			));
-
 		$app
 			->map(['GET', 'POST'], '/create', [GroupsController::class, 'create'])
 			->setName(GroupsConstants::ROUTE_CREATE)
@@ -131,16 +124,6 @@ class ServersRoutes extends BaseRoute
 	public function reasons(App $app)
 	{
 		$app
-			->get('', [ReasonsController::class, 'index'])
-			->setName(ReasonsConstants::ROUTE_LIST)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				ReasonsConstants::PERMISSION_GROUP,
-				ReasonsConstants::PERMISSION_KEY,
-				Permissions::ACCESS_LIST
-			));
-
-		$app
 			->map(['GET', 'POST'], '/create', [ReasonsController::class, 'create'])
 			->setName(ReasonsConstants::ROUTE_CREATE)
 			->add($this->getPermissions()->hasAccessToResourceMiddleware(
@@ -167,6 +150,39 @@ class ServersRoutes extends BaseRoute
 				'server',
 				ReasonsConstants::PERMISSION_GROUP,
 				ReasonsConstants::PERMISSION_KEY,
+				Permissions::ACCESS_DELETE
+			));
+	}
+
+	public function access(App $app)
+	{
+		$app
+			->map(['GET', 'POST'], '/create', [AccessController::class, 'create'])
+			->setName(AccessConstants::ROUTE_CREATE)
+			->add($this->getPermissions()->hasAccessToResourceMiddleware(
+				'server',
+				AccessConstants::PERMISSION_GROUP,
+				AccessConstants::PERMISSION_KEY,
+				Permissions::ACCESS_CREATE
+			));
+
+		$app
+			->map(['GET', 'POST'], '/{access:\d+}/edit', [AccessController::class, 'edit'])
+			->setName(AccessConstants::ROUTE_EDIT)
+			->add($this->getPermissions()->hasAccessToResourceMiddleware(
+				'server',
+				AccessConstants::PERMISSION_GROUP,
+				AccessConstants::PERMISSION_KEY,
+				Permissions::ACCESS_EDIT
+			));
+
+		$app
+			->post('/{access:\d+}/delete', [AccessController::class, 'delete'])
+			->setName(AccessConstants::ROUTE_DELETE)
+			->add($this->getPermissions()->hasAccessToResourceMiddleware(
+				'server',
+				AccessConstants::PERMISSION_GROUP,
+				AccessConstants::PERMISSION_KEY,
 				Permissions::ACCESS_DELETE
 			));
 	}

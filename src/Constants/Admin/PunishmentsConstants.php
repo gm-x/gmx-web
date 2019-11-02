@@ -9,7 +9,8 @@ class PunishmentsConstants
     const ROUTE_CREATE = 'admin_punishments_create';
     const ROUTE_EDIT = 'admin_punishments_edit';
     const ROUTE_DELETE = 'admin_punishments_delete';
-    
+    const ROUTE_AMNESTY = 'admin_punishments_amnesty';
+
     const PERMISSION_GROUP = 'admin';
     const PERMISSION_TYPE = 'server';
     const PERMISSION_KEY = 'punish';

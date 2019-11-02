@@ -302,4 +302,44 @@
 			</li>
 		</ul>
 	</div>
+{% endmacro %}\
+
+{% macro array_checkbox(element, label = true) %}
+
+	{% set classes = ['uk-checkbox'] %}
+	{% if element.getHasError() %}
+		{% set classes = classes|merge(['is-invalid']) %}
+	{% endif %}
+	{% set classes = classes|merge(element.getClasses()) %}
+	{% set attributes = element.getAttributes() %}
+	{% if element.getIsRequired() %}
+		{% set attributes = attributes|merge({'required': 'required'}) %}
+	{% endif %}
+
+	{% for key,description in element.getValue() %}
+		<div class="uk-margin uk-inline uk-width-1-1">
+			<label class="switcher">
+				<input
+						type="checkbox"
+						id="{{ element.getId() }}-{{ key }}"
+						name="{{ element.getFormName() }}[{{ element.getName() }}][{{ key }}]"
+						value="1"
+						class="{{ classes | join(' ') }}"
+					{% if element.getDisabled() %}
+						disabled="disabled"
+				{% endif %}
+				{% for key, value in attributes %}
+					{{ key }}="{{ value }}"
+				{% endfor %}
+				{% if element.getValue() %}
+					checked="checked"
+				{% endif %}
+				/>
+				<div class="switcher__indicator"></div>
+				{% if label %}
+					<span>{{ description }}</span>
+				{% endif %}
+			</label>
+		</div>
+	{% endfor %}
 {% endmacro %}

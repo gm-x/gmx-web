@@ -3,6 +3,7 @@
 namespace GameX\Controllers;
 
 use \GameX\Core\BaseMainController;
+use GameX\Models\Privilege;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \Psr\Http\Message\ResponseInterface;
@@ -37,15 +38,16 @@ class IndexController extends BaseMainController
             ->limit(20)
             ->get();
 
-//	    $punishments = Punishment::with('player')
-//		    ->where('status', Punishment::STATUS_PUNISHED)
-//		    ->orderBy('created_at', 'DESC')
-//		    ->limit(20)
-//		    ->get();
+        $privileges = Privilege::with(['player', 'group'])
+	        ->where('active', true)
+	        ->orderBy('created_at', 'DESC')
+	        ->limit(20)
+	        ->get();
 
         return $this->getView()->render($response, 'index/index.twig', [
             'servers' => $servers,
             'punishments' => $punishments,
+            'privileges' => $privileges,
         ]);
     }
     

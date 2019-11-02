@@ -26,6 +26,7 @@ use \GameX\Core\Utils;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Group[] $groups
+ * @property Access[] $access
  * @property Reason[] $reasons
  * @property Map $map
  * @property Player[] $players
@@ -100,7 +101,7 @@ class Server extends BaseModel
     {
         return $this->hasMany(Group::class, 'server_id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -108,6 +109,14 @@ class Server extends BaseModel
     {
         return $this->hasMany(Reason::class, 'server_id');
     }
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function access()
+	{
+		return $this->hasMany(Access::class, 'server_id');
+	}
     
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

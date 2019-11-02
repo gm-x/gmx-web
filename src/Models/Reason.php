@@ -12,9 +12,9 @@ use \GameX\Core\BaseModel;
  * @property integer $server_id
  * @property string $title
  * @property integer $time
- * @property integer $overall
- * @property integer $menu
- * @property integer $active
+ * @property boolean $overall
+ * @property boolean $menu
+ * @property boolean $active
  * @property Server $server
  * @property Punishment $punishments
  */
@@ -42,6 +42,16 @@ class Reason extends BaseModel
      * @var array
      */
     protected $dates = ['created_at', 'updated_at'];
+
+	/**
+	 * @var array
+	 */
+	protected $casts = [
+		'server_id' => 'int',
+		'overall' => 'bool',
+		'menu' => 'bool',
+		'active' => 'bool',
+	];
     
     /**
      * @var array

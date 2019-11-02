@@ -7,13 +7,13 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \GameX\Constants\Admin\ServersConstants;
 use \GameX\Core\Pagination\Pagination;
-use \GameX\Models\Reason;
+use \GameX\Models\Access;
 use \GameX\Models\Server;
-use \GameX\Forms\Admin\ReasonsForm;
+use \GameX\Forms\Admin\AccessForm;
 use \Slim\Exception\NotFoundException;
 use \Exception;
 
-class ReasonsController extends BaseAdminController
+class AccessController extends BaseAdminController
 {
 
 	/**
@@ -35,7 +35,7 @@ class ReasonsController extends BaseAdminController
 	public function createAction(ServerRequestInterface $request, ResponseInterface $response, $serverId)
 	{
 		$server = $this->getServer($request, $response, $serverId);
-		$reason = $this->getReason($request, $response, null, $server);
+		$access = $this->getAccess($request, $response, null, $server);
 
 		$this->getBreadcrumbs()
 			->add(
@@ -47,20 +47,20 @@ class ReasonsController extends BaseAdminController
 				$this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id])
 			)
 			->add(
-				$this->getTranslate('admin_servers', 'reasons'),
-				$this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'reasons'])
+				$this->getTranslate('admin_servers', 'access'),
+				$this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'access'])
 			)
 			->add($this->getTranslate('labels', 'create'));
 
-		$form = new ReasonsForm($reason);
+		$form = new AccessForm($access);
 		if ($this->processForm($request, $form)) {
 			$this->addSuccessMessage($this->getTranslate('labels', 'saved'));
 			return $this->redirect(ServersConstants::ROUTE_VIEW, [
 				'server' => $server->id
-			], ['tab' => 'reasons']);
+			], ['tab' => 'access']);
 		}
 
-		return $this->getView()->render($response, 'admin/servers/reasons/form.twig', [
+		return $this->getView()->render($response, 'admin/servers/access/form.twig', [
 			'server' => $server,
 			'form' => $form->getForm(),
 			'create' => true,
@@ -79,7 +79,7 @@ class ReasonsController extends BaseAdminController
 	public function editAction(ServerRequestInterface $request, ResponseInterface $response, $serverId, $id)
 	{
 		$server = $this->getServer($request, $response, $serverId);
-		$reason = $this->getReason($request, $response, $id);
+		$access = $this->getAccess($request, $response, $id);
 
 		$this->getBreadcrumbs()
 			->add(
@@ -92,23 +92,23 @@ class ReasonsController extends BaseAdminController
 			)
 			->add(
 				$this->getTranslate('admin_servers', 'groups'),
-				$this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'reasons'])
+				$this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'access'])
 			)
 			->add(
-				$reason->title,
-				$this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'reasons'])
+				$access->description,
+				$this->pathFor(ServersConstants::ROUTE_VIEW, ['server' => $server->id], ['tab' => 'access'])
 			)
 			->add($this->getTranslate('labels', 'edit'));
 
-		$form = new ReasonsForm($reason);
+		$form = new AccessForm($access);
 		if ($this->processForm($request, $form)) {
 			$this->addSuccessMessage($this->getTranslate('labels', 'saved'));
 			return $this->redirect(ServersConstants::ROUTE_VIEW, [
 				'server' => $server->id
-			], ['tab' => 'reasons']);
+			], ['tab' => 'access']);
 		}
 
-		return $this->getView()->render($response, 'admin/servers/reasons/form.twig', [
+		return $this->getView()->render($response, 'admin/servers/access/form.twig', [
 			'server' => $server,
 			'form' => $form->getForm(),
 			'create' => false,
@@ -126,10 +126,10 @@ class ReasonsController extends BaseAdminController
 	public function deleteAction(ServerRequestInterface $request, ResponseInterface $response, $serverId, $id)
 	{
 		$server = $this->getServer($request, $response, $serverId);
-		$reason = $this->getReason($request, $response, $id);
+		$access = $this->getAccess($request, $response, $id);
 
 		try {
-			$reason->delete();
+			$access->delete();
 			$this->addSuccessMessage($this->getTranslate('labels', 'removed'));
 		} catch (Exception $e) {
 			$this->addErrorMessage($this->getTranslate('labels', 'exception'));
@@ -138,7 +138,7 @@ class ReasonsController extends BaseAdminController
 
 		return $this->redirect(ServersConstants::ROUTE_VIEW, [
 			'server' => $server->id
-		], ['tab' => 'reasons']);
+		], ['tab' => 'access']);
 	}
 
 	/**
@@ -163,22 +163,22 @@ class ReasonsController extends BaseAdminController
 	 * @param ResponseInterface $response
 	 * @param int $id
 	 * @param Server $server
-	 * @return Reason
+	 * @return Access
 	 * @throws NotFoundException
 	 */
-	protected function getReason(ServerRequestInterface $request, ResponseInterface $response, $id = null, Server $server = null) {
+	protected function getAccess(ServerRequestInterface $request, ResponseInterface $response, $id = null, Server $server = null) {
 		if ($id === null) {
-			return new Reason([
+			return new Access([
 				'server_id' => $server->id
 			]);
 		}
 
-		$reason = Reason::find($id);
-		if (!$reason) {
+		$access = Access::find($id);
+		if (!$access) {
 			throw new NotFoundException($request, $response);
 		}
 
 
-		return $reason;
+		return $access;
 	}
 }

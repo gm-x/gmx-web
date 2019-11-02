@@ -6,11 +6,9 @@
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">
         {{ csrf_token() }}
-        {{ forms.element_input(form.title, {"label": true}) }}
-        {{ forms.element_input(form.flags, {"label": true}) }}
-        {{ forms.element_input(form.prefix, {"label": true}) }}
-        {{ forms.array_checkbox(form.access, true) }}
-        <div class="uk-margin">
+        {{ forms.element_input(form.key) }}
+        {{ forms.element_input(form.description) }}
+        <div class="form-group">
             {% if create %}
                 <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">
             {% else %}
@@ -18,15 +16,15 @@
             {% endif %}
 
             {% if has_access_resource(
-                constants.admin.groups.PERMISSION_GROUP,
-                constants.admin.groups.PERMISSION_KEY,
+                constants.admin.access.PERMISSION_GROUP,
+                constants.admin.access.PERMISSION_KEY,
                 server.id,
                 permissions.ACCESS_LIST
             ) %}
                 <a
                     href="{{ path_for(constants.admin.servers.ROUTE_VIEW, {
                         'server': server.id
-                    }, {'tab': 'groups'}) }}"
+                    }, {'tab': 'reasons'}) }}"
                     class="uk-button uk-button-secondary"
                 >
                     {{ trans('buttons', 'cancel') }}
