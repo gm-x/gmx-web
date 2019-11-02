@@ -7,8 +7,8 @@ cache:
 deploy:
   provider: releases
   api_key: "$GH_TOKEN"
-  tag_name: "v0.1.$(git rev-list --count HEAD)-alpha"
-  name: "v0.1.$(git rev-list --count HEAD)-alpha"
+  tag_name: "v0.1.$(git rev-list --no-merges --count HEAD ^master)-alpha"
+  name: "v0.1.$(git rev-list --no-merges --count HEAD ^master)-alpha"
   file: "gmx-web.zip"
   skip_cleanup: true
   on:
