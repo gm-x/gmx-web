@@ -172,6 +172,43 @@ class PunishController extends BaseApiController
 			'reasons' => $reasons,
 		]);
 	}
+
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws ValidationException
+	 */
+	public function amnestyAction(Request $request, Response $response) {
+		$validator = new Validator($this->getContainer('lang'));
+		$validator
+			->set('punishment_id', true, [
+				new Number()
+			]);
+
+		$result = $validator->validate($this->getBody($request));
+		if (!$result->getIsValid()) {
+			throw new ValidationException($result->getFirstError());
+		}
+
+		$punishment = Punishment::where([
+			'id' => $result->getValue('punishment_id'),
+			'server_id' => $this->getServer($request)->id
+		]);
+
+		if (!$punishment) {
+			throw new ValidationException('Punishment with id ' . $result->getValue('punishment_id') . ' not found');
+		}
+
+		$punishment->update([
+			'status' => Punishment::STATUS_AMNESTIED,
+		]);
+
+		return $response->withStatus(200)->withJson([
+			'success' => true,
+			'punishment' => $punishment->get(),
+		]);
+	}
     
     /**
      * @param $serverId
