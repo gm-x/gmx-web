@@ -41,5 +41,6 @@ class ApiRoutes extends BaseRoute
 	    $app->post('', [PunishController::class, 'index']);
 	    $app->post('/immediately', [PunishController::class, 'immediately']);
 	    $app->post('/reasons', [PunishController::class, 'reasons']);
+	    $app->post('/amnesty', [PunishController::class, 'amnesty']);
     }
 }

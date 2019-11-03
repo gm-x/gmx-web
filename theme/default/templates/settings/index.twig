@@ -3,10 +3,9 @@
 {% import 'macros/forms.twig' as forms %}
 
 {% block content %}
-    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
         <div uk-grid>
-            <div class="uk-width-1-4@m">
-                <h1>{{ user.login }}</h1>
+            <div class="uk-card uk-card-default uk-card-body uk-width-1-4@m">
+                <h1 class="main-title">{{ user.login }}</h1>
                 <form action="{{ avatarForm.getAction() }}" id="avatar_form" method="post" enctype="multipart/form-data">
                     {{ csrf_token() }}
                     {% set holder =
@@ -31,8 +30,7 @@
                     </li>
                 </ul>
             </div>
-
-            <div class="uk-width-3-4@m">
+            <div class="uk-card uk-card-default uk-card-body uk-width-3-4@m">
                 <ul id="settings" class="uk-switcher">
                     <li>{% include 'settings/email.twig' %}</li>
                     <li>{% include 'settings/password.twig' %}</li>
