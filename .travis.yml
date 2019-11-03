@@ -9,7 +9,9 @@ deploy:
   api_key: "$GH_TOKEN"
   tag_name: "v0.1.$(git rev-list --no-merges --count HEAD master)-alpha"
   name: "v0.1.$(git rev-list --no-merges --count HEAD master)-alpha"
-  file: "gmx-web.zip"
+  file:
+    - "gmx-web.zip"
+    - "gmx-web-updates.zip"
   skip_cleanup: true
   on:
     tags: false
