@@ -5,12 +5,12 @@
 <html lang="en">
 <head>
     {{ head.get_meta() }}
-    <link rel="icon" href="{{ base_url() }}/assets/favicon.ico">
+    <link rel="icon" href="{{ base_url() }}/assets/favicon.ico?v={{ version() }}">
     <title>{% block title %}{{ title }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/fontawesome.min.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/pickadate.css" />
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css" />
+    <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css?v={{ version() }}" />
     <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
     <script src="{{ base_url() }}/assets/js/pickadate.min.js"></script>
@@ -75,7 +75,7 @@
             are_you_sure: '{{ trans('labels', 'are_you_sure') }}'
         };
     </script>
-    <script src="{{ base_url() }}/assets/scripts/main.js"></script>
+    <script src="{{ base_url() }}/assets/scripts/main.js?v={{ version() }}"></script>
     {% block javascript %}{% endblock %}
 </body>
 </html>

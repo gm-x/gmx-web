@@ -50,6 +50,7 @@ use \Hybridauth\Provider\Discord as DiscordProvider;
 
 use \Slim\Views\Twig;
 use \Slim\Views\TwigExtension;
+use \GameX\Core\Update\TwigVersionExtension;
 use \GameX\Core\CSRF\Extension as CSRFExtension;
 use \GameX\Core\Auth\ViewExtension as AuthViewExtension;
 use \GameX\Core\Lang\Extension\ViewExtension as LangViewExtension;
@@ -155,6 +156,10 @@ class DependencyProvider implements ServiceProviderInterface
         $container['upload'] = function (ContainerInterface $container) {
             return $this->getUpload($container);
         };
+
+	    $container['manifest'] = function (ContainerInterface $container) {
+		    return $this->getManifest($container);
+	    };
         
         $container['updater'] = function (ContainerInterface $container) {
             return $this->getUpdater($container);
@@ -415,6 +420,7 @@ class DependencyProvider implements ServiceProviderInterface
         $uri = $container->get('request')->getUri();
         
         $view->addExtension(new TwigExtension($container->get('router'), $container->get('base_url')));
+        $view->addExtension(new TwigVersionExtension($container->get('manifest')));
         $view->addExtension(new CSRFExtension($container->get('csrf')));
         $view->addExtension(new AuthViewExtension($container));
         $view->addExtension(new LangViewExtension($container));
@@ -465,18 +471,37 @@ class DependencyProvider implements ServiceProviderInterface
     {
         return new FlashMessages($container->get('session'), 'flash_messages');
     }
-    
+
+	/**
+	 * @param ContainerInterface $container
+	 * @return Upload
+	 */
     public function getUpload(ContainerInterface $container)
     {
         return new Upload($container->get('root') . 'uploads', $container->get('base_url') . '/uploads');
     }
-    
-    public function getUpdater(ContainerInterface $container)
+
+	/**
+	 * @param ContainerInterface $container
+	 * @return Manifest
+	 */
+    public function getManifest(ContainerInterface $container)
     {
-        $manifest = new Manifest($container->get('root') . 'manifest.json');
-        return new Updater($manifest);
+        return new Manifest($container->get('root') . 'manifest.json');
     }
 
+	/**
+	 * @param ContainerInterface $container
+	 * @return Updater
+	 */
+    public function getUpdater(ContainerInterface $container)
+    {
+        return new Updater($container->get('manifest'));
+    }
+
+	/**
+	 * @return Breadcrumbs
+	 */
     public function getBreadcrumbs()
     {
         return new Breadcrumbs();
