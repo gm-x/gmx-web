@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="uk-grid-medium uk-child-width-1-2@m uk-margin" uk-grid>
+<div class="uk-grid-medium uk-child-width-1-2@m uk-margin" uk-grid="masonry: true">
 	<div>
 		{% include 'index/servers.twig' with({'servers': servers}) %}
 	</div>
