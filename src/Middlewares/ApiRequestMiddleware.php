@@ -8,7 +8,6 @@ use \Psr\Http\Message\ResponseInterface;
 use \GameX\Core\Log\Logger;
 use \GameX\Core\Exceptions\InvalidTokenException;
 use \GameX\Core\Exceptions\ValidationException;
-use \GameX\Core\Exceptions\ApiException;
 use \Exception;
 
 class ApiRequestMiddleware
@@ -43,7 +42,7 @@ class ApiRequestMiddleware
 	        return $response->withStatus(403)->withJson([
 		        'success' => false,
 		        'error' => [
-			        'code' => ApiException::ERROR_INVALID_TOKEN,
+			        'code' => -2,
 			        'message' => $e->getMessage(),
 		        ],
 	        ]);
@@ -54,7 +53,7 @@ class ApiRequestMiddleware
 	        ->withJson([
 		        'success' => false,
 		        'error' => [
-			        'code' => ApiException::ERROR_VALIDATION,
+			        'code' => $e->getCode(),
 			        'message' => $e->getMessage(),
 		        ],
 	        ]);
@@ -63,7 +62,7 @@ class ApiRequestMiddleware
             return $response->withStatus(500)->withJson([
                     'success' => false,
                     'error' => [
-                        'code' => ApiException::ERROR_SERVER,
+                        'code' => -1,
                         'message' => 'Something was wrong. Please try again later',
                     ],
                 ]);

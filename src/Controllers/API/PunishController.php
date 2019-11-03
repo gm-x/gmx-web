@@ -47,12 +47,12 @@ class PunishController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ValidationException($result->getFirstError());
+            throw new ValidationException($result->getFirstError(), 0);
         }
 
         $player = Player::where('id', $result->getValue('player_id'))->first();
 	    if (!$player) {
-		    throw new ValidationException('Player with id ' . $result->getValue('player_id') . ' not found!');
+		    throw new ValidationException('Player with id ' . $result->getValue('player_id') . ' not found!', 1);
 	    }
 
         $server = $this->getServer($request);
@@ -112,7 +112,7 @@ class PunishController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ValidationException($result->getFirstError());
+            throw new ValidationException($result->getFirstError(), 0);
         }
         
         $player = $this->getPlayer(
@@ -178,7 +178,7 @@ class PunishController extends BaseApiController
 
 		$result = $validator->validate($this->getBody($request));
 		if (!$result->getIsValid()) {
-			throw new ValidationException($result->getFirstError());
+			throw new ValidationException($result->getFirstError(), 0);
 		}
 
 		$punishment = Punishment::where([
@@ -187,7 +187,7 @@ class PunishController extends BaseApiController
 		])->first();
 
 		if (!$punishment) {
-			throw new ValidationException('Punishment with id ' . $result->getValue('punishment_id') . ' not found!');
+			throw new ValidationException('Punishment with id ' . $result->getValue('punishment_id') . ' not found!', 1);
 		}
 
 		$punishment->update([
@@ -215,7 +215,7 @@ class PunishController extends BaseApiController
 	protected function punishPlayer(Server $server, Player $player, $type, $extra, $punisherId, Reason $reason, $details, $time)
 	{
 		if ($punisherId > 0 && !Player::where('id', $punisherId)->exists()) {
-			throw new ValidationException('Punisher with id ' . $punisherId . ' not found!');
+			throw new ValidationException('Punisher with id ' . $punisherId . ' not found!', 2);
 		}
 
 		$punishment = Punishment::where([
