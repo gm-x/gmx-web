@@ -8,9 +8,9 @@
 						<div
 								class="uk-background-cover uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle"
 							{% if server.online and server.map.exists() %}
-								style="background-image: url({{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg);"
+								style="background-image: url({{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg), url({{ base_url() }}/assets/images/no-photo.jpg);"
 							{% else %}
-								style="background-image: url({{ base_url() }}/assets/images/maps/jail_kakao_a4.jpg);"
+								style="background-image: url({{ base_url() }}/assets/images/no-photo.jpg);"
 							{% endif %}
 						>
 							<div class="uk-card-badge uk-label">{{ server.map.name }}</div>
