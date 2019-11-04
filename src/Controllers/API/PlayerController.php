@@ -92,7 +92,7 @@ class PlayerController extends BaseApiController
         $result = $validator->validate($this->getBody($request));
         
         if (!$result->getIsValid()) {
-            throw new ValidationException($result->getFirstError());
+            throw new ValidationException($result->getFirstError(), 0);
         }
         
         $server = $this->getServer($request);
@@ -220,13 +220,12 @@ class PlayerController extends BaseApiController
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator->set('session_id', true, [
-                new Number(1)
-            ]);
+            new Number(1)
+        ]);
         
         $result = $validator->validate($this->getBody($request));
-        
         if (!$result->getIsValid()) {
-            throw new ValidationException($result->getFirstError());
+            throw new ValidationException($result->getFirstError(), 0);
         }
 
         $session = PlayerSession::find($result->getValue('session_id'));
@@ -277,26 +276,26 @@ class PlayerController extends BaseApiController
     {
         $validator = new Validator($this->getContainer('lang'));
         $validator->set('id', true, [
-                new Number(1)
-            ])->set('token', true, [
-                new Length(32, 32)
-            ]);
+            new Number(1)
+        ])->set('token', true, [
+            new Length(32, 32)
+        ]);
         
         $result = $validator->validate($this->getBody($request));
-        
         if (!$result->getIsValid()) {
-            throw new ValidationException($result->getFirstError());
+            throw new ValidationException($result->getFirstError(), 0);
         }
+
         $player = Player::find($result->getValue('id'), ['id', 'user_id']);
         if (!$player) {
-            throw new ValidationException('Player not found');
+            throw new ValidationException('Player not found', 1);
         }
         if ($player->user_id !== null) {
-            throw new ValidationException('User already assigned');
+            throw new ValidationException('User already assigned', 2);
         }
         $user = UserModel::where('token', $result->getValue('token'))->first(['id']);
         if (!$user) {
-            throw new ValidationException('Invalid user token');
+            throw new ValidationException('Invalid user token', 3);
         }
         
         $player->user_id = $user->id;
@@ -349,13 +348,13 @@ class PlayerController extends BaseApiController
 		    ]);
 
 	    $result = $validator->validate($this->getBody($request));
-
 	    if (!$result->getIsValid()) {
-		    throw new ValidationException($result->getFirstError());
+		    throw new ValidationException($result->getFirstError(), 0);
 	    }
+
 	    $player = Player::find($result->getValue('player_id'));
 	    if (!$player) {
-		    throw new ValidationException('Player not found');
+		    throw new ValidationException('Player not found', 1);
 	    }
 
 	    $server = $this->getServer($request);
@@ -429,16 +428,16 @@ class PlayerController extends BaseApiController
 
 		$result = $validator->validate($this->getBody($request));
 		if (!$result->getIsValid()) {
-			throw new ValidationException($result->getFirstError());
+			throw new ValidationException($result->getFirstError(), 0);
 		}
 		$player = Player::find($result->getValue('player_id'));
 		if (!$player) {
-			throw new ValidationException('Player not found');
+			throw new ValidationException('Player not found', 1);
 		}
 
 		$group = Group::find($result->getValue('group_id'));
 		if (!$group || $group->server_id !== $this->getServer($request)->id) {
-			throw new ValidationException('Group not found');
+			throw new ValidationException('Group not found', 2);
 		}
 
 		$expiredAt = $result->getValue('time') > 0

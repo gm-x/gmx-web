@@ -12,6 +12,7 @@ use \GameX\Core\Pagination\Pagination;
 use \GameX\Models\Player;
 use \GameX\Models\Server;
 use \GameX\Models\Privilege;
+use \GameX\Models\Punishment;
 use \GameX\Constants\Admin\PlayersConstants;
 use \GameX\Constants\Admin\PrivilegesConstants;
 use \GameX\Constants\Admin\PunishmentsConstants;
@@ -66,22 +67,29 @@ class PlayersController extends BaseAdminController
                 $this->pathFor(PlayersConstants::ROUTE_LIST)
             )
             ->add($player->nick);
-        
-        $privileges = [];
-        $servers = [];
-        /** @var Server $server */
+
+	    $hasAccessToPrivileges = false;
+	    $hasAccessToPunishments = false;
+	    $privileges = [];
+	    $punishments = [];
+	    /** @var Server $server */
         foreach (Server::get() as $server) {
+	        if ($this->getPermissions()->hasUserAccessToResource(PrivilegesConstants::PERMISSION_GROUP,
+		        PrivilegesConstants::PERMISSION_KEY, $server->id, Permissions::ACCESS_LIST)) {
+		        $privileges[$server->id] = [
+			        'name' => $server->name,
+			        'list' => []
+		        ];
+		        $hasAccessToPrivileges = true;
+	        }
+
             if ($this->getPermissions()->hasUserAccessToResource(PunishmentsConstants::PERMISSION_GROUP,
-                PunishmentsConstants::PERMISSION_KEY, $server->id, Permissions::ACCESS_CREATE)) {
-                $servers[$server->id] = $server->name;
-            }
-            
-            if ($this->getPermissions()->hasUserAccessToResource(PrivilegesConstants::PERMISSION_GROUP,
-                PrivilegesConstants::PERMISSION_KEY, $server->id, Permissions::ACCESS_LIST)) {
-                $privileges[$server->id] = [
-                    'name' => $server->name,
-                    'privileges' => []
+                PunishmentsConstants::PERMISSION_KEY, $server->id, Permissions::ACCESS_LIST)) {
+                $punishments[$server->id] = [
+                	'name' => $server->name,
+	                'list' => []
                 ];
+	            $hasAccessToPunishments = true;
             }
         }
         
@@ -89,9 +97,17 @@ class PlayersController extends BaseAdminController
         foreach ($player->privileges()->with('group')->get() as $privilege) {
             $serverId = $privilege->group->server_id;
             if (array_key_exists($serverId, $privileges)) {
-                $privileges[$serverId]['privileges'][] = $privilege;
+                $privileges[$serverId]['list'][] = $privilege;
             }
         }
+
+	    /** @var Punishment $punishment */
+	    foreach ($player->punishments()->with('reason')->get() as $punishment) {
+		    $serverId = $punishment->server_id;
+		    if (array_key_exists($serverId, $punishments)) {
+			    $punishments[$serverId]['list'][] = $punishment;
+		    }
+	    }
 
         $last_session = $player->sessions()->orderBy('created_at', 'desc')->limit(1)->first();
         
@@ -99,8 +115,10 @@ class PlayersController extends BaseAdminController
             'tab' => $request->getParam('tab', 'info'),
             'player' => $player,
             'privileges' => $privileges,
-            'servers' => $servers,
+            'punishments' => $punishments,
             'last_session' => $last_session,
+	        'hasAccessToPrivileges' => $hasAccessToPrivileges,
+	        'hasAccessToPunishments' => $hasAccessToPunishments,
         ]);
     }
     
