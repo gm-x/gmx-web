@@ -1,105 +1,107 @@
 {% if servers|length > 0 %}
-<div uk-slider="autoplay: true">
-	<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
-		<ul class="uk-slider-items">
-			{% for server in servers %}
+	<div uk-slider="autoplay: true; center: true">
+		<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
+			<ul class="uk-slider-items uk-child-width-1-1 uk-grid">
+				{% for server in servers %}
 				<li>
-					<div class="uk-card">
-						<div class="uk-inline">
+					<div>
+						<div
+								class="uk-background-cover uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle"
 							{% if server.online and server.map.exists() %}
-								<img
-										src="{{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg"
-										alt="{{ server.map.name }}"
-										onerror="this.onerror=null;this.src='{{ base_url() }}/assets/images/blank600x400.png';"
-										uk-img
-								>
+								style="background-image: url({{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg);"
 							{% else %}
-								<img src="{{ base_url() }}/assets/images/maps/cs_italy.jpg" alt="" uk-img>
+								style="background-image: url({{ base_url() }}/assets/images/maps/jail_kakao_a4.jpg);"
 							{% endif %}
-
-							<div class="uk-overlay uk-overlay-primary uk-position-left uk-text-center uk-padding-small">
-								<div class="uk-flex uk-flex-column uk-flex-wrap uk-flex-around uk-height-1-1">
-									<div>
+						>
+							<div class="uk-card-badge uk-label">{{ server.map.name }}</div>
+							<div class="uk-overlay uk-overlay-primary uk-width-1-2">
+								<div class="uk-grid-small uk-flex-center uk-child-width-expand@s uk-text-center uk-grid-divider uk-grid-match" uk-grid>
+									<div class="uk-width-1-3">
+										<a href="#online-{{ server.id }}" uk-toggle>
+											<i class="fas fa-signal"></i>
+											<br>
+											{{ server.num_players }}/{{ server.max_players }}
+										</a>
+										<div id="online-{{ server.id }}" uk-modal>
+											<div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+												{% if server.online %}
+													{% set players = server.getActiveSessions() %}
+													{% if players | length > 0 %}
+														<table class="uk-table uk-table-striped uk-table-small paginate">
+															<thead>
+															<tr>
+																<th>{{ trans('index', 'player_nick') }}</th>
+																<th>{{ trans('index', 'player_joined') }}</th>
+																<th>{{ trans('index', 'player_online') }}</th>
+															</tr>
+															</thead>
+															<tbody>
+															{% for session in players %}
+																<tr>
+																	<td>{{ session.player.nick }}</td>
+																	<td>{{ datetime.datetime(session.created_at) }}</td>
+																	<td>{{ session.online }}</td>
+																</tr>
+															{% endfor %}
+															</tbody>
+														</table>
+													{% else %}
+														<h2 class="uk-heading-line uk-text-center">
+															<span>{{ trans('index', 'players_empty') }}</span>
+														</h2>
+													{% endif %}
+												{% else %}
+													<h2 class="uk-heading-line uk-text-center">
+														<span>{{ trans('index', 'players_empty') }}</span>
+													</h2>
+												{% endif %}
+											</div>
+										</div>
+									</div>
+									<div class="uk-width-1-3">
 										{% if server.online %}
 											<i class="fas fa-power-off" style="color: #38d293"></i>
 										{% else %}
 											<i class="fas fa-power-off" style="color: #d86363"></i>
 										{% endif %}
 									</div>
-									<hr>
-									<div>
-										<a href="#online-{{ server.id }}" uk-toggle>
-											<i class="fas fa-signal"></i>
-											<br>
-											{{ server.num_players }}/{{ server.max_players }}
-										</a>
-									</div>
-									<hr>
-									<div>
+									<div class="uk-width-1-3">
 										<a href="#players">
 											<i class="fas fa-users"></i>
 											<br>
 											{{ server.players()|length }}
 										</a>
 									</div>
-									<hr>
-									<div>
+									<div class="uk-width-1-1">
+										<h5>{{ server.name }}</h5>
+									</div>
+									<div class="uk-width-1-3">
 										<a href="#banse">
 											<i class="fas fa-ban"></i><br>
 											250
 										</a>
 									</div>
-									<hr>
-									<div>
+									<div class="uk-width-1-3">
 										<a href="steam://connect/{{ server.ip }}:{{ server.port }}">
 											<i class="fas fa-plug"></i>
 										</a>
 									</div>
-								</div>
-
-								<div id="online-{{ server.id }}" uk-modal>
-									<div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-										{% if server.online %}
-											{% set players = server.getActiveSessions() %}
-											{% if players | length > 0 %}
-												<table class="uk-table uk-table-striped uk-table-small paginate">
-													<thead>
-													<tr>
-														<th>{{ trans('index', 'player_nick') }}</th>
-														<th>{{ trans('index', 'player_joined') }}</th>
-														<th>{{ trans('index', 'player_online') }}</th>
-													</tr>
-													</thead>
-													<tbody>
-													{% for session in players %}
-														<tr>
-															<td>{{ session.player.nick }}</td>
-															<td>{{ datetime.datetime(session.created_at) }}</td>
-															<td>{{ session.online }}</td>
-														</tr>
-													{% endfor %}
-													</tbody>
-												</table>
-											{% else %}
-												<h2 class="uk-heading-line uk-text-center">
-													<span>{{ trans('index', 'players_empty') }}</span>
-												</h2>
-											{% endif %}
-										{% else %}
-											<h2 class="uk-heading-line uk-text-center">
-												<span>{{ trans('index', 'players_empty') }}</span>
-											</h2>
-										{% endif %}
+									<div class="uk-width-1-3">
+										<a href="#about">
+											<i class="fas fa-info"></i>
+										</a>
 									</div>
 								</div>
 							</div>
 						</div>
-						<h3 class="uk-margin-remove">{{ server.name }}</h3>
 					</div>
 				</li>
-			{% endfor %}
-		</ul>
+				{% endfor %}
+			</ul>
+
+			<a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+			<a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+
+		</div>
 	</div>
-	<ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
-</div>
 {% endif %}

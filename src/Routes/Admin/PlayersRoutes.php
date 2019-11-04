@@ -83,36 +83,18 @@ class PlayersRoutes extends BaseRoute
 
 		$app
 			->map(['GET', 'POST'], '/{privilege:\d+}/edit', [PrivilegesController::class, 'edit'])
-			->setName(PrivilegesConstants::ROUTE_EDIT)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				PrivilegesConstants::PERMISSION_GROUP,
-				PrivilegesConstants::PERMISSION_KEY,
-				Permissions::ACCESS_EDIT
-			));
+			->setName(PrivilegesConstants::ROUTE_EDIT);
 
 		$app
 			->post('/{privilege:\d+}/delete', [PrivilegesController::class, 'delete'])
-			->setName(PrivilegesConstants::ROUTE_DELETE)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				PrivilegesConstants::PERMISSION_GROUP,
-				PrivilegesConstants::PERMISSION_KEY,
-				Permissions::ACCESS_DELETE
-			));
+			->setName(PrivilegesConstants::ROUTE_DELETE);
 	}
 
 	public function punishments(App $app)
 	{
 		$app
 			->get('/{punishment:\d+}', [PunishmentsController::class, 'view'])
-			->setName(PunishmentsConstants::ROUTE_VIEW)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				PunishmentsConstants::PERMISSION_GROUP,
-				PunishmentsConstants::PERMISSION_KEY,
-				Permissions::ACCESS_VIEW
-			));
+			->setName(PunishmentsConstants::ROUTE_VIEW);
 
 		$app
 			->map(['GET', 'POST'], '/create/{server:\d+}', [PunishmentsController::class, 'create'])
@@ -126,33 +108,15 @@ class PlayersRoutes extends BaseRoute
 
 		$app
 			->map(['GET', 'POST'], '/{punishment:\d+}/edit', [PunishmentsController::class, 'edit'])
-			->setName(PunishmentsConstants::ROUTE_EDIT)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				PunishmentsConstants::PERMISSION_GROUP,
-				PunishmentsConstants::PERMISSION_KEY,
-				Permissions::ACCESS_EDIT
-			));
+			->setName(PunishmentsConstants::ROUTE_EDIT);
 
 		// TODO: Add permissions
 		$app
 			->map(['GET', 'POST'], '/{punishment:\d+}/amnesty', [PunishmentsController::class, 'amnesty'])
-			->setName(PunishmentsConstants::ROUTE_AMNESTY)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				PunishmentsConstants::PERMISSION_GROUP,
-				PunishmentsConstants::PERMISSION_KEY,
-				Permissions::ACCESS_EDIT
-			));
+			->setName(PunishmentsConstants::ROUTE_AMNESTY);
 
 		$app
 			->post('/{punishment:\d+}/delete', [PunishmentsController::class, 'delete'])
-			->setName(PunishmentsConstants::ROUTE_DELETE)
-			->add($this->getPermissions()->hasAccessToResourceMiddleware(
-				'server',
-				PunishmentsConstants::PERMISSION_GROUP,
-				PunishmentsConstants::PERMISSION_KEY,
-				Permissions::ACCESS_DELETE
-			));
+			->setName(PunishmentsConstants::ROUTE_DELETE);
 	}
 }

@@ -1,7 +1,7 @@
 {% extends 'admin/admin.twig' %}
 
 {% import 'macros/admin.twig' as admin %}
-{% import 'macros/punishments.twig' as punishments %}
+{% import 'macros/punishments.twig' as punishmentsMacros %}
 
 {% block title %}{{ parent() }} | {{ trans('admin_menu', 'players') }} | {{ player.nick }}{% endblock %}
 
@@ -56,19 +56,6 @@
                 </div>
             </div>
 
-            {% set hasPrivilegesPermissions = has_access_resource(
-                constants.admin.privileges.PERMISSION_GROUP,
-                constants.admin.privileges.PERMISSION_KEY,
-                server.id,
-                permissions.ACCESS_LIST
-            ) %}
-
-            {% set hasPunishmentsPermissions = has_access_resource(
-                constants.admin.punishments.PERMISSION_GROUP,
-                constants.admin.punishments.PERMISSION_KEY,
-                server.id,
-                permissions.ACCESS_LIST
-            ) %}
             <div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-1@s uk-margin" uk-grid>
                 <div>
                     <div class="uk-card-body uk-padding-small">
@@ -77,12 +64,12 @@
                                 <li {% if tab == 'info' %}class="uk-active"{% endif %}>
                                     <a href="#">{{ trans('admin_players', 'info') }}</a>
                                 </li>
-                                {% if hasPrivilegesPermissions %}
+                                {% if hasAccessToPrivileges %}
                                     <li {% if tab == 'privileges' %}class="uk-active"{% endif %}>
                                         <a href="#">{{ trans('admin_privileges', 'privileges') }}</a>
                                     </li>
                                 {% endif %}
-                                {% if hasPunishmentsPermissions %}
+                                {% if hasAccessToPunishments %}
                                 <li {% if tab == 'punishments' %}class="uk-active"{% endif %}>
                                     <a href="#">{{ trans('admin_punishments', 'punishments') }}</a>
                                 </li>
@@ -129,7 +116,7 @@
                                     </ul>
                                 </div>
                             </li>
-                            {% if hasPrivilegesPermissions %}
+                            {% if hasAccessToPrivileges %}
                             <li>
                                 <div f-table f-divider>
                                     {% for serverId, serverData in privileges %}
@@ -151,7 +138,7 @@
                                                 {% endif %}
                                             </li>
                                         </ul>
-                                        {% for privilege in serverData.privileges %}
+                                        {% for privilege in serverData.list %}
                                             <ul>
                                                 <li class="uk-width-expand">
                                                     {{ privilege.group.title }}
@@ -208,7 +195,8 @@
                                 </div>
                             </li>
                             {% endif %}
-                            {% if hasPunishmentsPermissions %}
+
+                            {% if hasAccessToPunishments %}
                             <li>
                                 <div f-table f-divider>
                                     <ul th>
@@ -231,86 +219,95 @@
                                                 </button>
                                                 <div uk-dropdown>
                                                      <ul class="uk-nav uk-dropdown-nav">
-                                                        {% for serverId, serverName in servers %}
-                                                            {% set href = path_for(constants.admin.punishments.ROUTE_CREATE, {
-                                                                'player': player.id,
-                                                                'server': serverId
-                                                            }) %}
-                                                            <li>
-                                                                <a href="{{ href }}" class="dropdown-item">{{ serverName }}</a>
-                                                            </li>
+                                                        {% for serverId, serverData in punishments %}
+                                                            {% if has_access_resource(
+                                                                constants.admin.punishments.PERMISSION_GROUP,
+                                                                constants.admin.punishments.PERMISSION_KEY,
+                                                                serverId,
+                                                                permissions.ACCESS_CREATE
+                                                            ) %}
+                                                                {% set href = path_for(constants.admin.punishments.ROUTE_CREATE, {
+                                                                    'player': player.id,
+                                                                    'server': serverId
+                                                                }) %}
+                                                                <li>
+                                                                    <a href="{{ href }}" class="dropdown-item">{{ serverData.name }}</a>
+                                                                </li>
+                                                            {% endif %}
                                                         {% endfor %}
                                                      </ul>
                                                 </div>
                                             </span>
                                         </li>
                                     </ul>
-                                    {% for punishment in player.punishments %}
-                                        <ul>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.punisher(punishment) }}</li>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishments.server(punishment) }}</li>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.reason(punishment) }}</li>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.details(punishment) }}</li>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishments.status(punishment) }}</li>
-                                            <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
-                                                {% set href = path_for(constants.admin.punishments.ROUTE_VIEW, {
-                                                    'player': player.id,
-                                                    'punishment': punishment.id
-                                                }) %}
-                                                {{ admin.circle_btn({
-                                                    "href": href,
-                                                    "title": trans('buttons', 'view'),
-                                                    "icon": "fas fa-info",
-                                                    "size": "m"
-                                                }) }}
+                                    {% for serverData in punishments %}
+                                        {% for punishment in serverData.list %}
+                                            <ul>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishmentsMacros.punisher(punishment) }}</li>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishmentsMacros.server(punishment) }}</li>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishmentsMacros.reason(punishment) }}</li>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishmentsMacros.details(punishment) }}</li>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishmentsMacros.status(punishment) }}</li>
+                                                <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">
+                                                    {% set href = path_for(constants.admin.punishments.ROUTE_VIEW, {
+                                                        'player': player.id,
+                                                        'punishment': punishment.id
+                                                    }) %}
+                                                    {{ admin.circle_btn({
+                                                        "href": href,
+                                                        "title": trans('buttons', 'view'),
+                                                        "icon": "fas fa-info",
+                                                        "size": "m"
+                                                    }) }}
 
-                                                {% if has_access_resource(
-                                                    constants.admin.punishments.PERMISSION_GROUP,
-                                                    constants.admin.punishments.PERMISSION_KEY,
-                                                    punishment.server_id,
-                                                    permissions.ACCESS_EDIT
-                                                ) %}
-                                                    {{ admin.edit_btn(
-                                                        path_for(constants.admin.punishments.ROUTE_EDIT, {
-                                                            'player': player.id,
-                                                            'punishment': punishment.id
-                                                        })
-                                                    ) }}
-                                                {% endif %}
+                                                    {% if has_access_resource(
+                                                        constants.admin.punishments.PERMISSION_GROUP,
+                                                        constants.admin.punishments.PERMISSION_KEY,
+                                                        punishment.server_id,
+                                                        permissions.ACCESS_EDIT
+                                                    ) %}
+                                                        {{ admin.edit_btn(
+                                                            path_for(constants.admin.punishments.ROUTE_EDIT, {
+                                                                'player': player.id,
+                                                                'punishment': punishment.id
+                                                            })
+                                                        ) }}
+                                                    {% endif %}
 
-                                                {# TODO: Fix icon, title and modal window #}
-                                                {% if has_access_resource(
-                                                    constants.admin.punishments.PERMISSION_GROUP,
-                                                    constants.admin.punishments.PERMISSION_KEY,
-                                                    punishment.server_id,
-                                                    permissions.ACCESS_EDIT
-                                                ) %}
-                                                    {{ admin.form_btn(
-                                                        trans('buttons', 'delete'),
-                                                        path_for(constants.admin.punishments.ROUTE_AMNESTY, {
-                                                            'player': player.id,
-                                                            'punishment': punishment.id
-                                                        }),
-                                                        'delete-form',
-                                                        'fa-unlock'
-                                                    ) }}
-                                                {% endif %}
+                                                    {# TODO: Fix icon, title and modal window #}
+                                                    {% if has_access_resource(
+                                                        constants.admin.punishments.PERMISSION_GROUP,
+                                                        constants.admin.punishments.PERMISSION_KEY,
+                                                        punishment.server_id,
+                                                        permissions.ACCESS_EDIT
+                                                    ) %}
+                                                        {{ admin.form_btn(
+                                                            trans('buttons', 'delete'),
+                                                            path_for(constants.admin.punishments.ROUTE_AMNESTY, {
+                                                                'player': player.id,
+                                                                'punishment': punishment.id
+                                                            }),
+                                                            'delete-form',
+                                                            'fa-unlock'
+                                                        ) }}
+                                                    {% endif %}
 
-                                                {% if has_access_resource(
-                                                    constants.admin.punishments.PERMISSION_GROUP,
-                                                    constants.admin.punishments.PERMISSION_KEY,
-                                                    punishment.server_id,
-                                                    permissions.ACCESS_DELETE
-                                                ) %}
-                                                    {{ admin.delete_btn(
-                                                        path_for(constants.admin.punishments.ROUTE_DELETE, {
-                                                            'player': player.id,
-                                                            'punishment': punishment.id
-                                                        })
-                                                    ) }}
-                                                {% endif %}
-                                            </li>
-                                        </ul>
+                                                    {% if has_access_resource(
+                                                        constants.admin.punishments.PERMISSION_GROUP,
+                                                        constants.admin.punishments.PERMISSION_KEY,
+                                                        punishment.server_id,
+                                                        permissions.ACCESS_DELETE
+                                                    ) %}
+                                                        {{ admin.delete_btn(
+                                                            path_for(constants.admin.punishments.ROUTE_DELETE, {
+                                                                'player': player.id,
+                                                                'punishment': punishment.id
+                                                            })
+                                                        ) }}
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        {% endfor %}
                                     {% endfor %}
                                 </div>
                             </li>
