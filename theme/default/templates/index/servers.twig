@@ -1,5 +1,5 @@
 {% if servers|length > 0 %}
-	<div uk-slider="autoplay: true; center: true">
+	<div uk-slider="autoplay: true; center: true; clsActivated: uk-transition-active">
 		<div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1">
 			<ul class="uk-slider-items uk-child-width-1-1 uk-grid">
 				{% for server in servers %}
@@ -14,7 +14,7 @@
 							{% endif %}
 						>
 							<div class="uk-card-badge uk-label">{{ server.map.name }}</div>
-							<div class="uk-overlay uk-overlay-primary uk-width-1-2">
+							<div class="uk-overlay uk-overlay-primary uk-width-1-2 uk-transition-scale-down">
 								<div class="uk-grid-small uk-flex-center uk-child-width-expand@s uk-text-center uk-grid-divider uk-grid-match" uk-grid>
 									<div class="uk-width-1-3">
 										<a href="#online-{{ server.id }}" uk-toggle>
