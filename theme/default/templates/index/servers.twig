@@ -6,7 +6,7 @@
 				<li>
 					<div>
 						<div
-								class="uk-background-cover uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle"
+								class="uk-background-cover uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle unselect"
 							{% if server.online and server.map.exists() %}
 								style="background-image: url({{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg), url({{ base_url() }}/assets/images/no-photo.jpg);"
 							{% else %}
@@ -24,6 +24,7 @@
 										</a>
 										<div id="online-{{ server.id }}" uk-modal>
 											<div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+												<button class="uk-modal-close-outside" type="button" uk-close></button>
 												{% if server.online %}
 													{% set players = server.getActiveSessions() %}
 													{% if players | length > 0 %}
@@ -87,9 +88,15 @@
 										</a>
 									</div>
 									<div class="uk-width-1-3">
-										<a href="#about">
+										<a href="#about-{{ server.id }}" uk-toggle>
 											<i class="fas fa-info"></i>
 										</a>
+										<div id="about-{{ server.id }}" uk-modal>
+											<div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+												<button class="uk-modal-close-outside" type="button" uk-close></button>
+												<h1 class="main-title">О сервере</h1>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>

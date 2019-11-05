@@ -25,6 +25,10 @@ input {
     appearance: none;
 }
 
+.unselect {
+    user-select: none;
+}
+
 .nav-link i {
     min-width: 20px;
 }
@@ -216,6 +220,7 @@ span[contenteditable]:focus {
 }
 
 .user-avatar-cell {
+    min-width: 30px;
     width: 30px;
 }
 
