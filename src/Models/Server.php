@@ -2,6 +2,7 @@
 
 namespace GameX\Models;
 
+use GameX\Core\Auth\Models\UserModel;
 use \Illuminate\Database\Eloquent\SoftDeletes;
 use \GameX\Core\BaseModel;
 use \Carbon\Carbon;
@@ -132,6 +133,14 @@ class Server extends BaseModel
     public function players()
     {
         return $this->hasMany(Player::class, 'server_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function punishments()
+    {
+        return $this->hasMany(Punishment::class, 'server_id');
     }
     
     /**
