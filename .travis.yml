@@ -4,6 +4,10 @@ php:
 cache:
   directories:
     - $HOME/.composer/cache/files
+
+git:
+  depth: false
+
 deploy:
   provider: releases
   api_key: "$GH_TOKEN"
