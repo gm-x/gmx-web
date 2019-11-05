@@ -10,8 +10,8 @@
 			</ul>
 			{% for privilege in privileges %}
 			<ul>
-				<li class="uk-width-1-2@m uk-width-1-1@s">{{ privilege.player.nick }}</li>
-				<li class="uk-width-1-2@m uk-width-1-1@s">{{ privilege.group.title }}</li>
+				<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Nick">{{ privilege.player.nick }}</li>
+				<li class="uk-width-1-2@m uk-width-1-1@s" s-title="Privilege">{{ privilege.group.title }}</li>
 			</ul>
 			{% else %}
 				<ul>

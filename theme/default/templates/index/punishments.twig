@@ -10,8 +10,8 @@
 			</ul>
 			{% for punishment in punishments %}
 				<ul>
-					<li class="uk-width-1-2@m uk-width-1-1@s">{{ punishment.player.nick }}</li>
-					<li class="uk-width-1-2@m uk-width-1-1@s">{{ punishments_macro.reason(punishment) }}</li>
+					<li class="uk-width-1-2@m uk-width-1-1@s" s-title="{{ trans('punishments', 'player') }}">{{ punishment.player.nick }}</li>
+					<li class="uk-width-1-2@m uk-width-1-1@s" s-title="{{ trans('punishments', 'reason') }}">{{ punishments_macro.reason(punishment) }}</li>
 				</ul>
 			{% else %}
 				<ul>

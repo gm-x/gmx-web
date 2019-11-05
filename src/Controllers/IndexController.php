@@ -35,13 +35,13 @@ class IndexController extends BaseMainController
         $punishments = Punishment::with('player')
             ->where('status', Punishment::STATUS_PUNISHED)
             ->orderBy('created_at', 'DESC')
-            ->limit(20)
+            ->limit(5)
             ->get();
 
         $privileges = Privilege::with(['player', 'group'])
 	        ->where('active', true)
 	        ->orderBy('created_at', 'DESC')
-	        ->limit(20)
+	        ->limit(5)
 	        ->get();
 
         return $this->getView()->render($response, 'index/index.twig', [
