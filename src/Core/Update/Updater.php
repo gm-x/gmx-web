@@ -39,9 +39,10 @@ class Updater
     /**
      * @param Manifest $updates
      * @param bool $force
+     * @param bool $dependencies
      * @throws \Exception
      */
-    public function run(Manifest $updates, $force = false)
+    public function run(Manifest $updates, $force = false, $dependencies = true)
     {
         if (!$force && version_compare($this->manifest->getVersion(), $updates->getVersion(), '>=')) {
             throw new LastVersionException();
@@ -91,7 +92,9 @@ class Updater
             $actions->add(new ActionDeleteFile($destination));
         }
 
-	    $actions->add(new ActionComposerInstall($baseDir));
+        if ($dependencies) {
+	        $actions->add(new ActionComposerInstall($baseDir));
+        }
 	    $actions->add(new ActionMigrationsRun($baseDir));
 	    $actions->add(new ActionClearDirectory($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'cache'));
 	    $actions->add(new ActionClearDirectory($baseDir . 'runtime' . DIRECTORY_SEPARATOR . 'twig_cache'));

@@ -30,19 +30,19 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Host:</label>
+                            <label>Database Host:</label>
                             <input type="text" class="uk-input" id="formDatabaseHost" value="127.0.0.1">
                         </div>
                         <div class="form-group">
-                            <label>Port:</label>
+                            <label>Database Port:</label>
                             <input type="text" class="uk-input" id="formDatabasePort" value="3306">
                         </div>
                         <div class="form-group">
-                            <label>User:</label>
+                            <label>Database User:</label>
                             <input type="text" class="uk-input" id="formDatabaseUser" value="root">
                         </div>
                         <div class="form-group">
-                            <label>Password:</label>
+                            <label>Database Password:</label>
                             <input type="password" class="uk-input" id="formDatabasePass" value="">
                         </div>
                         <div class="form-group">
@@ -50,7 +50,7 @@
                             <input type="text" class="uk-input" id="formDatabaseName" value="test">
                         </div>
                         <div class="form-group">
-                            <label>Prefix:</label>
+                            <label>Database Prefix:</label>
                             <input type="text" class="uk-input" id="formDatabasePrefix" value="gmx_">
                         </div>
                     </div>
@@ -64,20 +64,35 @@
                     <div class="uk-card-body">
                         <div>
                             <div class="form-group">
-                                <label>Username:</label>
+                                <label>Admin Username:</label>
                                 <input type="text" class="uk-input" id="formAdminLogin" value="admin">
                             </div>
                             <div class="form-group">
-                                <label>Email:</label>
+                                <label>Admin Email:</label>
                                 <input type="email" class="uk-input" id="formAdminEmail" value="admin@example.com">
                             </div>
                             <div class="form-group">
-                                <label>Password:</label>
+                                <label>Admin Password:</label>
                                 <input type="password" class="uk-input" id="formAdminPass" value="">
                             </div>
                         </div>
                     </div>
                 </div>
+	            <div class="uk-card uk-card-default uk-margin uk-card-large">
+		            <div class="uk-card-header">
+			            <h3 class="uk-card-title">Additional</h3>
+		            </div>
+		            <div class="uk-card-body" style="padding-top: 35px">
+			            <div>
+				            <div class="form-group">
+					            <label>
+					                <input type="checkbox" class="uk-checkbox" id="formComposer" checked>
+						            Install dependencies
+					            </label>
+				            </div>
+			            </div>
+		            </div>
+	            </div>
             </div>
         </div>
         <div class="uk-flex uk-flex-center uk-flex-wrap uk-margin">
@@ -143,10 +158,14 @@
     }
 
 	function installComposer() {
-	    var nextFunc = result('Download dependencies', installConfig);
-		$.post('?step=composer')
-            .done(nextFunc)
-            .fail(fail(nextFunc));
+		if ($('#formComposer').prop('checked')) {
+			var nextFunc = result('Download dependencies', installConfig);
+			$.post('?step=composer')
+				.done(nextFunc)
+				.fail(fail(nextFunc));
+		} else {
+			installConfig();
+		}
 	}
 
 	function installConfig() {

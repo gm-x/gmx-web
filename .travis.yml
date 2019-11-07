@@ -16,6 +16,7 @@ deploy:
   file:
     - "gmx-web.zip"
     - "gmx-web-updates.zip"
+    - "gmx-web-vendor.zip"
   skip_cleanup: true
   on:
     tags: false
