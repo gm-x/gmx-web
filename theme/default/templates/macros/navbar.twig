@@ -226,6 +226,47 @@
                     </ul>
                 </div>
             </div>
+            <div class="uk-navbar">
+                <div class="uk-navbar-center">
+                    <ul class="uk-navbar-nav">
+                        {% for item in adminmenu.getItems() if adminmenu.hasAccess(item) %}
+                            {% if item.getType() == 'item' %}
+                                <li class="{{ adminmenu.isActive(item) ? 'uk-active' : '' }}">
+                                    <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">
+                                        {% if item.getIcon() %}
+                                            <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+                                        {% endif %}
+                                        {{ item.getTitle()|trim }}
+                                    </a>
+                                </li>
+                            {% elseif item.getType() == 'group' %}
+                                <li class="{{ adminmenu.isActive(item) ? 'uk-active uk-parent' : 'uk-parent' }}">
+                                    <a class="nav-link">
+                                        {% if item.getIcon() %}
+                                            <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+                                        {% endif %}
+                                        {{ item.getTitle()|trim }}
+                                    </a>
+                                    <div class="uk-navbar-dropdown" uk-dropdown="animation: uk-animation-fade; delay-hide: 0">
+                                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                                            {% for subItem in item.getItems() if subItem.getType() == 'item' and adminmenu.hasAccess(subItem) %}
+                                                <li>
+                                                    <a class="nav-link" href="{{ path_for(subItem.getRoute(), subItem.getParams()) }}">
+                                                        {% if subItem.getIcon() %}
+                                                            <i class="fas {{ subItem.getIcon() }} uk-margin-small-right"></i>
+                                                        {% endif %}
+                                                        {{ subItem.getTitle()|trim }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -302,45 +343,4 @@
             </div>
         </div>
     </nav>
-{% endmacro %}
-
-{% macro sidebar(menu) %}
-    <div class="sidenav" uk-height-viewport="offset-top: true">
-        <ul class="uk-nav uk-nav-primary uk-nav-default uk-margin-auto-vertical" uk-nav>
-            {% for item in menu.getItems() if menu.hasAccess(item) %}
-                {% if item.getType() == 'item' %}
-                    <li class="{{ menu.isActive(item) ? 'uk-active' : '' }}">
-                        <a class="nav-link" href="{{ path_for(item.getRoute(), item.getParams()) }}">
-                            {% if item.getIcon() %}
-                                <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
-                            {% endif %}
-                            {{ item.getTitle()|trim }}
-                        </a>
-                    </li>
-                {% elseif item.getType() == 'group' %}
-                    <li class="{{ menu.isActive(item) ? 'uk-active uk-parent' : 'uk-parent' }}">
-                        <a class="nav-link">
-                            {% if item.getIcon() %}
-                                <i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
-                            {% endif %}
-                            {{ item.getTitle()|trim }}
-                        </a>
-                        <ul class="uk-nav-sub">
-                            {% for subItem in item.getItems() if subItem.getType() == 'item' and menu.hasAccess(subItem) %}
-                                <li>
-                                    <a class="nav-link" href="{{ path_for(subItem.getRoute(), subItem.getParams()) }}">
-                                        {% if subItem.getIcon() %}
-                                            <i class="fas {{ subItem.getIcon() }} uk-margin-small-right"></i>
-                                        {% endif %}
-                                        {{ subItem.getTitle()|trim }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endif %}
-                <li class="uk-nav-divider"></li>
-            {% endfor %}
-        </ul>
-    </div>
 {% endmacro %}

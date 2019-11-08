@@ -5,47 +5,42 @@
 
 {% block content %}
 <div class="uk-child-width-1-3@l uk-child-width-1-2@s uk-grid-small uk-grid-match" uk-grid>
-	<div>
-		<div class="uk-card uk-card-default uk-card-body">
-			<h3 class="uk-card-title">
-				<a href="{{ path_for(constants.admin.servers.ROUTE_LIST) }}">{{ trans('admin_menu', 'servers') }}</a>
-			</h3>
-            {{ progress.render(servers.active ~ ' / ' ~ servers.total, servers.active, servers.total, 150) }}
+	{% for item in adminmenu.getItems() if adminmenu.hasAccess(item) %}
+		<div>
+			<div class="uk-card uk-card-default uk-card-body">
+				{% if item.getType() == 'item' %}
+					<h3 class="uk-card-title main-title">
+						<a href="{{ path_for(item.getRoute(), item.getParams()) }}">
+							{% if item.getIcon() %}
+								<i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+							{% endif %}
+							{{ item.getTitle()|trim }}
+						</a>
+					</h3>
+				{% elseif item.getType() == 'group' %}
+					<h3 class="uk-card-title main-title">
+						{% if item.getIcon() %}
+							<i class="fas {{ item.getIcon() }} uk-margin-small-right"></i>
+						{% endif %}
+						{{ item.getTitle()|trim }}
+					</h3>
+					<div>
+						<ul class="uk-nav uk-navbar-dropdown-nav">
+							{% for subItem in item.getItems() if subItem.getType() == 'item' and adminmenu.hasAccess(subItem) %}
+								<li>
+									<a class="nav-link" href="{{ path_for(subItem.getRoute(), subItem.getParams()) }}">
+										{% if subItem.getIcon() %}
+											<i class="fas {{ subItem.getIcon() }} uk-margin-small-right"></i>
+										{% endif %}
+										{{ subItem.getTitle()|trim }}
+									</a>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			</div>
 		</div>
-	</div>
-
-	<div>
-		<div class="uk-card uk-card-default uk-card-body">
-			<h3 class="uk-card-title">
-				<a href="{{ path_for(constants.admin.users.ROUTE_LIST) }}">{{ trans('admin_menu', 'users') }}</a>
-			</h3>
-            {{ progress.render(users.new ~ ' / ' ~ users.total, users.new, users.total, 150) }}
-		</div>
-	</div>
-
-	<div>
-		<div class="uk-card uk-card-default uk-card-body">
-			<h3 class="uk-card-title">
-				<a href="{{ path_for(constants.admin.players.ROUTE_LIST) }}">{{ trans('admin_menu', 'players') }}</a>
-			</h3>
-			{{ progress.render(players.new ~ ' / ' ~ players.total, players.new, 0, 150) }}
-		</div>
-	</div>
-
-	<div>
-		<div class="uk-card uk-card-default uk-card-body">
-			<h3 class="uk-card-title">
-				<a href="{{ path_for(constants.admin.preferences_main.ROUTE_INDEX) }}">{{ trans('admin_menu', 'preferences') }}</a>
-			</h3>
-		</div>
-	</div>
-
-	<div>
-		<div class="uk-card uk-card-default uk-card-body">
-			<h3 class="uk-card-title">
-				<a href="{{ path_for(constants.admin.roles.ROUTE_LIST) }}">{{ trans('admin_menu', 'roles') }}</a>
-			</h3>
-		</div>
-	</div>
+	{% endfor %}
 </div>
 {% endblock %}

@@ -5,7 +5,7 @@ RewriteEngine On
 # Allow asset folders through
 RewriteRule ^(assets/.+) - [L]
 # Protect files from being viewed
-RewriteRule ^(upload.+) - [F,L]
+RewriteRule ^(uploads.+) - [L]
 
 RewriteRule ^install install/index.php [QSA,L]
 RewriteRule ^cron cron.php [QSA,L]

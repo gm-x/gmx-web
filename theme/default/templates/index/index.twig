@@ -7,13 +7,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="uk-child-width-1-1@m uk-grid-small" uk-grid>
+<div class="uk-grid-medium uk-child-width-1-2@m uk-margin" uk-grid="masonry: true">
 	<div>
-		<h2 class="uk-heading-line uk-text-center uk-text-uppercase"><span>Добро пожаловать</span></h2>
 		{% include 'index/servers.twig' with({'servers': servers}) %}
 	</div>
-</div>
-<div class="uk-grid-small uk-child-width-expand@s uk-margin" uk-grid>
 	<div>
 		{% include 'index/punishments.twig' with({'punishments': punishments}) %}
 	</div>
@@ -29,8 +26,8 @@
 			<div class="uk-flex uk-flex-middle uk-flex-center uk-child-width-1-4">
 				<div class="uk-text-center">
 					Войдите, чтобы узнать больше информации<br>
-					<button class="uk-button uk-button-primary uk-button-small uk-margin">Войти</button><br>
-					Или <a href="">присоединяйтесь</a> к GameX бесплатно
+					<a href="{{ path_for('login') }}" class="uk-button uk-button-primary uk-button-small uk-margin">Войти</a><br>
+					Или <a href="{{ path_for('login') }}">присоединяйтесь</a> к GameX бесплатно
 				</div>
 			</div>
 			<hr>

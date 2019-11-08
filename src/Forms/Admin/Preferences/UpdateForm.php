@@ -64,8 +64,13 @@ class UpdateForm extends BaseForm
 	            'required' => true,
 	            'disabled' => !$this->hasAccessToEdit,
 	        ]))
-	        ->add(new Checkbox('force', '', [
+	        ->add(new Checkbox('force', false, [
 		        'title' => $this->getTranslate('admin_preferences', 'updates_force'),
+		        'required' => false,
+		        'disabled' => !$this->hasAccessToEdit,
+	        ]))
+	        ->add(new Checkbox('dependencies', true, [
+		        'title' => $this->getTranslate('admin_preferences', 'update_dependencies'),
 		        'required' => false,
 		        'disabled' => !$this->hasAccessToEdit,
 	        ]));
@@ -80,6 +85,9 @@ class UpdateForm extends BaseForm
                 'trim' => false,
             ])
 	        ->set('force', false, [
+		        new Boolean()
+	        ])
+	        ->set('dependencies', false, [
 		        new Boolean()
 	        ]);
     }
@@ -111,7 +119,11 @@ class UpdateForm extends BaseForm
             
             
             $updates = new Manifest($tempDir . 'manifest.json');
-            $this->updater->run($updates);
+            $this->updater->run(
+            	$updates,
+	            (bool) $this->form->getValue('force'),
+	            (bool) $this->form->getValue('dependencies')
+            );
             return true;
         } catch (LastVersionException $e) {
             throw new ValidationException('You already have last version', 0, $e);

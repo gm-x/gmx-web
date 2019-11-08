@@ -1,4 +1,4 @@
-# GM-X
+# GM-X [![Build Status](https://travis-ci.org/gm-x/gmx-web.svg?branch=master)](https://travis-ci.org/gm-x/gmx-web)
 
 Requirements
 ------------

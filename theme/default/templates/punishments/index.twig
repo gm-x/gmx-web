@@ -24,7 +24,7 @@
                         {% if punishment.player.user.avatar %}
 							<img class="uk-border-circle" width="30" height="30" src="{{ upload_url(punishment.player.user.avatar) }}">
                         {% else %}
-							<img class="uk-border-circle" width="30" height="30" src="{{ base_url() }}/assets/images/user.svg" style="filter: invert(1);">
+							<img class="uk-border-circle user-avatar-cell" width="30" height="30" src="{{ base_url() }}/assets/images/user.svg" style="filter: invert(1);">
                         {% endif %}
 					</div>
                     {{ punishment.player.nick }}
