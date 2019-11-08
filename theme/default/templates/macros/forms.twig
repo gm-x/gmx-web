@@ -316,22 +316,22 @@
 		{% set attributes = attributes|merge({'required': 'required'}) %}
 	{% endif %}
 
-	{% for key,description in element.getValue() %}
+	{% for key,description in element.getValues() %}
 		<div class="uk-margin uk-inline uk-width-1-1">
 			<label class="switcher">
 				<input
-						type="checkbox"
-						id="{{ element.getId() }}-{{ key }}"
-						name="{{ element.getFormName() }}[{{ element.getName() }}][{{ key }}]"
-						value="1"
-						class="{{ classes | join(' ') }}"
-					{% if element.getDisabled() %}
-						disabled="disabled"
+					type="checkbox"
+					id="{{ element.getId() }}-{{ key }}"
+					name="{{ element.getFormName() }}[{{ element.getName() }}][{{ key }}]"
+					value="1"
+					class="{{ classes | join(' ') }}"
+				{% if element.getDisabled() %}
+					disabled="disabled"
 				{% endif %}
 				{% for key, value in attributes %}
 					{{ key }}="{{ value }}"
 				{% endfor %}
-				{% if element.getValue() %}
+				{% if element.isChecked(key) %}
 					checked="checked"
 				{% endif %}
 				/>

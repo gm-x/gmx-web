@@ -12,6 +12,7 @@ use \GameX\Core\BaseModel;
  * @property integer $server_id
  * @property string $key
  * @property string $description
+ * @property Group[] $groups
  */
 class Access extends BaseModel
 {
@@ -50,4 +51,12 @@ class Access extends BaseModel
 	{
 		return $this->belongsTo(Server::class, 'server_id', 'id');
 	}
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+	public function groups()
+    {
+        $this->belongsToMany(Privilege::class, 'groups_access', 'access_id');
+    }
 }

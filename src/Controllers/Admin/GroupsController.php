@@ -10,8 +10,6 @@ use \GameX\Core\BaseAdminController;
 use \GameX\Models\Server;
 use \GameX\Models\Group;
 use \GameX\Forms\Admin\GroupsForm;
-use \GameX\Core\Jobs\JobHelper;
-use \GameX\Models\Task;
 use \Slim\Exception\NotFoundException;
 use \GameX\Core\Exceptions\RedirectException;
 use \Exception;
