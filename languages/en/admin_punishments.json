@@ -8,5 +8,8 @@
   "punisher": "Punisher",
   "server": "Server",
   "details": "Details",
-  "status": "Status"
+  "status": "Status",
+  "type": "Type",
+  "type_empty": "Choose type",
+  "ban": "Ban"
 }

@@ -62,7 +62,8 @@ class PermissionsController extends BaseAdminController
         return $this->getView()->render($response, 'admin/roles/permissions/index.twig', [
             'form' => $form->getForm(),
             'list' => $form->getList(),
-            'servers' => $form->getServers()
+            'servers' => $form->getServers(),
+            'role' => $role
         ]);
     }
     

@@ -12,7 +12,7 @@
     <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
         <div f-table f-divider>
             {% for serverId, serverData in data %}
-                <ul th uk-sticky="offset: 80" style="background: #263137;">
+                <ul th uk-sticky="offset: 80">
                     <li class="uk-width-expand"><h3>{{ serverData.name }}</h3></li>
                     <li class="uk-width-xxs">
                         {% if has_access_resource(

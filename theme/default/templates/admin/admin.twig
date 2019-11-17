@@ -1,5 +1,8 @@
 {% import 'macros/navbar.twig' as navbar %}
 {% import 'macros/datetime.twig' as datetime %}
+{% import 'macros/admin.twig' as admin %}
+{% import 'macros/paginator.twig' as paginator %}
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,12 +14,11 @@
     <title>{% block title %}{{ title }} | {{ trans('labels', 'admin_panel') }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/uikit.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/fontawesome.min.css" />
-    <link rel="stylesheet" href="{{ base_url() }}/assets/css/pickadate.css" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/style.css?v={{ version() }}" />
     <link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css?v={{ version() }}" />
     <script src="{{ base_url() }}/assets/js/jquery-3.3.1.min.js"></script>
     <script src="{{ base_url() }}/assets/js/uikit.js"></script>
-    <script src="{{ base_url() }}/assets/js/pickadate.min.js"></script>
+    <script src="{{ base_url() }}/assets/js/datepicker.min.js"></script>
     <script src="{{ base_url() }}/assets/js/moment.min.js"></script>
     {% block style %}{% endblock %}
 </head>
@@ -32,9 +34,25 @@
         <div class="uk-position-center uk-hidden" id="spinner">
             <div uk-spinner="ratio: 5"></div>
         </div>
-        <div class="uk-margin uk-flex uk-flex-right">
-            {% block subnav %}{% endblock %}
+        <div class="uk-flex-middle uk-margin-medium-top uk-margin-small-bottom" uk-grid>
+            {% if breadcrumbs is not empty %}
+                <div class="uk-width-expand">
+                    <ul class="uk-breadcrumb">
+                        {% for breadcrumb in breadcrumbs %}
+                            {% if loop.last %}
+                                <li><span>{{ breadcrumb.title }}</span></li>
+                            {% else %}
+                                <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <div class="uk-width-1-4@m uk-flex-right">
+                {% block subnav %}{% endblock %}
+            </div>
         </div>
+
         {% for message in flash_messages.success %}
             <div class="uk-alert-success" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
@@ -48,18 +66,6 @@
                 <h5>{{ message }}</h5>
             </div>
         {% endfor %}
-
-        {% if breadcrumbs is not empty %}
-            <ul class="uk-breadcrumb">
-                {% for breadcrumb in breadcrumbs %}
-                    {% if loop.last %}
-                        <li><span>{{ breadcrumb.title }}</span></li>
-                    {% else %}
-                        <li><a href="{{ breadcrumb.url }}">{{ breadcrumb.title }}</a></li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        {% endif %}
 
         {% block content %}{% endblock %}
     </main>

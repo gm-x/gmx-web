@@ -19,7 +19,7 @@ class Expired extends BaseRule
     /**
      * @var string
      */
-    protected $format = 'Y-m-d';
+    protected $format = 'd.m.Y H:i';
 
     /**
      * @inheritdoc

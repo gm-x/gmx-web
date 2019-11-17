@@ -60,25 +60,11 @@ class RolesController extends BaseAdminController
         
         $pagination = new Pagination($role->users()->get(), $request);
         $users = $pagination->getCollection();
-
-        $form = new PermissionsForm($role);
-        if ($this->processForm($request, $form)) {
-            /** @var Cache $cache */
-            $cache = $this->getContainer('cache');
-            $cache->clear('permissions');
-            $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
-            return $this->redirect(RolesConstants::ROUTE_VIEW, [
-                'role' => $role->id,
-            ], ['tab' => 'permissions']);
-        }
         
         return $this->getView()->render($response, 'admin/roles/view.twig', [
-            'tab' => $request->getParam('tab', 'users'),
             'users' => $users,
             'pagination' => $pagination,
-            'permissionsForm' => $form->getForm(),
-            'permissionsList' => $form->getList(),
-            'servers' => $form->getServers()
+            'role' => $role
         ]);
     }
     
@@ -148,6 +134,7 @@ class RolesController extends BaseAdminController
         return $this->getView()->render($response, 'admin/roles/form.twig', [
             'form' => $form->getForm(),
             'create' => false,
+            'role' => $role
         ]);
     }
     

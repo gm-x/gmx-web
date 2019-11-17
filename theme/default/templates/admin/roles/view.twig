@@ -1,146 +1,57 @@
 {% extends 'admin/admin.twig' %}
 
-{% import 'macros/admin.twig' as admin %}
-{% import 'macros/paginator.twig' as paginator %}
-{% import 'macros/permissions.twig' as permissionsMacro %}
+{% block subnav %}
+    {% if has_access_permission(
+        constants.admin.roles.PERMISSION_GROUP,
+        constants.admin.roles.PERMISSION_KEY,
+        permissions.ACCESS_EDIT
+        ) %}
+        {{ admin.edit_btn(path_for(constants.admin.roles.ROUTE_EDIT, {'role': role.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.roles.PERMISSION_GROUP,
+        constants.admin.roles.PERMISSION_KEY,
+        permissions.ACCESS_DELETE
+        ) %}
+        {{ admin.delete_btn(path_for(constants.admin.roles.ROUTE_DELETE, {'role': role.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.permissions.PERMISSION_GROUP,
+        constants.admin.permissions.PERMISSION_KEY,
+        [permissions.ACCESS_VIEW]
+        ) %}
+        {{ admin.circle_btn({
+            'href': path_for(constants.admin.permissions.ROUTE_LIST, {'role': role.id}),
+            'title': trans('admin_menu', 'permissions'),
+            'icon': 'fas fa-lock',
+            'size': 'l'
+        }) }}
+    {% endif %}
+
+    <div class="uk-float-left">
+        {{ admin.back_btn(path_for(constants.admin.roles.ROUTE_LIST), 'l') }}
+    </div>
+{% endblock %}
 
 {% block content %}
-<div class="uk-card uk-card-secondary uk-grid-collapse uk-child-width-1-1@s uk-margin" uk-grid>
-    <div>
-        <div class="uk-card-body uk-padding-small">
-            <div class="uk-overflow-auto">
-                <ul class="uk-flex-left uk-flex-nowrap" uk-tab="connect: #player-info;animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium">
-                    <li {% if tab == 'users' %}class="uk-active"{% endif %}>
-                        <a href="#">{{ trans('admin_menu', 'users') }}</a>
-                    </li>
-                    <li {% if tab == 'permissions' %}class="uk-active"{% endif %}>
-                        <a href="#">{{ trans('admin_menu', 'permissions') }}</a>
-                    </li>
-                </ul>
-            </div>
-            <ul id="player-info" class="uk-switcher uk-margin">
-                <li>
-                    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-                        <div f-table f-divider>
-                            <ul th>
-                                <li class="uk-width-1-3@m uk-width-2-3@s uk-visible@s">{{ trans('admin_users', 'login') }}</li>
-                                <li class="uk-width-1-6@m uk-visible@m"></li>
-                            </ul>
-                            {% for user in users %}
-                                <ul th>
-                                    <li class="uk-width-1-3@m uk-width-2-3@s uk-visible@s">{{ user.email }}</li>
-                                    <li class="uk-width-1-6@m uk-visible@m"></li>
-                                </ul>
-                            {% else %}
-                                <ul>
-                                    <li>{{ trans('admin_privileges', 'empty_list') }}</li>
-                                </ul>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <style>
-                        .inputGroup label:before {
-                            background-color: #b6b6b4 !important;
-                        }
-                    </style>
-
-                    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-                        <form action="{{ permissionsForm.getAction() }}" method="post">
-                            {{ csrf_token() }}
-                            <div f-table f-divider>
-                                <ul th uk-sticky="offset: 60" class="uk-visible@s">
-                                    <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
-                                    <li class="uk-width-xxs"><i class="fas fa-list" uk-tooltip="Список"></i></li>
-                                    <li class="uk-width-xxs"><i class="fas fa-eye" uk-tooltip="Просмотр"></i></li>
-                                    <li class="uk-width-xxs"><i class="fas fa-plus" uk-tooltip="Добавление"></i></li>
-                                    <li class="uk-width-xxs"><i class="fas fa-marker" uk-tooltip="Редактирование"></i></li>
-                                    <li class="uk-width-xxs"><i class="fas fa-trash-alt" uk-tooltip="Удаление"></i></li>
-                                </ul>
-                                {% for key in permissionsList.admin.all %}
-                                    {{ permissionsMacro.permission_checkboxes(permissionsForm, key) }}
-                                {% endfor %}
-                            </div>
-                            <ul uk-accordion="multiple: true">
-                                {% for serverId, serverName in servers %}
-                                    <li>
-                                        <a class="uk-accordion-title" href="#">{{ serverName }}</a>
-                                        <div class="uk-accordion-content">
-                                            <div f-table f-divider>
-                                                <ul th uk-sticky="offset:60" class="uk-visible@s">
-                                                    <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
-                                                    <li class="uk-width-xxs"><i class="fas fa-list" uk-tooltip="Список"></i></li>
-                                                    <li class="uk-width-xxs"><i class="fas fa-eye" uk-tooltip="Просмотр"></i></li>
-                                                    <li class="uk-width-xxs"><i class="fas fa-plus" uk-tooltip="Добавление"></i></li>
-                                                    <li class="uk-width-xxs"><i class="fas fa-marker" uk-tooltip="Редактирование"></i></li>
-                                                    <li class="uk-width-xxs"><i class="fas fa-trash-alt" uk-tooltip="Удаление"></i></li>
-                                                </ul>
-                                                {% for key in permissionsList.admin.server[serverId] %}
-                                                    {{ permissionsMacro.permission_checkboxes(permissionsForm, key) }}
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                            <div class="form-group">
-                                <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'save') }}">
-                            </div>
-                        </form>
-                    </div>
-                </li>
+    <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+        <div f-table f-divider>
+            <ul th>
+                <li class="uk-width-1-3@m uk-width-2-3@s uk-visible@s">{{ trans('admin_users', 'login') }}</li>
+                <li class="uk-width-1-6@m uk-visible@m"></li>
             </ul>
+            {% for user in users %}
+                <ul th>
+                    <li class="uk-width-1-3@m uk-width-2-3@s uk-visible@s">{{ user.email }}</li>
+                    <li class="uk-width-1-6@m uk-visible@m"></li>
+                </ul>
+            {% else %}
+                <ul>
+                    <li>{{ trans('admin_privileges', 'empty_list') }}</li>
+                </ul>
+            {% endfor %}
         </div>
     </div>
-</div>
-{#<div class="uk-child-width-1-2@s" uk-grid>#}
-    {#<div>#}
-        {#<div class="uk-card uk-card-default">#}
-            {#<div class="uk-card-header">#}
-                {#<div class="uk-grid-small uk-flex-middle" uk-grid>#}
-                    {#<div class="uk-width-expand">#}
-                        {#<h3 class="uk-card-title uk-margin-remove-bottom">{{ trans('admin_labels', 'users_with_role') }}</h3>#}
-                    {#</div>#}
-                {#</div>#}
-            {#</div>#}
-            {#<div class="uk-card-body">#}
-                {#<div uk-sortable="group: role-users">#}
-                {#{% for user in users %}#}
-                    {#<div class="uk-margin">#}
-                        {#<div class="uk-card uk-card-default uk-card-body uk-card-small">#}
-                            {#<span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>#}
-                            {#{{ user.email }}#}
-                            {#{% if has_access_permission(#}
-                                {#constants.admin.users.PERMISSION_GROUP,#}
-                                {#constants.admin.users.PERMISSION_KEY,#}
-                                {#permissions.ACCESS_EDIT#}
-                            {#) %}#}
-                                {#{{ admin.edit_btn(path_for(constants.admin.users.ROUTE_EDIT, {'user': user.id})) }}#}
-                            {#{% endif %}#}
-                        {#</div>#}
-                    {#</div>#}
-                {#{% endfor %}#}
-                {#</div>#}
-            {#</div>#}
-        {#</div>#}
-    {#</div>#}
-    {#<div>#}
-        {#<div class="uk-card uk-card-default">#}
-            {#<div class="uk-card-header">#}
-                {#<div class="uk-grid-small uk-flex-middle" uk-grid>#}
-                    {#<div class="uk-width-expand">#}
-                        {#<h3 class="uk-card-title uk-margin-remove-bottom">{{ trans('admin_labels', 'all_users') }}</h3>#}
-                    {#</div>#}
-                {#</div>#}
-            {#</div>#}
-            {#<div class="uk-card-body">#}
-                {#<div uk-sortable="group: role-users">#}
-
-                {#</div>#}
-            {#</div>#}
-        {#</div>#}
-    {#</div>#}
-{#</div>#}
-{#{{ paginator.render(pagination) }}#}
 {% endblock %}
