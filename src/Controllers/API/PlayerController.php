@@ -13,6 +13,7 @@ use \GameX\Models\Player;
 use \GameX\Models\PlayerSession;
 use \GameX\Models\PlayerPreference;
 use \GameX\Models\Group;
+use \GameX\Models\Access;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Number;
@@ -178,6 +179,12 @@ class PlayerController extends BaseApiController
         $preferences = $player->preferences()
 	        ->where('server_id', $server->id)
 	        ->first();
+
+	    $access = $player->privileges()->with('group')->get()->map(function (Privilege $privilege) {
+		    return $privilege->group->access;
+	    })->flatten()->map(function (Access $access) {
+		    return $access->key;
+	    })->unique()->values()->all();
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
@@ -190,6 +197,7 @@ class PlayerController extends BaseApiController
             'user_id' => $player->user ? $player->user->id : null,
             'punishments' => $punishments,
 	        'preferences' => $preferences ? $preferences->data : new \stdClass(),
+	        'access' => $access,
         ]);
     }
     
