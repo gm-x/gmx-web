@@ -7,12 +7,12 @@ use \GameX\Models\Group;
 use \GameX\Models\Access;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Flags as FlagsElement;
+use \GameX\Core\Forms\Elements\ArrayCheckbox;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\Flags as FlagsRule;
 use \GameX\Core\Validate\Rules\Length;
-use \GameX\Core\Forms\Elements\Checkbox;
-use \GameX\Core\Validate\Rules\ArrayCallback;
 use \GameX\Core\Validate\Rules\ArrayRule;
+use \GameX\Core\Validate\Rules\ArrayBoolean;
 
 class GroupsForm extends BaseForm
 {
@@ -65,23 +65,20 @@ class GroupsForm extends BaseForm
 		        new Length(1, 64)
 	        ]);
 
-	    $access = [];
-	    /** @var Access $row */
-	    foreach ($this->group->server->access as $row) {
-		    $access[$row->key] = $row->description;
-	    }
+        $access = $this->group->access->map(function (Access $access) {
+            return $access->id;
+        })->all();
 
-	    $this->form->add(new Checkbox('access', $access));
+	    $accessList = $this->group->server->access->mapWithKeys(function (Access $access) {
+	        return [$access->id => $access->description];
+        })->all();
+
+	    $this->form->add(new ArrayCheckbox('access', $access, $accessList));
+
 	    $this->form->getValidator()
 		    ->set('access', false, [
 			    new ArrayRule(),
-			    new ArrayCallback(function ($key, $value) use ($access) {
-			    	if (!array_key_exists($key, $access)) {
-			    		return null;
-				    }
-				    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-				    return $value !== false ? $value : null;
-			    }, '')
+			    new ArrayBoolean(),
 		    ], [
 			    'check' => Validator::CHECK_IGNORE,
 			    'trim' => false
@@ -94,9 +91,12 @@ class GroupsForm extends BaseForm
 	 */
     protected function processForm()
     {
-        $this->group->title = $this->form->get('title')->getValue();
+        $this->group->title = $this->form->getValue('title');
         $this->group->flags = $this->form->get('flags')->getFlagsInt();
 	    $this->group->prefix = $this->form->getValue('prefix');
+
+	    $access = array_keys(array_filter($this->form->getValue('access')));
+	    $this->group->access()->sync($access);
         return $this->group->save();
     }
 }

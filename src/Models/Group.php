@@ -16,6 +16,7 @@ use \GameX\Core\BaseModel;
  * @property string $prefix
  * @property Server $server
  * @property Privilege[] $players
+ * @property Access[] $access
  */
 class Group extends BaseModel
 {
@@ -70,5 +71,13 @@ class Group extends BaseModel
     public function players()
     {
         return $this->hasMany(Privilege::class, 'group_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function access()
+    {
+        return $this->belongsToMany(Access::class, 'groups_access', 'group_id');
     }
 }

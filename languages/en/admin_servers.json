@@ -8,6 +8,7 @@
     "token": "Server token",
     "groups": "Privileges groups",
     "reasons": "Bans reasons",
+    "access": "Access",
     "already_exists": "Server already exists",
     "choose_type": "Choose type",
     "token_warn": "Regeneration of token makes irrelevant the old one!",

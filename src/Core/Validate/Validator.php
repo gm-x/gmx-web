@@ -131,7 +131,7 @@ class Validator {
         
         return new ValidationResult($values, $errors, $isValid);
     }
-    
+
     /**
      * @param string $key
      * @param mixed $value
