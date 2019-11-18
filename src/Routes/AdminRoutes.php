@@ -21,6 +21,15 @@ class AdminRoutes extends BaseRoute
             ->setName(AdminConstants::ROUTE_INDEX)
             ->add($this->getPermissions()->hasAccessToGroupMiddleware('admin'));
 
+        $app
+	        ->get('/charts/emulators', [AdminController::class, 'emulators'])
+	        ->setName(AdminConstants::ROUTE_EMULATORS)
+	        ->add($this->getPermissions()->hasAccessToGroupMiddleware('admin'));
+        $app
+	        ->get('/charts/online', [AdminController::class, 'online'])
+	        ->setName(AdminConstants::ROUTE_ONLINE)
+	        ->add($this->getPermissions()->hasAccessToGroupMiddleware('admin'));
+
 	    $app->group('/preferences', PreferencesRoutes::class);
 	    $app->group('/users', UsersRoutes::class);
 	    $app->group('/roles', RolesRoutes::class);

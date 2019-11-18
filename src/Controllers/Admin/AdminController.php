@@ -3,8 +3,10 @@
 namespace GameX\Controllers\Admin;
 
 use \GameX\Core\BaseAdminController;
+use GameX\Core\Cache\Cache;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Slim\Http\Response;
 use \GameX\Constants\Admin\AdminConstants;
 use \GameX\Core\Auth\Models\UserModel;
 use \GameX\Models\Server;
@@ -27,7 +29,7 @@ class AdminController extends BaseAdminController
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function indexAction(ServerRequestInterface $request, ResponseInterface $response)
+    public function indexAction(ServerRequestInterface $request, Response $response)
     {
 
         $today = Carbon::today();
@@ -48,4 +50,28 @@ class AdminController extends BaseAdminController
             ],
         ]);
     }
+
+    public function emulatorsAction(ServerRequestInterface $request, Response $response)
+    {
+	    $data = Player::groupBy('emulator')
+		    ->selectRaw('emulator, count(*) as total')
+		    ->pluck('total', 'emulator')->all();
+	    return $response->withStatus(200)->withJson([
+		    'success' => true,
+		    'data' => $data,
+	    ]);
+    }
+
+	public function onlineAction(ServerRequestInterface $request, Response $response)
+	{
+		/** @var Cache $cache */
+		$cache = $this->container->get('cache');
+		$data = $cache->get('chart_online');
+
+	    return $response->withStatus(200)->withJson([
+		    'success' => true,
+		    'dates' => array_keys($data),
+		    'online' => array_values($data),
+	    ]);
+	}
 }

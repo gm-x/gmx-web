@@ -19,6 +19,7 @@ use \GameX\Core\Cache\CacheDriverFactory;
 use \GameX\Core\Cache\Items\Preferences;
 use \GameX\Core\Cache\Items\Permissions as PermissionsCache;
 use \GameX\Core\Cache\Items\PlayersOnline;
+use \GameX\Core\Cache\Items\ChartOnline;
 
 use \GameX\Core\Log\Logger;
 use \Monolog\Formatter\LineFormatter;
@@ -211,6 +212,7 @@ class DependencyProvider implements ServiceProviderInterface
         $cache->add('preferences', new Preferences());
         $cache->add('permissions', new PermissionsCache());
         $cache->add('players_online', new PlayersOnline());
+        $cache->add('chart_online', new ChartOnline());
         return $cache;
     }
     

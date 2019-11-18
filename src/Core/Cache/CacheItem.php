@@ -21,7 +21,7 @@ abstract class CacheItem
             $item->set($data);
             
             $ttl = $this->getTTL();
-            if ($ttl > 0) {
+            if ($ttl) {
                 $item->setTTL($ttl);
             }
             
@@ -50,11 +50,11 @@ abstract class CacheItem
     }
     
     /**
-     * @return int
+     * @return int|null
      */
     protected function getTTL()
     {
-        return 0;
+        return null;
     }
 
     /**

@@ -31,7 +31,10 @@ class PlayersOnline extends CacheItem {
     {
         return $element !== null ? $key . '_' . (string)$element->id : $key;
     }
-    
+
+	/**
+	 * @inheritdoc
+	 */
     protected function getTTL()
     {
         return 60;
