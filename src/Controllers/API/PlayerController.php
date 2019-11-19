@@ -367,16 +367,11 @@ class PlayerController extends BaseApiController
 
 	    $server = $this->getServer($request);
 
-	    $preferences = $player->preferences()
-		    ->where('server_id', $server->id)
-		    ->first();
-
-	    if (!$preferences) {
-		    $preferences = new PlayerPreference([
-		    	'server_id' => $server->id,
-		    	'player_id' => $player->id,
-		    ]);
-	    }
+	    /** @var PlayerPreference $preferences */
+	    $preferences = PlayerPreference::firstOrNew([
+		    'server_id' => $server->id,
+		    'player_id' => $player->id,
+	    ]);
 
 	    $preferences->data = array_merge($preferences->data ?: [], $result->getValue('data'));
 	    $preferences->save();
