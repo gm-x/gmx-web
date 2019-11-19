@@ -93,13 +93,15 @@ if ($config->getNode('debug')->get('exceptions')) {
 
     set_exception_handler(function ($e) use ($app) {
         if ($e instanceof \GameX\Core\Configuration\Exceptions\CantLoadException) {
-            redirectToInstall();
+	        redirectToInstall();
         } else {
             $container = $app->getContainer();
             /** @var \Slim\Views\Twig $view */
             $view = $container->get('view');
             $container->get('log')->exception($e);
-            $response = $view->render($container->get('response'), 'errors/500.twig')->withStatus(500);
+            $response = $view
+	            ->render($container->get('response'), 'errors/500.twig')
+	            ->withStatus(500);
             $app->respond($response);
         }
     });
