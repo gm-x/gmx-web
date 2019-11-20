@@ -4,7 +4,6 @@ namespace GameX\Controllers\API;
 
 use \Carbon\Carbon;
 use \GameX\Core\BaseApiController;
-use GameX\Models\Privilege;
 use \Slim\Http\Request;
 use \Slim\Http\Response;
 use \GameX\Core\Auth\Models\UserModel;
@@ -14,6 +13,8 @@ use \GameX\Models\PlayerSession;
 use \GameX\Models\PlayerPreference;
 use \GameX\Models\Group;
 use \GameX\Models\Access;
+use \GameX\Models\Privilege;
+use \Illuminate\Database\Eloquent\Builder;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Number;
@@ -101,18 +102,21 @@ class PlayerController extends BaseApiController
 	    $now = Carbon::now();
         
         /** @var Player|null $player */
-        $player = Player::query()->when($result->getValue('id'), function ($query) use ($result) {
+        $player = Player::query()->when($result->getValue('id'), function (Builder $query) use ($result) {
                 $query->where('id', $result->getValue('id'));
-            })->orWhere(function ($query) use ($result) {
+            })->orWhere(function (Builder $query) use ($result) {
                 $query->whereIn('auth_type', [
                         Player::AUTH_TYPE_STEAM,
                         Player::AUTH_TYPE_STEAM_AND_PASS,
                         Player::AUTH_TYPE_STEAM_AND_HASH,
-                    ])->where([
-                        'emulator' => $result->getValue('emulator'),
-                        'steamid' => $result->getValue('steamid')
-                    ]);
-            })->orWhere(function ($query) use ($result) {
+                    ])
+	                ->where(function (Builder $query) use ($result) {
+		                $query
+			                ->where('emulator', $result->getValue('emulator'))
+			                ->orWhere('emulator', 0);
+	                })
+	                ->where('steamid', $result->getValue('steamid'));
+            })->orWhere(function (Builder $query) use ($result) {
                 $query->whereIn('auth_type', [
                         Player::AUTH_TYPE_NICK_AND_PASS,
                         Player::AUTH_TYPE_NICK_AND_HASH,
@@ -120,7 +124,7 @@ class PlayerController extends BaseApiController
                         'nick' => $result->getValue('nick')
                     ]);
             })->first();
-        
+
         if (!$player) {
             $player = new Player();
             $player->steamid = $result->getValue('steamid');
@@ -135,12 +139,18 @@ class PlayerController extends BaseApiController
             $session = $player->getActiveSession();
         }
 
-        if (
-        	$player->exists &&
-	        $player->nick !== $result->getValue('nick') &&
-	        !$player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK)
-        ) {
-	        $player->nick = $result->getValue('nick');
+        if ($player->exists) {
+        	if (
+		        $player->nick !== $result->getValue('nick') &&
+		        !$player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK)
+	        ) {
+		        $player->nick = $result->getValue('nick');
+	        }
+
+        	if ($player->emulator === 0) {
+		        $player->emulator = $result->getValue('emulator');
+	        }
+
 	        $player->save();
         }
         
