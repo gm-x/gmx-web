@@ -151,6 +151,7 @@ class PlayerController extends BaseApiController
 		        $player->emulator = $result->getValue('emulator');
 	        }
 
+	        $player->ip = $result->getValue('ip');
 	        $player->save();
         }
         
