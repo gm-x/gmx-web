@@ -140,19 +140,24 @@ class PlayerController extends BaseApiController
         }
 
         if ($player->exists) {
+        	$save = false;
         	if (
 		        $player->nick !== $result->getValue('nick') &&
 		        !$player->hasAccess(Player::ACCESS_BLOCK_CHANGE_NICK)
 	        ) {
 		        $player->nick = $result->getValue('nick');
+		        $save = true;
 	        }
 
         	if ($player->emulator === 0) {
 		        $player->emulator = $result->getValue('emulator');
+		        $player->ip = $result->getValue('ip');
+		        $save = true;
 	        }
 
-	        $player->ip = $result->getValue('ip');
-	        $player->save();
+	        if ($save) {
+		        $player->save();
+	        }
         }
         
         if (!$session) {
