@@ -2,6 +2,46 @@
 
 {% import 'macros/forms.twig' as forms %}
 
+{% block subnav %}
+    {% if has_access_permission(
+        constants.admin.roles.PERMISSION_GROUP,
+        constants.admin.roles.PERMISSION_KEY,
+        [permissions.ACCESS_VIEW]
+        ) %}
+        {{ admin.circle_btn({
+            'href': path_for(constants.admin.roles.ROUTE_VIEW, {'role': role.id}),
+            'title': trans('admin_menu', 'permissions'),
+            'icon': 'fas fa-eye',
+            'size': 'l'
+        }) }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.roles.PERMISSION_GROUP,
+        constants.admin.roles.PERMISSION_KEY,
+        permissions.ACCESS_DELETE
+        ) %}
+        {{ admin.delete_btn(path_for(constants.admin.roles.ROUTE_DELETE, {'role': role.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.permissions.PERMISSION_GROUP,
+        constants.admin.permissions.PERMISSION_KEY,
+        [permissions.ACCESS_VIEW]
+        ) %}
+        {{ admin.circle_btn({
+            'href': path_for(constants.admin.permissions.ROUTE_LIST, {'role': role.id}),
+            'title': trans('admin_menu', 'permissions'),
+            'icon': 'fas fa-lock',
+            'size': 'l'
+        }) }}
+    {% endif %}
+
+    <div class="uk-float-left">
+        {{ admin.back_btn(path_for(constants.admin.roles.ROUTE_LIST), 'l') }}
+    </div>
+{% endblock %}
+
 {% block content %}
 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
     <form action="{{ form.getAction() }}" method="post">

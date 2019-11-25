@@ -1,6 +1,7 @@
 <?php
 namespace GameX\Core\Update;
 
+use Slim\App;
 use \Twig_Extension;
 use \Twig_SimpleFunction;
 

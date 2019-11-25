@@ -1,6 +1,41 @@
 {% extends 'admin/admin.twig' %}
 
-{% import 'macros/permissions.twig' as permissions %}
+{% import 'macros/permissions.twig' as permissionsMacros %}
+
+{% block subnav %}
+    {% if has_access_permission(
+        constants.admin.roles.PERMISSION_GROUP,
+        constants.admin.roles.PERMISSION_KEY,
+        permissions.ACCESS_EDIT
+        ) %}
+        {{ admin.edit_btn(path_for(constants.admin.roles.ROUTE_EDIT, {'role': role.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.roles.PERMISSION_GROUP,
+        constants.admin.roles.PERMISSION_KEY,
+        permissions.ACCESS_DELETE
+        ) %}
+        {{ admin.delete_btn(path_for(constants.admin.roles.ROUTE_DELETE, {'role': role.id}), 'l') }}
+    {% endif %}
+
+    {% if has_access_permission(
+        constants.admin.roles.PERMISSION_GROUP,
+        constants.admin.roles.PERMISSION_KEY,
+        [permissions.ACCESS_VIEW]
+        ) %}
+        {{ admin.circle_btn({
+            'href': path_for(constants.admin.roles.ROUTE_VIEW, {'role': role.id}),
+            'title': trans('admin_menu', 'permissions'),
+            'icon': 'fas fa-eye',
+            'size': 'l'
+        }) }}
+    {% endif %}
+
+    <div class="uk-float-left">
+        {{ admin.back_btn(path_for(constants.admin.roles.ROUTE_LIST), 'l') }}
+    </div>
+{% endblock %}
 
 {% block content %}
     {# TODO: Remove this #}
@@ -9,27 +44,35 @@
             background-color: #b6b6b4 !important;
         }
     </style>
+    <ul uk-tab="connect: #roles; animation: uk-animation-slide-top-medium,uk-animation-slide-bottom-medium">
+        <li><a href="#">Main</a></li>
+        {% for serverId, serverName in servers %}
+            <li><a href="#">{{ serverName }}</a></li>
+        {% endfor %}
+    </ul>
+
     <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
         <form action="{{ form.getAction() }}" method="post">
             {{ csrf_token() }}
-            <div f-table f-divider>
-                <ul th uk-sticky="offset: 60" class="uk-visible@s">
-                    <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
-                    <li class="uk-width-xxs"><i class="fas fa-list" uk-tooltip="Список"></i></li>
-                    <li class="uk-width-xxs"><i class="fas fa-eye" uk-tooltip="Просмотр"></i></li>
-                    <li class="uk-width-xxs"><i class="fas fa-plus" uk-tooltip="Добавление"></i></li>
-                    <li class="uk-width-xxs"><i class="fas fa-marker" uk-tooltip="Редактирование"></i></li>
-                    <li class="uk-width-xxs"><i class="fas fa-trash-alt" uk-tooltip="Удаление"></i></li>
-                </ul>
-                {% for key in list.admin.all %}
-                    {{ permissions.permission_checkboxes(form, key) }}
-                {% endfor %}
-            </div>
-            <ul uk-accordion="multiple: true">
-            {% for serverId, serverName in servers %}
+
+            <ul class="uk-switcher uk-margin" id="roles">
                 <li>
-                    <a class="uk-accordion-title" href="#">{{ serverName }}</a>
-                    <div class="uk-accordion-content">
+                    <div f-table f-divider>
+                        <ul th uk-sticky="offset: 60" class="uk-visible@s">
+                            <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
+                            <li class="uk-width-xxs"><i class="fas fa-list" uk-tooltip="Список"></i></li>
+                            <li class="uk-width-xxs"><i class="fas fa-eye" uk-tooltip="Просмотр"></i></li>
+                            <li class="uk-width-xxs"><i class="fas fa-plus" uk-tooltip="Добавление"></i></li>
+                            <li class="uk-width-xxs"><i class="fas fa-marker" uk-tooltip="Редактирование"></i></li>
+                            <li class="uk-width-xxs"><i class="fas fa-trash-alt" uk-tooltip="Удаление"></i></li>
+                        </ul>
+                        {% for key in list.admin.all %}
+                            {{ permissionsMacros.permission_checkboxes(form, key) }}
+                        {% endfor %}
+                    </div>
+                </li>
+                {% for serverId, serverName in servers %}
+                    <li>
                         <div f-table f-divider>
                             <ul th uk-sticky="offset:60" class="uk-visible@s">
                                 <li class="uk-width-expand">{{ trans('admin_labels', 'permission') }}</li>
@@ -40,13 +83,13 @@
                                 <li class="uk-width-xxs"><i class="fas fa-trash-alt" uk-tooltip="Удаление"></i></li>
                             </ul>
                             {% for key in list.admin.server[serverId] %}
-                                {{ permissions.permission_checkboxes(form, key) }}
+                                {{ permissionsMacros.permission_checkboxes(form, key) }}
                             {% endfor %}
                         </div>
-                    </div>
-                </li>
-            {% endfor %}
+                    </li>
+                {% endfor %}
             </ul>
+
             <div class="form-group">
                 {% if create %}
                     <input type="submit" class="uk-button uk-button-primary" value="{{ trans('buttons', 'create') }}">

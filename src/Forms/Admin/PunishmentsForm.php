@@ -57,10 +57,10 @@ class PunishmentsForm extends BaseForm
                 'required' => true,
                 'empty_option' => $this->getTranslate($this->name, 'reason_empty'),
             ]))->add(new Text('details', $this->punishment->details, [
-                'title' => 'Details',
+                'title' => $this->getTranslate($this->name, 'details'),
                 'required' => false,
             ]))->add(new Select('type', $this->punishment->type, [
-                'ban' => 'Ban',
+                'ban' => $this->getTranslate($this->name, 'ban'),
             ], [
 		        'title' => $this->getTranslate($this->name, 'type'),
 		        'required' => true,

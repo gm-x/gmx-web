@@ -11,5 +11,7 @@
     "edit": "Edit",
     "delete": "Delete",
     "close": "Close",
-    "back": "Back"
+    "back": "Back",
+    "view": "View",
+    "unlock": "Unlock"
 }
