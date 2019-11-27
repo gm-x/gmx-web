@@ -1,4 +1,7 @@
-# GM-X [![Build Status](https://travis-ci.org/gm-x/gmx-web.svg?branch=master)](https://travis-ci.org/gm-x/gmx-web)
+# GM-X 
+![GitHub release (latest)](https://img.shields.io/github/v/release/gm-x/gmx-web)
+[![Build Status](https://travis-ci.org/gm-x/gmx-web.svg?branch=master)](https://travis-ci.org/gm-x/gmx-web)
+![GitHub](https://img.shields.io/github/license/gm-x/gmx-web)
 
 Requirements
 ------------
@@ -10,6 +13,7 @@ Requirements
 
 Installation
 ------------
+* Download last version from https://github.com/gm-x/gmx-web/releases/latest
 * Put files into document root directory
 * Open http://example.com/install
 * Fill fields and click install
