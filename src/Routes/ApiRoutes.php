@@ -25,6 +25,7 @@ class ApiRoutes extends BaseRoute
 	    $app->post('/privileges', [ServerController::class, 'privileges']);
 	    $app->post('/info', [ServerController::class, 'info']);
 	    $app->post('/ping', [ServerController::class, 'ping']);
+	    $app->post('/access', [ServerController::class, 'access']);
     }
 
     public function player(App $app)

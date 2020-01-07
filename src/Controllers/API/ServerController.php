@@ -254,4 +254,23 @@ class ServerController extends BaseApiController
             'success' => true
         ]);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/server/access",
+     *     @OA\Response(response="200", description="Server access response")
+     * )
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    public function accessAction(Request $request, Response $response)
+    {
+        $server = $this->getServer($request);
+
+        return $response->withStatus(200)->withJson([
+            'success' => true,
+            'list' => $server->access,
+        ]);
+    }
 }
