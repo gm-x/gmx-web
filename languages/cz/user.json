@@ -1,0 +1,11 @@
+{
+  "registered": "Registrace proběhla úspěšně, nyní se můžete přihlásit!",
+  "registered_email": "Úspěšně registrován! Poslední krok, musíte si zkontrolovat email ktetý jste zadali, byl vám tam poslán aktovačnó email.",
+  "registered_moderate": "Úspěšná registrace! Vyčkejte dokud vás admin neschválî",
+  "activated": "Váš účet byl aktivován! Nyní se lze přihlásit",
+  "reset_password_sent": "Email pro reset hesla byl zaslán!",
+  "reset_password_done": "Resetovali jste své heslo, nyní se lze přihlásit s novým heslem",
+  "activate_email": "Zkontrolujte email!",
+  "activate": "Vyčkejte na potvrzení od administrátora",
+  "bad_login_pass": "Špatné jméno/heslo"
+}

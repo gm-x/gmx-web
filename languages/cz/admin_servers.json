@@ -1,0 +1,21 @@
+{
+    "type": "Typ serveru",
+    "name": "Jméno serveru",
+    "ip": "IP",
+    "port": "Port",
+    "rcon": "RCON",
+    "address": "Server adresa",
+    "token": "Server token",
+    "groups": "Skupiny",
+    "reasons": "Bans důvody",
+    "access": "Přístup",
+    "already_exists": "Server již existuje",
+    "choose_type": "Vyberte typ",
+    "token_warn": "!!! UPOZORNĚNÍ !!! Vytvořením nového tokenu se zruší předchozí !",
+    "nick": "Jméno",
+    "steamid": "STEAM_ID",
+    "no_players": "Žádní hráči",
+    "map": "Mapa",
+    "online": "Online",
+    "players_online": "Online hráči"
+}

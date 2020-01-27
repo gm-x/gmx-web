@@ -1,0 +1,17 @@
+{
+    "create": "Vytvořik",
+    "update": "Aktualizovat",
+    "cancel": "Odejít",
+    "save": "Uložit",
+    "login": "Přihlásit",
+    "register": "Registrace",
+    "reset_password": "Obnovení hesla",
+    "change_password": "Změna hesla",
+    "activate": "Aktivní",
+    "edit": "Upravit",
+    "delete": "Smazat",
+    "close": "Zavřít",
+    "back": "Zpět",
+    "view": "Podívat",
+    "unlock": "Odemčít"
+}

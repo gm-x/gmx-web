@@ -1,0 +1,15 @@
+{
+  "punishments": "Tresty",
+  "empty_reasons_list": "Přidejte důvody před potrestáním uživatele",
+  "reason": "Důvod",
+  "reason_empty": "Vyberte důvod",
+  "forever": "Nikdy",
+  "expired": "Vyprší",
+  "punisher": "Trestanec",
+  "server": "Server",
+  "details": "Detail",
+  "status": "Status",
+  "type": "Typ",
+  "type_empty": "Vyberte typ",
+  "ban": "Ban"
+}

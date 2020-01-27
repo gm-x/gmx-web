@@ -1,0 +1,11 @@
+{
+  "privileges": "Přístup",
+  "empty_groups_list": "Vytvořte skupinu, před přidáním přístupu",
+  "group": "Skupina",
+  "group_empty": "Vyberte skupinu",
+  "forever": "Nikdy",
+  "expired": "Datum expirace",
+  "active": "Aktivováno",
+  "empty_list": "Prázdné",
+  "player": "Hráč"
+}

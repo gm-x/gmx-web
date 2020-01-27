@@ -1,0 +1,17 @@
+{
+	"preferences": "Preference",
+	"preferences_main": "Hlavní",
+	"preferences_email": "Email",
+	"preferences_update": "Update",
+	"preferences_cache": "Cache",
+	"preferences_cron": "Cron",
+	"preferences_social": "Socialní sítě",
+	"users": "Uživatelé",
+	"roles": "Role",
+	"servers": "Servery",
+	"players": "Hráči",
+	"permissions": "Oprávnění",
+	"role": "Role",
+	"name": "Jméno",
+	"list": "List"
+}

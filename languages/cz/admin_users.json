@@ -1,0 +1,10 @@
+{
+    "login": "Přihlášení",
+    "email": "Email",
+    "role": "Role",
+    "role_empty": "Vyber roli",
+    "status": "Status",
+    "status_pending": "Načítání",
+    "status_active": "Načítání",
+    "status_banned": "Zabanován"
+}

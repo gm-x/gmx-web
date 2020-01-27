@@ -1,0 +1,23 @@
+{
+  "nickname": "Jméno",
+  "steam_id": "Steam ID",
+  "ip": "IP",
+  "steam_id_pass": "Steam ID + heslo",
+  "nickname_pass": "Nick + heslo",
+  "steam_id_hash": "Steam ID + hash",
+  "nickname_hash": "Nick + hash",
+  "auth_type": "Vyber typ",
+  "choose_auth_type": "Vyber typ",
+  "password": "Heslo",
+  "prefix": "Prefix",
+  "reserve_nickname": "Rezervace jména",
+  "block_nickname": "Zákaz změny jména",
+  "pass_error": "Problém s heslem",
+  "player_exists": "Hráč již existuje",
+  "user": "Uživatel",
+  "status": "Status",
+  "sessions": "Sessions",
+  "info": "Info",
+  "session_created": "Čas připojení",
+  "session_time": "Čas online:"
+}

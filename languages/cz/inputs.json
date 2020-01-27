@@ -1,0 +1,11 @@
+{
+    "login_email": "Jméno nebo email",
+    "login": "Přihlásit se",
+    "email": "Email",
+    "password": "Heslo",
+    "current_password": "Aktuální heslo",
+    "new_password": "Nové heslo",
+    "password_repeat": "Znovu nové heslo",
+    "remember_me": "Zapamatovat",
+    "avatar": "Avatar"
+}
