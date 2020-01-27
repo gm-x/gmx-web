@@ -6,7 +6,7 @@
 				<li>
 					<div>
 						<div
-								class="uk-background-cover uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle unselect"
+							class="uk-background-cover uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle unselect"
 							{% if server.online and server.map.exists() %}
 								style="background-image: url({{ base_url() }}/assets/images/maps/{{ server.map.name }}.jpg), url({{ base_url() }}/assets/images/no-photo.jpg);"
 							{% else %}
@@ -27,6 +27,7 @@
 												<button class="uk-modal-close-outside" type="button" uk-close></button>
 												{% if server.online %}
 													{% set players = server.getActiveSessions() %}
+													{{ dump(server.getActiveSessions()) }}
 													{% if players | length > 0 %}
 														<table class="uk-table uk-table-striped uk-table-small paginate">
 															<thead>

@@ -58,22 +58,21 @@ $(document).ready(function () {
             });
     });
 
-    $('.datepicker').pickadate({
-	    lang: 'ru',
-	    format: 'dd.mm.yyyy',
-	    formatSubmit: 'yyyy-mm-dd',
-	    //min: new Date(),
-	    closeOnSelect: true,
-        editable: true,
-        hiddenName: true,
-        selectYears: true,
-        selectMonths: true
-    });
+    // $('.datepicker').pickadate({
+	//     lang: 'ru',
+	//     format: 'dd.mm.yyyy',
+	//     formatSubmit: 'yyyy-mm-dd',
+	//     //min: new Date(),
+	//     closeOnSelect: true,
+    //     editable: true,
+    //     hiddenName: true,
+    //     selectYears: true,
+    //     selectMonths: true
+    // });
 
     UIkit.util.on('.forms-expired-element > li', 'show', function() {
         var self = $(this);
         $(self.data('input')).val(self.data('value'));
-        console.log(this, $(self.data('input')), self.data('value'));
     });
 
     $('.gmx-datetime').each(function() {
