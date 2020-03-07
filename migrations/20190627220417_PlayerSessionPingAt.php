@@ -12,6 +12,7 @@ class PlayerSessionPingAt extends Migration
     {
 	    $this->getSchema()->table('players_sessions', function (Blueprint $table) {
 		    $table->timestamp('ping_at')
+                ->nullable()
 			    ->after('disconnected_at');
 	    });
 

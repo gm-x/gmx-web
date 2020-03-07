@@ -37,5 +37,7 @@
     "social_id": "App ID",
     "social_key": "App Key",
     "social_secret": "App Secret",
-    "cron_reload_admins": "Reload admins by CRON"
+    "cron_reload_admins": "Reload admins by CRON",
+    "default_role": "Default Role",
+    "default_role_empty": " "
 }

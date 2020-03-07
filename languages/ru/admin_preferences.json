@@ -32,5 +32,7 @@
     "social_id": "App ID",
     "social_key": "App Key",
     "social_secret": "App Secret",
-    "cron_reload_admins": "Перезагружать администраторова через CRON"
+    "cron_reload_admins": "Перезагружать администраторова через CRON",
+    "default_role": "Стандартная Роль",
+    "default_role_empty": " "
 }

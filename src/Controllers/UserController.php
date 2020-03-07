@@ -12,6 +12,7 @@ use \GameX\Constants\PreferencesConstants;
 use \GameX\Core\Jobs\JobHelper;
 use \GameX\Core\Auth\Helpers\AuthHelper;
 use \GameX\Core\Auth\Helpers\SocialHelper;
+use \GameX\Core\Auth\Helpers\RoleHelper;
 use \GameX\Forms\User\LoginForm;
 use \GameX\Forms\User\RegisterForm;
 use \GameX\Forms\User\ActivationForm;
@@ -34,6 +35,11 @@ class UserController extends BaseMainController
      * @var bool
      */
     protected $autoActivateUsers = true;
+
+    /**
+     * @var string|null
+     */
+    protected $defaultRole = null;
     
     /**
      * @return string
@@ -54,24 +60,34 @@ class UserController extends BaseMainController
         $this->autoActivateUsers = (bool)$preferences
             ->getNode(PreferencesConstants::CATEGORY_MAIN)
             ->get(PreferencesConstants::MAIN_AUTO_ACTIVATE_USERS, false);
+        $this->defaultRole = $preferences->getNode(PreferencesConstants::CATEGORY_ROLES)
+            ->get('default', null);
     }
-    
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @return ResponseInterface
      * @throws RedirectException
+     * @throws \GameX\Core\Exceptions\ValidationException
      */
     public function registerAction(ServerRequestInterface $request, ResponseInterface $response)
     {
         $authHelper = new AuthHelper($this->container);
         $form = new RegisterForm($authHelper, $this->autoActivateUsers);
         if ($this->processForm($request, $form, true)) {
+            $user = $form->getUser();
+
+            if ($this->defaultRole) {
+                $roleHelper = new RoleHelper($this->container);
+                $roleHelper->assignUser($this->defaultRole, $user);
+            }
+
             if ($this->autoActivateUsers) {
                 $this->addSuccessMessage($this->getTranslate('user', 'registered'));
                 return $this->redirect('login');
             } elseif ($this->mailEnabled) {
-                $user = $form->getUser();
+
                 $activationCode = $authHelper->getActivationCode($user);
                 JobHelper::createTask('sendmail', [
                     'type' => 'activation',

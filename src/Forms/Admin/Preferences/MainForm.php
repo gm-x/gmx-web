@@ -2,7 +2,11 @@
 
 namespace GameX\Forms\Admin\Preferences;
 
+use GameX\Core\Auth\Helpers\RoleHelper;
+use GameX\Core\Validate\Rules\Number;
+use \Psr\Container\ContainerInterface;
 use \GameX\Constants\PreferencesConstants;
+use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Forms\Elements\Text;
@@ -29,15 +33,22 @@ class MainForm extends BaseForm
      * @var bool
      */
     protected $hasAccessToEdit;
+
+    /**
+     * @var RoleHelper
+     */
+    protected $roleHelper;
     
     /**
-     * @param Config $preferences
+     * @param ContainerInterface $container
      * @param bool $hasAccessToEdit
      */
-    public function __construct(Config $preferences, $hasAccessToEdit = true)
+    public function __construct(ContainerInterface $container, $hasAccessToEdit = true)
     {
-        $this->preferences = $preferences;
+        $this->preferences = $container->get('preferences');
         $this->hasAccessToEdit = $hasAccessToEdit;
+
+        $this->roleHelper = new RoleHelper($container);
     }
     
     /**
@@ -49,6 +60,10 @@ class MainForm extends BaseForm
         $languages = $this->preferences->getNode('languages')->toArray();
         $themes = $this->preferences->getNode('themes')->toArray();
         $cron = $this->preferences->getNode(PreferencesConstants::CATEGORY_CRON);
+        $roles = $this->preferences->getNode(PreferencesConstants::CATEGORY_ROLES);
+
+        $rolesList = $this->roleHelper->getRolesAsArray();
+
         $this->form->add(new Text('title', $main->get(PreferencesConstants::MAIN_TITLE), [
                 'title' => $this->getTranslate('admin_preferences', 'title'),
                 'required' => true,
@@ -65,8 +80,12 @@ class MainForm extends BaseForm
                 'title' => $this->getTranslate('admin_preferences', 'auto_activate_users'),
                 'required' => false,
                 'disabled' => !$this->hasAccessToEdit,
-            ]))
-	        ->add(new Checkbox('cron_reload_admins', $cron->get('reload_admins'), [
+            ]))->add(new Select('default_role', $roles->get('default'), $rolesList, [
+                'title' => $this->getTranslate('admin_preferences', 'default_role'),
+                'required' => false,
+                'disabled' => !$this->hasAccessToEdit,
+                'empty_option' => $this->getTranslate('admin_preferences', 'default_role_empty'),
+            ]))->add(new Checkbox('cron_reload_admins', $cron->get('reload_admins'), [
 		        'title' => $this->getTranslate('admin_preferences', 'cron_reload_admins'),
 		        'required' => false,
 		        'disabled' => !$this->hasAccessToEdit,
@@ -74,19 +93,23 @@ class MainForm extends BaseForm
         
         $this->form->getValidator()->set('title', true)
 	        ->set('language', true, [
-                new InArray(array_keys($languages))
+                new InArray(array_keys($languages)),
             ])
 	        ->set('theme', true, [
-                new InArray(array_keys($themes))
+                new InArray(array_keys($themes)),
             ])
 	        ->set('auto_activate_users', false, [
-                new Boolean()
+                new Boolean(),
             ], ['check' => Validator::CHECK_EMPTY, 'default' => false])
 	        ->set('cron_reload_admins', false, [
-		        new Boolean()
-	        ], ['check' => Validator::CHECK_EMPTY, 'default' => false]);
+		        new Boolean(),
+	        ], ['check' => Validator::CHECK_EMPTY, 'default' => false])
+            ->set('default_role', false, [
+                new Number(1),
+                new InArray(array_keys($rolesList)),
+            ]);
     }
-    
+
     /**
      * @return bool
      * @throws \GameX\Core\Configuration\Exceptions\CantSaveException
@@ -103,6 +126,14 @@ class MainForm extends BaseForm
 	    $this->preferences
 		    ->getNode(PreferencesConstants::CATEGORY_CRON)
 		    ->set('reload_admins', $this->form->getValue('cron_reload_admins'));
+
+	    $defaultRole = $this->form->getValue('default_role');
+	    if (empty($defaultRole)) {
+            $defaultRole = 0;
+        }
+        $this->preferences
+            ->getNode(PreferencesConstants::CATEGORY_ROLES)
+            ->set('default', $defaultRole);
 
         $this->preferences->save();
         return true;

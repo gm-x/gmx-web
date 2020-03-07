@@ -86,7 +86,7 @@
 			            <div>
 				            <div class="form-group">
 					            <label>
-					                <input type="checkbox" class="uk-checkbox" id="formComposer" checked>
+					                <input type="checkbox" class="uk-checkbox" id="formComposer">
 						            Install dependencies
 					            </label>
 				            </div>

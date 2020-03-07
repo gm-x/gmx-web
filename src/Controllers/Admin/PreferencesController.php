@@ -59,9 +59,7 @@ class PreferencesController extends BaseAdminController
             Permissions::ACCESS_EDIT
         );
 
-        /** @var Config $preferences */
-        $preferences = $this->getContainer('preferences');
-        $form = new MainForm($preferences, $hasAccessToEdit);
+        $form = new MainForm($this->container, $hasAccessToEdit);
         if ($this->processForm($request, $form)) {
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(PreferencesConstants::ROUTE_MAIN);
