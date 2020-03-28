@@ -27,7 +27,6 @@
 												<button class="uk-modal-close-outside" type="button" uk-close></button>
 												{% if server.online %}
 													{% set players = server.getActiveSessions() %}
-													{{ dump(server.getActiveSessions()) }}
 													{% if players | length > 0 %}
 														<table class="uk-table uk-table-striped uk-table-small paginate">
 															<thead>
