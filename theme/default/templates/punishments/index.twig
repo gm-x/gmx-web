@@ -14,7 +14,6 @@
 			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'punisher') }}</li>
 			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'server') }}</li>
 			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'reason') }}</li>
-			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'comment') }}</li>
 			<li class="uk-width-1-6@m uk-visible@s">{{ trans('punishments', 'status') }}</li>
 		</ul>
 		{% for punishment in punishments %}
@@ -38,10 +37,7 @@
 				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'reason') }}">
                     {{ punishments_macro.reason(punishment) }}
 				</li>
-				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'comment') }}">
-                    {{ punishments.comment(punishment) }}
-				</li>
-				<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'status') }}">
+					<li class="uk-width-1-6@m uk-flex-middle" s-title="{{ trans('punishments', 'status') }}">
                     {{ punishments_macro.status(punishment) }}
 				</li>
 			</ul>

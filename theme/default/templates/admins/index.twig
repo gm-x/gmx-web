@@ -1,0 +1,46 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/punishments.twig' as punishments_macro %}
+
+{% block style %}
+	<link rel="stylesheet" href="{{ base_url() }}/assets/css/tables.css" />
+{% endblock %}
+
+{% block content %}
+	<div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
+		<div f-table f-divider>
+			<ul th>
+				<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_privileges', 'player') }}</li>
+				<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_privileges', 'group') }}</li>
+				<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">{{ trans('admin_privileges', 'expired') }}</li>
+			</ul>
+			{% for privilege in privileges %}
+				<ul>
+					<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">
+						{% if hasPlayerViewPermissions %}
+							<a href="{{ path_for(constants.admin.players.ROUTE_VIEW, {'player': privilege.player.id}) }}">
+								{{ privilege.player.nick }}
+							</a>
+						{% else %}
+							{{ privilege.player.nick }}
+						{% endif %}
+					</li>
+					<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">
+						{{ privilege.group.title }}
+					</li>
+					<li class="uk-width-1-4@m uk-width-1-4@s uk-visible@s">
+						{% if privilege.expired_at is null %}
+							{{ trans('admin_privileges', 'forever') }}
+						{% else %}
+							{{ datetime.datetime(privilege.expired_at) }}
+						{% endif %}
+					</li>
+				</ul>
+			{% else %}
+				<ul>
+					<li>{{ trans('admin_privileges', 'empty_list') }}</li>
+				</ul>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

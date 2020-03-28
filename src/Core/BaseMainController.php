@@ -92,9 +92,11 @@ abstract class BaseMainController extends BaseController
         $lang = $this->getContainer('lang');
         
         $menu = new Menu($this->container);
-        $menu->setActiveRoute($this->getActiveMenu())->add(new MenuItem($lang->format('labels', 'index'), 'index', [],
-                null))->add(new MenuItem($lang->format('labels', 'punishments'), 'punishments', [], null));
-        
+        $menu->setActiveRoute($this->getActiveMenu())
+            ->add(new MenuItem($lang->format('labels', 'index'), 'index', [], null))
+            ->add(new MenuItem($lang->format('labels', 'punishments'), 'punishments', [], null))
+            ->add(new MenuItem($lang->format('labels', 'admins'), 'admins', [], null));
+
         $modules = $this->getContainer('modules');
         /** @var \GameX\Core\Module\ModuleInterface $module */
         foreach ($modules as $module) {

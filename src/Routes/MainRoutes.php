@@ -9,6 +9,7 @@ use \GameX\Controllers\UserController;
 use \GameX\Controllers\SettingsController;
 use \GameX\Controllers\AccountsController;
 use \GameX\Controllers\PunishmentsController;
+use \GameX\Controllers\AdminsController;
 use \GameX\Constants\IndexConstants;
 use \GameX\Constants\UserConstants;
 use \GameX\Constants\SettingsConstants;
@@ -30,6 +31,10 @@ class MainRoutes extends BaseRoute
         $app
             ->get('/punishments', [PunishmentsController::class, 'index'])
             ->setName('punishments');
+
+        $app
+            ->get('/admins', [AdminsController::class, 'index'])
+            ->setName('admins');
 
         $this->user($app);
         $this->settings($app);

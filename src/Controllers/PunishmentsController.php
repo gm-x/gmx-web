@@ -29,11 +29,15 @@ class PunishmentsController extends BaseMainController
     {
         $filter = $request->getParam('filter');
 
-        $punishments = Punishment::with('server', 'reason')
-            ->when($filter, function (Builder $query, $filter) {
-                return $query->where('steamid', 'LIKE','%' . $filter . '%')
-                    ->orWhere('nick', 'LIKE', '%' . $filter . '%');
-            })->get();
+        if (empty($filter)) {
+            $punishments = Punishment::with('server', 'reason')->get();
+        } else {
+            $punishments = Punishment::with('server', 'reason')
+                ->when($filter, function (Builder $query, $filter) {
+                    return $query->where('steamid', 'LIKE', '%' . $filter . '%')
+                        ->orWhere('nick', 'LIKE', '%' . $filter . '%');
+                })->get();
+        }
         
         $pagination = new Pagination($punishments, $request);
         return $this->getView()->render($response, 'punishments/index.twig', [
