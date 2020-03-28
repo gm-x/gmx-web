@@ -208,7 +208,7 @@
                                                     constants.admin.punishments.PERMISSION_KEY,
                                                     serverId,
                                                     permissions.ACCESS_CREATE
-                                                    ) %}
+                                                ) %}
                                                     {{ admin.add_btn(
                                                         path_for(constants.admin.punishments.ROUTE_CREATE, {
                                                             'player': player.id,
@@ -219,91 +219,75 @@
                                             </li>
                                         </ul>
                                         <ul th>
-                                            <li class="uk-width-expand@m uk-width-expand@s uk-visible@m">{{ trans('admin_punishments', 'details') }}</li>
                                             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ trans('admin_punishments', 'punisher') }}</li>
                                             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ trans('admin_punishments', 'reason') }}</li>
+                                            <li class="uk-width-expand@m uk-width-expand@s uk-visible@m">{{ trans('admin_punishments', 'details') }}</li>
                                             <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ trans('admin_punishments', 'status') }}</li>
-                                            <li></li>
+                                            <li class="uk-width-1-6@m uk-width-1-6@s"></li>
                                         </ul>
                                         {% for punishment in serverData.list %}
                                             <ul>
-                                                <li class="uk-width-expand@m uk-width-expand@s">{{ punishmentsMacros.details(punishment) }}</li>
                                                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@s">{{ punishmentsMacros.punisher(punishment) }}</li>
                                                 <li class="uk-width-1-6@m uk-width-1-6@s uk-visible@m">{{ punishmentsMacros.reason(punishment) }}</li>
+                                                <li class="uk-width-expand@m uk-width-expand@s">{{ punishmentsMacros.details(punishment) }}</li>
                                                 <li class="uk-width-1-6@m uk-width-1-6@s">{{ punishmentsMacros.status(punishment) }}</li>
-                                                <li>
-                                                    {% embed "admin/actions.twig" with {'actionId': player.id} %}
-                                                        {% block actions %}
-                                                            <li>
-                                                                <a
-                                                                        href="{{ path_for(constants.admin.punishments.ROUTE_VIEW, {
-                                                                            'player': player.id,
-                                                                            'punishment': punishment.id
-                                                                        }) }}"
-                                                                        class="dropdown-item"
-                                                                >
-                                                                    <i class="fas fa-eye uk-margin-small-right"></i> &nbsp;{{ trans('buttons', 'view') }}
-                                                                </a>
-                                                            </li>
 
-                                                            {% if has_access_resource(
-                                                                constants.admin.punishments.PERMISSION_GROUP,
-                                                                constants.admin.punishments.PERMISSION_KEY,
-                                                                punishment.server_id,
-                                                                permissions.ACCESS_EDIT
-                                                                ) %}
-                                                                <li>
-                                                                    <a
-                                                                            href="{{ path_for(constants.admin.punishments.ROUTE_EDIT, {
-                                                                                'player': player.id,
-                                                                                'punishment': punishment.id
-                                                                            }) }}"
-                                                                            class="dropdown-item"
-                                                                    >
-                                                                        <i class="fas fa-pen uk-margin-small-right"></i> &nbsp;{{ trans('buttons', 'edit') }}
-                                                                    </a>
-                                                                </li>
-                                                            {% endif %}
+                                                <li class="uk-width-1-6@m uk-width-1-6@s">
+                                                    {{ admin.circle_btn({
+                                                        'href': path_for(constants.admin.punishments.ROUTE_VIEW, {
+                                                            'player': player.id,
+                                                            'punishment': punishment.id
+                                                        }),
+                                                        'title': trans('buttons', 'view'),
+                                                        'icon': "fas fa-eye",
+                                                        'size': 'm'
+                                                    }) }}
 
-                                                            {% if has_access_resource(
-                                                                constants.admin.punishments.PERMISSION_GROUP,
-                                                                constants.admin.punishments.PERMISSION_KEY,
-                                                                punishment.server_id,
-                                                                permissions.ACCESS_EDIT
-                                                                ) %}
-                                                                <li>
-                                                                    <a
-                                                                            href="{{ path_for(constants.admin.punishments.ROUTE_AMNESTY, {
-                                                                                'player': player.id,
-                                                                                'punishment': punishment.id
-                                                                            }) }}"
-                                                                            class="dropdown-item"
-                                                                    >
-                                                                        <i class="fas fa-unlock uk-margin-small-right"></i> &nbsp;{{ trans('buttons', 'unlock') }}
-                                                                    </a>
-                                                                </li>
-                                                            {% endif %}
+                                                    {% if has_access_resource(
+                                                        constants.admin.punishments.PERMISSION_GROUP,
+                                                        constants.admin.punishments.PERMISSION_KEY,
+                                                        punishment.server_id,
+                                                        permissions.ACCESS_EDIT
+                                                    ) %}
+                                                        {{ admin.edit_btn(
+                                                            path_for(constants.admin.punishments.ROUTE_EDIT, {
+                                                                'player': player.id,
+                                                                'punishment': punishment.id
+                                                            })
+                                                        ) }}
+                                                    {% endif %}
 
-                                                            {% if has_access_resource(
-                                                                constants.admin.punishments.PERMISSION_GROUP,
-                                                                constants.admin.punishments.PERMISSION_KEY,
-                                                                punishment.server_id,
-                                                                permissions.ACCESS_DELETE
-                                                                ) %}
-                                                                <li>
-                                                                    <a
-                                                                            href="{{ path_for(constants.admin.punishments.ROUTE_DELETE, {
-                                                                                'player': player.id,
-                                                                                'punishment': punishment.id
-                                                                            }) }}"
-                                                                            class="dropdown-item"
-                                                                    >
-                                                                        <i class="fas fa-trash uk-margin-small-right"></i> &nbsp;{{ trans('buttons', 'delete') }}
-                                                                    </a>
-                                                                </li>
-                                                            {% endif %}
-                                                        {% endblock %}
-                                                    {% endembed %}
+                                                    {% if punishment.status != 'amnestied' and has_access_resource(
+                                                        constants.admin.punishments.PERMISSION_GROUP,
+                                                        constants.admin.punishments.PERMISSION_KEY,
+                                                        punishment.server_id,
+                                                        permissions.ACCESS_EDIT
+                                                    ) %}
+                                                        {{ admin.form_btn(
+                                                            trans('admin_punishments', 'amnesty'),
+                                                            path_for(constants.admin.punishments.ROUTE_AMNESTY, {
+                                                                'player': player.id,
+                                                                'punishment': punishment.id
+                                                            }),
+                                                            '',
+                                                            'fa-unlock',
+                                                            'm'
+                                                        ) }}
+                                                    {% endif %}
+
+                                                    {% if has_access_resource(
+                                                        constants.admin.punishments.PERMISSION_GROUP,
+                                                        constants.admin.punishments.PERMISSION_KEY,
+                                                        punishment.server_id,
+                                                        permissions.ACCESS_DELETE
+                                                    ) %}
+                                                        {{ admin.delete_btn(
+                                                            path_for(constants.admin.punishments.ROUTE_DELETE, {
+                                                                'player': player.id,
+                                                                'punishment': punishment.id
+                                                            })
+                                                        ) }}
+                                                    {% endif %}
                                                 </li>
                                             </ul>
                                         {% endfor %}

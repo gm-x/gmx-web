@@ -96,7 +96,8 @@ class DependencyProvider implements ServiceProviderInterface
         $container['base_url'] = function (ContainerInterface $container) {
             /** @var \Slim\Http\Uri $uri */
             $uri = $container->get('request')->getUri();
-            return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
+//            return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
+            return $uri->getScheme() . '://' . $uri->getHost() . $uri->getBasePath();
         };
         
         $container['config'] = $this->config;
@@ -418,7 +419,6 @@ class DependencyProvider implements ServiceProviderInterface
         
         /** @var \Psr\Http\Message\UriInterface $uri */
         $uri = $container->get('request')->getUri();
-        
         $view->addExtension(new TwigExtension($container->get('router'), $container->get('base_url')));
         $view->addExtension(new TwigVersionExtension($container->get('manifest')));
         $view->addExtension(new CSRFExtension($container->get('csrf')));

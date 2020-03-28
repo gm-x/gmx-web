@@ -112,7 +112,7 @@ class PlayersRoutes extends BaseRoute
 
 		// TODO: Add permissions
 		$app
-			->map(['GET', 'POST'], '/{punishment:\d+}/amnesty', [PunishmentsController::class, 'amnesty'])
+			->post('/{punishment:\d+}/amnesty', [PunishmentsController::class, 'amnesty'])
 			->setName(PunishmentsConstants::ROUTE_AMNESTY);
 
 		$app

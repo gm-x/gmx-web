@@ -79,38 +79,4 @@ $(document).ready(function () {
         var self = $(this);
         self.text(moment.utc(self.data('value')).local().format(self.data('format')));
     });
-
-    // FIXME
-    /*
-    $('.paginate').after('<ul class="uk-pagination uk-flex-center" uk-margin id="nav"></ul>');
-    var rowsShown = 4;
-    var rowsTotal = $('.paginate tbody tr').length;
-    var numPages = rowsTotal/rowsShown;
-    if (numPages > 1) {
-        $('#nav').append('<li class="uk-disabled"><a href="#" class="uk-icon-button m" title="Назад"><i class="fas fa-angle-double-left fa-sm"></i></a></li>');
-        $('#nav').append('<li><a href="#" class="uk-icon-button m" title="Назад" rel="1"><i class="fas fa-angle-double-right fa-sm"></i></a></li>');
-    }
-
-    $('.paginate tbody tr').hide();
-    $('.paginate tbody tr').slice(0, rowsShown).show();
-    $('#nav li a').bind('click', function(){
-        $('#nav li').removeClass('uk-disabled');
-        var currPage = parseInt($(this).attr('rel'));
-        if (currPage - 1 < 0) {
-            $('#nav li:first').addClass('uk-disabled');
-        } else {
-            $('#nav li:first a').attr('rel', currPage - 1);
-        }
-        if (currPage + 1 > numPages) {
-            $('#nav li:last').addClass('uk-disabled');
-        } else {
-            $('#nav li:last a').attr('rel', currPage + 1);
-        }
-
-        var startItem = currPage * rowsShown;
-        var endItem = startItem + rowsShown;
-        $('.paginate tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
-        css('display','table-row').animate({opacity:1}, 300);
-    });
-    */
 });

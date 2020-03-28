@@ -18,6 +18,7 @@ use \Illuminate\Database\Eloquent\Builder;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\SteamID;
 use \GameX\Core\Validate\Rules\Number;
+use \GameX\Core\Validate\Rules\Boolean;
 use \GameX\Core\Validate\Rules\IPv4;
 use \GameX\Core\Validate\Rules\Length;
 use \GameX\Core\Validate\Rules\ArrayRule;
@@ -443,7 +444,10 @@ class PlayerController extends BaseApiController
 			])
 			->set('time', true, [
 				new Number(0)
-			]);
+			])
+            ->set('extend', false, [
+                new Boolean()
+            ]);
 
 		$result = $validator->validate($this->getBody($request));
 		if (!$result->getIsValid()) {
@@ -465,12 +469,19 @@ class PlayerController extends BaseApiController
 
 		$privilege = Privilege::where(['player_id' => $player->id, 'group_id' => $group->id])->first();
 		if (!$privilege) {
-			$privilege = new Privilege([
-				'player_id' => $player->id,
-				'group_id' => $group->id,
-				'expired_at' => $expiredAt,
-				'active' => true,
-			]);
+            $privilege = new Privilege([
+                'player_id' => $player->id,
+                'group_id' => $group->id,
+                'expired_at' => $expiredAt,
+                'active' => true,
+            ]);
+        } else if ($result->getValue('extend')) {
+		    if ($privilege->expired_at !== null) {
+                $privilege->expired_at = $result->getValue('time') > 0
+                    ? $privilege->expired_at->addSeconds($result->getValue('time'))
+                    : null;
+                $privilege->active = true;
+            }
 		} elseif ($privilege->expired_at === null || ($expiredAt !== null && $expiredAt->isBefore($privilege->expired_at))) {
 			throw new ValidationException('Privilege already exists');
 		} else {

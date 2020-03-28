@@ -197,7 +197,7 @@ class PunishmentsController extends BaseAdminController
 		    $punishment->update([
 		    	'status' => Punishment::STATUS_AMNESTIED
 		    ]);
-		    $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
+		    $this->addSuccessMessage($this->getTranslate('admin_punishments', 'amnestied'));
 	    } catch (Exception $e) {
 		    $this->addErrorMessage($this->getTranslate('labels', 'exception'));
 		    $this->getLogger()->exception($e);

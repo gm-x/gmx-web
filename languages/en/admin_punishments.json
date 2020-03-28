@@ -11,5 +11,7 @@
   "status": "Status",
   "type": "Type",
   "type_empty": "Choose type",
-  "ban": "Ban"
+  "ban": "Ban",
+  "amnesty": "Amnesty",
+  "amnestied": "Player amnestied"
 }
