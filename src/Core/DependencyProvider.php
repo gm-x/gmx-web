@@ -96,8 +96,7 @@ class DependencyProvider implements ServiceProviderInterface
         $container['base_url'] = function (ContainerInterface $container) {
             /** @var \Slim\Http\Uri $uri */
             $uri = $container->get('request')->getUri();
-//            return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
-            return $uri->getScheme() . '://' . $uri->getHost() . $uri->getBasePath();
+            return rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
         };
         
         $container['config'] = $this->config;
@@ -437,6 +436,10 @@ class DependencyProvider implements ServiceProviderInterface
         );
 
         $view->getEnvironment()->addGlobal('breadcrumbs', $container->get('breadcrumbs'));
+
+        /** @var \Slim\Http\Uri $uri */
+        $uri = $container->get('request')->getUri();
+        $view->getEnvironment()->addGlobal('base_uri', $uri->getScheme() . '://' . $uri->getHost() . $uri->getBasePath());
         
         return $view;
     }
