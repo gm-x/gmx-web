@@ -58,6 +58,8 @@ class Punishment extends BaseModel
         'details',
         'type',
 	    'extra',
+        'created_at',
+        'updated_at',
         'expired_at',
         'status'
     ];

@@ -153,7 +153,10 @@ class PlayersForm extends BaseForm
         $authType = $this->form->getValue('auth_type');
         $this->player->auth_type = $authType;
         if ($authType == Player::AUTH_TYPE_STEAM_AND_PASS || $authType == Player::AUTH_TYPE_NICK_AND_PASS) {
-            $this->player->password = $this->form->getValue('password');
+            $password = $this->form->getValue('password');
+            if (!empty($password)) {
+                $this->player->password = $password;
+            }
         }
         $access = 0;
         if ($this->form->getValue('access_reserve_nick')) {

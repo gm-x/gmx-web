@@ -13,6 +13,7 @@ use \GameX\Core\BaseModel;
  * @property string $title
  * @property integer $flags
  * @property integer $priority
+ * @property integer $immunity
  * @property string $prefix
  * @property Server $server
  * @property Privilege[] $players
@@ -36,7 +37,7 @@ class Group extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['server_id', 'title', 'flags', 'priority', 'prefix'];
+    protected $fillable = ['server_id', 'title', 'flags', 'priority', 'immunity', 'prefix'];
     
     /**
      * @var array
@@ -55,6 +56,7 @@ class Group extends BaseModel
     	'server_id' => 'int',
     	'flags' => 'int',
     	'priority' => 'int',
+    	'immunity' => 'int',
     ];
     
     /**

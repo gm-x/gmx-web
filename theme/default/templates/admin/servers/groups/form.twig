@@ -9,6 +9,7 @@
         {{ forms.element_input(form.title, {"label": true}) }}
         {{ forms.element_input(form.flags, {"label": true}) }}
         {{ forms.element_input(form.prefix, {"label": true}) }}
+        {{ forms.element_input(form.immunity, {"label": true}) }}
         <legend class="uk-legend">{{ trans("admin_servers", "access") }}</legend>
         {{ forms.array_checkbox(form.access, true) }}
         <div class="uk-margin">

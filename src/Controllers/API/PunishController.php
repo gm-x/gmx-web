@@ -225,13 +225,18 @@ class PunishController extends BaseApiController
 			'status' => Punishment::STATUS_PUNISHED
 		])->first();
 
+		$now = Carbon::now();
+		$expired = $time > 0 ? Carbon::now()->addSeconds($time) : null;
+
 		if ($punishment) {
 			$punishment->update([
 				'punisher_id' => $punisherId > 0 ? $punisherId : null,
-				'extra' => $extra,
+				'ex tra' => $extra,
 				'reason_id' => $reason->id,
 				'details' => $details,
-				'expired_at' => $time > 0 ? Carbon::now()->addSeconds($time) : null,
+				'created_at' => $now,
+				'updated_at' => $now,
+				'expired_at' => $expired,
 				'status' => Punishment::STATUS_PUNISHED
 			]);
 		} else {
@@ -243,7 +248,8 @@ class PunishController extends BaseApiController
 				'extra' => $extra,
 				'reason_id' => $reason->id,
 				'details' => $details,
-				'expired_at' => $time > 0 ? Carbon::now()->addSeconds($time) : null,
+                'created_at' => $now,
+                'expired_at' => $expired,
 				'status' => Punishment::STATUS_PUNISHED
 			]);
 			$punishment->save();

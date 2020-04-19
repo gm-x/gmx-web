@@ -202,6 +202,10 @@ class PlayerController extends BaseApiController
 	    })->flatten()->map(function (Access $access) {
 		    return $access->key;
 	    })->unique()->values()->all();
+
+	    $immunity = $player->privileges->map(function (Privilege $privilege) {
+	        return $privilege->group->immunity;
+        })->max();
     
         /** @var \GameX\Core\Cache\Cache $cache */
         $cache = $this->getContainer('cache');
@@ -215,6 +219,7 @@ class PlayerController extends BaseApiController
             'punishments' => $punishments,
 	        'preferences' => $preferences ? $preferences->data : new \stdClass(),
 	        'access' => $access,
+            'immunity' => $immunity,
         ]);
     }
     

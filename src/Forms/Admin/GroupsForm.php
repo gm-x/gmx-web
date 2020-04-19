@@ -6,9 +6,11 @@ use \GameX\Core\BaseForm;
 use \GameX\Models\Group;
 use \GameX\Models\Access;
 use \GameX\Core\Forms\Elements\Text;
+use \GameX\Core\Forms\Elements\Number as NumberElement;
 use \GameX\Core\Forms\Elements\Flags as FlagsElement;
 use \GameX\Core\Forms\Elements\ArrayCheckbox;
 use \GameX\Core\Validate\Validator;
+use \GameX\Core\Validate\Rules\Number as NumberRule;
 use \GameX\Core\Validate\Rules\Flags as FlagsRule;
 use \GameX\Core\Validate\Rules\Length;
 use \GameX\Core\Validate\Rules\ArrayRule;
@@ -51,6 +53,11 @@ class GroupsForm extends BaseForm
                 'error' => 'Required',
                 'required' => true,
             ]))
+            ->add(new NumberElement('immunity', $this->group->immunity, [
+                'title' => $this->getTranslate($this->name, 'immunity'),
+                'error' => 'Required',
+                'required' => true,
+            ]))
 	        ->add(new Text('prefix', $this->group->prefix, [
 		        'title' => $this->getTranslate($this->name, 'prefix'),
 		        'required' => false,
@@ -61,7 +68,10 @@ class GroupsForm extends BaseForm
 	        ->set('flags', true, [
                 new FlagsRule()
             ])
-	        ->set('prefix', false, [
+	        ->set('immunity', true, [
+		        new NumberRule(0, 100)
+	        ])
+            ->set('prefix', false, [
 		        new Length(1, 64)
 	        ]);
 
@@ -94,6 +104,7 @@ class GroupsForm extends BaseForm
         $this->group->title = $this->form->getValue('title');
         $this->group->flags = $this->form->get('flags')->getFlagsInt();
 	    $this->group->prefix = $this->form->getValue('prefix');
+	    $this->group->immunity = (int)$this->form->getValue('immunity');
 
 	    $access = array_keys(array_filter($this->form->getValue('access')));
 	    $this->group->access()->sync($access);
