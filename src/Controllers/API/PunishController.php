@@ -231,7 +231,7 @@ class PunishController extends BaseApiController
 		if ($punishment) {
 			$punishment->update([
 				'punisher_id' => $punisherId > 0 ? $punisherId : null,
-				'ex tra' => $extra,
+				'extra' => $extra,
 				'reason_id' => $reason->id,
 				'details' => $details,
 				'created_at' => $now,
