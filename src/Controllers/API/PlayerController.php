@@ -198,7 +198,7 @@ class PlayerController extends BaseApiController
 	        ->first();
 
 	    $access = $player->privileges()->with('group')->get()->map(function (Privilege $privilege) {
-		    return $privilege->group->access;
+		    return $privilege->group ? $privilege->group->access : [];
 	    })->flatten()->map(function (Access $access) {
 		    return $access->key;
 	    })->unique()->values()->all();
