@@ -12,6 +12,7 @@ use \GameX\Models\Privilege;
 use \GameX\Models\Map;
 use \GameX\Models\Player;
 use \GameX\Models\PlayerSession;
+use \GameX\Models\ServerCommand;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\Number;
 use \GameX\Core\Validate\Rules\ArrayRule;
@@ -219,8 +220,21 @@ class ServerController extends BaseApiController
                 'ping_at' => $now,
             ]);
 
+        $commands = ServerCommand::where([
+            'server_id' => $server->id,
+            'status' => ServerCommand::STATUS_ACTIVE,
+        ])->get();
+
+        ServerCommand::where([
+            'server_id' => $server->id,
+            'status' => ServerCommand::STATUS_ACTIVE,
+        ])->update([
+            'status' => ServerCommand::STATUS_INACTIVE,
+        ]);
+
 		return $response->withStatus(200)->withJson([
-			'success' => true
+			'success' => true,
+            'commands' => $commands,
 		]);
 	}
     

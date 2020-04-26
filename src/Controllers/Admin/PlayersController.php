@@ -109,6 +109,7 @@ class PlayersController extends BaseAdminController
 		    }
 	    }
 
+	    $sessions = $player->sessions()->orderBy('created_at', 'desc')->get();
         $last_session = $player->sessions()->orderBy('created_at', 'desc')->limit(1)->first();
         
         return $this->getView()->render($response, 'admin/players/view.twig', [
@@ -116,6 +117,7 @@ class PlayersController extends BaseAdminController
             'player' => $player,
             'privileges' => $privileges,
             'punishments' => $punishments,
+            'sessions' => $sessions,
             'last_session' => $last_session,
 	        'hasAccessToPrivileges' => $hasAccessToPrivileges,
 	        'hasAccessToPunishments' => $hasAccessToPunishments,
