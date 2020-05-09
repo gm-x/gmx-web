@@ -12,14 +12,7 @@ class GroupHook
      */
     public function saved(Group $group)
     {
-        $model = new ServerCommand();
-        $model->fill([
-            'server_id' => $group->server_id,
-            'command' => 'group_changed',
-            'data' => (string)$group->id,
-            'status' => ServerCommand::STATUS_ACTIVE,
-        ]);
-        $model->save();
+        ServerCommand::createCommand($group->server, 'group_changed', (string)$group->id);
     }
 
     /**
@@ -27,13 +20,6 @@ class GroupHook
      */
     public function deleted(Group $group)
     {
-        $model = new ServerCommand();
-        $model->fill([
-            'server_id' => $group->server_id,
-            'command' => 'group_removed',
-            'data' => (string)$group->id,
-            'status' => ServerCommand::STATUS_ACTIVE,
-        ]);
-        $model->save();
+        ServerCommand::createCommand($group->server, 'group_removed', (string)$group->id);
     }
 }

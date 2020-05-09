@@ -16,10 +16,7 @@ class ServerCommands extends Migration
                 $table->unsignedInteger('server_id')->references('id')->on('servers');
                 $table->string('command');
                 $table->string('data')->nullable();
-                $table->enum('status', [
-                    'active',
-                    'inactive',
-                ])->default('active');
+                $table->boolean('delivered');
                 $table->timestamps();
             });
     }

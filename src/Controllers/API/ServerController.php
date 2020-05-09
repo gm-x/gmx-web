@@ -222,14 +222,14 @@ class ServerController extends BaseApiController
 
         $commands = ServerCommand::where([
             'server_id' => $server->id,
-            'status' => ServerCommand::STATUS_ACTIVE,
+            'delivered' => false,
         ])->get();
 
         ServerCommand::where([
             'server_id' => $server->id,
-            'status' => ServerCommand::STATUS_ACTIVE,
+            'delivered' => false,
         ])->update([
-            'status' => ServerCommand::STATUS_INACTIVE,
+            'delivered' => true,
         ]);
 
 		return $response->withStatus(200)->withJson([

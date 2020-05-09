@@ -11,14 +11,10 @@ use \GameX\Core\BaseModel;
  * @property integer $id
  * @property integer $server_id
  * @property string $data
- * @property string $status
+ * @property boolean $delivered
  */
 class ServerCommand extends BaseModel
 {
-
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
-
     /**
      * The table associated with the model.
      *
@@ -34,7 +30,7 @@ class ServerCommand extends BaseModel
     /**
      * @var array
      */
-    protected $fillable = ['server_id', 'command', 'data', 'status'];
+    protected $fillable = ['server_id', 'command', 'data', 'delivered'];
     
     /**
      * @var array
@@ -44,13 +40,14 @@ class ServerCommand extends BaseModel
     /**
      * @var array
      */
-    protected $hidden = ['server_id', 'status', 'created_at', 'updated_at'];
+    protected $hidden = ['server_id', 'delivered', 'created_at', 'updated_at'];
 
 	/**
 	 * @var array
 	 */
     protected $casts = [
     	'server_id' => 'int',
+    	'delivered' => 'bool',
     ];
     
     /**
@@ -59,5 +56,24 @@ class ServerCommand extends BaseModel
     public function server()
     {
         return $this->belongsTo(Server::class, 'server_id', 'id');
+    }
+
+    /**
+     * @param Server $server
+     * @param string $command
+     * @param string|null $args
+     * @return ServerCommand
+     */
+    public static function createCommand(Server $server, $command, $args = null)
+    {
+        $model = new ServerCommand();
+        $model->fill([
+            'server_id' => $server->id,
+            'command' => $command,
+            'data' => $args,
+            'delivered' => false,
+        ]);
+        $model->save();
+        return $model;
     }
 }

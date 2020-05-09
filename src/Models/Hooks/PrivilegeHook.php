@@ -12,14 +12,11 @@ class PrivilegeHook
      */
     public function saved(Privilege $privilege)
     {
-        $model = new ServerCommand();
-        $model->fill([
-            'server_id' => $privilege->group->server_id,
-            'command' => 'privilege_changed',
-            'data' => (string)$privilege->player_id,
-            'status' => ServerCommand::STATUS_ACTIVE,
-        ]);
-        $model->save();
+        ServerCommand::createCommand(
+            $privilege->group->server,
+            'privilege_changed',
+            (string)$privilege->player_id
+        );
     }
 
     /**
@@ -27,13 +24,10 @@ class PrivilegeHook
      */
     public function deleted(Privilege $privilege)
     {
-        $model = new ServerCommand();
-        $model->fill([
-            'server_id' => $privilege->group->server_id,
-            'command' => 'privilege_removed',
-            'data' => (string)$privilege->player_id,
-            'status' => ServerCommand::STATUS_ACTIVE,
-        ]);
-        $model->save();
+        ServerCommand::createCommand(
+            $privilege->group->server,
+            'privilege_removed',
+            (string)$privilege->player_id
+        );
     }
 }
