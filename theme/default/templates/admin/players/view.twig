@@ -303,14 +303,14 @@
                                             <li class="uk-width-1-6@m uk-width-1-6@s">{{ trans('admin_players', 'session_created') }}</li>
                                             <li class="uk-width-1-6@m uk-width-1-6@s">{{ trans('admin_players', 'session_time') }}</li>
                                         </ul>
-                                        {% for session in player.sessions %}
+                                        {% for session in sessions %}
                                             <ul>
                                                 <li class="uk-width-1-6@m uk-width-1-6@s">{{ session.server.name }}</li>
                                                 <li class="uk-width-1-6@m uk-width-1-6@s">{{ datetime.datetime(session.created_at) }}</li>
                                                 <li class="uk-width-1-6@m uk-width-1-6@s">{{ session.online }}</li>
                                             </ul>
                                         {% endfor %}
-                                    </div>
+                                     </div>
                                 </div>
                             </li>
                         </ul>

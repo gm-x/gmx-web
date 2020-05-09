@@ -6,7 +6,6 @@ use GameX\Core\Auth\Helpers\RoleHelper;
 use GameX\Core\Validate\Rules\Number;
 use \Psr\Container\ContainerInterface;
 use \GameX\Constants\PreferencesConstants;
-use \GameX\Core\Auth\Models\RoleModel;
 use \GameX\Core\BaseForm;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Forms\Elements\Text;
@@ -59,7 +58,6 @@ class MainForm extends BaseForm
         $main = $this->preferences->getNode(PreferencesConstants::CATEGORY_MAIN);
         $languages = $this->preferences->getNode('languages')->toArray();
         $themes = $this->preferences->getNode('themes')->toArray();
-        $cron = $this->preferences->getNode(PreferencesConstants::CATEGORY_CRON);
         $roles = $this->preferences->getNode(PreferencesConstants::CATEGORY_ROLES);
 
         $rolesList = $this->roleHelper->getRolesAsArray();
@@ -85,11 +83,7 @@ class MainForm extends BaseForm
                 'required' => false,
                 'disabled' => !$this->hasAccessToEdit,
                 'empty_option' => $this->getTranslate('admin_preferences', 'default_role_empty'),
-            ]))->add(new Checkbox('cron_reload_admins', $cron->get('reload_admins'), [
-		        'title' => $this->getTranslate('admin_preferences', 'cron_reload_admins'),
-		        'required' => false,
-		        'disabled' => !$this->hasAccessToEdit,
-	        ]));
+            ]));
         
         $this->form->getValidator()->set('title', true)
 	        ->set('language', true, [
@@ -101,9 +95,6 @@ class MainForm extends BaseForm
 	        ->set('auto_activate_users', false, [
                 new Boolean(),
             ], ['check' => Validator::CHECK_EMPTY, 'default' => false])
-	        ->set('cron_reload_admins', false, [
-		        new Boolean(),
-	        ], ['check' => Validator::CHECK_EMPTY, 'default' => false])
             ->set('default_role', false, [
                 new Number(1),
                 new InArray(array_keys($rolesList)),
@@ -122,10 +113,6 @@ class MainForm extends BaseForm
         $main->set(PreferencesConstants::MAIN_LANGUAGE, $this->form->getValue('language'));
         $main->set(PreferencesConstants::MAIN_THEME, $this->form->getValue('theme'));
         $main->set(PreferencesConstants::MAIN_AUTO_ACTIVATE_USERS, $this->form->getValue('auto_activate_users'));
-
-	    $this->preferences
-		    ->getNode(PreferencesConstants::CATEGORY_CRON)
-		    ->set('reload_admins', $this->form->getValue('cron_reload_admins'));
 
 	    $defaultRole = $this->form->getValue('default_role');
 	    if (empty($defaultRole)) {

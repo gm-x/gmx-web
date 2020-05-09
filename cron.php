@@ -55,9 +55,9 @@ try {
 //    return (php_sapi_name() === 'cli');
     $task = JobHelper::getTask();
     if ($task) {
-        $logger->debug('Start cron task', [
-            'task' => $task->id
-        ]);
+//        $logger->debug('Start cron task', [
+//            'task' => $task->id
+//        ]);
         JobHelper::markTask($task, Task::STATUS_IN_PROGRESS);
         $result = BaseCronController::execute($task->key, $task, $container);
         if ($result && $result instanceof JobResult &&  $result->getStatus()) {

@@ -35,24 +35,6 @@ class RconExec
 
 	/**
 	 * @param Server $server
-	 * @throws NotFoundException
-	 */
-	public function reloadPrivileges(Server $server)
-	{
-	    if ($this->getPreferences()->getNode('cron')->get('reload_admins')) {
-		    JobHelper::createTaskIfNotExists('rcon_exec', [
-			    'server_id' => $server->id,
-			    'command' => 'amx_reloadadmins'
-		    ], null, function (Task $task) use ($server) {
-			    return isset($task->data['server_id']) && $task->data['server_id'] == $server->id;
-		    });
-	    } else {
-	    	$this->sendCommand($server, 'amx_reloadadmins');
-	    }
-	}
-
-	/**
-	 * @param Server $server
 	 * @param $command
 	 */
 	public function sendCommand(Server $server, $command)

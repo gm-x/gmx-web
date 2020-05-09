@@ -55,7 +55,6 @@ class GroupsController extends BaseAdminController
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
-        	$this->reloadPrivileges($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
             return $this->redirect(ServersConstants::ROUTE_VIEW, [
                 'server' => $server->id
@@ -104,7 +103,6 @@ class GroupsController extends BaseAdminController
         
         $form = new GroupsForm($group);
         if ($this->processForm($request, $form)) {
-	        $this->reloadPrivileges($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
 	        return $this->redirect(ServersConstants::ROUTE_VIEW, [
 		        'server' => $server->id
@@ -133,7 +131,6 @@ class GroupsController extends BaseAdminController
         
         try {
             $group->delete();
-	        $this->reloadPrivileges($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
@@ -221,13 +218,5 @@ class GroupsController extends BaseAdminController
         
         
         return $group;
-    }
-
-	/**
-	 * @param Server $server
-	 */
-    protected function reloadPrivileges(Server $server)
-    {
-    	$this->getContainer('utils_rcon_exec')->reloadPrivileges($server);
     }
 }

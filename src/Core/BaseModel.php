@@ -6,6 +6,10 @@ use \Illuminate\Database\Eloquent\Model;
 use \Psr\Container\ContainerInterface;
 use \DateTimeInterface;
 use \GameX\Core\Rememberable\Rememberable;
+use \GameX\Models\Group;
+use \GameX\Models\Hooks\GroupHook;
+use \GameX\Models\Privilege;
+use \GameX\Models\Hooks\PrivilegeHook;
 
 abstract class BaseModel extends Model
 {
@@ -32,6 +36,9 @@ abstract class BaseModel extends Model
         // TODO: WTF ??? It's need for create connection
         self::$container['db'];
         parent::boot();
+
+        Group::observe(new GroupHook());
+        Privilege::observe(new PrivilegeHook());
     }
     
     protected function serializeDate(DateTimeInterface $date)

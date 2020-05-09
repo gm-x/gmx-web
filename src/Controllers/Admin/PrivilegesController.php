@@ -112,7 +112,6 @@ class PrivilegesController extends BaseAdminController
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
-	            $this->reloadPrivileges($server);
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
                 return $this->redirect(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'privileges']);
             }
@@ -162,7 +161,6 @@ class PrivilegesController extends BaseAdminController
         $form = new PrivilegesForm($server, $privilege);
         try {
             if ($this->processForm($request, $form)) {
-	            $this->reloadPrivileges($server);
                 $this->addSuccessMessage($this->getTranslate('labels', 'saved'));
                 return $this->redirect(PlayersConstants::ROUTE_VIEW, ['player' => $player->id], ['tab' => 'privileges']);
             }
@@ -195,7 +193,6 @@ class PrivilegesController extends BaseAdminController
         
         try {
             $privilege->delete();
-	        $this->reloadPrivileges($server);
             $this->addSuccessMessage($this->getTranslate('labels', 'removed'));
         } catch (Exception $e) {
             $this->addErrorMessage($this->getTranslate('labels', 'exception'));
@@ -292,12 +289,4 @@ class PrivilegesController extends BaseAdminController
         return $this->getPermissions()->hasUserAccessToResource(PrivilegesConstants::PERMISSION_GROUP,
             PrivilegesConstants::PERMISSION_KEY, $serverId, $access);
     }
-
-	/**
-	 * @param Server $server
-	 */
-	protected function reloadPrivileges(Server $server)
-	{
-		$this->getContainer('utils_rcon_exec')->reloadPrivileges($server);
-	}
 }
