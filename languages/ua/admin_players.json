@@ -1,0 +1,23 @@
+{
+  "nickname": "Нікнейм",
+  "steam_id": "Steam ID",
+  "ip": "IP",
+  "steam_id_pass": "Steam ID + пароль",
+  "nickname_pass": "Нікнейм + пароль",
+  "steam_id_hash": "Steam ID + хеш",
+  "nickname_hash": "Нікнейм + хеш",
+  "auth_type": "Тип авторизації",
+  "choose_auth_type": "Виберіть тип авторизації",
+  "password": "Пароль",
+  "prefix": "Чат префікс",
+  "reserve_nickname": "Резервація нікнейму",
+  "block_nickname": "Заборона зміни никнейму",
+  "pass_error": "Пароль повинен бути вказаним",
+  "player_exists": "Такий гравець вже існує",
+  "user": "Користувач",
+  "status": "Статус",
+  "sessions": "Сесії",
+  "info": "інформація",
+  "session_created": "Увійшов",
+  "session_time": "Час онлайн"
+}
