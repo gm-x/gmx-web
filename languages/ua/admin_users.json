@@ -1,0 +1,10 @@
+{
+    "login": "Ім'я користувача",
+    "email": "Email адрес",
+    "role": "Роль",
+    "role_empty": "Виберіть роль",
+    "status": "Статус",
+    "status_pending": "Непідтверджений",
+    "status_active": "Активний",
+    "status_banned": "Забанений"
+}
