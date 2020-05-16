@@ -1,0 +1,17 @@
+{
+    "preferences": "Налаштування",
+    "preferences_main": "Основні",
+    "preferences_email": "Пошта",
+    "preferences_update": "Оновлення",
+    "preferences_cache": "Кеш",
+    "preferences_cron": "Cron",
+    "preferences_social": "Соц. мережі",
+    "users": "Колистувачі",
+    "roles": "Ролі",
+    "servers": "Сервери",
+    "players": "Гравці",
+    "permissions": "Права",
+    "role": "Роль",
+    "name": "Ім'я",
+    "list": "Список"
+}

@@ -1,0 +1,11 @@
+{
+    "login_email": "Логін або email",
+    "login": "Логін",
+    "email": "Email",
+    "password": "Пароль",
+    "current_password": "Поточний пароль",
+    "new_password": "Новий пароль",
+    "password_repeat": "Підтвердження пароля",
+    "remember_me": "Запам'ятати мене",
+    "avatar": "Аватар"
+}
