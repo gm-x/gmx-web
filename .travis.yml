@@ -18,6 +18,7 @@ deploy:
     - "gmx-web-updates.zip"
     - "gmx-web-vendor.zip"
   skip_cleanup: true
+  if: tag IS blank
   on:
     tags: false
     branch: master
