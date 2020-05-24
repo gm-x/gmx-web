@@ -2,11 +2,11 @@
 
 namespace GameX\Forms\Admin\Preferences;
 
-use GameX\Core\Auth\Helpers\RoleHelper;
-use GameX\Core\Validate\Rules\Number;
 use \Psr\Container\ContainerInterface;
 use \GameX\Constants\PreferencesConstants;
 use \GameX\Core\BaseForm;
+use \GameX\Core\Auth\Helpers\RoleHelper;
+use \GameX\Core\Lang\Language;
 use \GameX\Core\Configuration\Config;
 use \GameX\Core\Forms\Elements\Text;
 use \GameX\Core\Forms\Elements\Select;
@@ -14,6 +14,7 @@ use \GameX\Core\Forms\Elements\Checkbox;
 use \GameX\Core\Validate\Validator;
 use \GameX\Core\Validate\Rules\InArray;
 use \GameX\Core\Validate\Rules\Boolean;
+use \GameX\Core\Validate\Rules\Number;
 
 class MainForm extends BaseForm
 {
@@ -27,6 +28,11 @@ class MainForm extends BaseForm
      * @var Config
      */
     protected $preferences;
+
+    /**
+     * @var Language
+     */
+    protected $language;
 
     /**
      * @var bool
@@ -45,6 +51,7 @@ class MainForm extends BaseForm
     public function __construct(ContainerInterface $container, $hasAccessToEdit = true)
     {
         $this->preferences = $container->get('preferences');
+        $this->language = $container->get('lang');
         $this->hasAccessToEdit = $hasAccessToEdit;
 
         $this->roleHelper = new RoleHelper($container);
@@ -56,7 +63,6 @@ class MainForm extends BaseForm
     protected function createForm()
     {
         $main = $this->preferences->getNode(PreferencesConstants::CATEGORY_MAIN);
-        $languages = $this->preferences->getNode('languages')->toArray();
         $themes = $this->preferences->getNode('themes')->toArray();
         $roles = $this->preferences->getNode(PreferencesConstants::CATEGORY_ROLES);
 
@@ -66,7 +72,7 @@ class MainForm extends BaseForm
                 'title' => $this->getTranslate('admin_preferences', 'title'),
                 'required' => true,
                 'disabled' => !$this->hasAccessToEdit,
-            ]))->add(new Select('language', $main->get(PreferencesConstants::MAIN_LANGUAGE), $languages, [
+            ]))->add(new Select('language', $main->get(PreferencesConstants::MAIN_LANGUAGE), $this->language->getLanguages(), [
                 'title' => $this->getTranslate('admin_preferences', 'language'),
                 'required' => true,
                 'disabled' => !$this->hasAccessToEdit,
@@ -87,7 +93,7 @@ class MainForm extends BaseForm
         
         $this->form->getValidator()->set('title', true)
 	        ->set('language', true, [
-                new InArray(array_keys($languages)),
+                new InArray(array_keys($this->language->getLanguages())),
             ])
 	        ->set('theme', true, [
                 new InArray(array_keys($themes)),

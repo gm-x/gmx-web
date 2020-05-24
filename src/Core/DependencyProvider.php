@@ -271,11 +271,26 @@ class DependencyProvider implements ServiceProviderInterface
 
         /** @var Config $config */
         $preferences = $container->get('preferences');
+
+        // TODO: create loader
+        $path = $container->get('root') . 'languages' . DIRECTORY_SEPARATOR . 'languages.json';
+        if (!is_readable($path)) {
+            throw new CantReadException('Can\'t read file ' . $path);
+        }
+
+        $languages = file_get_contents($path);
+        if (!$languages) {
+            throw new CantReadException('Can\'t read file ' . $path);
+        }
+        $languages = json_decode($languages, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new CantReadException('Can\'t read file ' . $path);
+        }
         
         $loader = new JSONLoader($container['root'] . DIRECTORY_SEPARATOR . 'languages');
         $provider = new SlimProvider($container->get('request'));
         return new Language($loader, $provider,
-	        $preferences->getNode('languages')->toArray(),
+            $languages,
 	        $preferences->getNode(PreferencesConstants::CATEGORY_MAIN)->get(PreferencesConstants::MAIN_LANGUAGE),
             $config->getNode('debug')->get('lang')
         );

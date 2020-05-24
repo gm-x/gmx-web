@@ -72,4 +72,20 @@ class Privilege extends BaseModel
     {
         return $this->belongsTo(Player::class, 'player_id', 'id');
     }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        if (!$this->active) {
+            return false;
+        }
+
+        if ($this->expired_at === null) {
+            return true;
+        }
+
+        return Carbon::now()->isBefore($this->expired_at);
+    }
 }

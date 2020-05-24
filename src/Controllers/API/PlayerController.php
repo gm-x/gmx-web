@@ -482,9 +482,13 @@ class PlayerController extends BaseApiController
             ]);
         } else if ($result->getValue('extend')) {
 		    if ($privilege->expired_at !== null) {
-                $privilege->expired_at = $result->getValue('time') > 0
-                    ? $privilege->expired_at->addSeconds($result->getValue('time'))
-                    : null;
+		        if ($result->getValue('time') <= 0) {
+                    $privilege->expired_at = null;
+                } else if ($privilege->isActive()) {
+                    $privilege->expired_at = $privilege->expired_at->addSeconds($result->getValue('time'));
+                } else {
+                    $privilege->expired_at = $expiredAt;
+                }
                 $privilege->active = true;
             }
 		} elseif ($privilege->expired_at === null || ($expiredAt !== null && $expiredAt->isBefore($privilege->expired_at))) {
