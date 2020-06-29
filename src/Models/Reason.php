@@ -59,11 +59,11 @@ class Reason extends BaseModel
     protected $hidden = ['server_id', 'overall', 'active', 'created_at', 'updated_at'];
     
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function server()
     {
-        return $this->hasMany(Server::class, 'server_id');
+        return $this->belongsTo(Server::class, 'server_id', 'id');
     }
     
     /**
