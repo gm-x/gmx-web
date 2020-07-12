@@ -116,8 +116,7 @@ class UpdateForm extends BaseForm
             $archive = new ZipArchive();
             $archive->open($tempDir . 'uploads.zip', ZipArchive::CHECKCONS);
             $archive->extractTo($tempDir);
-            
-            
+
             $updates = new Manifest($tempDir . 'manifest.json');
             $this->updater->run(
             	$updates,
