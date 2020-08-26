@@ -454,8 +454,9 @@ class DependencyProvider implements ServiceProviderInterface
 
         /** @var \Slim\Http\Uri $uri */
         $uri = $container->get('request')->getUri();
-        $view->getEnvironment()->addGlobal('base_uri', $uri->getScheme() . '://' . $uri->getHost() . $uri->getBasePath());
-        
+//        $view->getEnvironment()->addGlobal('base_uri', $uri->getScheme() . '://' . $uri->getHost() . $uri->getBasePath());
+        $view->getEnvironment()->addGlobal('base_uri', $uri->getBasePath());
+
         return $view;
     }
     

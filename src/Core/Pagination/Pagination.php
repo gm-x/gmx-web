@@ -75,6 +75,8 @@ class Pagination {
         } elseif (array_key_exists('page', $query)) {
             unset($query['page']);
         }
-        return (string) $this->uri->withQuery(http_build_query($query));
+
+        return $this->uri->getBasePath() . '/' . ltrim($this->uri->getPath(), '/')
+            . '?' . http_build_query($query);
     }
 }

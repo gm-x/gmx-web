@@ -98,6 +98,9 @@ class PunishController extends BaseApiController
 	        ->set('ip', true, [
                 new IPv4()
             ])
+            ->set('punisher_id', true, [
+                new Number(0),
+            ])
 	        ->set('type', true)
 	        ->set('extra', false, [
 		        new Number(0)
